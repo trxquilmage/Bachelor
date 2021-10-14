@@ -7,8 +7,8 @@ using UnityEngine.EventSystems;
 
 public class UiLinkOpener : MonoBehaviour//, IPointerClickHandler
 {
-   /* [SerializeField] private TextMeshProUGUI targetLabel;
-    //[SerializeField] private LinkOpener linkOpener;
+    /*[SerializeField] private TextMeshProUGUI targetLabel;
+    [SerializeField] private LinkOpener linkOpener;
 
     private int currentLinkIndex = -1;
 
@@ -103,6 +103,6 @@ public class UiLinkOpener : MonoBehaviour//, IPointerClickHandler
         // Update Geometry
         targetLabel.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
     }
-   */
-    
+   
+    */
 }
