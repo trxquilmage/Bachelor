@@ -1,0 +1,17 @@
+﻿title: Karl.Start
+tags:
+---
+<<showcharactername Managers Karl>>
+Welcome, friend!
+This is the first test of my dialogue system using Yarn™!
+I love this program, its so much fun to type with it!
+[[Karl.Ask]]
+===
+
+title: Karl.Ask
+tags: 
+---
+<<displaypromptmenu Managers whereFrom>>
+Where are you from, friend?
+Oh, that's pretty far away, isn't it? Did you get here from the south?
+===
