@@ -5,17 +5,23 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    // Handles UI Functions
+
     public Image eButtonSprite;
     public static UIManager instance;
     private void Start()
     {
         instance = this;
     }
+    /// <summary>
+    /// Portray The E-Button Feedack On The Canvas
+    /// </summary>
+    /// <param name="target"></param>
     public void PortrayEButton(GameObject target)
     {
-        if (target == null)
+        if (target == null) //target == null : hide e button
         {
-            eButtonSprite.enabled = false; //hide e button
+            eButtonSprite.enabled = false; 
             return;
         }
         //place e button correctly

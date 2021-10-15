@@ -159,7 +159,7 @@ public class @InputMap : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ece10229-0985-4930-869b-769ab5a3342b"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

@@ -9,11 +9,14 @@ public class WordLookupReader : MonoBehaviour
     string pathWord, pathQuestion, allWords, allQuestions;
     [HideInInspector]
     public Dictionary<string, string> wordTag = new Dictionary<string, string>(), questionTag = new Dictionary<string, string>();
-    private void Start()
+    private void Awake()
     {
         instance = this;
+    }
+    private void Start()
+    {
         pathWord = Application.dataPath + "/Data/Word-LookupTable.csv";
-        string allWords = File.ReadAllText(pathWord);
+        allWords = File.ReadAllText(pathWord);
         string[] lines = allWords.Split("\n"[0]);
         foreach (string s in lines)
         {
@@ -25,7 +28,7 @@ public class WordLookupReader : MonoBehaviour
         }
 
         pathQuestion = Application.dataPath + "/Data/Question-LookupTable.csv";
-        string allQuestions = File.ReadAllText(pathQuestion);
+        allQuestions = File.ReadAllText(pathQuestion);
         string[] linesQ = allQuestions.Split("\n"[0]);
         foreach (string s in linesQ)
         {
@@ -33,7 +36,6 @@ public class WordLookupReader : MonoBehaviour
             {
                 string[] lineData = s.Trim().Split(";"[0]);
                 questionTag.Add(lineData[0], lineData[1]);
-                Debug.Log(lineData[0] + " + " + lineData[1]);
             }
         }
     }

@@ -45,6 +45,11 @@ public class DialogueInputManager : MonoBehaviour
         continueEnabled = true;
         closeAWindow = true;
     }
+    public Vector2 GetMousePos()
+    {
+        Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
+        return mousePos;
+    }
     public IEnumerator CloseAWindow(GameObject target)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -54,16 +59,6 @@ public class DialogueInputManager : MonoBehaviour
         }
         target.SetActive(false);
         closeAWindow = false;
-    }
-    public Vector2 GetCurrentMousePosition() //returns in screen space
-    {
-        Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
-        //Debug.Log("------");
-        //Debug.Log(mousePos);
-        //mousePos.z = 10;
-        //mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-        //Debug.Log(mousePos);
-        return mousePos;
     }
     private void OnEnable()
     {

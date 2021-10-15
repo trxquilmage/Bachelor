@@ -2,9 +2,9 @@
 tags:
 ---
 <<showcharactername Managers Karl>>
-Welcome, friend!
-This is the first test of my dialogue system using Yarn™!
-I love this program, its so much fun to type with it!
+Welcome, friend, to Mayfair!
+Its not as much of a special place as Grandrun, but we manage.
+Have you passed through Neverre on your way here?
 [[Karl.Ask]]
 ===
 

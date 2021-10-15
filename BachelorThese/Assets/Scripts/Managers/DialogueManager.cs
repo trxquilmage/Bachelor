@@ -5,13 +5,16 @@ using Yarn.Unity;
 
 public class DialogueManager : MonoBehaviour
 {
+    // Handles The Logic during a Dialogue
+
     public static DialogueManager instance;
     public bool isInDialogue;
     public float interactionRadius = 2.0f;
 
     List<NPC> allParticipants;
     DialogueRunner runner; 
-    // Start is called before the first frame update
+    
+
     void Awake()
     {
         instance = this;
