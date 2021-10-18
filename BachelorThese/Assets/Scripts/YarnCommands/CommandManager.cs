@@ -8,7 +8,7 @@ using TMPro;
 public class CommandManager : MonoBehaviour
 {
     WordLookupReader wLookupReader;
-    [SerializeField] Text nameText;
+    [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI promptQuestion;
     [SerializeField] GameObject promptMenu;
     DialogueInputManager diManager;

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler
+public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IPointerDownHandler
 {
     TMP_Text nameText;
     bool wasDragged; //after the mouse goes up, after it was dragged it checks, where the object is now at
@@ -56,26 +56,48 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         // if mouse was dragging the object and now releases it
         if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
         {
+            DialogueInputManager input = DialogueInputManager.instance;
             // check where it is released
-            /*if()
+            //if it was dragged into the case, save it
+            if (input.isActiveAndEnabled)
             {
-                //if it was dragged into the case, save it
-            }
-            else if ()
-            {
+                if (input.mouseOverUIObject == "wordCase")
+                {
+                    //save it
+                    Debug.Log("Save Current Word");
+
+                    //close the case & Delete the UI word
+                    WordCaseManager.instance.OpenCase(false);
+                    WordClickManager.instance.DestroyCurrentWord();
+                }
                 // if it was dragged onto a prompt, react
+                else if (input.mouseOverUIObject == "playerInput")
+                {
+                    //check if there is a promt to be filled right now
+                    Debug.Log("Player Input");
+                    //close wordCase
+                    WordCaseManager.instance.OpenCase(false);
+                }
+                else
+                {
+                    //if it was dragged nowhere, destroy it
+                    WordClickManager.instance.DestroyCurrentWord();
+                    WordCaseManager.instance.OpenCase(false);
+                }
             }
-            else
-            {*/
-            //if it was dragged nowhere, destroy it
-            WordClickManager.instance.DestroyCurrentWord();
-            //}
+
         }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-       // nothing, but if you delete this, other funtions dont work for some reason?
+        // this cant be deleted bc for some reasons the other functions dont work without it
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        // This is basically OnDragStart()
+        WordCaseManager.instance.OpenCase(true);
     }
 }
 
