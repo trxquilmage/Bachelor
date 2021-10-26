@@ -4,14 +4,43 @@ tags:
 <<showcharactername Managers Karl>>
 Welcome, friend, to Mayfair!
 Its not as much of a special place as Grandrun, but we manage.
-Have you passed through Neverre on your way here?
+Have you passed through Neverre or Borealis on your way here?
 [[Karl.Ask]]
 ===
 
 title: Karl.Ask
 tags: 
 ---
-<<displaypromptmenu Managers whereFrom>>
-Where are you from, friend?
-Oh, that's pretty far away, isn't it? Did you get here from the south?
+<<displaypromptmenu Managers LocAAA>>
+Where are you from, my friend?
+<<set $origin to react("position")>>
+<<if $origin eq "West">>
+    Oh, really? I guess that means I don't need to show you the town.
+    [[Karl.ChildOfLadyKatherine]]
+<<elseif $origin eq "East">>
+    Oh, you're from the east? I hear there is a big conflict going on there, right?
+    [[Karl.Explain]]
+<<elseif $origin eq "North">>
+    That's far up in the north, isnt it? Is it cold up there?
+    [[Karl.Explain]]
+<<elseif $origin eq "South">>
+    Ah, a sunny town in the south, how lovely.
+    [[Karl.Explain]]
+<<else>>
+    Huh?
+<<endif>>
+===
+
+title: Karl.Explain
+tags: 
+---
+So you're new here, right? Let me show you around town.
+We have a tavern, a tree and this road we are standing on this very second, buddy.
+===
+
+title: Karl.ChildOfLadyKatherine
+tags: 
+---
+Wait, are you the child of Lady Katherine? Yes or No?
+<<displaypromptmenu Managers OriAAA>>
 ===

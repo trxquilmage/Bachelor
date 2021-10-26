@@ -17,7 +17,7 @@ public class WordPointer : MonoBehaviour, IPointerClickHandler
             if (wordIndex != -1)
             {
                 TMP_WordInfo wordInfo = referenceText.textInfo.wordInfo[wordIndex];
-                WordClickManager.instance.SendWord(wordInfo.GetWord(), eventData.position);
+                WordClickManager.instance.CheckWord(wordInfo.GetWord(), eventData.position, wordInfo);
             }
         }
     }

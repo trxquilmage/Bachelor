@@ -8,10 +8,12 @@ public class WordLookupReader : MonoBehaviour
     public static WordLookupReader instance;
     string pathWord, pathQuestion, allWords, allQuestions;
     [HideInInspector]
-    public Dictionary<string, string> wordTag = new Dictionary<string, string>(), questionTag = new Dictionary<string, string>();
+    public Dictionary<string, string[]> wordTag = new Dictionary<string, string[]>();
+    public Dictionary<string, string[]> questionTag = new Dictionary<string, string[]>();
     private void Awake()
     {
         instance = this;
+        questionTag = new Dictionary<string, string[]>();
     }
     private void Start()
     {
@@ -23,7 +25,12 @@ public class WordLookupReader : MonoBehaviour
             if (s != "")
             {
                 string[] lineData = s.Trim().Split(";"[0]);
-                wordTag.Add(lineData[0], lineData[1]);
+                string[] lineInfo = new string[lineData.Length - 1];
+                for (int i = 0; i < lineInfo.Length; i++)
+                {
+                    lineInfo[i] = lineData[i + 1];
+                }
+                wordTag.Add(lineData[0], lineInfo);
             }
         }
 
@@ -35,7 +42,10 @@ public class WordLookupReader : MonoBehaviour
             if (s != "")
             {
                 string[] lineData = s.Trim().Split(";"[0]);
-                questionTag.Add(lineData[0], lineData[1]);
+                string[] textPrompts = new string[2]{
+                    lineData[1], lineData[2]
+                };
+                questionTag.Add(lineData[0], textPrompts);
             }
         }
     }

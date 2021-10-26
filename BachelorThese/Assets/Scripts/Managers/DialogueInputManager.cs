@@ -7,17 +7,21 @@ using TMPro;
 
 public class DialogueInputManager : MonoBehaviour
 {
-    [SerializeField] Color normalColor, interactableColor, interactedColor;
     [SerializeField] GameObject wordCase, playerInput, npcDialogueField, uiLog;
-    [SerializeField] TMP_Text[] interactableTextList;
+    public TMP_Text[] interactableTextList;
     public static DialogueInputManager instance;
-    InputMap controls;
-    bool textFinished;
-    public bool continueEnabled = true;
+    public PromptBubble promptBubble;
+
+    public bool continueEnabledPrompt = true;
+    public bool continueEnabledDrag = true;
     public bool closeAWindow;
     public string mouseOverUIObject;
+
     DialogueRunner runner;
     DialogueUI uiHandler;
+    InputMap controls;
+    bool textFinished;
+    bool stillOnWord;
 
     private void Awake()
     {
@@ -28,44 +32,73 @@ public class DialogueInputManager : MonoBehaviour
     {
         runner = FindObjectOfType<DialogueRunner>();
         uiHandler = FindObjectOfType<DialogueUI>();
-        controls.Dialogue.Click.performed += context => ContinueText();
+        controls.Dialogue.Click.performed += context => ContinueTextOnClick();
     }
     private void Update()
     {
         GetMouseOverUI();
     }
-    void ContinueText()
+    /// <summary>
+    /// Called whenever a click happens
+    /// </summary>
+    void ContinueTextOnClick()
     {
-        if (textFinished && continueEnabled)
+        if (textFinished && continueEnabledPrompt && continueEnabledDrag)
         {
-            uiHandler.MarkLineComplete();
-            //Destroy all non used buttons
+            Continue();
         }
     }
+    /// <summary>
+    /// Called, whenever a dialogue should be continued
+    /// </summary>
+    void Continue()
+    {
+        uiHandler.MarkLineComplete();
+        //Destroy all buttons you can find
+        WordClickManager.instance.DestroyAllActiveWords();
+    }
+    /// <summary>
+    /// When a line is not yet done (called in Dialogue Runner) -> disable continue for ContinueText()
+    /// </summary>
     public void TextFinished()
     {
         textFinished = true;
-        // Color all interactable words
-        WordUtilities.ColorAllInteractableWords(interactableTextList[0], interactableColor, 
-            WordLookupReader.instance.wordTag);
+
+        // Color all interactable words, force update, so there are no errors
+        interactableTextList[0].ForceMeshUpdate();
+        WordUtilities.ColorAllInteractableWords(interactableTextList[0], WordLookupReader.instance.wordTag);
     }
+    /// <summary>
+    /// When a line is done (called in Dialogue Runner) -> enable continue  for ContinueText()
+    /// </summary>
     public void TextUnfinished()
     {
         textFinished = false;
     }
+    /// <summary>
+    /// Called, when the Continue Button in the UI is pressed
+    /// </summary>
     public void ContinueButton()
     {
-        uiHandler.MarkLineComplete();
-        continueEnabled = true;
-        closeAWindow = true;
-        //Destroy all non used buttons
+        if (PlayerInputManager.instance.CheckForPromptsFilled())
+        {
+            PlayerInputManager.instance.ReactToInput();
+            Continue();
+            continueEnabledPrompt = true;
+            closeAWindow = true;
+            PlayerInputManager.instance.DeleteAllPrompts();
+            WordClickManager.instance.currentWord = null;
+        }
     }
+    /// <summary>
+    /// Return the mouse position in screen space
+    /// </summary>
+    /// <returns></returns>
     public Vector2 GetMousePos()
     {
         Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
         return mousePos;
     }
-
     /// <summary>
     /// Raycasts for the UI Elements, checks, above which Category of UI Element 
     /// the mouse is currently Hovering over & saves it to mouseOverUIObject
@@ -81,14 +114,44 @@ public class DialogueInputManager : MonoBehaviour
 
         //Check above which Category of UI Element it is currently Hovering
         mouseOverUIObject = "none";
+        bool foundPB = false; //found a prompt bubble
+        bool foundtC = false; //found the trash can
         foreach (RaycastResult uIObject in results)
         {
+            //over the wordcase
             if (uIObject.gameObject == wordCase)
                 mouseOverUIObject = "wordCase";
-            else if (uIObject.gameObject == playerInput)
+            //over a promptbubble
+            else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
+            {
+                promptBubble = pB;
+                foundPB = true;
                 mouseOverUIObject = "playerInput";
+                promptBubble.OnBubbleHover(true);
+            }
+            //over the trashcan
+            else if (uIObject.gameObject == ReferenceManager.instance.trashCan)
+            {
+                foundtC = true;
+                mouseOverUIObject = "trashCan";
+                UIManager.instance.SwitchTrashImage(true);
+            }
         }
-
+        if (!foundPB) //if not hovering over prompt
+        {
+            if (promptBubble != null)
+            {
+                promptBubble.OnBubbleHover(false);
+                promptBubble = null;
+            }
+        }
+        if (!foundtC) //if not over tC
+        {
+            {
+                UIManager.instance.SwitchTrashImage(false);
+            }
+        }
+        stillOnWord = false;
         //Check for the exact word the mouse is hovering over
         foreach (RaycastResult uIObject in results)
         {
@@ -102,16 +165,28 @@ public class DialogueInputManager : MonoBehaviour
                     {
                         TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
                         TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
-                        if (charInfo.color == interactableColor)
+
+
+                        //Get Color of the first character of the word
+                        Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
+                        if (currentCharacterColor[charInfo.vertexIndex] == ReferenceManager.instance.interactableColor)
                         {
-                            WordClickManager.instance.SendWord(wordInfo.GetWord(), eventDataCurrentPosition.position);
-                            // Set the hovered word to interacted
-                            WordUtilities.ColorAWord(text, wordInfo.firstCharacterIndex, 
-                                wordInfo.lastCharacterIndex, interactedColor); 
+                            WordUtilities.CreateABubble(text, wordInfo);
+                        }
+                        //if the mouse is STILL over the created bubble, dont delete it this round
+                        if (WordClickManager.instance.wordLastHighlighted != null &&
+                            WordClickManager.instance.wordLastHighlighted.GetComponentInChildren<TMP_Text>().text == wordInfo.GetWord())
+                        {
+                            stillOnWord = true;
                         }
                     }
                 }
             }
+        }
+        if (!stillOnWord && WordClickManager.instance.currentWord == null
+            && WordClickManager.instance.wordLastHighlighted != null) //stopped Hovering over the iteractable word
+        {
+            WordClickManager.instance.DestroyLastHighlighted();
         }
     }
     /// <summary>

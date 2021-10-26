@@ -9,46 +9,72 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
 {
     TMP_Text nameText;
     bool wasDragged; //after the mouse goes up, after it was dragged it checks, where the object is now at
+    public WordData data;
+
+    public TMP_WordInfo relatedWordInfo;
+    public TMP_Text relatedText;
+    Vector3 wordSize;
     public struct WordData
     {
         public string name;
+        public string[] tagInfo;
         public WordInfo.WordTags tag;
+        public WordInfo.Origin origin;
+        public TagObject tagObj;
+    }
+    public struct TagObject
+    {
+        public Location loc;
+    }
+    public struct Location
+    {
+        public string position;
     }
     /// <summary>
-    /// Call this, when creating a Word
+    /// Call this, when creating a Word. If you dont have a Word Info, create one and set "hasWordInfo" to false
     /// </summary>
     /// <param name="name"></param>
-    /// <param name="tag"></param>
-    public void Initialize(string name, WordInfo.WordTags tag)
+    /// <param name="tags"></param>
+    public void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, bool hasWordInfo)
     {
-        WordData data = new WordData();
+        data = new WordData();
         data.name = name;
-        data.tag = tag;
+        data.tagInfo = tags;
+        data.tag = WordUtilities.StringToTag(tags[0]);
+        data.origin = origin;
+        if (hasWordInfo)
+        {
+            relatedWordInfo = wordInfo;
+            relatedText = wordInfo.textComponent;
+        }
+
         nameText = transform.GetComponentInChildren<TMP_Text>();
         nameText.text = name;
         ScaleRect();
-        WordUtilities.MatchColorToTag(this.gameObject, tag);
+        wordSize = this.GetComponent<RectTransform>().sizeDelta;
+        WordUtilities.ColorTag(this.gameObject, data.tag);
+
+        data.tagObj = new TagObject() { };
+        FindCorrectTag(data.tagInfo);
     }
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
     /// </summary>
     void ScaleRect()
     {
-        //this doesnt work, bc the bounds of the transform stay the same
-
-        /*
-        nameText.UpdateMeshPadding();
         nameText.ForceMeshUpdate();
-        Vector2 size = new Vector2(nameText.rectTransform.rect.width + 10,
-            nameText.rectTransform.rect.height + 5);
+        Bounds bounds = nameText.textBounds;
+        float width = bounds.size.x;
+        width = width + 4;
         RectTransform rT = this.GetComponent(typeof(RectTransform)) as RectTransform;
-        rT.sizeDelta = size;
-        */
+        rT.sizeDelta = new Vector2(width, rT.sizeDelta.y);
     }
     public void OnDrag(PointerEventData eventData)
     {
         //drag the object through the scene
+
         transform.position = DialogueInputManager.instance.GetMousePos();
+        transform.position -= wordSize / 2;
         wasDragged = true;
     }
     public void OnPointerUp(PointerEventData eventData)
@@ -63,41 +89,136 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             {
                 if (input.mouseOverUIObject == "wordCase")
                 {
-                    //save it
-                    Debug.Log("Save Current Word");
-
-                    //close the case & Delete the UI word
-                    WordCaseManager.instance.OpenCase(false);
-                    WordClickManager.instance.DestroyCurrentWord();
+                    IsOverWordCase();
+                }
+                else if (input.mouseOverUIObject == "trashCan")
+                {
+                    WordCaseManager.instance.TrashAWord();
                 }
                 // if it was dragged onto a prompt, react
                 else if (input.mouseOverUIObject == "playerInput")
                 {
-                    //check if there is a promt to be filled right now
-                    Debug.Log("Player Input");
-                    //close wordCase
-                    WordCaseManager.instance.OpenCase(false);
+                    IsOverPlayerInput();
                 }
                 else
                 {
-                    //if it was dragged nowhere, destroy it
-                    WordClickManager.instance.DestroyCurrentWord();
-                    WordCaseManager.instance.OpenCase(false);
+                    IsOverNothing();
                 }
             }
 
         }
+        if (data.origin == WordInfo.Origin.WordCase)
+        {
+            WordCaseManager.instance.DestroyWordReplacement();
+        }
     }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         // this cant be deleted bc for some reasons the other functions dont work without it
     }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         // This is basically OnDragStart()
-        WordCaseManager.instance.OpenCase(true);
+
+        if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
+        {
+            pB.child = null;
+        }
+
+        // if the word is being dragged out of the dialogue
+        if (data.origin == WordInfo.Origin.Dialogue)
+        {
+            WordCaseManager.instance.AutomaticOpenCase(true);
+            WordClickManager.instance.currentWord = this.gameObject;
+            WordClickManager.instance.wordLastHighlighted = null;
+            WordCaseManager.instance.openTag = data.tag;
+        }
+        else if (data.origin == WordInfo.Origin.WordCase)
+        {
+            transform.SetParent(ReferenceManager.instance.selectedWordParent.transform);
+            //Delete Word from case list
+            WordClickManager.instance.currentWord = this.gameObject;
+            WordCaseManager.instance.SpawnWordReplacement(this);
+        }
+
+    }
+    /// <summary>
+    /// The bubble was dragged onto the word case and dropped
+    /// </summary>
+    void IsOverWordCase()
+    {
+        if (data.origin == WordInfo.Origin.Dialogue)
+        {
+            //save it
+            WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
+
+            //close the case & Delete the UI word
+            WordCaseManager.instance.AutomaticOpenCase(false);
+            WordClickManager.instance.DestroyCurrentWord();
+        }
+        else if (data.origin == WordInfo.Origin.WordCase)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this);
+        }
+    }
+    /// <summary>
+    /// The bubble was dragged onto a prompt case and dropped
+    /// </summary>
+    void IsOverPlayerInput()
+    {
+        if (data.origin == WordInfo.Origin.Dialogue)
+        {
+            //parent to word
+            WordUtilities.ParentBubbleToPrompt(this.gameObject);
+            //close wordCase
+            WordCaseManager.instance.AutomaticOpenCase(false);
+        }
+        else if (data.origin == WordInfo.Origin.WordCase)
+        {
+            // parent to word
+            WordUtilities.ParentBubbleToPrompt(this.gameObject);
+        }
+    }
+    /// <summary>
+    /// The bubble was dragged onto nothing and dropped
+    /// </summary>
+    public void IsOverNothing()
+    {
+        if (data.origin == WordInfo.Origin.Dialogue)
+        {
+            //save it
+            WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
+
+            //close the case & Delete the UI word
+            WordCaseManager.instance.AutomaticOpenCase(false);
+            WordClickManager.instance.DestroyCurrentWord();
+        }
+        else if (data.origin == WordInfo.Origin.WordCase)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this);
+        }
+    }
+    /// <summary>
+    /// Find the correct tag and add all subtags
+    /// </summary>
+    /// <param name="tagObj"></param>
+    /// <param name="tags"></param>
+    void FindCorrectTag(string[] tags)
+    {
+        switch (data.tag)
+        {
+            case WordInfo.WordTags.Location:
+                data.tagObj.loc = new Location()
+                {
+                    position = tags[1]
+                };
+                break;
+            default:
+                Debug.Log("you didnt add something here");
+                break;
+        }
     }
 }
 
