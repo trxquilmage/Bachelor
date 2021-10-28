@@ -1,0 +1,24 @@
+﻿title: Schubert.Start
+tags:
+---
+<<showcharactername Managers Schubert>>
+<<if not isvisited("Schubert","Start")>>
+    Hi! I am a travelling word trader! Is there anything you want to know?
+    [[Schubert.Barter]]
+<<else>>
+    [[Schubert.Idle]]
+<<endif>>
+===
+
+title: Schubert.Barter
+tags:
+---
+Are there any words you may be interested in?
+//Open the barter menu
+===
+
+title: Schubert.Idle
+tags:
+---
+I'm also selling pans, but it's more of a side buisness.
+===

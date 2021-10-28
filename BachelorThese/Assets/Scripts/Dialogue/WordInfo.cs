@@ -8,7 +8,7 @@ public class WordInfo
     #region WordTags
     public enum WordTags
     {
-        Location, Item, Name, None, All
+        Location, General, Name, None, AllWords
     }
     #region Location 
     public enum Location
@@ -21,8 +21,6 @@ public class WordInfo
         east, west, north, south
     }
     #endregion
-    #endregion
-    #region Item
     #endregion
     #region Name
     #endregion

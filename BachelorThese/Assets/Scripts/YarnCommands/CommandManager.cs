@@ -8,22 +8,52 @@ using TMPro;
 public class CommandManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI nameText;
-    [SerializeField] TextMeshProUGUI promptQuestion;
-    [SerializeField] TextMeshProUGUI promptAnswer;
-    [SerializeField] GameObject promptMenu;
-    DialogueInputManager diManager;
-    WordLookupReader wlReader;
+    InfoManager info;
 
     private void Start()
     {
-        diManager = DialogueInputManager.instance;
-        wlReader = WordLookupReader.instance;
-        Yarn.ReturningFunction funct = delegate (Yarn.Value[] parameters)
+        info = InfoManager.instance;
+        // runner
+        ReferenceManager.instance.runner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
-            return ReactToAnswer(parameters[0].AsString);
-        };
-        // registers a function "react()" in Yarn
-        ReferenceManager.instance.runner.AddFunction("react", 1, funct);
+            if (parameters.Length == 1)
+            {
+                return ReactToAnswer(parameters[0].AsString, "");
+            }
+            else
+            {
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString);
+            }
+        });
+        ReferenceManager.instance.runner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
+        {
+            return GetInfo(parameters[0].AsString);
+        });
+        ReferenceManager.instance.runner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
+        {
+            return GetVisited(parameters[0].AsString, parameters[1].AsString);
+        });
+
+        // askRunner
+        ReferenceManager.instance.askRunner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
+        {
+            if (parameters.Length == 1)
+            {
+                return ReactToAnswer(parameters[0].AsString, "");
+            }
+            else
+            {
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString);
+            }
+        });
+        ReferenceManager.instance.askRunner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
+        {
+            return GetInfo(parameters[0].AsString);
+        });
+        ReferenceManager.instance.askRunner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
+        {
+            return GetVisited(parameters[0].AsString, parameters[1].AsString);
+        });
     }
     /// <summary>
     /// Change speaking character's name
@@ -42,47 +72,90 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenu")]
     public void DisplayPromptMenu(string promptQ)
     {
-        //disable continue click
-        diManager.continueEnabledPrompt = false;
-        //if prompt exists
-        if (wlReader.questionTag.ContainsKey(promptQ))
-        {
-            promptQuestion.text = wlReader.questionTag[promptQ][0];
-            promptAnswer.text = @wlReader.questionTag[promptQ][1];
-        }
-        else
-            Debug.Log("The prompt {0} does not exist in the lookup table" + promptQ);
-        promptMenu.SetActive(true);//show prompt menu
-        //show required text prompts OVER the text at <Tag>
-        WordUtilities.CheckForPromptInputs(promptAnswer);
-
-        //make interactable
-        StartCoroutine(diManager.CloseAWindow(promptMenu));// tell the diManager what window to close when done
+        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.promptMenu, 
+            ReferenceManager.instance.promptAnswer, ReferenceManager.instance.promptQuestion, 
+            ReferenceManager.instance.promptBubbleParent.transform, PlayerInputManager.instance.currentPromptBubbles);
+    }
+    /// <summary>
+    /// Open Ask Prompt Menu and related question
+    /// </summary>
+    /// <param name="promptQ"></param>
+    [YarnCommand("displaypromptmenuask")]
+    public void DisplayPromptMenuAsk(string promptQ)
+    {
+        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.askField,
+            ReferenceManager.instance.askQuestion, ReferenceManager.instance.askPrompt, 
+            ReferenceManager.instance.askPromptBubbleParent.transform, PlayerInputManager.instance.currentPromptAskBubbles);
+        //activate the "continue" button above the Ask button
+        ReferenceManager.instance.askContinueButton.SetActive(true);
     }
     /// <summary>
     /// Goes through all subtags of the main tag 
+    /// additionally takes the name of a value it is supposed to save
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public string ReactToAnswer(string lookingFor)
+    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn)
     {
-        string answer = "";
-        Word.WordData data = PlayerInputManager.instance.givenAnswer;
-        switch (data.tag)
+        return PlayerInputManager.instance.ReactToInput(lookingFor, saveIn);
+    }
+    /// <summary>
+    /// Get back an Info from the code
+    /// </summary>
+    /// <param name="lookingFor"></param>
+    /// <returns></returns>
+    public Yarn.Value GetInfo(string lookingFor)
+    {
+        Yarn.Value answer = new Yarn.Value();
+        switch (lookingFor)
         {
-            case WordInfo.WordTags.Location:
-                switch (lookingFor)
-                {
-                    case "position":
-                        answer = data.tagObj.loc.position;
-                        break;
-                    default:
-                        break;
-                }
+            case "katherineMother":
+                answer = new Yarn.Value(info.katherineMother);
                 break;
-            default:
+            case "local":
+                answer = new Yarn.Value(info.local);
+                break;
+            case "placeOfOrigin":
+                answer = new Yarn.Value(info.placeOfOrigin);
+                break;
+            case "likesMayfair":
+                answer = new Yarn.Value(info.likesMayfair);
                 break;
         }
         return answer;
+    }
+    /// <summary>
+    /// Check, wheter a node has already been visited. if not, save it in the list
+    /// </summary>
+    /// <param name="characterName"></param>
+    /// <param name="nodeName"></param>
+    /// <returns></returns>
+    public bool GetVisited(string characterName, string nodeName)
+    {
+        bool nodeAlreadyExists = false;
+        bool nameExists = false;
+        //check if the Name already exists
+        if (info.visitedNodes.ContainsKey(characterName)) //name exists
+        {
+            nameExists = true;
+            for (int i = 0; i < info.visitedNodes[characterName].Count; i++)
+            {
+                if (info.visitedNodes[characterName][i] == nodeName)
+                {
+                    nodeAlreadyExists = true;
+                }
+            }
+            //node wasnt in the list yet
+            if (!nodeAlreadyExists)
+            {
+                info.visitedNodes[characterName].Add(nodeName);
+            }
+        }
+        //name wasnt in list yet
+        if (!nameExists) 
+        {
+            info.visitedNodes.Add(characterName, new List<string>() { nodeName });
+        }
+        return nodeAlreadyExists;
     }
 }

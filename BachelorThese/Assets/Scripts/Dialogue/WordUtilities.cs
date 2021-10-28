@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using Yarn.Unity;
 
 public static class WordUtilities
 {
@@ -19,13 +20,13 @@ public static class WordUtilities
             case WordInfo.WordTags.Location:
                 color = refM.locationColor;
                 break;
-            case WordInfo.WordTags.Item:
-                color = refM.itemColor;
+            case WordInfo.WordTags.General:
+                color = refM.generalColor;
                 break;
             case WordInfo.WordTags.Name:
                 color = refM.nameColor;
                 break;
-            case WordInfo.WordTags.All:
+            case WordInfo.WordTags.AllWords:
                 color = refM.allColor;
                 break;
             case WordInfo.WordTags.None:
@@ -75,14 +76,30 @@ public static class WordUtilities
         {
             case "Location":
                 return WordInfo.WordTags.Location;
-            case "Item":
-                return WordInfo.WordTags.Item;
+            case "General":
+                return WordInfo.WordTags.General;
             case "Name":
                 return WordInfo.WordTags.Name;
+            case "AllWords":
+                return WordInfo.WordTags.AllWords;
             default:
                 Debug.Log("Tag Doesnt exist: " + tag);
                 return WordInfo.WordTags.None; //for Debug Reasons
         }
+    }
+    /// <summary>
+    /// turns the words "Yes" and "No" into the correstponding bool
+    /// </summary>
+    /// <param name="word"></param>
+    /// <returns></returns>
+    public static bool StringToBool(string word)
+    {
+        bool affirmative;
+        if (word == "Yes")
+            affirmative = true;
+        else
+            affirmative = false;
+        return affirmative;
     }
     /// <summary>
     /// Colors a word in an TMP_Text in a certain color
@@ -243,26 +260,27 @@ public static class WordUtilities
         Vector2 wordPosition = GetWordPosition(text, wordInfo);
         WordClickManager.instance.CheckWord(wordInfo.GetWord(), wordPosition, wordInfo);
         // Set the hovered word to interacted
-        ColorAllInteractableWords(text, WordLookupReader.instance.wordTag);
+        ReColorAllInteractableWords();
     }
     /// <summary>
     /// checks the given text for promt inputs in the type of "\Tag\"
     /// </summary>
-    public static void CheckForPromptInputs(TMP_Text text)
+    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent, PromptBubble[] saveIn)
     {
         text.ForceMeshUpdate();
         // Variables
-        TMP_CharacterInfo[] charInfo = text.textInfo.characterInfo;
-
+        TMP_CharacterInfo[] charInfo = textInfo.characterInfo;
         //If the word starts with "\" -> give out the word
-        foreach (TMP_WordInfo wordInfo in text.textInfo.wordInfo)
+        TMP_WordInfo wordInfo;
+        for (int i = 0; i < textInfo.wordCount; i++)
         {
+            wordInfo = textInfo.wordInfo[i];
             // wordInfo igores Sonderzeichen in front of words, so iam checking the letter in front of the word
             if (wordInfo.firstCharacterIndex - 1 > -1)
             {
                 if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"\"[0])
                 {
-                    CreatePromptBubble(text, wordInfo);
+                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, saveIn);
                 }
             }
         }
@@ -272,14 +290,14 @@ public static class WordUtilities
     /// </summary>
     /// <param name="text"></param>
     /// <param name="wordInfo"></param>
-    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo)
+    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, PromptBubble[] saveIn)
     {
         Vector2[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
-        promptBubble.transform.SetParent(ReferenceManager.instance.promptBubbleParent.transform);
+        promptBubble.transform.SetParent(bubbleParent);
         promptBubble.GetComponent<RectTransform>().sizeDelta = wordParameters[1];
         PromptBubble pB = promptBubble.AddComponent<PromptBubble>();
-        pB.Initialize(wordInfo.GetWord());
+        pB.Initialize(wordInfo.GetWord(), saveIn);
     }
     /// <summary>
     /// Parents the child to the prompt the mouse is currently hovering over
@@ -312,10 +330,10 @@ public static class WordUtilities
         //delete the bubble
         WordClickManager.instance.DestroyCurrentWord();
         //update text colors
-        ColorAllInteractableWords(relatedText, WordLookupReader.instance.wordTag);
+        ReColorAllInteractableWords();
     }
     /// <summary>
-    /// Check if a word is currently in use, meaning, it is in the word case, is highlighted or is surrently being dragged
+    /// Check if a word is currently in use, meaning, it is in the word case, is highlighted or is currently being dragged
     /// </summary>
     /// <param name="wordInfo"></param>
     /// <param name="wordTagList"></param>
@@ -324,20 +342,43 @@ public static class WordUtilities
     {
         bool isUsed = false;
         string tag = wordTagList[wordInfo.GetWord()][0];
-        foreach (Word.WordData data in WordCaseManager.instance.tagRelatedWords[StringToTag(tag)]) //for all words in the word's tag in the word case
+        //for all words in the word's tag in the word case
+        //this array can be empty
+        foreach (Word.WordData data in WordCaseManager.instance.tagRelatedWords[StringToTag(tag)])
         {
             string word = wordInfo.GetWord();
             // if it is in the word case, is the currently highlighted word OR is the current word 
             if (data.name != null &&
-                data.name == word ||
-                WordClickManager.instance.currentWord != null &&
-                word == WordClickManager.instance.currentWord.GetComponent<Word>().relatedWordInfo.GetWord() ||
-                WordClickManager.instance.wordLastHighlighted != null &&
-                word == WordClickManager.instance.wordLastHighlighted.GetComponent<Word>().relatedWordInfo.GetWord())
+                data.name == word)
             {
                 isUsed = true;
             }
+            else if (WordClickManager.instance.currentWord != null &&
+                word == WordClickManager.instance.currentWord.GetComponent<Word>().data.name)
+            {
+                isUsed = true;
+            }
+            else if (WordClickManager.instance.wordLastHighlighted != null &&
+                word == WordClickManager.instance.wordLastHighlighted.GetComponent<Word>().data.name)
+            {
+                isUsed = true;
+            }
+
         }
         return isUsed;
+    }
+    /// <summary>
+    /// Jump to the given node of the given Dialogmanager
+    /// </summary>
+    public static void JumpToNode(DialogueRunner runner, string nodeName)
+    {
+        string node = DialogueManager.instance.currentTarget.characterName + "." + nodeName;
+        if (runner.isActiveAndEnabled)
+        {
+            if (runner.NodeExists(node))
+                runner.StartDialogue(runner.startNode = node);
+            else
+                runner.StartDialogue(runner.startNode = DialogueManager.instance.currentTarget.characterName + ".Catchall");
+        }
     }
 }

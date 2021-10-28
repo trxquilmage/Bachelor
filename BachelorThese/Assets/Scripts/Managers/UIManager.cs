@@ -70,13 +70,16 @@ public class UIManager : MonoBehaviour
             refM.trashCan.GetComponentsInChildren<Image>()[1].sprite = refM.trashCanImage01;
         }
     }
+    /// <summary>
+    /// When the Canvas is scaled, color data is lost, so re-do it, whe scaled
+    /// </summary>
     void OnScale()
     {
         scaleFactor = canvas.scaleFactor;
         if (DialogueInputManager.instance.isActiveAndEnabled)
         {
             foreach (TMP_Text text in DialogueInputManager.instance.interactableTextList)
-                WordUtilities.ColorAllInteractableWords(text, WordLookupReader.instance.wordTag);
+                WordUtilities.ReColorAllInteractableWords();
         }
 
     }

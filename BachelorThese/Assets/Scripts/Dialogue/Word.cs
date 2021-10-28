@@ -25,10 +25,20 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     public struct TagObject
     {
         public Location loc;
+        public General gen;
+        public Name name;
     }
     public struct Location
     {
         public string position;
+    }
+    public struct General
+    {
+        public bool affirmative;
+    }
+    public struct Name
+    {
+        //public bool affirmative;
     }
     /// <summary>
     /// Call this, when creating a Word. If you dont have a Word Info, create one and set "hasWordInfo" to false
@@ -213,6 +223,18 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 data.tagObj.loc = new Location()
                 {
                     position = tags[1]
+                };
+                break;
+            case WordInfo.WordTags.General:
+                data.tagObj.gen = new General()
+                {
+                    affirmative = WordUtilities.StringToBool(data.name)
+                };
+                break;
+            case WordInfo.WordTags.Name:
+                data.tagObj.name = new Name()
+                {
+                    //affirmative = WordUtilities.StringToBool(data.name)
                 };
                 break;
             default:

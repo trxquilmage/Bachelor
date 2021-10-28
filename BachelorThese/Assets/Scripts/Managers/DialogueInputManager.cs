@@ -13,8 +13,11 @@ public class DialogueInputManager : MonoBehaviour
     public PromptBubble promptBubble;
 
     public bool continueEnabledPrompt = true;
+    public bool continueEnabledPromptAsk = true;
     public bool continueEnabledDrag = true;
+    public bool continueEnabledAsk = true;
     public bool closeAWindow;
+    public bool askTextFinished;
     public string mouseOverUIObject;
 
     DialogueRunner runner;
@@ -30,8 +33,8 @@ public class DialogueInputManager : MonoBehaviour
     }
     private void Start()
     {
-        runner = FindObjectOfType<DialogueRunner>();
-        uiHandler = FindObjectOfType<DialogueUI>();
+        runner = ReferenceManager.instance.standartRunner;
+        uiHandler = ReferenceManager.instance.standartDialogueUI;
         controls.Dialogue.Click.performed += context => ContinueTextOnClick();
     }
     private void Update()
@@ -39,21 +42,51 @@ public class DialogueInputManager : MonoBehaviour
         GetMouseOverUI();
     }
     /// <summary>
+    /// disables continue for the time the ask menu is open
+    /// </summary>
+    /// <param name="open"></param>
+    public void AskMenuOpen(bool open)
+    {
+        continueEnabledAsk = !open;
+    }
+    /// <summary>
+    /// Called, when the Continue Button in the UI is pressed
+    /// </summary>
+    public void ContinueButton()
+    {
+        if (PlayerInputManager.instance.CheckForPromptsFilled(PlayerInputManager.instance.currentPromptBubbles) && continueEnabledAsk)
+        {
+            PlayerInputManager.instance.SaveGivenAnswer(PlayerInputManager.instance.currentPromptBubbles);
+            Continue(uiHandler);
+            continueEnabledPrompt = true;
+            closeAWindow = true;
+            PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
+            WordClickManager.instance.currentWord = null;
+            WordCaseManager.instance.OpenOnTag(); //Reload, so that the missing word comes back
+            ReferenceManager.instance.playerInputField.SetActive(false);
+        }
+    }
+    /// <summary>
     /// Called whenever a click happens
     /// </summary>
     void ContinueTextOnClick()
     {
-        if (textFinished && continueEnabledPrompt && continueEnabledDrag)
+        if (textFinished && continueEnabledPrompt
+            && continueEnabledDrag && continueEnabledAsk)
         {
-            Continue();
+            Continue(uiHandler);
+        }
+        else if (!continueEnabledAsk && continueEnabledPromptAsk && askTextFinished) //continue the ask text instead
+        {
+            Continue(ReferenceManager.instance.askDialogueUI);
         }
     }
     /// <summary>
     /// Called, whenever a dialogue should be continued
     /// </summary>
-    void Continue()
+    public void Continue(DialogueUI dialogue)
     {
-        uiHandler.MarkLineComplete();
+        dialogue.MarkLineComplete();
         //Destroy all buttons you can find
         WordClickManager.instance.DestroyAllActiveWords();
     }
@@ -66,7 +99,7 @@ public class DialogueInputManager : MonoBehaviour
 
         // Color all interactable words, force update, so there are no errors
         interactableTextList[0].ForceMeshUpdate();
-        WordUtilities.ColorAllInteractableWords(interactableTextList[0], WordLookupReader.instance.wordTag);
+        WordUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// When a line is done (called in Dialogue Runner) -> enable continue  for ContinueText()
@@ -75,21 +108,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         textFinished = false;
     }
-    /// <summary>
-    /// Called, when the Continue Button in the UI is pressed
-    /// </summary>
-    public void ContinueButton()
-    {
-        if (PlayerInputManager.instance.CheckForPromptsFilled())
-        {
-            PlayerInputManager.instance.ReactToInput();
-            Continue();
-            continueEnabledPrompt = true;
-            closeAWindow = true;
-            PlayerInputManager.instance.DeleteAllPrompts();
-            WordClickManager.instance.currentWord = null;
-        }
-    }
+
     /// <summary>
     /// Return the mouse position in screen space
     /// </summary>

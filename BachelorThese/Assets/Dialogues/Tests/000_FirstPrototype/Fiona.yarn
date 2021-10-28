@@ -1,0 +1,18 @@
+﻿title: Fiona.Start
+tags:
+---
+<<showcharactername Managers Fiona>>
+<<if not isvisited("Fiona","Start")>>
+    Hi! How are you doing my dear?
+    Oh, I am so terribly busy at the moment, do you think you could do me a favor?
+    Could you deliver this fine roastbeef to Lady Katherine?
+<<else>>
+    [[Fiona.Idle]]
+<<endif>>
+===
+
+title: Fiona.Idle
+tags:
+---
+roastbeef....
+===

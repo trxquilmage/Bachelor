@@ -81,7 +81,7 @@ public class WordClickManager : MonoBehaviour
         wordLastHighlighted = null;
 
         // Set the word color back to interactable
-        WordUtilities.ColorAllInteractableWords(text, WordLookupReader.instance.wordTag);
+        WordUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// Destroy the buttons that have spawned this dialogue

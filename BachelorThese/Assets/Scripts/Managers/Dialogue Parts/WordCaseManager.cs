@@ -73,7 +73,7 @@ public class WordCaseManager : MonoBehaviour
     public void ManuallyOpenCase()
     {
         wordCaseUI.SetActive(!wordCaseUI.activeInHierarchy);
-        openTag = WordInfo.WordTags.All;
+        openTag = WordInfo.WordTags.AllWords;
     }
     /// <summary>
     /// save a word dragged into the case in the Dict tagRelatedWords
@@ -96,7 +96,7 @@ public class WordCaseManager : MonoBehaviour
             }
             //Reload
             OpenOnTag();
-            WordUtilities.ColorAllInteractableWords(wordItem.relatedText, WordLookupReader.instance.wordTag);
+            WordUtilities.ReColorAllInteractableWords();
 
             if (!foundASpot) //word list full, put the word back into the dialogue
             {
@@ -112,7 +112,7 @@ public class WordCaseManager : MonoBehaviour
     /// <summary>
     /// Loads the Word Case on the given tag. removes the previous words.
     /// </summary>
-    void OpenOnTag()
+    public void OpenOnTag()
     {
         // Set Background Color to Tag Color + a bit grey
         Color color = WordUtilities.MatchColorToTag(openTag);
@@ -131,7 +131,7 @@ public class WordCaseManager : MonoBehaviour
         }
 
         // Load words of current tag
-        if (openTag != WordInfo.WordTags.All) // go through ONE tag
+        if (openTag != WordInfo.WordTags.AllWords) // go through ONE tag
         {
             foreach (Word.WordData word in tagRelatedWords[openTag])
             {
@@ -167,13 +167,13 @@ public class WordCaseManager : MonoBehaviour
         switch (i)
         {
             case 0:
-                openTag = WordInfo.WordTags.All;
+                openTag = WordInfo.WordTags.AllWords;
                 break;
             case 1:
                 openTag = WordInfo.WordTags.Location;
                 break;
             case 2:
-                openTag = WordInfo.WordTags.Item;
+                openTag = WordInfo.WordTags.General;
                 break;
             case 3:
                 openTag = WordInfo.WordTags.Name;
@@ -193,7 +193,7 @@ public class WordCaseManager : MonoBehaviour
         Image[] buttons = tagParent.GetComponentsInChildren<Image>();
         buttons[0].color = ReferenceManager.instance.allColor;
         buttons[1].color = ReferenceManager.instance.locationColor;
-        buttons[2].color = ReferenceManager.instance.itemColor;
+        buttons[2].color = ReferenceManager.instance.generalColor;
         buttons[3].color = ReferenceManager.instance.nameColor;
         wordCaseUI.SetActive(false);
     }
@@ -235,7 +235,7 @@ public class WordCaseManager : MonoBehaviour
     public void UpdateWordCount()
     {
         int wordCount = 0;
-        if (openTag != WordInfo.WordTags.All)
+        if (openTag != WordInfo.WordTags.AllWords)
         {
             Word.WordData[] data = tagRelatedWords[openTag];
             foreach (Word.WordData word in data)
@@ -320,5 +320,30 @@ public class WordCaseManager : MonoBehaviour
         DeleteOutOfCase();
         WordClickManager.instance.DestroyCurrentWord();
         UpdateWordCount();
+    }
+    /// <summary>
+    /// Disable the ask and barter buttons (when in barter or question mode)
+    /// </summary>
+    /// <param name="setInactive"></param>
+    public void DisableAskAndBarter(bool setInactive)
+    {
+        Color activeColor = ReferenceManager.instance.askColor;
+        Color grey = ReferenceManager.instance.greyedOutColor;
+        GameObject ask = ReferenceManager.instance.ask;;
+        GameObject barter = ReferenceManager.instance.barter;
+        if (setInactive) //turn off
+        {
+            ask.GetComponent<Button>().enabled = false;
+            ask.GetComponent<Image>().color = Color.Lerp(activeColor, grey, 0.5f);
+            barter.GetComponent<Button>().enabled = false;
+            barter.GetComponent<Image>().color = Color.Lerp(activeColor, grey, 0.5f);
+        }
+        else //turn on
+        {
+            ask.GetComponent<Button>().enabled = true;
+            ask.GetComponent<Image>().color = activeColor;
+            barter.GetComponent<Button>().enabled = true;
+            barter.GetComponent<Image>().color = activeColor;
+        }
     }
 }

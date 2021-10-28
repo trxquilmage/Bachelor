@@ -14,7 +14,7 @@ public class PromptBubble : MonoBehaviour
         public WordInfo.WordTags tag;
         public Color imageColor;
     }
-    public void Initialize(string tag)
+    public void Initialize(string tag, PromptBubble[] saveIn)
     {
         bubble = GetComponent<Image>();
         data = new PromptBubbleData()
@@ -25,7 +25,7 @@ public class PromptBubble : MonoBehaviour
         data.imageColor.a = 1;
         bubble.color = data.imageColor;
         GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-        PlayerInputManager.instance.SavePrompt(this);
+        PlayerInputManager.instance.SavePrompt(this, saveIn);
     }
     /// <summary>
     /// Called, when the mouse is over the bubble. colors it darker for words of the correct tah

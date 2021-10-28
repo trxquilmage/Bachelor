@@ -2,10 +2,14 @@
 tags:
 ---
 <<showcharactername Managers Karl>>
-Welcome, friend, to Mayfair!
-Its not as much of a special place as Grandrun, but we manage.
-Have you passed through Neverre or Borealis on your way here?
-[[Karl.Ask]]
+<<if not isvisited("Karl", "Start")>>
+    Welcome, friend, to Mayfair!
+    Its not as much of a special place as Grandrun, but we manage.
+    Have you passed through Neverre or Borealis on your way here?
+    [[Karl.Ask]]
+<<else>>
+    [[Karl.Idle]]
+<<endif>>
 ===
 
 title: Karl.Ask
@@ -13,17 +17,18 @@ tags:
 ---
 <<displaypromptmenu Managers LocAAA>>
 Where are you from, my friend?
-<<set $origin to react("position")>>
-<<if $origin eq "West">>
+<<set $direction to react("position")>>
+<<set $origin to react("city", "placeOfOrigin")>>
+<<if $direction eq "West">>
     Oh, really? I guess that means I don't need to show you the town.
     [[Karl.ChildOfLadyKatherine]]
-<<elseif $origin eq "East">>
+<<elseif $direction eq "East">>
     Oh, you're from the east? I hear there is a big conflict going on there, right?
     [[Karl.Explain]]
-<<elseif $origin eq "North">>
+<<elseif $direction eq "North">>
     That's far up in the north, isnt it? Is it cold up there?
     [[Karl.Explain]]
-<<elseif $origin eq "South">>
+<<elseif $direction eq "South">>
     Ah, a sunny town in the south, how lovely.
     [[Karl.Explain]]
 <<else>>
@@ -41,6 +46,27 @@ We have a tavern, a tree and this road we are standing on this very second, budd
 title: Karl.ChildOfLadyKatherine
 tags: 
 ---
-Wait, are you the child of Lady Katherine? Yes or No?
 <<displaypromptmenu Managers OriAAA>>
+Wait, are you the child of Lady Katherine? Yes or No?
+<<set $katherinemother to react("general", "katherineMother")>>
+<<if $katherinemother is true>>
+    Woah, LADY KATHERINE is your MOTHER? Please forgive my casual tone.
+    I had heard, her child was coming back home. She probably will be very happy.
+    I'm sure she is already awaiting you.
+<<else>>
+    Oh, nevermind, then.
+<<endif>>
+===
+
+title: Karl.Idle
+tags: 
+---
+<<set $origin to getinfo("placeOfOrigin")>>
+<<if getinfo("katherineMother") eq true>>
+    Wow, I really can't believe, that you're Lady Katherine's child...
+<<elseif getinfo("local") eq true>>
+    It's so weird that I cant remember you at all...
+<<else>>
+    If you have any questions, feel free to ask me! I bet {$origin} is very different to Mayfair.
+<<endif>>
 ===
