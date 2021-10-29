@@ -49,7 +49,12 @@ public static class WordUtilities
     {
         ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
-        word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+
+        if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
+            word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+        else // in an ask
+            word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
+
         word.transform.position = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
         wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, true);
@@ -59,7 +64,12 @@ public static class WordUtilities
     {
         ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
-        word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+
+        if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
+            word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+        else // in an ask
+            word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
+
         word.transform.position = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
         wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), false);
@@ -162,8 +172,9 @@ public static class WordUtilities
     /// </summary>
     public static void ReColorAllInteractableWords()
     {
-        foreach (TMP_Text text in DialogueInputManager.instance.interactableTextList)
+        foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
         {
+            text.ForceMeshUpdate();
             if (text.isActiveAndEnabled)
             {
                 for (int i = 0; i < text.textInfo.wordCount; i++)
@@ -305,7 +316,7 @@ public static class WordUtilities
     /// <param name="child"></param>
     public static void ParentBubbleToPrompt(GameObject child)
     {
-        GameObject promptBubble = DialogueInputManager.instance.promptBubble.gameObject;
+        GameObject promptBubble = WordClickManager.instance.promptBubble.gameObject;
 
         PromptBubble bubble = promptBubble.GetComponent<PromptBubble>();
         if (bubble.child != null) // if there is already a prompt put in

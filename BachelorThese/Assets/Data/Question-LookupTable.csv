@@ -1,5 +1,5 @@
-LocAAA;Well, where ARE you from?;Actually, i am from  <color=white>\Location\</color>
-LocAAB;Do you like Mayfair?;<color=white>\General\</color>.
-OriAAA;Are you here to visit your mother?;<color=white>\General\</color>.
-AskAAA;What do you want to ask about?;What can you tell me about <color=white>\AllWords\</color> ?
-BarAAA;Which words do you want to trade?;
+LocAAA; ;I'm from  <color=white>\Location\</color>
+LocAAB; ;<color=white>\General\</color>.
+OriAAA; ;<color=white>\General\</color>.
+AskAAA; ;Can you tell me about <color=white>\AllWords\</color> ?
+PerAAA; ;<color=white>\General\</color>.

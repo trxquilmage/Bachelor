@@ -18,11 +18,11 @@ public class CommandManager : MonoBehaviour
         {
             if (parameters.Length == 1)
             {
-                return ReactToAnswer(parameters[0].AsString, "");
+                return ReactToAnswer(parameters[0].AsString, "", false);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, false);
             }
         });
         ReferenceManager.instance.runner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
@@ -39,11 +39,11 @@ public class CommandManager : MonoBehaviour
         {
             if (parameters.Length == 1)
             {
-                return ReactToAnswer(parameters[0].AsString, "");
+                return ReactToAnswer(parameters[0].AsString, "", true);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, true);
             }
         });
         ReferenceManager.instance.askRunner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
@@ -95,9 +95,9 @@ public class CommandManager : MonoBehaviour
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn)
+    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, bool isAsk)
     {
-        return PlayerInputManager.instance.ReactToInput(lookingFor, saveIn);
+        return PlayerInputManager.instance.ReactToInput(lookingFor, saveIn, isAsk);
     }
     /// <summary>
     /// Get back an Info from the code
@@ -120,6 +120,9 @@ public class CommandManager : MonoBehaviour
                 break;
             case "likesMayfair":
                 answer = new Yarn.Value(info.likesMayfair);
+                break;
+            case "isSingle":
+                answer = new Yarn.Value(info.isSingle);
                 break;
         }
         return answer;

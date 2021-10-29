@@ -83,7 +83,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         //drag the object through the scene
 
-        transform.position = DialogueInputManager.instance.GetMousePos();
+        transform.position = WordClickManager.instance.GetMousePos();
         transform.position -= wordSize / 2;
         wasDragged = true;
     }
@@ -92,21 +92,21 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         // if mouse was dragging the object and now releases it
         if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
         {
-            DialogueInputManager input = DialogueInputManager.instance;
+            WordClickManager clickM = WordClickManager.instance;
             // check where it is released
             //if it was dragged into the case, save it
-            if (input.isActiveAndEnabled)
+            if (clickM.isActiveAndEnabled)
             {
-                if (input.mouseOverUIObject == "wordCase")
+                if (clickM.mouseOverUIObject == "wordCase")
                 {
                     IsOverWordCase();
                 }
-                else if (input.mouseOverUIObject == "trashCan")
+                else if (clickM.mouseOverUIObject == "trashCan")
                 {
                     WordCaseManager.instance.TrashAWord();
                 }
                 // if it was dragged onto a prompt, react
-                else if (input.mouseOverUIObject == "playerInput")
+                else if (clickM.mouseOverUIObject == "playerInput")
                 {
                     IsOverPlayerInput();
                 }
@@ -145,7 +145,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         }
         else if (data.origin == WordInfo.Origin.WordCase)
         {
-            transform.SetParent(ReferenceManager.instance.selectedWordParent.transform);
+            transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
             //Delete Word from case list
             WordClickManager.instance.currentWord = this.gameObject;
             WordCaseManager.instance.SpawnWordReplacement(this);

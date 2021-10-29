@@ -18,7 +18,7 @@ public class PlayerInputManager : MonoBehaviour
     InfoManager info;
     DialogueUI uiHandler;
     DialogueRunner runner;
-
+    bool promptCurrentlyDisabled;
     private void Awake()
     {
         instance = this;
@@ -46,7 +46,7 @@ public class PlayerInputManager : MonoBehaviour
             if (prompt != null && prompt.child != null)
             {
                 if (promptBubbles == currentPromptBubbles)
-                    givenAnswer = prompt.child.GetComponent<Word>().data; 
+                    givenAnswer = prompt.child.GetComponent<Word>().data;
                 else if (promptBubbles == currentPromptAskBubbles)
                     givenAnswerAsk = prompt.child.GetComponent<Word>().data;
             }
@@ -96,11 +96,22 @@ public class PlayerInputManager : MonoBehaviour
             }
         }
     }
-    public Yarn.Value ReactToInput(string lookingFor, string saveIn = "")
+    /// <summary>
+    /// Check what kind of answer/sub tag the text wants back, then save it in the given spot
+    /// </summary>
+    /// <param name="lookingFor"></param>
+    /// <param name="saveIn"></param>
+    /// <param name="isAsk"></param>
+    /// <returns></returns>
+    public Yarn.Value ReactToInput(string lookingFor, string saveIn = "", bool isAsk = false)
     {
         Yarn.Value val = new Yarn.Value();
         string answer = "";
-        Word.WordData data = givenAnswer;
+        Word.WordData data;
+        if (!isAsk)
+            data = givenAnswer;
+        else
+            data = givenAnswerAsk;
         switch (data.tag)
         {
             case WordInfo.WordTags.Location:
@@ -126,7 +137,6 @@ public class PlayerInputManager : MonoBehaviour
                     case "general":
                         bool affirmation = data.tagObj.gen.affirmative;
                         if (CheckIfShouldSave(saveIn)) { info.SaveInfo(affirmation, saveIn); }
-                        Debug.Log(affirmation);
                         val = new Yarn.Value(affirmation);
                         break;
                     default:
@@ -188,6 +198,7 @@ public class PlayerInputManager : MonoBehaviour
         }
         return false;
     }
+
     #region Ask Related
     /// <summary>
     /// called, when the "ask" button is pressed. opens the prompt "ASK"
@@ -207,7 +218,10 @@ public class PlayerInputManager : MonoBehaviour
         //generate prompt bubble
         DisplayPrompt(promptID, refManager.askField, refManager.askQuestion, refManager.askQuestion,
             refManager.askPromptBubbleParent.transform, currentPromptAskBubbles);
-
+        // Temporarily disable any other active prompts
+        TemporarilyClosePromptMenu(true);
+        //Reload the word case, so any possibly missing words from other prompt inputs respawn
+        WordCaseManager.instance.OpenOnTag();
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -248,6 +262,8 @@ public class PlayerInputManager : MonoBehaviour
         WordCaseManager.instance.DisableAskAndBarter(false);
         //disable 2nd runner again
         ReferenceManager.instance.askRunner.gameObject.SetActive(false);
+        // if the prompt menu has been closed, reopen it
+        TemporarilyClosePromptMenu(false);
     }
     /// <summary>
     /// When an ask line is done (called in Dialogue Runner) -> enable continue for ContinueText()
@@ -283,6 +299,24 @@ public class PlayerInputManager : MonoBehaviour
             ReferenceManager.instance.askField.SetActive(false);
         }
         ReferenceManager.instance.askContinueButton.SetActive(false);
+    }
+    /// <summary>
+    /// when called close the prompt menu and possible related promps
+    /// </summary>
+    public void TemporarilyClosePromptMenu(bool close)
+    {
+        if (close && ReferenceManager.instance.playerInputField.activeInHierarchy)
+        {
+            promptCurrentlyDisabled = true;
+            ReferenceManager.instance.playerInputField.SetActive(false);
+            ReferenceManager.instance.promptBubbleParent.SetActive(false);
+        }
+        else if (!close && promptCurrentlyDisabled)
+        {
+            promptCurrentlyDisabled = false;
+            ReferenceManager.instance.playerInputField.SetActive(true);
+            ReferenceManager.instance.promptBubbleParent.SetActive(true);
+        }
     }
     #endregion
 }

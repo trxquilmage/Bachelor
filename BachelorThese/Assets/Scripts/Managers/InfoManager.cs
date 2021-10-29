@@ -14,6 +14,7 @@ public class InfoManager : MonoBehaviour
 
     //bools
     public bool local; // is a local
+    public bool isSingle; // not in a relationship
     public bool katherineMother; // katherine is their mom
     public bool likesMayfair; // said, they like Mayfair
 
@@ -37,6 +38,9 @@ public class InfoManager : MonoBehaviour
                 break;
             case "likesMayfair":
                 likesMayfair = info;
+                break;
+            case "isSingle":
+                isSingle = info;
                 break;
         }
     }

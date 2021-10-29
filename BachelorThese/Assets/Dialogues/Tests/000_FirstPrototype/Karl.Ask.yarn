@@ -2,7 +2,8 @@
 tags:
 ---
 <<if not isvisited("Karl", "Ask")>>
-    What did you want to ask of me? Maybe some question about the beautiful town of Mayfair?
+    What did you want to ask of me? 
+    Maybe some question about the beautiful town of Mayfair?
 <<else>>
     Oh, do you have another question?
 <<endif>>
@@ -34,7 +35,9 @@ tags:
         Do you want to know more about this wonderful place?
         I actually cant think of ANYTHING else about Mayfair.
     <<else>>
-        Why? Did you change your mind about our beautiful Mayfair? I won't forgive you either way... 
+        Why? 
+        Did you change your mind about our beautiful Mayfair? 
+        I won't forgive you either way... 
     <<endif>>
 <<endif>>
 [[Karl.Continue]]
@@ -43,7 +46,8 @@ tags:
 title: Karl.Neverre
 tags:
 ---
-Neverre is the worst place in the whole world. Oh I hate just thinking of it for too long!
+Neverre is the worst place in the whole world. 
+Oh I hate just thinking of it for too long!
 Let's change the subject
 [[Karl.Continue]]
 ===
@@ -51,23 +55,46 @@ Let's change the subject
 title: Karl.Borealis
 tags:
 ---
-Oh, Borealis is a dream place for ANY vacation. I go there every year.
-They have the most wonderful train station too! Takes only a few hours to get there.
+Oh, Borealis is a dream place for ANY vacation. 
+I go there every year.
+They have the most wonderful train station too! 
+Takes only a few hours to get there.
 [[Karl.Continue]]
 ===
 
 title: Karl.Grandrun
 tags:
 ---
-Oh, nothing but civil war and sand over there. Fucking sucks.
+Oh, nothing but civil war and sand over there. 
+Fucking sucks.
+[[Karl.Continue]]
+===
+
+title: Karl.Mukhosha
+tags:
+---
+Mucko-what, now?
+Never heard of it.
 [[Karl.Continue]]
 ===
 
 title: Karl.Karl
 tags:
 ---
-Well *I* am the most handsome bachelor in all of Mayfair, thank you very much for asking.
+Well who am *I*? 
+The most handsome bachelor in all of Mayfair. 
+Thank you very much for asking.
+<<displaypromptmenuask Managers PerAAA>>
 Are you, perhaps, single?
+<<set $isSingle to react("general", "isSingle")>>
+<<if $isSingle is true>>
+    Oh really?
+    Would you mind going on a date?
+    Like any time soon?
+<<else>>
+    Oh too bad.
+    You are really attractive though.
+<<endif>>
 [[Karl.Continue]]
 ===
 
@@ -87,9 +114,18 @@ Always has an open ear for me ♥.
 [[Karl.Continue]]
 ===
 
+title: Karl.Rebecca
+tags:
+---
+Sorry, who now?
+No one by that name in our wonderful Mayfair.
+[[Karl.Continue]]
+===
+
 title: Karl.Catchall
 tags:
 ---
-Okay, sorry, that isnt an actual question. You know that, right?
+Okay, sorry, that isnt an actual question. 
+You know that, right?
 [[Karl.Continue]]
 ===

@@ -3,7 +3,8 @@ tags:
 ---
 <<showcharactername Managers Schubert>>
 <<if not isvisited("Schubert","Start")>>
-    Hi! I am a travelling word trader! Is there anything you want to know?
+    Hi! I am a travelling word trader! 
+    Is there anything you want to know?
     [[Schubert.Barter]]
 <<else>>
     [[Schubert.Idle]]

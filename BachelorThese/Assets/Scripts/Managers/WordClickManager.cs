@@ -30,14 +30,24 @@ public class WordClickManager : MonoBehaviour
     public GameObject CurrentWord;
     WordLookupReader wlReader;
     GameObject[] activeWords = new GameObject[20];
+    public string mouseOverUIObject;
+    InputMap controls;
+    public PromptBubble promptBubble;
+    bool stillOnWord;
 
     void Awake()
     {
         instance = this;
+        controls = new InputMap();
     }
     private void Start()
     {
         wlReader = WordLookupReader.instance;
+        
+    }
+    private void Update()
+    {
+        GetMouseOverUI();
     }
     /// <summary>
     /// Ckeck if the word is actually in the keywords list, then skip to WordUtilities.CreateWord()
@@ -112,5 +122,114 @@ public class WordClickManager : MonoBehaviour
                 array[i] = toAdd;
             }
         }
+    }
+    /// <summary>
+    /// Raycasts for the UI Elements, checks, above which Category of UI Element 
+    /// the mouse is currently Hovering over & saves it to mouseOverUIObject
+    /// Then Checks the exact word the UI is hovering over & Creates a button
+    /// </summary>
+    public void GetMouseOverUI()
+    {
+        //initialization & Raycast For UI Elements
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = GetMousePos();
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        //Check above which Category of UI Element it is currently Hovering
+        mouseOverUIObject = "none";
+        bool foundPB = false; //found a prompt bubble
+        bool foundtC = false; //found the trash can
+        foreach (RaycastResult uIObject in results)
+        {
+            //over the wordcase
+            if (uIObject.gameObject == ReferenceManager.instance.wordCase)
+                mouseOverUIObject = "wordCase";
+            //over a promptbubble
+            else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
+            {
+                promptBubble = pB;
+                foundPB = true;
+                mouseOverUIObject = "playerInput";
+                promptBubble.OnBubbleHover(true);
+            }
+            //over the trashcan
+            else if (uIObject.gameObject == ReferenceManager.instance.trashCan)
+            {
+                foundtC = true;
+                mouseOverUIObject = "trashCan";
+                UIManager.instance.SwitchTrashImage(true);
+            }
+        }
+        if (!foundPB) //if not hovering over prompt
+        {
+            if (promptBubble != null)
+            {
+                promptBubble.OnBubbleHover(false);
+                promptBubble = null;
+            }
+        }
+        if (!foundtC) //if not over trashCan
+        {
+            {
+                UIManager.instance.SwitchTrashImage(false);
+            }
+        }
+        stillOnWord = false;
+        //Check for the exact word the mouse is hovering over
+        foreach (RaycastResult uIObject in results)
+        {
+            
+            foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
+            {
+                
+                //if the mouse is currently over an Interactable text
+                if (uIObject.gameObject == text.gameObject)
+                {
+                    int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventDataCurrentPosition.position, eventDataCurrentPosition.enterEventCamera);
+                    if (wordIndex != -1)
+                    {
+                        TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
+                        TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
+
+
+                        //Get Color of the first character of the word
+                        Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
+                        if (currentCharacterColor[charInfo.vertexIndex] == ReferenceManager.instance.interactableColor)
+                        {
+                            WordUtilities.CreateABubble(text, wordInfo);
+                        }
+                        //if the mouse is STILL over the created bubble, dont delete it this round
+                        if (WordClickManager.instance.wordLastHighlighted != null &&
+                            WordClickManager.instance.wordLastHighlighted.GetComponentInChildren<TMP_Text>().text == wordInfo.GetWord())
+                        {
+                            stillOnWord = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (!stillOnWord && WordClickManager.instance.currentWord == null
+            && WordClickManager.instance.wordLastHighlighted != null) //stopped Hovering over the iteractable word
+        {
+            WordClickManager.instance.DestroyLastHighlighted();
+        }
+    }
+    /// <summary>
+    /// Return the mouse position in screen space
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 GetMousePos()
+    {
+        Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
+        return mousePos;
+    }
+    void OnEnable()
+    {
+        controls.Enable();
+    }
+    void OnDisable()
+    {
+        controls.Disable();
     }
 }

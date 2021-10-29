@@ -120,7 +120,8 @@ public class WordCaseManager : MonoBehaviour
             (color.g + 0.1f) > 1 ? 1 : (color.g + 0.1f),
             (color.b + 0.1f) > 1 ? 1 : (color.b + 0.1f), 1);
         background.color = color;
-        ReferenceManager.instance.wordLimit.GetComponentInParent<Image>().color = color;
+        if (ReferenceManager.instance.wordLimit.isActiveAndEnabled)
+            ReferenceManager.instance.wordLimit.GetComponentInParent<Image>().color = color;
         // Unload Words of previous tag
         foreach (Transform word in ReferenceManager.instance.listingParent.GetComponentsInChildren<Transform>())
         {
@@ -329,7 +330,7 @@ public class WordCaseManager : MonoBehaviour
     {
         Color activeColor = ReferenceManager.instance.askColor;
         Color grey = ReferenceManager.instance.greyedOutColor;
-        GameObject ask = ReferenceManager.instance.ask;;
+        GameObject ask = ReferenceManager.instance.ask; ;
         GameObject barter = ReferenceManager.instance.barter;
         if (setInactive) //turn off
         {

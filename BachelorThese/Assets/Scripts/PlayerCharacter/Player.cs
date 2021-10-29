@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     Vector3 movementAddition;
     float timer = 0;
     float fixedTime = 0.25f;
+    GameObject target;
     private void Awake()
     {
         controls = new InputMap();
@@ -18,8 +19,7 @@ public class Player : MonoBehaviour
     {
         controls.Player.WalkUD.performed += context => Movement(-10, context.ReadValue<float>());
         controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
-        controls.Player.Talk.performed += context => Talk();
-
+        controls.Player.Talk.performed += context => Interact();
     }
     private void Update()
     {
@@ -38,11 +38,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Talk()
+    void Interact()
     {
         if (!DialogueManager.instance.isInDialogue)
         {
-            DialogueManager.instance.CheckForNearbyNPC();
+            if (target.TryGetComponent<NPC>(out NPC npc))
+                DialogueManager.instance.CheckForNearbyNPC();
+            else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
+                iO.Interact(true);
         }
     }
     private void OnEnable()
@@ -61,6 +64,21 @@ public class Player : MonoBehaviour
             if ((allNPCs[i].transform.position - this.transform.position)// is in range?
                     .magnitude <= DialogueManager.instance.interactionRadius)
             {
+                target = allNPCs[i].gameObject;
+                return true;
+            }
+        }
+        return false;
+    }
+    bool CheckForInteractableObjectRange()
+    {
+        Transform[] allObjects = ReferenceManager.instance.allInteractableObjects;
+        for (int i = 0; i < allObjects.Length; i++)
+        {
+            if ((allObjects[i].transform.position - this.transform.position)// is in range?
+                    .magnitude <= DialogueManager.instance.interactionRadius * 3)
+            {
+                target = allObjects[i].gameObject;
                 return true;
             }
         }
@@ -70,17 +88,17 @@ public class Player : MonoBehaviour
     {
         if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue)
         {
-            timer += Time.deltaTime;//every 0.25 sec, check if the Player is in Range
-            if (fixedTime <= timer) //not really 100% fixed time bc i ignore the leftover time
+            timer = 0;
+            if (CheckForNPCRange())
             {
-                timer = 0;
-                if (CheckForNPCRange())
-                {
-                    UIManager.instance.PortrayEButton(this.gameObject);
-                }
-                else if (UIManager.instance.eButtonSprite.enabled && !CheckForNPCRange())
-                    UIManager.instance.PortrayEButton(null);
+                UIManager.instance.PortrayEButton(target);
             }
+            else if (CheckForInteractableObjectRange())
+            {
+                UIManager.instance.PortrayEButton(target);
+            }
+            else if (ReferenceManager.instance.eButtonSprite.enabled)
+                UIManager.instance.PortrayEButton(null);
         }
 
     }

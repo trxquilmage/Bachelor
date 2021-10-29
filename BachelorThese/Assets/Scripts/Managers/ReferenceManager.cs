@@ -27,6 +27,7 @@ public class ReferenceManager : MonoBehaviour
 
     [Header("Parents")]
     public GameObject selectedWordParent;
+    public GameObject selectedWordParentAsk;
     public GameObject listingParent;
     public GameObject promptBubbleParent;
     public GameObject askPromptBubbleParent;
@@ -52,6 +53,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject ask;
     public GameObject barter;
     public GameObject askContinueButton;
+    public TMP_Text[] interactableTextList;
     [Header("Dialogues")]
     public DialogueRunner runner;
     [Header("Images")]
@@ -64,6 +66,12 @@ public class ReferenceManager : MonoBehaviour
     public TMP_Text askPrompt;
     public TMP_Text askQuestion;
     public TMP_Text askNPCText;
+    [Header("Non-Dialogue UI")]
+    public Canvas canvas;
+    public Image eButtonSprite;
+    public GameObject worldMap;
+    [Header("Environment")]
+    public Transform[] allInteractableObjects;
     [Header("Game Data")]
     public int maxWordsPerTag;
     void Awake()

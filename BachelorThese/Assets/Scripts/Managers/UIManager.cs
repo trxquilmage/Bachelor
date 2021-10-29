@@ -8,8 +8,7 @@ public class UIManager : MonoBehaviour
 {
     // Handles UI Functions
 
-    public Image eButtonSprite;
-    public Canvas canvas;
+    [HideInInspector] public bool isInteracting;
     public static UIManager instance;
     ReferenceManager refM;
     WordCaseManager wcM;
@@ -23,7 +22,7 @@ public class UIManager : MonoBehaviour
     {
         refM = ReferenceManager.instance;
         wcM = WordCaseManager.instance;
-        scaleFactor = canvas.scaleFactor;
+        scaleFactor = refM.canvas.scaleFactor;
     }
     private void Update()
     {
@@ -31,7 +30,7 @@ public class UIManager : MonoBehaviour
         if (timer > 1)
         {
             timer = 0;
-            if (canvas.scaleFactor != scaleFactor)
+            if (refM.canvas.scaleFactor != scaleFactor)
             {
                 OnScale();
             }
@@ -45,14 +44,14 @@ public class UIManager : MonoBehaviour
     {
         if (target == null) //target == null : hide e button
         {
-            eButtonSprite.enabled = false;
+            refM.eButtonSprite.enabled = false;
             return;
         }
         //place e button correctly
         Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position);
-        eButtonSprite.transform.position = targetInScreenSpace + Vector2.right * 40f;
+        refM.eButtonSprite.transform.position = targetInScreenSpace + Vector2.right * 40f;
 
-        eButtonSprite.enabled = true; //show e button
+        refM.eButtonSprite.enabled = true; //show e button
     }
     /// <summary>
     /// Changes the trashcan icon and makes sure that putting the word back is disabled while over the can
@@ -75,10 +74,10 @@ public class UIManager : MonoBehaviour
     /// </summary>
     void OnScale()
     {
-        scaleFactor = canvas.scaleFactor;
+        scaleFactor = refM.canvas.scaleFactor;
         if (DialogueInputManager.instance.isActiveAndEnabled)
         {
-            foreach (TMP_Text text in DialogueInputManager.instance.interactableTextList)
+            foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
                 WordUtilities.ReColorAllInteractableWords();
         }
 
