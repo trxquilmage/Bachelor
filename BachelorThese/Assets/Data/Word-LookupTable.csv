@@ -1,3 +1,11 @@
-Mayfair;Location
-Grandrun;Location
-Neverre;Location
+Mayfair;Location;West
+Grandrun;Location;East
+Neverre;Location;North
+Borealis;Location;South
+Yes;General;
+No;General;
+Karl;Name;tourist guide
+Fiona;Name;cook
+Schubert;Name;trader
+Mukhosha;General;
+Rebecca;Name;dead

@@ -1,0 +1,104 @@
+﻿title: Schubert.Ask
+tags:
+---
+<<if not isvisited("Schubert", "Ask")>>
+    Oh do you have a question?
+<<else>>
+    Another question? Wow you sure have a lot of those.
+<<endif>>
+===
+
+title: Schubert.Continue
+tags:
+---
+Oh, but as I was saying...
+===
+
+title: Schubert.Mayfair
+tags:
+---
+Oh, Mairfair? 
+You are in Mayfair right now. 
+There isnt that much stuff here.
+We have a Tavern, though.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Neverre
+tags:
+---
+I'm from Neverre. 
+It's a nice place. 
+Gets very lovely when it's winter.
+Its just very hard to reach from here.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Borealis
+tags:
+---
+Never been. 
+but Karl goes there for every. single. vacation.
+Sounds exhausting, if you ask me.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Grandrun
+tags:
+---
+Grandrun? 
+I went for a temple tour there once. 
+It's quite charming.
+But very warm.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Mukhosha
+tags:
+---
+Are those the masks from Grandrun?
+Saw some when I was there. They are kind of disturbing.
+I didn't remember the name, though.
+[[Karl.Continue]]
+===
+
+title: Schubert.Karl
+tags:
+---
+Karl is a nice guy. He kind of talks a lot.
+Has a passionate opinion on everything too.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Fiona
+tags:
+---
+Fiona is really sweet. She always brings me something to eat.
+I get really nervous talking to her.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Schubert
+tags:
+---
+Yup, that's me. Born and raised in Mayfair.
+I get out of town sometimes to trade, 
+but really, "trader" is a bit of a reach to call me.
+[[Schubert.Continue]]
+===
+
+title: Schubert.Rebecca
+tags:
+---
+Did Fiona tell you about this?
+Yeah. Okay. I don't really want to talk about that.
+I feel like you don't have any buisness knowing about that, okay?
+[[Schubert.Continue]]
+===
+
+title: Schubert.Catchall
+tags:
+---
+Uh, What?
+[[Schubert.Continue]]
+===

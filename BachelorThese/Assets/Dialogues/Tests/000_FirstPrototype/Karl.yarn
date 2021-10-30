@@ -1,0 +1,85 @@
+﻿title: Karl.Start
+tags:
+---
+<<showcharactername Managers Karl>>
+<<if not isvisited("Karl", "Start")>>
+    Welcome, friend, to Mayfair!
+    The most special place in the world!
+    [[Karl.Ask]]
+<<else>>
+    [[Karl.Idle]]
+<<endif>>
+===
+
+title: Karl.Ask
+tags: 
+---
+<<displaypromptmenu Managers LocAAA>>
+Where are you from, my friend?
+<<set $direction to react("position")>>
+<<set $origin to react("city", "placeOfOrigin")>>
+<<if $direction eq "West">>
+    Oh, really? 
+    Guess that means I don't need to show you around.
+    [[Karl.ChildOfLadyKatherine]]
+<<elseif $direction eq "East">>
+    Oh, you're from the east? 
+    Sorry, but... 
+    ...ew.
+    [[Karl.Explain]]
+<<elseif $direction eq "North">>
+    Wow far up in the north.
+    Pretty cold up there.
+    [[Karl.Explain]]
+<<elseif $direction eq "South">>
+    Oh I love it there.
+    It's warm, and sunny.
+    And there's always good food.
+    [[Karl.Explain]]
+<<else>>
+    Huh?
+<<endif>>
+===
+
+title: Karl.Explain
+tags: 
+---
+So you're new here.
+My time has come.
+Let me show you around town!
+Oh, let's see.
+We have a tavern.
+A tree... 
+and we have this road.
+The one we are standing on this very second, buddy.
+===
+
+title: Karl.ChildOfLadyKatherine
+tags: 
+---
+<<displaypromptmenu Managers OriAAA>>
+Wait - Yes or No - are you Lady Katherine's child?
+<<set $katherinemother to react("general", "katherineMother")>>
+<<if $katherinemother is true>>
+    Woah, she's your MOTHER? 
+    Please forgive my casual tone.
+    I had heard rumors, her child was coming back home. 
+    She probably will be very happy.
+<<else>>
+    Oh, nevermind, then.
+<<endif>>
+===
+
+title: Karl.Idle
+tags: 
+---
+<<set $origin to getinfo("placeOfOrigin")>>
+<<if getinfo("katherineMother") eq true>>
+    Wow, you're really Lady Katherine's child...
+<<elseif getinfo("local") eq true>>
+    It's so weird that I cant remember you at all...
+<<else>>
+    If you have any questions, feel free to ask me! 
+    I bet {$origin} is very different to Mayfair.
+<<endif>>
+===

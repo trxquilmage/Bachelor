@@ -1,0 +1,115 @@
+﻿title: Fiona.Ask
+tags:
+---
+<<if not isvisited("Fiona", "Ask")>>
+    Oh, can I help you out dear?
+<<else>>
+    Is there another thing I can help you with?
+<<endif>>
+===
+
+title: Fiona.Continue
+tags:
+---
+What were we talking about... Oh, yes.
+===
+
+title: Fiona.Mayfair
+tags:
+---
+<<set $local to getinfo("local")>>
+<<if $local eq true>>
+    Oh, I remember you from when you were a kid living here.
+    You have quite grown up, I would say.
+    The town has changed little since then,
+    so I hope you feel right at home.
+<<else>>
+    Mayfair is like any other small town in the countryside.
+    We have a few stores, a tavern. 
+    And a tour guide for some reason.
+    So if you need anything specific, talk to Karl.
+<<endif>>
+[[Fiona.Continue]]
+===
+
+title: Fiona.Neverre
+tags:
+---
+Neverre is quite lively this season, I hear. 
+The annual mushroom festival is happening there right now.
+You know, before it's too cold for mushrooms.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Borealis
+tags:
+---
+A nice place, I hear. 
+I really don't like beaches, though.
+However, they do have the most amazing food.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Grandrun
+tags:
+---
+I always wanted to visit Grandrun. 
+Especially the archeological digs.
+And I always wanted a to buy a Mukhosha there.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Mukhosha
+---
+Oh, a Mukhosha? 
+Those are the clay masks the indegenous people use there.
+They are actually quite macabre... but I really like them.
+I hear they are very expensive though.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Karl
+tags:
+---
+Karl is actually really nice, when you get to know him better.
+He is not very considerate with what he says most of the time.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Fiona
+tags:
+---
+Oh, me? I was born in Mayfair. 
+Lived as a maid for a while in Neverre.
+People don't really remember me from when I was little.
+I was a very shy kid...
+So most people assume, I only moved here.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Schubert
+tags:
+---
+Schubert is kind of a sweetheart. 
+He just. Carries a lot of sadness with him.
+He lost someone that meant a lot to him, while travelling.
+I think her name was Rebecca.
+[[Fiona.Continue]]
+===
+
+title: Fiona.Rebecca
+tags:
+---
+Like, I said. Schubert knew her.
+I, hovever, don't know much more than the name.
+And that she's dead.
+[[Karl.Continue]]
+===
+
+title: Fiona.Catchall
+tags:
+---
+Oh, could you maybe phrase that differently? 
+I dont think I understand...
+[[Fiona.Continue]]
+===

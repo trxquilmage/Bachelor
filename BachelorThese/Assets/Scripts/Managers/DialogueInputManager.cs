@@ -7,17 +7,19 @@ using TMPro;
 
 public class DialogueInputManager : MonoBehaviour
 {
-    [SerializeField] Color normalColor, interactableColor, interactedColor;
     [SerializeField] GameObject wordCase, playerInput, npcDialogueField, uiLog;
-    [SerializeField] TMP_Text[] interactableTextList;
     public static DialogueInputManager instance;
+
+    public bool continueEnabledPrompt = true;
+    public bool continueEnabledPromptAsk = true;
+    public bool continueEnabledDrag = true;
+    public bool continueEnabledAsk = true;
+    public bool closeAWindow;
+    public bool askTextFinished;
+
+    DialogueUI uiHandler;
     InputMap controls;
     bool textFinished;
-    public bool continueEnabled = true;
-    public bool closeAWindow;
-    public string mouseOverUIObject;
-    DialogueRunner runner;
-    DialogueUI uiHandler;
 
     private void Awake()
     {
@@ -26,93 +28,76 @@ public class DialogueInputManager : MonoBehaviour
     }
     private void Start()
     {
-        runner = FindObjectOfType<DialogueRunner>();
-        uiHandler = FindObjectOfType<DialogueUI>();
-        controls.Dialogue.Click.performed += context => ContinueText();
-    }
-    private void Update()
-    {
-        GetMouseOverUI();
-    }
-    void ContinueText()
-    {
-        if (textFinished && continueEnabled)
-        {
-            uiHandler.MarkLineComplete();
-            //Destroy all non used buttons
-        }
-    }
-    public void TextFinished()
-    {
-        textFinished = true;
-        // Color all interactable words
-        WordUtilities.ColorAllInteractableWords(interactableTextList[0], interactableColor, 
-            WordLookupReader.instance.wordTag);
-    }
-    public void TextUnfinished()
-    {
-        textFinished = false;
-    }
-    public void ContinueButton()
-    {
-        uiHandler.MarkLineComplete();
-        continueEnabled = true;
-        closeAWindow = true;
-        //Destroy all non used buttons
-    }
-    public Vector2 GetMousePos()
-    {
-        Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
-        return mousePos;
+        uiHandler = ReferenceManager.instance.standartDialogueUI;
+        controls.Dialogue.Click.performed += context => ContinueTextOnClick();
     }
 
     /// <summary>
-    /// Raycasts for the UI Elements, checks, above which Category of UI Element 
-    /// the mouse is currently Hovering over & saves it to mouseOverUIObject
-    /// Then Checks the exact word the UI is hovering over & Creates a button
+    /// disables continue for the time the ask menu is open
     /// </summary>
-    public void GetMouseOverUI()
+    /// <param name="open"></param>
+    public void AskMenuOpen(bool open)
     {
-        //initialization & Raycast For UI Elements
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = DialogueInputManager.instance.GetMousePos();
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-
-        //Check above which Category of UI Element it is currently Hovering
-        mouseOverUIObject = "none";
-        foreach (RaycastResult uIObject in results)
+        continueEnabledAsk = !open;
+    }
+    /// <summary>
+    /// Called, when the Continue Button in the UI is pressed
+    /// </summary>
+    public void ContinueButton()
+    {
+        if (PlayerInputManager.instance.CheckForPromptsFilled(PlayerInputManager.instance.currentPromptBubbles) && continueEnabledAsk)
         {
-            if (uIObject.gameObject == wordCase)
-                mouseOverUIObject = "wordCase";
-            else if (uIObject.gameObject == playerInput)
-                mouseOverUIObject = "playerInput";
+            PlayerInputManager.instance.SaveGivenAnswer(PlayerInputManager.instance.currentPromptBubbles);
+            Continue(uiHandler);
+            continueEnabledPrompt = true;
+            closeAWindow = true;
+            PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
+            WordClickManager.instance.currentWord = null;
+            WordCaseManager.instance.OpenOnTag(); //Reload, so that the missing word comes back
+            ReferenceManager.instance.playerInputField.SetActive(false);
         }
-
-        //Check for the exact word the mouse is hovering over
-        foreach (RaycastResult uIObject in results)
+    }
+    /// <summary>
+    /// Called whenever a click happens
+    /// </summary>
+    void ContinueTextOnClick()
+    {
+        if (textFinished && continueEnabledPrompt
+            && continueEnabledDrag && continueEnabledAsk)
         {
-            foreach (TMP_Text text in interactableTextList)
-            {
-                //if the mouse is currently over an Interactable text
-                if (uIObject.gameObject == text.gameObject)
-                {
-                    int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventDataCurrentPosition.position, eventDataCurrentPosition.enterEventCamera);
-                    if (wordIndex != -1)
-                    {
-                        TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
-                        TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
-                        if (charInfo.color == interactableColor)
-                        {
-                            WordClickManager.instance.SendWord(wordInfo.GetWord(), eventDataCurrentPosition.position);
-                            // Set the hovered word to interacted
-                            WordUtilities.ColorAWord(text, wordInfo.firstCharacterIndex, 
-                                wordInfo.lastCharacterIndex, interactedColor); 
-                        }
-                    }
-                }
-            }
+            Continue(uiHandler);
         }
+        else if (!continueEnabledAsk && continueEnabledPromptAsk && askTextFinished) //continue the ask text instead
+        {
+            Continue(ReferenceManager.instance.askDialogueUI);
+        }
+    }
+    /// <summary>
+    /// Called, whenever a dialogue should be continued
+    /// </summary>
+    public void Continue(DialogueUI dialogue)
+    {
+        dialogue.MarkLineComplete();
+        //Destroy all buttons you can find
+        WordClickManager.instance.DestroyAllActiveWords();
+    }
+    /// <summary>
+    /// When a line is not yet done (called in Dialogue Runner) -> disable continue for ContinueText()
+    /// </summary>
+    public void TextFinished()
+    {
+        textFinished = true;
+
+        // Color all interactable words, force update, so there are no errors
+        ReferenceManager.instance.interactableTextList[0].ForceMeshUpdate();
+        WordUtilities.ReColorAllInteractableWords();
+    }
+    /// <summary>
+    /// When a line is done (called in Dialogue Runner) -> enable continue  for ContinueText()
+    /// </summary>
+    public void TextUnfinished()
+    {
+        textFinished = false;
     }
     /// <summary>
     /// Close the Prompt Menu, after pressing Continue
