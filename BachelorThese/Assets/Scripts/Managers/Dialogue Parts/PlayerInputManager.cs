@@ -103,49 +103,20 @@ public class PlayerInputManager : MonoBehaviour
     /// <param name="saveIn"></param>
     /// <param name="isAsk"></param>
     /// <returns></returns>
-    public Yarn.Value ReactToInput(string lookingFor, string saveIn = "", bool isAsk = false)
+    public Yarn.Value ReactToInput(string lookingFor, string NPCname, string saveIn, bool isAsk)
     {
-        Yarn.Value val = new Yarn.Value();
-        string answer = "";
         Word.WordData data;
         if (!isAsk)
             data = givenAnswer;
         else
             data = givenAnswerAsk;
-        switch (data.tag)
-        {
-            case WordInfo.WordTags.Location:
-                switch (lookingFor)
-                {
-                    case "position":
-                        answer = data.tagObj.loc.position;
-                        val = new Yarn.Value(answer);
-                        if (CheckIfShouldSave(saveIn)) { info.SaveInfo(answer, saveIn); }
-                        break;
-                    case "city":
-                        answer = data.name;
-                        val = new Yarn.Value(answer);
-                        if (CheckIfShouldSave(saveIn)) { info.SaveInfo(answer, saveIn); }
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case WordInfo.WordTags.General:
-                switch (lookingFor)
-                {
-                    case "general":
-                        bool affirmation = data.tagObj.gen.affirmative;
-                        if (CheckIfShouldSave(saveIn)) { info.SaveInfo(affirmation, saveIn); }
-                        val = new Yarn.Value(affirmation);
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+        Debug.Log(givenAnswer.name);
+        Word.TagObject tagObj = data.tagObj;
+        Yarn.Value val = InfoManager.instance.FindValue(data, lookingFor);
+
+        //save the required Info
+        if (CheckIfShouldSave(saveIn)) { info.SaveInfo(saveIn, val, NPCname, tagObj); }
+
         return val;
     }
     /// <summary>

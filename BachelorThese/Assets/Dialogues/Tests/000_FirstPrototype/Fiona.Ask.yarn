@@ -17,7 +17,7 @@ What were we talking about... Oh, yes.
 title: Fiona.Mayfair
 tags:
 ---
-<<set $local to getinfo("local")>>
+<<set $local to getinfo("local", 0)>>
 <<if $local eq true>>
     Oh, I remember you from when you were a kid living here.
     You have quite grown up, I would say.

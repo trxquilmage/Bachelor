@@ -5,19 +5,19 @@ tags:
 <<if not isvisited("Karl", "Start")>>
     Welcome, friend, to Mayfair!
     The most special place in the world!
-    [[Karl.Ask]]
+    [[Karl.Question]]
 <<else>>
     [[Karl.Idle]]
 <<endif>>
 ===
 
-title: Karl.Ask
+title: Karl.Question
 tags: 
 ---
 <<displaypromptmenu Managers LocAAA>>
 Where are you from, my friend?
-<<set $direction to react("position")>>
-<<set $origin to react("city", "placeOfOrigin")>>
+<<set $direction to react("position", "", "Karl")>>
+<<set $origin to react("name", "placeOfOrigin", "Karl")>>
 <<if $direction eq "West">>
     Oh, really? 
     Guess that means I don't need to show you around.
@@ -59,7 +59,7 @@ tags:
 ---
 <<displaypromptmenu Managers OriAAA>>
 Wait - Yes or No - are you Lady Katherine's child?
-<<set $katherinemother to react("general", "katherineMother")>>
+<<set $katherinemother to react("value", "katherineMother", "Karl")>>
 <<if $katherinemother is true>>
     Woah, she's your MOTHER? 
     Please forgive my casual tone.
@@ -73,10 +73,10 @@ Wait - Yes or No - are you Lady Katherine's child?
 title: Karl.Idle
 tags: 
 ---
-<<set $origin to getinfo("placeOfOrigin")>>
-<<if getinfo("katherineMother") eq true>>
+<<set $origin to getinfo("placeOfOrigin", 0)>>
+<<if getinfo("katherineMother", 0) eq true>>
     Wow, you're really Lady Katherine's child...
-<<elseif getinfo("local") eq true>>
+<<elseif getinfo("local", 0) eq true>>
     It's so weird that I cant remember you at all...
 <<else>>
     If you have any questions, feel free to ask me! 

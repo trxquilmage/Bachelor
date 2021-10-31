@@ -763,8 +763,8 @@ MonoBehaviour:
   characterName: Karl
   talkToNode: Karl.Start
   askNode: Karl.Ask
-  scriptToLoad: {fileID: 2480198943629176163, guid: bd1d6caa173f5624fbb4ff4877d9af6a, type: 3}
-  askScript: {fileID: 2480198943629176163, guid: d7834fc2670362a4c9e6dd3bcae52b62, type: 3}
+  scriptToLoad: {fileID: 0}
+  askScript: {fileID: 0}
 --- !u!1 &143820001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2583,8 +2583,8 @@ MonoBehaviour:
   characterName: Schubert
   talkToNode: Schubert.Start
   askNode: Schubert.Ask
-  scriptToLoad: {fileID: 2480198943629176163, guid: 2a716be7c5b7e47458bd46b1aaded81f, type: 3}
-  askScript: {fileID: 2480198943629176163, guid: 8dbc67887cc85f747816df4ce9e8588c, type: 3}
+  scriptToLoad: {fileID: 0}
+  askScript: {fileID: 0}
 --- !u!136 &626523108
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3293,8 +3293,8 @@ MonoBehaviour:
   characterName: Fiona
   talkToNode: Fiona.Start
   askNode: Fiona.Ask
-  scriptToLoad: {fileID: 2480198943629176163, guid: 97b49024513528349a907b57b9169a62, type: 3}
-  askScript: {fileID: 2480198943629176163, guid: ae704afb2206bde4ea3b7ca10e2e5986, type: 3}
+  scriptToLoad: {fileID: 0}
+  askScript: {fileID: 0}
 --- !u!136 &809070757
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -9408,8 +9408,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8005dc8f19197e46a47e3b7d48c18f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allRumors: []
   placeOfOrigin: 
   local: 0
+  isSingle: 0
   katherineMother: 0
   likesMayfair: 0
 --- !u!1 &2128926959

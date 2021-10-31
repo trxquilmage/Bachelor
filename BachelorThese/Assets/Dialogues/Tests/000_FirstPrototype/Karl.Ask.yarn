@@ -23,14 +23,14 @@ tags:
     We usually rank among to winners of the annual "best towns contest".
     <<displaypromptmenuask Managers LocAAB>>
     Do you like the town? Be straight, Yes or No?
-    <<set $likesMayfair to react("general", "likesMayfair")>>
+    <<set $likesMayfair to react("value", "likesMayfair", "Karl")>>
     <<if $likesMayfair is true>>
         Wonderful! Mayfair truly is a beautiful piece of land.
     <<else>>
         Okay. Wow, that kind of hurt my feelings.
     <<endif>>
 <<else>>
-    <<set $likesMayfair to getinfo("likesMayfair")>>
+    <<set $likesMayfair to getinfo("likesMayfair", 0)>>
     <<if $likesMayfair is true>>
         Do you want to know more about this wonderful place?
         I actually cant think of ANYTHING else about Mayfair.
@@ -86,7 +86,7 @@ The most handsome bachelor in all of Mayfair.
 Thank you very much for asking.
 <<displaypromptmenuask Managers PerAAA>>
 Are you, perhaps, single?
-<<set $isSingle to react("general", "isSingle")>>
+<<set $isSingle to react("value", "isSingle", "Karl")>>
 <<if $isSingle is true>>
     Oh really?
     Would you mind going on a date?

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using Yarn.Unity;
+using System;
 
 public static class WordUtilities
 {
@@ -90,6 +91,8 @@ public static class WordUtilities
                 return WordInfo.WordTags.General;
             case "Name":
                 return WordInfo.WordTags.Name;
+            case "Item":
+                return WordInfo.WordTags.Item;
             case "AllWords":
                 return WordInfo.WordTags.AllWords;
             default:
@@ -391,5 +394,20 @@ public static class WordUtilities
             else
                 runner.StartDialogue(runner.startNode = DialogueManager.instance.currentTarget.characterName + ".Catchall");
         }
+    }
+    /// <summary>
+    /// Enter a word, to check, if it might be a number or a bool, if not return it as a sting-Yarn.Value
+    /// </summary>
+    /// <param name="tag"></param>
+    public static Yarn.Value TransformIntoYarnVal(string tag)
+    {
+        if (char.IsDigit(tag[0]))
+            return new Yarn.Value((float)Convert.ToInt32(tag));
+        else if (tag == "true")
+            return new Yarn.Value(true);
+        else if (tag == "false")
+            return new Yarn.Value(false);
+        else
+            return new Yarn.Value(tag);
     }
 }

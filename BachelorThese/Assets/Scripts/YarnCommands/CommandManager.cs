@@ -16,18 +16,18 @@ public class CommandManager : MonoBehaviour
         // runner
         ReferenceManager.instance.runner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
-            if (parameters.Length == 1)
+            if (parameters.Length == 2)
             {
-                return ReactToAnswer(parameters[0].AsString, "", false);
+                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString, false);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, false);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, false);
             }
         });
         ReferenceManager.instance.runner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
         {
-            return GetInfo(parameters[0].AsString);
+            return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });
         ReferenceManager.instance.runner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
         {
@@ -37,18 +37,18 @@ public class CommandManager : MonoBehaviour
         // askRunner
         ReferenceManager.instance.askRunner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
-            if (parameters.Length == 1)
+            if (parameters.Length == 2)
             {
-                return ReactToAnswer(parameters[0].AsString, "", true);
+                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString, true);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, true);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, true);
             }
         });
         ReferenceManager.instance.askRunner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
         {
-            return GetInfo(parameters[0].AsString);
+            return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });
         ReferenceManager.instance.askRunner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
         {
@@ -95,37 +95,18 @@ public class CommandManager : MonoBehaviour
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, bool isAsk)
+    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, string npcName, bool isAsk)
     {
-        return PlayerInputManager.instance.ReactToInput(lookingFor, saveIn, isAsk);
+        return PlayerInputManager.instance.ReactToInput(lookingFor, npcName, saveIn, isAsk);
     }
     /// <summary>
-    /// Get back an Info from the code
+    /// Get back an Info from the code. ChosenValue: 0 = get value; 1 = get the name of the npc who was told that info
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value GetInfo(string lookingFor)
+    public Yarn.Value GetInfo(string lookingFor, int chosenValue)
     {
-        Yarn.Value answer = new Yarn.Value();
-        switch (lookingFor)
-        {
-            case "katherineMother":
-                answer = new Yarn.Value(info.katherineMother);
-                break;
-            case "local":
-                answer = new Yarn.Value(info.local);
-                break;
-            case "placeOfOrigin":
-                answer = new Yarn.Value(info.placeOfOrigin);
-                break;
-            case "likesMayfair":
-                answer = new Yarn.Value(info.likesMayfair);
-                break;
-            case "isSingle":
-                answer = new Yarn.Value(info.isSingle);
-                break;
-        }
-        return answer;
+        return InfoManager.instance.GetInfo(lookingFor, chosenValue);
     }
     /// <summary>
     /// Check, wheter a node has already been visited. if not, save it in the list

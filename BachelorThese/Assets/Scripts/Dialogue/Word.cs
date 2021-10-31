@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using Yarn.Unity;
 
 public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IPointerDownHandler
 {
@@ -22,23 +23,12 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         public WordInfo.Origin origin;
         public TagObject tagObj;
     }
+    /// <summary>
+    /// 0 = name, 1 = tags[0] (main tag), 2 = tags[1] (sub tag 1) ...
+    /// </summary>
     public struct TagObject
     {
-        public Location loc;
-        public General gen;
-        public Name name;
-    }
-    public struct Location
-    {
-        public string position;
-    }
-    public struct General
-    {
-        public bool affirmative;
-    }
-    public struct Name
-    {
-        //public bool affirmative;
+        public List<Yarn.Value> allGivenValues;
     }
     /// <summary>
     /// Call this, when creating a Word. If you dont have a Word Info, create one and set "hasWordInfo" to false
@@ -64,8 +54,15 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
         WordUtilities.ColorTag(this.gameObject, data.tag);
 
-        data.tagObj = new TagObject() { };
-        FindCorrectTag(data.tagInfo);
+        //initialize the tag Object
+        data.tagObj = new TagObject();
+        data.tagObj.allGivenValues = new List<Yarn.Value>();
+        data.tagObj.allGivenValues.Add(new Yarn.Value(data.name));
+        foreach (string tag in tags)
+        {
+            Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
+            data.tagObj.allGivenValues.Add(val);
+        }
     }
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
@@ -215,32 +212,5 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     /// <param name="tagObj"></param>
     /// <param name="tags"></param>
-    void FindCorrectTag(string[] tags)
-    {
-        switch (data.tag)
-        {
-            case WordInfo.WordTags.Location:
-                data.tagObj.loc = new Location()
-                {
-                    position = tags[1]
-                };
-                break;
-            case WordInfo.WordTags.General:
-                data.tagObj.gen = new General()
-                {
-                    affirmative = WordUtilities.StringToBool(data.name)
-                };
-                break;
-            case WordInfo.WordTags.Name:
-                data.tagObj.name = new Name()
-                {
-                    //affirmative = WordUtilities.StringToBool(data.name)
-                };
-                break;
-            default:
-                Debug.Log("you didnt add something here");
-                break;
-        }
-    }
 }
 
