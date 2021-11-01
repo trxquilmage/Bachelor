@@ -2,10 +2,10 @@ Mayfair;Location;West
 Grandrun;Location;East
 Neverre;Location;North
 Borealis;Location;South
-Yes;General;
-No;General;
+Yes;General;true
+No;General;false
 Karl;Name;tourist guide
 Fiona;Name;cook
 Schubert;Name;trader
-Mukhosha;General;
+Mukhosha;Item;
 Rebecca;Name;dead

@@ -25,7 +25,7 @@ public class CommandManager : MonoBehaviour
                 return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, false);
             }
         });
-        ReferenceManager.instance.runner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
+        ReferenceManager.instance.runner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
         {
             return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });
@@ -46,7 +46,7 @@ public class CommandManager : MonoBehaviour
                 return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, true);
             }
         });
-        ReferenceManager.instance.askRunner.AddFunction("getinfo", 1, delegate (Yarn.Value[] parameters)
+        ReferenceManager.instance.askRunner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
         {
             return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });

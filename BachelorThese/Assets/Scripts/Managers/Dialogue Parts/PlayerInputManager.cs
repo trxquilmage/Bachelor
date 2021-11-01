@@ -107,13 +107,16 @@ public class PlayerInputManager : MonoBehaviour
     {
         Word.WordData data;
         if (!isAsk)
+        {
             data = givenAnswer;
+        }
         else
+        {
             data = givenAnswerAsk;
-        Debug.Log(givenAnswer.name);
+        }
+
         Word.TagObject tagObj = data.tagObj;
         Yarn.Value val = InfoManager.instance.FindValue(data, lookingFor);
-
         //save the required Info
         if (CheckIfShouldSave(saveIn)) { info.SaveInfo(saveIn, val, NPCname, tagObj); }
 
@@ -192,7 +195,7 @@ public class PlayerInputManager : MonoBehaviour
         // Temporarily disable any other active prompts
         TemporarilyClosePromptMenu(true);
         //Reload the word case, so any possibly missing words from other prompt inputs respawn
-        WordCaseManager.instance.OpenOnTag();
+        WordCaseManager.instance.OpenOnTag(false);
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -211,7 +214,7 @@ public class PlayerInputManager : MonoBehaviour
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
-            WordCaseManager.instance.OpenOnTag();
+            WordCaseManager.instance.OpenOnTag(false);
             //Jump to NPC.answer
             WordUtilities.JumpToNode(ReferenceManager.instance.askRunner, givenAnswerAsk.name);
             //Continue()
@@ -266,7 +269,7 @@ public class PlayerInputManager : MonoBehaviour
             DialogueInputManager.instance.continueEnabledPromptAsk = true;
             DeleteAllPrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.OpenOnTag(); //Reload, so that the missing word comes back
+            WordCaseManager.instance.OpenOnTag(false); //Reload, so that the missing word comes back
             ReferenceManager.instance.askField.SetActive(false);
         }
         ReferenceManager.instance.askContinueButton.SetActive(false);

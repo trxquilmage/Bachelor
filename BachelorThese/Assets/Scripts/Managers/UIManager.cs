@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
         refM = ReferenceManager.instance;
         wcM = WordCaseManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
+        ColorUI();
     }
     private void Update()
     {
@@ -81,5 +82,56 @@ public class UIManager : MonoBehaviour
                 WordUtilities.ReColorAllInteractableWords();
         }
 
+    }
+    /// <summary>
+    /// Gives the correct colors to all UI Elements
+    /// </summary>
+    void ColorUI()
+    {
+        //Declare variables
+        Image[] buttons = WordCaseManager.instance.buttons;
+        GameObject tagParent = refM.tagButtonParent;
+
+        //activate UI elements
+        refM.wordCase.SetActive(true);
+        refM.nPCDialogueField.SetActive(true);
+        refM.playerInputField.SetActive(true);
+        refM.askField.SetActive(true);
+        refM.askNPCField.SetActive(true);
+
+        //color everything
+        buttons = tagParent.GetComponentsInChildren<Image>();
+        buttons[0].color = refM.allColor;
+        buttons[1].color = refM.locationColor;
+        buttons[2].color = refM.generalColor;
+        buttons[3].color = refM.nameColor;
+        buttons[4].color = refM.itemColor;
+        refM.ask.GetComponent<Image>().color = refM.askColor;
+        refM.barter.GetComponent<Image>().color = refM.askColor;
+        refM.trashCan.GetComponent<Image>().color = refM.askColor;
+        refM.wButton.GetComponent<Image>().color = refM.askColor;
+
+        refM.playerInputField.GetComponent<Image>().color = refM.inputFieldColor;
+        refM.nPCDialogueField.GetComponent<Image>().color = refM.textFieldColor;
+        refM.askNPCField.GetComponent<Image>().color = refM.textFieldColor;
+        refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
+        
+        refM.continueButton.GetComponent<Image>().color = refM.interactableButtonColor;
+        refM.askButton.GetComponent<Image>().color = refM.interactableButtonColor;
+        refM.askContinueButton.GetComponent<Image>().color = refM.interactableButtonColor;
+
+        refM.nameField.GetComponent<Image>().color = refM.nameFieldColor;
+        //go through all interactable texts and make them "normal color"
+        foreach (TMP_Text text in GameObject.FindObjectsOfType<TMP_Text>())
+        {
+            text.color = refM.normalColor;
+        }
+
+        //deactivate ui elements
+        ReferenceManager.instance.wordCase.SetActive(false);
+        ReferenceManager.instance.nPCDialogueField.SetActive(false);
+        ReferenceManager.instance.playerInputField.SetActive(false);
+        ReferenceManager.instance.askField.SetActive(false);
+        ReferenceManager.instance.askNPCField.SetActive(false);
     }
 }

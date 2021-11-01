@@ -68,16 +68,21 @@ public class InfoManager : MonoBehaviour
         int i = WordLookupReader.instance.CheckAgainstList(data, LookingFor);
         return tagObject.allGivenValues[i];
     }
-Rumor FindCorrectRumor(string variableName)
-{
-    foreach (Rumor rumor in allRumors)
+    /// <summary>
+    /// for get info, find the rumor we are looking for
+    /// </summary>
+    /// <param name="variableName"></param>
+    /// <returns></returns>
+    Rumor FindCorrectRumor(string variableName)
     {
-        if (rumor.name == variableName)
-            return rumor;
+        foreach (Rumor rumor in allRumors)
+        {
+            if (rumor.name == variableName)
+                return rumor;
+        }
+        Debug.Log("the name " + variableName + "doesnt exist");
+        return null;
     }
-    Debug.Log("the name " + variableName + "doesnt exist");
-    return null;
-}
 }
 //Saves ANY given information in a Rumor, containing the value's name,
 //it's value as a Yarn.Value and the name of the character the Info was told

@@ -58,10 +58,15 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         data.tagObj = new TagObject();
         data.tagObj.allGivenValues = new List<Yarn.Value>();
         data.tagObj.allGivenValues.Add(new Yarn.Value(data.name));
+        int i = 0;
         foreach (string tag in tags)
         {
-            Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
-            data.tagObj.allGivenValues.Add(val);
+            if (i != 0)
+            {
+                Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
+                data.tagObj.allGivenValues.Add(val);
+            }
+            i++; //we dont want the location to be in this
         }
     }
     /// <summary>
@@ -174,18 +179,23 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     void IsOverPlayerInput()
     {
-        if (data.origin == WordInfo.Origin.Dialogue)
+        if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
-            //parent to word
-            WordUtilities.ParentBubbleToPrompt(this.gameObject);
-            //close wordCase
-            WordCaseManager.instance.AutomaticOpenCase(false);
+            if (data.origin == WordInfo.Origin.Dialogue)
+            {
+                //parent to word
+                WordUtilities.ParentBubbleToPrompt(this.gameObject);
+                //close wordCase
+                WordCaseManager.instance.AutomaticOpenCase(false);
+            }
+            else if (data.origin == WordInfo.Origin.WordCase)
+            {
+                // parent to word
+                WordUtilities.ParentBubbleToPrompt(this.gameObject);
+            }
         }
-        else if (data.origin == WordInfo.Origin.WordCase)
-        {
-            // parent to word
-            WordUtilities.ParentBubbleToPrompt(this.gameObject);
-        }
+        else
+            IsOverNothing();
     }
     /// <summary>
     /// The bubble was dragged onto nothing and dropped
@@ -207,10 +217,5 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             WordCaseManager.instance.PutWordBack(this);
         }
     }
-    /// <summary>
-    /// Find the correct tag and add all subtags
-    /// </summary>
-    /// <param name="tagObj"></param>
-    /// <param name="tags"></param>
 }
 

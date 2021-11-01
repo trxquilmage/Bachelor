@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PromptBubble : MonoBehaviour
 {
+    public bool acceptsCurrentWord;
     bool isHover = false;
     Image bubble;
     PromptBubbleData data;
@@ -40,10 +41,14 @@ public class PromptBubble : MonoBehaviour
                 WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
+                acceptsCurrentWord = true;
             }
+            else
+                acceptsCurrentWord = false;
         }
         else if (!isOnHover && isHover) //mouse stops hover
         {
+            acceptsCurrentWord = false;
             bubble.color = data.imageColor;
         }
         isHover = isOnHover;

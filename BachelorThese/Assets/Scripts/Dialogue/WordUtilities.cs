@@ -27,6 +27,9 @@ public static class WordUtilities
             case WordInfo.WordTags.Name:
                 color = refM.nameColor;
                 break;
+            case WordInfo.WordTags.Item:
+                color = refM.itemColor;
+                break;
             case WordInfo.WordTags.AllWords:
                 color = refM.allColor;
                 break;
@@ -401,13 +404,30 @@ public static class WordUtilities
     /// <param name="tag"></param>
     public static Yarn.Value TransformIntoYarnVal(string tag)
     {
-        if (char.IsDigit(tag[0]))
-            return new Yarn.Value((float)Convert.ToInt32(tag));
-        else if (tag == "true")
-            return new Yarn.Value(true);
-        else if (tag == "false")
-            return new Yarn.Value(false);
-        else
-            return new Yarn.Value(tag);
+        if (tag.Length > 0)
+        {
+            if (char.IsDigit(tag[0]))
+                return new Yarn.Value((float)Convert.ToInt32(tag));
+            else if (tag == "true")
+                return new Yarn.Value(true);
+            else if (tag == "false")
+                return new Yarn.Value(false);
+            else
+                return new Yarn.Value(tag);
+        }
+        return null;
+    }
+    /// <summary>
+    /// Remap.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="from1"></param>
+    /// <param name="to1"></param>
+    /// <param name="from2"></param>
+    /// <param name="to2"></param>
+    /// <returns></returns>
+    public static float Remap(this float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 }

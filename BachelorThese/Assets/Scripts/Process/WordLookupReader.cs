@@ -89,6 +89,7 @@ public class WordLookupReader : MonoBehaviour
     public int CheckAgainstList(Word.WordData data, string lookingFor)
     {
         //check the dictionary for the tag
+        
         int i = 0;
         foreach (string subtag in tagSubtag[data.tag])
         {

@@ -9,21 +9,29 @@ public class WordCaseManager : MonoBehaviour
     public static WordCaseManager instance;
     public GameObject wordReplacement;
     [SerializeField] Image background;
-    [SerializeField] GameObject wordCaseUI;
     [HideInInspector]
     public WordInfo.WordTags openTag
     {
         get { return OpenTag; }
         set
         {
-            OpenTag = value;
-            OpenOnTag();
-            UpdateWordCount();
+            if (OpenTag == value)
+            {
+                OpenTag = value;
+                OpenOnTag(false);
+            }
+            else
+            {
+                OpenTag = value;
+                OpenOnTag(true);
+            }
         }
     }
     [HideInInspector] public bool overTrashcan;
 
     WordInfo.WordTags OpenTag;
+    ReferenceManager refM;
+    public Image[] buttons;
     public Dictionary<WordInfo.WordTags, Word.WordData[]> tagRelatedWords;
     bool alreadyOpen;
     int tagAmount; // number of all tags except for "all" & "none"
@@ -40,8 +48,8 @@ public class WordCaseManager : MonoBehaviour
         {
             tagRelatedWords.Add(wordTags, new Word.WordData[ReferenceManager.instance.maxWordsPerTag]);
         }
-        ColorButtonsCorrectly();
         tagAmount = tagRelatedWords.Count - 2; //minus "all" & "none"
+        refM = ReferenceManager.instance;
     }
     /// <summary>
     /// Only for automatically opening the word case when draggin something in
@@ -52,18 +60,18 @@ public class WordCaseManager : MonoBehaviour
         // open the case
         if (open)
         {
-            if (wordCaseUI.activeInHierarchy)
+            if (ReferenceManager.instance.wordCase.activeInHierarchy)
             {
                 alreadyOpen = true;
             }
-            wordCaseUI.SetActive(true);
+            ReferenceManager.instance.wordCase.SetActive(true);
         }
         //close the case
         else
         {
             if (!alreadyOpen)
             {
-                wordCaseUI.SetActive(false);
+                ReferenceManager.instance.wordCase.SetActive(false);
             }
         }
     }
@@ -72,7 +80,7 @@ public class WordCaseManager : MonoBehaviour
     /// </summary>
     public void ManuallyOpenCase()
     {
-        wordCaseUI.SetActive(!wordCaseUI.activeInHierarchy);
+        ReferenceManager.instance.wordCase.SetActive(!ReferenceManager.instance.wordCase.activeInHierarchy);
         openTag = WordInfo.WordTags.AllWords;
     }
     /// <summary>
@@ -95,7 +103,7 @@ public class WordCaseManager : MonoBehaviour
                 }
             }
             //Reload
-            OpenOnTag();
+            OpenOnTag(false);
             WordUtilities.ReColorAllInteractableWords();
 
             if (!foundASpot) //word list full, put the word back into the dialogue
@@ -112,20 +120,25 @@ public class WordCaseManager : MonoBehaviour
     /// <summary>
     /// Loads the Word Case on the given tag. removes the previous words.
     /// </summary>
-    public void OpenOnTag()
+    public void OpenOnTag(bool resetScrollbar)
     {
         // Set Background Color to Tag Color + a bit grey
         Color color = WordUtilities.MatchColorToTag(openTag);
-        color = new Color((color.r + 0.1f) > 1 ? 1 : (color.r + 0.1f),
-            (color.g + 0.1f) > 1 ? 1 : (color.g + 0.1f),
-            (color.b + 0.1f) > 1 ? 1 : (color.b + 0.1f), 1);
+        color = Color.Lerp(color, Color.grey, 0.35f);
+        Color colorStandart = Color.Lerp(color, Color.white, 0.3f);
         background.color = color;
-        if (ReferenceManager.instance.wordLimit.isActiveAndEnabled)
-            ReferenceManager.instance.wordLimit.GetComponentInParent<Image>().color = color;
-        // Unload Words of previous tag
-        foreach (Transform word in ReferenceManager.instance.listingParent.GetComponentsInChildren<Transform>())
+        if (refM.wordLimit.isActiveAndEnabled)
         {
-            if (word.gameObject != ReferenceManager.instance.listingParent)
+            refM.wordLimit.GetComponentInParent<Image>().color = color;
+            refM.bubbleScrollbar.GetComponent<Image>().color = color;
+            refM.bubbleScrollbar.GetComponentsInChildren<Image>()[1].color = colorStandart;
+            refM.buttonScrollbar.GetComponent<Image>().color = color;
+            refM.buttonScrollbar.GetComponentsInChildren<Image>()[1].color = colorStandart;
+        }
+        // Unload Words of previous tag
+        foreach (Transform word in refM.listingParent.GetComponentsInChildren<Transform>())
+        {
+            if (word.gameObject != refM.listingParent)
             {
                 Destroy(word.gameObject);
             }
@@ -140,7 +153,7 @@ public class WordCaseManager : MonoBehaviour
                 {
                     GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, WordInfo.Origin.WordCase);
                     //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
-                    bubble.transform.SetParent(ReferenceManager.instance.listingParent.transform);
+                    bubble.transform.SetParent(refM.listingParent.transform);
                 }
 
             }
@@ -158,7 +171,11 @@ public class WordCaseManager : MonoBehaviour
                 }
             }
         }
+
         UpdateWordCount();
+        RescaleScrollbar(GetTagWordCount(openTag));
+        if (resetScrollbar)
+            ResetScrollbar();
     }
     /// <summary>
     /// for UI buttons on the word case: change to the according case
@@ -179,24 +196,13 @@ public class WordCaseManager : MonoBehaviour
             case 3:
                 openTag = WordInfo.WordTags.Name;
                 break;
+            case 4:
+                openTag = WordInfo.WordTags.Item;
+                break;
             default:
                 Debug.Log("tag doesnt exist");
                 break;
         }
-    }
-    /// <summary>
-    /// Gives the correct colors to the tag-buttons
-    /// </summary>
-    void ColorButtonsCorrectly()
-    {
-        GameObject tagParent = ReferenceManager.instance.tagButtonParent;
-        wordCaseUI.SetActive(true);
-        Image[] buttons = tagParent.GetComponentsInChildren<Image>();
-        buttons[0].color = ReferenceManager.instance.allColor;
-        buttons[1].color = ReferenceManager.instance.locationColor;
-        buttons[2].color = ReferenceManager.instance.generalColor;
-        buttons[3].color = ReferenceManager.instance.nameColor;
-        wordCaseUI.SetActive(false);
     }
     /// <summary>
     /// Put the word that was dragged out of the case back into the case
@@ -346,5 +352,70 @@ public class WordCaseManager : MonoBehaviour
             barter.GetComponent<Button>().enabled = true;
             barter.GetComponent<Image>().color = activeColor;
         }
+    }
+    /// <summary>
+    /// Called, when tag-scrollbar is scrolled. move all buttons from left-right
+    /// </summary>
+    public void ScrollThroughButtons()
+    {
+        float value = ReferenceManager.instance.buttonScrollbar.GetComponent<Scrollbar>().value;
+        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(-value * ReferenceManager.instance.tagScrollbarDistance, 0);
+    }
+    /// <summary>
+    /// Call when the bubble scrollbar is scrolled. moves the words up & down. resets on tag.
+    /// </summary>
+    public void ScrollThroughBubbles()
+    {
+        float value = ReferenceManager.instance.bubbleScrollbar.GetComponent<Scrollbar>().value;
+        ReferenceManager.instance.listingParent.transform.localPosition = new Vector2(0, value * ReferenceManager.instance.currScrollbarDistance);
+    }
+    /// <summary>
+    /// Resets on OpenOnTag(), so that we arent lost in the sauce
+    /// </summary>
+    void ResetScrollbar()
+    {
+        ReferenceManager.instance.bubbleScrollbar.value = 0;
+    }
+    /// <summary>
+    /// Takes the ScrollBar and re-scales it according to the current amount of words
+    /// </summary>
+    /// <param name="bubbleCount"></param>
+    void RescaleScrollbar(int bubbleCount)
+    {
+        Scrollbar scrollbar = refM.bubbleScrollbar;
+        //if the value is smaller than what fits the canvas, it is irrelevant
+        Mathf.Clamp(bubbleCount, refM.scrollbarSizeOnCanvas, refM.scrollbarMaxSize);
+        //between biggest size (1) and smallest we want (0.05f)
+        float scrollbarSize = WordUtilities.Remap(bubbleCount, refM.scrollbarSizeOnCanvas, refM.scrollbarMaxSize, 1, 0.05f);
+        float overlappingWords = Mathf.Clamp(bubbleCount - refM.scrollbarSizeOnCanvas,0, Mathf.Infinity);
+        refM.currScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
+        scrollbar.size = scrollbarSize;
+    }
+    /// <summary>
+    /// Count the number of words that are in the current tag
+    /// </summary>
+    /// <param name="tag"></param>
+    int GetTagWordCount(WordInfo.WordTags tag)
+    {
+        int wordCount = 0;
+        if (tag != WordInfo.WordTags.AllWords)
+        {
+            foreach (Word.WordData data in tagRelatedWords[tag])
+            {
+                if (data.name != null)
+                    wordCount++;
+            }
+        }
+        else
+        {
+            foreach (WordInfo.WordTags allTags in tagRelatedWords.Keys)
+            {
+                if (allTags != WordInfo.WordTags.AllWords && allTags != WordInfo.WordTags.None)
+                {
+                    wordCount += GetTagWordCount(allTags);
+                }
+            }
+        }
+        return wordCount;
     }
 }

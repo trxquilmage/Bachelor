@@ -53,7 +53,7 @@ public class DialogueInputManager : MonoBehaviour
             closeAWindow = true;
             PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.OpenOnTag(); //Reload, so that the missing word comes back
+            WordCaseManager.instance.OpenOnTag(false); //Reload, so that the missing word comes back
             ReferenceManager.instance.playerInputField.SetActive(false);
         }
     }
