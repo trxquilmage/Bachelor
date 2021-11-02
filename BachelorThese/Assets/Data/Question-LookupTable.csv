@@ -1,5 +1,5 @@
-LocAAA; ;I'm from  <color=white>\Location\</color>
-LocAAB; ;<color=white>\General\</color>.
-OriAAA; ;<color=white>\General\</color>.
-AskAAA; ;Can you tell me about <color=white>\AllWords\</color> ?
-PerAAA; ;<color=white>\General\</color>.
+LocAAA;I'm from  <color=white>\Location\</color>;
+LocAAB;<color=white>\General\</color>.;<color=white>\General\</color>.
+OriAAA;<color=white>\General\</color>.;
+AskAAA;Can you tell me about <color=white>\AllWords\</color> ?;
+PerAAA;<color=white>\General\</color>.;

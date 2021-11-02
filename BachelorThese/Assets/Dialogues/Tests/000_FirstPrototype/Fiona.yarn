@@ -4,7 +4,8 @@ tags:
 <<showcharactername Managers Fiona>>
 <<if not isvisited("Fiona","Start")>>
     Hi! How are you doing my dear?
-    I'm so busy at the moment,  you think you could do me a favor?
+    I'm really busy right now. 
+    Do you think you could do me a favor?
     Could you deliver this fine roastbeef to Lady Katherine?
 <<else>>
     [[Fiona.Idle]]

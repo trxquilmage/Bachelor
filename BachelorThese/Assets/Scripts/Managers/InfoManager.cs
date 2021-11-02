@@ -65,7 +65,7 @@ public class InfoManager : MonoBehaviour
     public Yarn.Value FindValue(Word.WordData data, string LookingFor)
     {
         Word.TagObject tagObject = data.tagObj;
-        int i = WordLookupReader.instance.CheckAgainstList(data, LookingFor);
+        int i = WordLookupReader.instance.CheckForSubtags(data, LookingFor);
         return tagObject.allGivenValues[i];
     }
     /// <summary>

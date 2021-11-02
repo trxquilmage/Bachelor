@@ -3,6 +3,7 @@ tags:
 ---
 <<showcharactername Managers Karl>>
 <<if not isvisited("Karl", "Start")>>
+    Yes, Lady Katherine? 
     Welcome, friend, to Mayfair!
     The most special place in the world!
     [[Karl.Question]]

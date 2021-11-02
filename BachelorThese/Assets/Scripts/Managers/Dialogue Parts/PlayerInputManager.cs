@@ -147,9 +147,8 @@ public class PlayerInputManager : MonoBehaviour
         if (wlReader.questionTag.ContainsKey(promptID))
         {
             promptAnswer.ForceMeshUpdate();
-            promptQuestion.text = wlReader.questionTag[promptID][0];
             //before filling in new text into the prompt menu, empty the array, as it doesnt do that
-            promptAnswer.text = @wlReader.questionTag[promptID][1];
+            promptAnswer.text = @wlReader.questionTag[promptID][0];
             promptAnswer.ForceMeshUpdate();
         }
         else

@@ -38,7 +38,9 @@ public class PromptBubble : MonoBehaviour
         {
             //if there is a currentWord AND it has the same tag as this specific word
             if (WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag)
+                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag ||
+                WordClickManager.instance.currentWord != null &&
+                data.tag == WordInfo.WordTags.AllWords)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;

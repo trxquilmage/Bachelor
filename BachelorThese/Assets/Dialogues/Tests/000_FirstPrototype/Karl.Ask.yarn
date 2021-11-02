@@ -20,7 +20,7 @@ tags:
 ---
 <<if not isvisited("Karl", "Mayfair")>>
     Mayfair, of course, is this wonderful town we find ourselves in today!
-    We usually rank among to winners of the annual "best towns contest".
+    We usually rank among the winners of the annual "best towns contest".
     <<displaypromptmenuask Managers LocAAB>>
     Do you like the town? Be straight, Yes or No?
     <<set $likesMayfair to react("value", "likesMayfair", "Karl")>>
