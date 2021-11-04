@@ -22,6 +22,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         public WordInfo.WordTags tag;
         public WordInfo.Origin origin;
         public TagObject tagObj;
+        public Vector2[] lineLengths;
     }
     /// <summary>
     /// 0 = name, 1 = tags[0] (main tag), 2 = tags[1] (sub tag 1) ...
@@ -35,7 +36,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     /// <param name="name"></param>
     /// <param name="tags"></param>
-    public void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, bool hasWordInfo)
+    public void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, bool hasWordInfo, bool longWord)
     {
         data = new WordData();
         data.name = name;
@@ -47,10 +48,9 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             relatedWordInfo = wordInfo;
             relatedText = wordInfo.textComponent;
         }
-
         nameText = transform.GetComponentInChildren<TMP_Text>();
         nameText.text = name;
-        ScaleRect();
+        ScaleRect(nameText, GetComponent<RectTransform>());
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
         WordUtilities.ColorTag(this.gameObject, data.tag);
 
@@ -68,18 +68,26 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             }
             i++; //we dont want the location to be in this
         }
+        data.lineLengths = GetLineLengths();
+
+        if (longWord) //See how the word should be shaped
+        {
+            if (origin == WordInfo.Origin.Dialogue)
+                FitToText(nameText, relatedText, (int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
+            else if (origin == WordInfo.Origin.QuestLog)
+                FitToBubbleShape(nameText);
+        }
     }
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
     /// </summary>
-    void ScaleRect()
+    void ScaleRect(TMP_Text text, RectTransform rTransform)
     {
-        nameText.ForceMeshUpdate();
-        Bounds bounds = nameText.textBounds;
+        text.ForceMeshUpdate();
+        Bounds bounds = text.textBounds;
         float width = bounds.size.x;
         width = width + 4;
-        RectTransform rT = this.GetComponent(typeof(RectTransform)) as RectTransform;
-        rT.sizeDelta = new Vector2(width, rT.sizeDelta.y);
+        rTransform.sizeDelta = new Vector2(width, rTransform.sizeDelta.y);
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -103,6 +111,10 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 {
                     IsOverWordCase();
                 }
+                if (clickM.mouseOverUIObject == "questLog")
+                {
+                    IsOverQuestLog();
+                }
                 else if (clickM.mouseOverUIObject == "trashCan")
                 {
                     WordCaseManager.instance.TrashAWord();
@@ -123,6 +135,10 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         {
             WordCaseManager.instance.DestroyWordReplacement();
         }
+        if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            QuestManager.instance.DestroyQuestReplacement();
+        }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -140,10 +156,19 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         // if the word is being dragged out of the dialogue
         if (data.origin == WordInfo.Origin.Dialogue)
         {
-            WordCaseManager.instance.AutomaticOpenCase(true);
+            if (data.tag != WordInfo.WordTags.Quest)
+            {
+                WordCaseManager.instance.AutomaticOpenCase(true);
+                WordCaseManager.instance.openTag = data.tag;
+            }
+            else if (data.tag == WordInfo.WordTags.Quest)
+            {
+                QuestManager.instance.AutomaticOpenCase(true);
+                UpdateToBubbleShape();
+            }
             WordClickManager.instance.currentWord = this.gameObject;
             WordClickManager.instance.wordLastHighlighted = null;
-            WordCaseManager.instance.openTag = data.tag;
+
         }
         else if (data.origin == WordInfo.Origin.WordCase)
         {
@@ -151,6 +176,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             //Delete Word from case list
             WordClickManager.instance.currentWord = this.gameObject;
             WordCaseManager.instance.SpawnWordReplacement(this);
+        }
+        else if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
+            //Spawn Replacement
+            WordClickManager.instance.currentWord = this.gameObject;
+            QuestManager.instance.SpawnQuestReplacement(this);
         }
 
     }
@@ -161,17 +193,66 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         if (data.origin == WordInfo.Origin.Dialogue)
         {
-            //save it
-            WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
+            //if its NOT a quest, put into word case
+            if (data.tag != WordInfo.WordTags.Quest)
+            {
 
-            //close the case & Delete the UI word
-            WordCaseManager.instance.AutomaticOpenCase(false);
-            WordClickManager.instance.DestroyCurrentWord();
+                //save it
+                WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
+
+                //close the case & Delete the UI word
+                WordCaseManager.instance.AutomaticOpenCase(false);
+                WordClickManager.instance.DestroyCurrentWord();
+            }
+            //if its a quest, pretend as if is over nothing
+            else if (data.tag == WordInfo.WordTags.Quest)
+            {
+                IsOverNothing();
+            }
         }
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this);
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
+        }
+        else if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
+        }
+    }
+    /// <summary>
+    /// The bubble was dragged onto the questLog and dropped
+    /// </summary>
+    void IsOverQuestLog()
+    {
+        if (data.origin == WordInfo.Origin.Dialogue)
+        {
+            //if its a quest, put into quest Log
+            if (data.tag == WordInfo.WordTags.Quest)
+            {
+                //save it
+                QuestManager.instance.SaveQuest(WordClickManager.instance.currentWord.GetComponent<Word>());
+
+                //close the case & Delete the UI word
+                QuestManager.instance.AutomaticOpenCase(false);
+                WordClickManager.instance.DestroyCurrentWord();
+            }
+            //if its NOT a quest, pretend as if is over nothing
+            else if (data.tag != WordInfo.WordTags.Quest)
+            {
+                IsOverNothing();
+            }
+        }
+        else if (data.origin == WordInfo.Origin.WordCase)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
+        }
+        else if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
         }
     }
     /// <summary>
@@ -204,9 +285,6 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         if (data.origin == WordInfo.Origin.Dialogue)
         {
-            //save it
-            WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
-
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
             WordClickManager.instance.DestroyCurrentWord();
@@ -214,8 +292,206 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this);
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
         }
+        else if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            // put it back
+            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
+        }
+    }
+    /// <summary>
+    /// Takes a long word and fits it above the text it is portraying
+    /// </summary>
+    void FitToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
+    {
+        editableText.ForceMeshUpdate();
+        Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
+        // set variables
+        TMP_CharacterInfo[] fullText = editableText.textInfo.characterInfo;
+
+        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
+        GameObject child = this.gameObject;
+        GetComponent<VerticalLayoutGroup>().enabled = false;
+
+        int j = 0;
+        foreach (Vector2 startEnd in sourceLineLengths)
+        {
+            Vector2 position = WordUtilities.GetWordPosition(sourceText, lineStarts[j]);
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, position, Quaternion.identity);
+            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            child.transform.position = position;
+            editableText = child.GetComponentInChildren<TMP_Text>();
+
+            string line = "";
+            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
+            {
+                line = line + sourceText.textInfo.characterInfo[i].character;
+            }
+            editableText.text = line;
+
+            // Scale the text boxes
+            child.GetComponentsInChildren<RectTransform>()[1].sizeDelta = new Vector2(1000, child.GetComponentsInChildren<RectTransform>()[1].sizeDelta.y);
+            ScaleRect(editableText, child.GetComponent<RectTransform>());
+            // color the boxes
+            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            j++;
+        }
+        //remove the iamge and text from the original bubble
+        Destroy(GetComponent<Image>());
+        Destroy(transform.GetChild(0).gameObject);
+        //scale the parent so that the layout group gets the distances right
+        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+    }
+    /// <summary>
+    /// Takes a long word and fits it into a shape that is compact
+    /// </summary>
+    void FitToBubbleShape(TMP_Text text)
+    {
+        text.ForceMeshUpdate();
+        // set variables
+        TMP_CharacterInfo[] fullText = text.textInfo.characterInfo;
+
+        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
+        GameObject child;
+        GetComponent<VerticalLayoutGroup>().enabled = true;
+        int j = 0;
+        foreach (Vector2 startEnd in data.lineLengths)
+        {
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, Vector2.zero, Quaternion.identity);
+            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            text = child.GetComponentInChildren<TMP_Text>();
+            string line = "";
+            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
+            {
+                line = line + fullText[i].character;
+            }
+            text.text = line;
+
+            // Scale the text boxes
+            ScaleRect(text, child.GetComponent<RectTransform>());
+            // color the boxes
+            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            j++;
+        }
+        //remove the iamge and text from the original bubble
+        Destroy(GetComponent<Image>());
+        Destroy(transform.GetChild(0).gameObject);
+        //scale the parent so that the layout group gets the distances right
+        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+    }
+    /// <summary>
+    /// Takes a long word from a dialogue and changes it into the compact shape
+    /// </summary>
+    public void UpdateToBubbleShape()
+    {
+        GameObject toUpdate = WordClickManager.instance.wordLastHighlighted;
+        TMP_Text mainText = toUpdate.GetComponentInChildren<TMP_Text>();
+        //Set the main text to full text again
+        mainText.text = data.name;
+        mainText.ForceMeshUpdate();
+        TMP_CharacterInfo[] fullText = mainText.textInfo.characterInfo;
+
+        //Delete the other Bubbles
+        Image[] images = toUpdate.GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+            Destroy(images[i].gameObject);
+
+        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
+        GameObject child;
+        GetComponent<VerticalLayoutGroup>().enabled = true;
+        int j = 0;
+        foreach (Vector2 startEnd in data.lineLengths)
+        {
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, Vector2.zero, Quaternion.identity);
+            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            mainText = child.GetComponentInChildren<TMP_Text>();
+            string line = "";
+            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
+            {
+                line = line + fullText[i].character;
+            }
+            mainText.text = line;
+
+            // Scale the text boxes
+            ScaleRect(mainText, child.GetComponent<RectTransform>());
+            // color the boxes
+            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            j++;
+        }
+        //scale the parent so that the layout group gets the distances right
+        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+    }
+    /// <summary>
+    /// Gives back an array of Vector2s, each containing the index of the first and last letter of each line in the text
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    Vector2[] GetLineLengths()
+    {
+        nameText.ForceMeshUpdate();
+        //Set these for the first round just in case they create problems otherwise
+        List<Vector2> firstAndLast = new List<Vector2>() { Vector2.zero }; //first and last letter of a line
+        float lastHeight = nameText.textInfo.characterInfo[0].vertex_BL.position.y;
+        float currentHeight = lastHeight;
+        int wordLastChar = nameText.textInfo.wordInfo[0].lastCharacterIndex;
+
+        //go through all words and check the height of their first letter (== how many lines do we need)
+        for (int i = 0; i < nameText.textInfo.wordCount; i++)
+        {
+            TMP_WordInfo wordInfo = nameText.textInfo.wordInfo[i];
+            int wordFirstChar = wordInfo.firstCharacterIndex;
+            currentHeight = nameText.textInfo.characterInfo[wordFirstChar].vertex_BL.position.y;
+
+            if (currentHeight + 10 < lastHeight) //the values are EXTREMELY ungenau
+            {
+                int listCount = firstAndLast.Count - 1;
+                firstAndLast[listCount] = new Vector2(firstAndLast[listCount].x, wordLastChar);
+                firstAndLast.Add(new Vector2(wordFirstChar, 0));
+            }
+
+            // this goes last, because we want to check if we still need it first
+            wordLastChar = wordInfo.lastCharacterIndex;
+            lastHeight = currentHeight;
+        }
+        //as there is no line to jump to after the last word, we need to add the last character manually
+        firstAndLast[firstAndLast.Count - 1] = new Vector2(firstAndLast[firstAndLast.Count - 1].x, nameText.textInfo.characterCount - 1);
+        return firstAndLast.ToArray();
+    }
+    Vector2[] GetLineLengths(TMP_Text text, int firstWord, int lastWord, out TMP_WordInfo[] lineStarts)
+    {
+        text.ForceMeshUpdate();
+        List<TMP_WordInfo> lineStartsList = new List<TMP_WordInfo>();
+        int wordFirstChar = text.textInfo.wordInfo[firstWord].firstCharacterIndex;
+        int wordLastChar = text.textInfo.wordInfo[firstWord].lastCharacterIndex;
+        //Set these for the first round just in case they create problems otherwise
+        List<Vector2> firstAndLast = new List<Vector2>() { new Vector2(wordFirstChar, 0) }; //first and last letter of a line
+        float lastHeight = text.textInfo.characterInfo[wordFirstChar].vertex_BL.position.y;
+        float currentHeight = lastHeight;
+        lineStartsList.Add(text.textInfo.wordInfo[firstWord]);
+        //go through all words and check the height of their first letter (== how many lines do we need)
+        for (int i = firstWord; i <= lastWord; i++)
+        {
+            TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
+            wordFirstChar = wordInfo.firstCharacterIndex;
+            currentHeight = text.textInfo.characterInfo[wordFirstChar].vertex_BL.position.y;
+
+            if (currentHeight + 10 < lastHeight) //the values are EXTREMELY ungenau
+            {
+                int listCount = firstAndLast.Count - 1;
+                firstAndLast[listCount] = new Vector2(firstAndLast[listCount].x, wordLastChar);
+                firstAndLast.Add(new Vector2(wordFirstChar, 0));
+                lineStartsList.Add(wordInfo);
+            }
+
+            // this goes last, because we want to check if we still need it first
+            wordLastChar = wordInfo.lastCharacterIndex;
+            lastHeight = currentHeight;
+        }
+        //as there is no line to jump to after the last word, we need to add the last character manually
+        firstAndLast[firstAndLast.Count - 1] = new Vector2(firstAndLast[firstAndLast.Count - 1].x, text.textInfo.wordInfo[lastWord].lastCharacterIndex);
+        lineStarts = lineStartsList.ToArray();
+        return firstAndLast.ToArray();
     }
 }
 

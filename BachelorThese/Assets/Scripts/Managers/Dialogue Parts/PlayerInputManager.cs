@@ -129,7 +129,7 @@ public class PlayerInputManager : MonoBehaviour
     /// <param name="promptMenu"></param>
     /// <param name="promptAnswer"></param>
     /// <param name="promptQuestion"></param>
-    public void DisplayPrompt(string promptID, GameObject promptMenu, TMP_Text promptAnswer, TMP_Text promptQuestion, Transform bubbleParent, PromptBubble[] saveIn)
+    public void DisplayPrompt(string promptID, GameObject promptMenu, TMP_Text promptAnswer, Transform bubbleParent, PromptBubble[] saveIn)
     {
         //disable continue click
         if (saveIn == currentPromptBubbles)
@@ -148,13 +148,13 @@ public class PlayerInputManager : MonoBehaviour
         {
             promptAnswer.ForceMeshUpdate();
             //before filling in new text into the prompt menu, empty the array, as it doesnt do that
-            promptAnswer.text = @wlReader.questionTag[promptID][0];
+            promptAnswer.text = wlReader.questionTag[promptID][0];
             promptAnswer.ForceMeshUpdate();
         }
         else
             Debug.Log("The prompt {0} does not exist in the lookup table" + promptID);
 
-        //show required text prompts OVER the text at \Tag\
+        //show required text prompts OVER the text at |Tag|
         WordUtilities.CheckForPromptInputs(promptAnswer, promptAnswer.textInfo, bubbleParent, saveIn); // textinfo somehow gets deleted or something after that
 
         //make interactable
@@ -189,7 +189,7 @@ public class PlayerInputManager : MonoBehaviour
         //start the second runner
         ReferenceManager.instance.askRunner.StartDialogue(DialogueManager.instance.currentTarget.askNode);
         //generate prompt bubble
-        DisplayPrompt(promptID, refManager.askField, refManager.askQuestion, refManager.askQuestion,
+        DisplayPrompt(promptID, refManager.askField, refManager.askPrompt,
             refManager.askPromptBubbleParent.transform, currentPromptAskBubbles);
         // Temporarily disable any other active prompts
         TemporarilyClosePromptMenu(true);

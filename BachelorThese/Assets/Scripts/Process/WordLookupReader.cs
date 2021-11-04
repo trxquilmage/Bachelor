@@ -43,8 +43,8 @@ public class WordLookupReader : MonoBehaviour
             if (s != "")
             {
                 string[] lineData = s.Trim().Split(";"[0]);
-                string[] textPrompts = new string[2]{
-                    lineData[1], lineData[2]
+                string[] textPrompts = new string[1]{
+                    lineData[1]
                 };
                 questionTag.Add(lineData[0], textPrompts);
             }
@@ -136,10 +136,40 @@ public class WordLookupReader : MonoBehaviour
     {
         wordCollection = null;
         bool isWord = false;
+        if (currentWordList.Count != 0) // doing this first block out the chance for a word list to be broken up
+        {
+            currentLongWordIndex++;
+            if (currentLongWordIndex < currentLongWord.Length)
+            {
+                if (currentLongWord[currentLongWordIndex] == wordInfo.GetWord())
+                {
+                    currentWordList.Add(wordInfo);
+                }
+                else
+                {
+                    // this wasnt actually a word
+                    currentLongWord = null;
+                    currentWordList = new List<TMP_WordInfo>();
+                    currentLongWordIndex = 0;
+                }
+            }
+            if (currentLongWord != null && currentLongWordIndex + 1 == currentLongWord.Length) //finish off word #1
+            {
+                isWord = true;
+                wordCollection = currentWordList.ToArray();
+                currentLongWord = null;
+                currentWordList = new List<TMP_WordInfo>();
+                currentLongWordIndex = 0;
+            }
+        }
         if (wordTag.ContainsKey(wordInfo.GetWord()))
         {
             isWord = true;
             wordCollection = new TMP_WordInfo[] { wordInfo };
+            //Might be temporary, but delete long word progress, when finding a short word
+            currentLongWord = null;
+            currentWordList = new List<TMP_WordInfo>();
+            currentLongWordIndex = 0;
         }
         else if (currentWordList.Count == 0) //needs a first word
         {
@@ -154,25 +184,12 @@ public class WordLookupReader : MonoBehaviour
                 }
             }
         }
-        else if (currentWordList.Count != 0)
-        {
-            currentLongWordIndex++;
-            if (currentLongWordIndex < currentLongWord.Length)
-            {
-                if (currentLongWord[currentLongWordIndex] == wordInfo.GetWord())
-                {
-                    currentWordList.Add(wordInfo);
-                }
-            }
-            if (currentLongWordIndex + 1 == currentLongWord.Length) //finish off word
-            {
-                isWord = true;
-                wordCollection = currentWordList.ToArray();
-                currentLongWord = null;
-                currentWordList = new List<TMP_WordInfo>();
-                currentLongWordIndex = 0;
-            }
-        }
+
         return isWord;
+    }
+    public bool CheckForUnimportantWord(TMP_WordInfo wordInfo, out TMP_WordInfo[] wordInfos)
+    {
+        wordInfos = new TMP_WordInfo[0];
+        return false;
     }
 }

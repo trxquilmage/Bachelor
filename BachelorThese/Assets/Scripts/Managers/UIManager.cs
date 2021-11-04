@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     WordCaseManager wcM;
     float scaleFactor = 0;
     float timer = 0;
+    GameObject currentTrashCan;
     private void Awake()
     {
         instance = this;
@@ -58,16 +59,17 @@ public class UIManager : MonoBehaviour
     /// Changes the trashcan icon and makes sure that putting the word back is disabled while over the can
     /// </summary>
     /// <param name="open"></param>
-    public void SwitchTrashImage(bool open)
+    public void SwitchTrashImage(bool open, GameObject trashCan)
     {
-        WordCaseManager.instance.overTrashcan = open;
         if (open)
         {
-            refM.trashCan.GetComponentsInChildren<Image>()[1].sprite = refM.trashCanImage02;
+            trashCan.GetComponentsInChildren<Image>()[1].sprite = refM.trashCanImage02;
+            currentTrashCan = trashCan;
         }
-        else
+        else if (currentTrashCan != null && !open)
         {
-            refM.trashCan.GetComponentsInChildren<Image>()[1].sprite = refM.trashCanImage01;
+            currentTrashCan.GetComponentsInChildren<Image>()[1].sprite = refM.trashCanImage01;
+            currentTrashCan = null;
         }
     }
     /// <summary>
@@ -98,23 +100,36 @@ public class UIManager : MonoBehaviour
         refM.playerInputField.SetActive(true);
         refM.askField.SetActive(true);
         refM.askNPCField.SetActive(true);
+        refM.questCase.SetActive(true);
 
         //color everything
         buttons = tagParent.GetComponentsInChildren<Image>();
-        buttons[0].color = refM.allColor;
-        buttons[1].color = refM.locationColor;
-        buttons[2].color = refM.generalColor;
-        buttons[3].color = refM.nameColor;
-        buttons[4].color = refM.itemColor;
+        //[0] is spacing
+        buttons[1].color = refM.allColor;
+        buttons[2].color = refM.locationColor;
+        buttons[3].color = refM.otherColor;
+        buttons[4].color = refM.nameColor;
+        buttons[5].color = refM.itemColor;
         refM.ask.GetComponent<Image>().color = refM.askColor;
         refM.barter.GetComponent<Image>().color = refM.askColor;
         refM.trashCan.GetComponent<Image>().color = refM.askColor;
         refM.wButton.GetComponent<Image>().color = refM.askColor;
+        refM.qButton.GetComponent<Image>().color = refM.askColor;
 
         refM.playerInputField.GetComponent<Image>().color = refM.inputFieldColor;
         refM.nPCDialogueField.GetComponent<Image>().color = refM.textFieldColor;
         refM.askNPCField.GetComponent<Image>().color = refM.textFieldColor;
         refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
+
+        //color quest case (word case is colored on OpenOnTag())
+        Color color = refM.questColor;
+        Color greyColor = Color.Lerp(color, Color.grey, 0.35f);
+        Color colorHighlight = Color.Lerp(color, Color.white, 0.3f);
+        refM.questCase.GetComponent<Image>().color = greyColor;
+        refM.questLimit.GetComponentInParent<Image>().color = greyColor;
+        refM.questScrollbar.GetComponent<Image>().color = greyColor;
+        refM.questScrollbar.transform.GetChild(0).GetComponentInChildren<Image>().color = greyColor;
+        refM.questTrashCan.GetComponent<Image>().color = refM.askColor;
         
         refM.continueButton.GetComponent<Image>().color = refM.interactableButtonColor;
         refM.askButton.GetComponent<Image>().color = refM.interactableButtonColor;
@@ -128,10 +143,11 @@ public class UIManager : MonoBehaviour
         }
 
         //deactivate ui elements
-        ReferenceManager.instance.wordCase.SetActive(false);
-        ReferenceManager.instance.nPCDialogueField.SetActive(false);
-        ReferenceManager.instance.playerInputField.SetActive(false);
-        ReferenceManager.instance.askField.SetActive(false);
-        ReferenceManager.instance.askNPCField.SetActive(false);
+        refM.wordCase.SetActive(false);
+        refM.nPCDialogueField.SetActive(false);
+        refM.playerInputField.SetActive(false);
+        refM.askField.SetActive(false);
+        refM.askNPCField.SetActive(false);
+        refM.questCase.SetActive(false);
     }
 }

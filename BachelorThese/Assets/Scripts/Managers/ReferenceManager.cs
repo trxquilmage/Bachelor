@@ -18,7 +18,8 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color interactedColor;
     //public TagColors tagColors;
     [HideInInspector] public Color locationColor;
-    [HideInInspector] public Color generalColor;
+    [HideInInspector] public Color questColor;
+    [HideInInspector] public Color otherColor;
     [HideInInspector] public Color nameColor;
     [HideInInspector] public Color itemColor;
     [HideInInspector] public Color allColor;
@@ -34,6 +35,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject selectedWordParent;
     public GameObject selectedWordParentAsk;
     public GameObject listingParent;
+    public GameObject questListingParent;
     public GameObject promptBubbleParent;
     public GameObject askPromptBubbleParent;
     public GameObject tagButtonParent;
@@ -50,33 +52,37 @@ public class ReferenceManager : MonoBehaviour
     public GameObject nPCDialogueField;
     public GameObject playerInputField;
     public GameObject wordCase;
+    public GameObject questCase;
     public GameObject askField;
     public GameObject askNPCField;
     public Canvas dialogueCanvas;
     [Header("UI Elements")]
     public GameObject trashCan;
+    public GameObject questTrashCan;
     public TMP_Text wordLimit;
+    public TMP_Text questLimit;
     public GameObject ask;
     public GameObject barter;
-    public GameObject wButton;
     public GameObject askContinueButton;
     public GameObject continueButton;
     public GameObject askButton;
     public TMP_Text[] interactableTextList;
     public Scrollbar buttonScrollbar;
     public Scrollbar bubbleScrollbar;
+    public Scrollbar questScrollbar;
     public GameObject nameField;
+    [Header("UI Elements (Only For Color)")]
+    public GameObject wButton;
+    public GameObject qButton;
     [Header("Dialogues")]
     public DialogueRunner runner;
     [Header("Images")]
     public Sprite trashCanImage01;
     public Sprite trashCanImage02;
     [Header("Prompt Related")]
-    public TextMeshProUGUI promptQuestion;
     public TextMeshProUGUI promptAnswer;
     public GameObject promptMenu;
     public TMP_Text askPrompt;
-    public TMP_Text askQuestion;
     public TMP_Text askNPCText;
     [Header("Non-Dialogue UI")]
     public Canvas canvas;
@@ -88,10 +94,15 @@ public class ReferenceManager : MonoBehaviour
     public int maxWordsPerTag;
     public int tagScrollbarDistance = 10;
     public int bubbleScrollbarDistance = 10;
-    public int scrollbarSizeOnCanvas = 6;
+    public int questScrollbarDistance = 10;
+    public int spaceForBubblesOnCanvas = 6;
+    public int spaceForQuestsOnCanvas = 7;
     public int scrollbarMaxSize = 60;
+    public int maxLongWordLength = 3;
+    public int maxQuestCount = 5;
 
-    [HideInInspector] public float currScrollbarDistance = 0;
+    [HideInInspector] public float currBubbleScrollbarDistance = 0;
+    [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()
     {
         instance = this;
@@ -108,7 +119,8 @@ public class ReferenceManager : MonoBehaviour
         interactedColor = colors.interactedColor;
         // tag Colors
         locationColor = colors.locationColor;
-        generalColor = colors.generalColor;
+        questColor = colors.questColor;
+        otherColor = colors.generalColor;
         nameColor = colors.nameColor;
         itemColor = colors.itemColor;
         allColor = colors.allColor;

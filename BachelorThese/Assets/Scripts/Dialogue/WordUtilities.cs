@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using Yarn.Unity;
 using System;
+using System.Text.RegularExpressions;
 
 public static class WordUtilities
 {
@@ -21,14 +22,17 @@ public static class WordUtilities
             case WordInfo.WordTags.Location:
                 color = refM.locationColor;
                 break;
-            case WordInfo.WordTags.General:
-                color = refM.generalColor;
+            case WordInfo.WordTags.Other:
+                color = refM.otherColor;
                 break;
             case WordInfo.WordTags.Name:
                 color = refM.nameColor;
                 break;
             case WordInfo.WordTags.Item:
                 color = refM.itemColor;
+                break;
+            case WordInfo.WordTags.Quest:
+                color = refM.questColor;
                 break;
             case WordInfo.WordTags.AllWords:
                 color = refM.allColor;
@@ -49,26 +53,23 @@ public static class WordUtilities
     /// <param name="name"></param>
     /// <param name="tag"></param>
     /// <param name="wordMousePos"></param>
-    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, TMP_WordInfo wordInfo, WordInfo.Origin origin)
+    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
-        ReferenceManager refHandler = ReferenceManager.instance;
-        GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
-
+        ReferenceManager refM = ReferenceManager.instance;
+        GameObject word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
         if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
-            word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+            word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
         else // in an ask
-            word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
-
+            word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
         word.transform.position = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
-        wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, true);
+        wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
         return word;
     }
-    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, WordInfo.Origin origin)
+    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
         ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
-
         if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
             word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
         else // in an ask
@@ -76,7 +77,7 @@ public static class WordUtilities
 
         word.transform.position = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
-        wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), false);
+        wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex, false, isLongWord);
         return word;
     }
     /// <summary>
@@ -90,12 +91,14 @@ public static class WordUtilities
         {
             case "Location":
                 return WordInfo.WordTags.Location;
-            case "General":
-                return WordInfo.WordTags.General;
+            case "Other":
+                return WordInfo.WordTags.Other;
             case "Name":
                 return WordInfo.WordTags.Name;
             case "Item":
                 return WordInfo.WordTags.Item;
+            case "Quest":
+                return WordInfo.WordTags.Quest;
             case "AllWords":
                 return WordInfo.WordTags.AllWords;
             default:
@@ -251,11 +254,12 @@ public static class WordUtilities
     /// </summary>
     /// <param name="text"></param>
     /// <param name="wordInfo"></param>
-    public static void CreateABubble(TMP_Text text, TMP_WordInfo wordInfo)
+    public static void CreateABubble(TMP_Text text, TMP_WordInfo[] wordInfos)
     {
         text.ForceMeshUpdate();
-        Vector2 wordPosition = GetWordPosition(text, wordInfo);
-        WordClickManager.instance.CheckWord(wordInfo.GetWord(), wordPosition, wordInfo);
+        Vector2 wordPosition = GetWordPosition(text, wordInfos[0]);
+        Vector2 firstAndLastWordIndex = GetFirstAndLastWordIndex(text, wordInfos);
+        WordClickManager.instance.CheckWord(WordInfoToString(wordInfos), wordPosition, wordInfos[0], firstAndLastWordIndex);
         // Set the hovered word to interacted
         ReColorAllInteractableWords();
     }
@@ -267,7 +271,7 @@ public static class WordUtilities
         text.ForceMeshUpdate();
         // Variables
         TMP_CharacterInfo[] charInfo = textInfo.characterInfo;
-        //If the word starts with "\" -> give out the word
+        //If the word starts with "|" -> give out the word
         TMP_WordInfo wordInfo;
         for (int i = 0; i < textInfo.wordCount; i++)
         {
@@ -275,7 +279,7 @@ public static class WordUtilities
             // wordInfo igores Sonderzeichen in front of words, so iam checking the letter in front of the word
             if (wordInfo.firstCharacterIndex - 1 > -1)
             {
-                if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"\"[0])
+                if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"|"[0])
                 {
                     CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, saveIn);
                 }
@@ -344,6 +348,7 @@ public static class WordUtilities
             wordTagList = WordLookupReader.instance.longWordTag;
         bool isUsed = false;
         string tag = wordTagList[wordName][0];
+
         //for all words in the word's tag in the word case
         //this array can be empty
         foreach (Word.WordData data in WordCaseManager.instance.tagRelatedWords[StringToTag(tag)])
@@ -366,6 +371,15 @@ public static class WordUtilities
             }
 
         }
+        //foreach Quest in QuestLog
+        foreach (Word.WordData data in QuestManager.instance.allQuests)
+        {
+            if (data.name != null &&
+                data.name == wordName)
+            {
+                isUsed = true;
+            }
+        }
         return isUsed;
     }
     /// <summary>
@@ -373,6 +387,7 @@ public static class WordUtilities
     /// </summary>
     public static void JumpToNode(DialogueRunner runner, string nodeName)
     {
+        nodeName = Regex.Replace(nodeName, @"\s+", "");
         string node = DialogueManager.instance.currentTarget.characterName + "." + nodeName;
         if (runner.isActiveAndEnabled)
         {
@@ -428,5 +443,50 @@ public static class WordUtilities
             words += " " + wordInfos[i].GetWord();
         }
         return words;
+    }
+    /// <summary>
+    /// Takes a text and a TMP_WordInfo and returns the first and last words as x and y in a vector 2
+    /// </summary>
+    /// <returns></returns>
+    public static Vector2 GetFirstAndLastWordIndex(TMP_Text text, TMP_WordInfo[] wordInfos)
+    {
+        text.ForceMeshUpdate();
+        int i = 0;
+        int j = 0;
+        Vector2 firstAndLast = Vector2.zero;
+        bool hasFirst = false;
+        for (int k = 0; k < text.textInfo.wordCount; k++)
+        {
+            if (text.textInfo.wordInfo[k].GetWord() == wordInfos[j].GetWord())
+            {
+                if (!hasFirst)
+                {
+                    hasFirst = true;
+                    firstAndLast = new Vector2(i, 0);
+                }
+                j++;
+            }
+            else if (hasFirst) //words are NOT the same, but the list had been already going
+            {
+                //check if the list might be done
+                if (j == wordInfos.Length)
+                {
+                    //finish off
+                    firstAndLast = new Vector2(firstAndLast.x, i - 1);
+                    return firstAndLast;
+                }
+                //else cancel list
+                else
+                {
+                    hasFirst = false;
+                    firstAndLast = Vector2.zero;
+                    j = 0;
+                }
+            }
+            i++;
+        }
+        //finish off
+        firstAndLast = new Vector2(firstAndLast.x, i - 1);
+        return firstAndLast;
     }
 }

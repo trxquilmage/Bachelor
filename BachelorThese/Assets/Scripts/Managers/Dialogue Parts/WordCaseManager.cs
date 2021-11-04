@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class WordCaseManager : MonoBehaviour
 {
+    //Handles everything happening in the word case
     public static WordCaseManager instance;
     public GameObject wordReplacement;
     [SerializeField] Image background;
@@ -27,7 +28,7 @@ public class WordCaseManager : MonoBehaviour
             }
         }
     }
-    [HideInInspector] public bool overTrashcan;
+    //[HideInInspector] public bool overTrashcan;
 
     WordInfo.WordTags OpenTag;
     ReferenceManager refM;
@@ -127,6 +128,7 @@ public class WordCaseManager : MonoBehaviour
         color = Color.Lerp(color, Color.grey, 0.35f);
         Color colorStandart = Color.Lerp(color, Color.white, 0.3f);
         background.color = color;
+
         if (refM.wordLimit.isActiveAndEnabled)
         {
             refM.wordLimit.GetComponentInParent<Image>().color = color;
@@ -135,6 +137,7 @@ public class WordCaseManager : MonoBehaviour
             refM.buttonScrollbar.GetComponent<Image>().color = color;
             refM.buttonScrollbar.GetComponentsInChildren<Image>()[1].color = colorStandart;
         }
+
         // Unload Words of previous tag
         foreach (Transform word in refM.listingParent.GetComponentsInChildren<Transform>())
         {
@@ -151,7 +154,7 @@ public class WordCaseManager : MonoBehaviour
             {
                 if (word.name != null)
                 {
-                    GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, WordInfo.Origin.WordCase);
+                    GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase, false);
                     //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
                     bubble.transform.SetParent(refM.listingParent.transform);
                 }
@@ -191,7 +194,7 @@ public class WordCaseManager : MonoBehaviour
                 openTag = WordInfo.WordTags.Location;
                 break;
             case 2:
-                openTag = WordInfo.WordTags.General;
+                openTag = WordInfo.WordTags.Other;
                 break;
             case 3:
                 openTag = WordInfo.WordTags.Name;
@@ -207,9 +210,9 @@ public class WordCaseManager : MonoBehaviour
     /// <summary>
     /// Put the word that was dragged out of the case back into the case
     /// </summary>
-    public void PutWordBack(Word word)
+    public void PutWordBack(Word word, Transform parent)
     {
-        word.transform.SetParent(ReferenceManager.instance.listingParent.transform);
+        word.transform.SetParent(parent);
     }
     /// <summary>
     /// Deletes the set word out of the word case
@@ -314,19 +317,28 @@ public class WordCaseManager : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnWordInCase(Word.WordData word)
     {
-        GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, WordInfo.Origin.WordCase);
+        GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase, false);
         //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
         bubble.transform.SetParent(ReferenceManager.instance.listingParent.transform);
         return bubble;
     }
     /// <summary>
-    /// throw a word out of the case
+    /// throw a word out of the case OR throw a quest out of the log
     /// </summary>
     public void TrashAWord()
     {
-        DeleteOutOfCase();
-        WordClickManager.instance.DestroyCurrentWord();
-        UpdateWordCount();
+        Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
+        if (data.tag != WordInfo.WordTags.Quest)
+        {
+            DeleteOutOfCase();
+            WordClickManager.instance.DestroyCurrentWord();
+            UpdateWordCount();
+        }
+        else if (data.tag == WordInfo.WordTags.Quest)
+        {
+            QuestManager.instance.DeleteOutOfLog();
+            WordClickManager.instance.DestroyCurrentWord();
+        }
     }
     /// <summary>
     /// Disable the ask and barter buttons (when in barter or question mode)
@@ -359,7 +371,8 @@ public class WordCaseManager : MonoBehaviour
     public void ScrollThroughButtons()
     {
         float value = ReferenceManager.instance.buttonScrollbar.GetComponent<Scrollbar>().value;
-        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(-value * ReferenceManager.instance.tagScrollbarDistance, 0);
+        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(-value * ReferenceManager.instance.tagScrollbarDistance,
+            ReferenceManager.instance.tagButtonParent.transform.localPosition.y);
     }
     /// <summary>
     /// Call when the bubble scrollbar is scrolled. moves the words up & down. resets on tag.
@@ -367,7 +380,7 @@ public class WordCaseManager : MonoBehaviour
     public void ScrollThroughBubbles()
     {
         float value = ReferenceManager.instance.bubbleScrollbar.GetComponent<Scrollbar>().value;
-        ReferenceManager.instance.listingParent.transform.localPosition = new Vector2(0, value * ReferenceManager.instance.currScrollbarDistance);
+        ReferenceManager.instance.listingParent.transform.localPosition = new Vector2(0, value * ReferenceManager.instance.currBubbleScrollbarDistance);
     }
     /// <summary>
     /// Resets on OpenOnTag(), so that we arent lost in the sauce
@@ -384,11 +397,11 @@ public class WordCaseManager : MonoBehaviour
     {
         Scrollbar scrollbar = refM.bubbleScrollbar;
         //if the value is smaller than what fits the canvas, it is irrelevant
-        Mathf.Clamp(bubbleCount, refM.scrollbarSizeOnCanvas, refM.scrollbarMaxSize);
+        Mathf.Clamp(bubbleCount, refM.spaceForBubblesOnCanvas, refM.scrollbarMaxSize);
         //between biggest size (1) and smallest we want (0.05f)
-        float scrollbarSize = WordUtilities.Remap(bubbleCount, refM.scrollbarSizeOnCanvas, refM.scrollbarMaxSize, 1, 0.05f);
-        float overlappingWords = Mathf.Clamp(bubbleCount - refM.scrollbarSizeOnCanvas,0, Mathf.Infinity);
-        refM.currScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
+        float scrollbarSize = WordUtilities.Remap(bubbleCount, refM.spaceForBubblesOnCanvas, refM.scrollbarMaxSize, 1, 0.05f);
+        float overlappingWords = Mathf.Clamp(bubbleCount - refM.spaceForBubblesOnCanvas, 0, Mathf.Infinity);
+        refM.currBubbleScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
         scrollbar.size = scrollbarSize;
     }
     /// <summary>

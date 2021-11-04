@@ -3,7 +3,6 @@ tags:
 ---
 <<showcharactername Managers Karl>>
 <<if not isvisited("Karl", "Start")>>
-    Yes, Lady Katherine? 
     Welcome, friend, to Mayfair!
     The most special place in the world!
     [[Karl.Question]]
@@ -59,7 +58,7 @@ title: Karl.ChildOfLadyKatherine
 tags: 
 ---
 <<displaypromptmenu Managers OriAAA>>
-Wait - Yes or No - are you Lady Katherine's child?
+Wait - Yes or No - are you the child of Lady Katherine?
 <<set $katherinemother to react("value", "katherineMother", "Karl")>>
 <<if $katherinemother is true>>
     Woah, she's your MOTHER? 
@@ -76,7 +75,7 @@ tags:
 ---
 <<set $origin to getinfo("placeOfOrigin", 0)>>
 <<if getinfo("katherineMother", 0) eq true>>
-    Wow, you're really Lady Katherine's child...
+    Wow, you're really the child of Lady Katherine...
 <<elseif getinfo("local", 0) eq true>>
     It's so weird that I cant remember you at all...
 <<else>>

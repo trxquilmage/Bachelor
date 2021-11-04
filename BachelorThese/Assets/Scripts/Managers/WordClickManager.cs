@@ -43,7 +43,7 @@ public class WordClickManager : MonoBehaviour
     private void Start()
     {
         wlReader = WordLookupReader.instance;
-        
+
     }
     private void Update()
     {
@@ -54,26 +54,44 @@ public class WordClickManager : MonoBehaviour
     /// </summary>
     /// <param name="sentWord"></param>
     /// <param name="wordPos"></param>
-    public void CheckWord(string sentWord, Vector2 wordPos, TMP_WordInfo wordInfo)
+    public void CheckWord(string sentWord, Vector2 wordPos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
         //check if the sent word is actually in the keyword list
         if (wlReader.wordTag.ContainsKey(sentWord))
         {
             // Create Word Data to send
-            Word.WordData data = new Word.WordData();
-            data.name = sentWord;
-            data.tag = WordUtilities.StringToTag(wlReader.wordTag[sentWord][0]);
-            data.tagInfo = wlReader.wordTag[sentWord];
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, WordInfo.Origin.Dialogue);
+            Word.WordData data = new Word.WordData()
+            {
+                name = sentWord,
+                tag = WordUtilities.StringToTag(wlReader.wordTag[sentWord][0]),
+                tagInfo = wlReader.wordTag[sentWord]
+            };
+            if (wordLastHighlighted != null)
+                DestroyLastHighlighted();
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, WordInfo.Origin.Dialogue, false);
+            AddToArray(activeWords, wordLastHighlighted);
+        }
+        else if (wlReader.longWordTag.ContainsKey(sentWord))
+        {
+            // Create Word Data to send
+            Word.WordData data = new Word.WordData()
+            {
+                name = sentWord,
+                tag = WordUtilities.StringToTag(wlReader.longWordTag[sentWord][0]),
+                tagInfo = wlReader.longWordTag[sentWord]
+            };
+            if (wordLastHighlighted != null)
+                DestroyLastHighlighted();
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, WordInfo.Origin.Dialogue, true);
             AddToArray(activeWords, wordLastHighlighted);
         }
     }
+
     /// <summary>
     /// Destroy the word that is currently selected by the mouse
     /// </summary>
     public void DestroyCurrentWord()
     {
-        TMP_Text text = currentWord.GetComponent<Word>().relatedText;
         // Destroy the Word
         Destroy(currentWord);
         currentWord = null;
@@ -142,9 +160,20 @@ public class WordClickManager : MonoBehaviour
         bool foundtC = false; //found the trash can
         foreach (RaycastResult uIObject in results)
         {
+            //over the trashcan
+            if (uIObject.gameObject == ReferenceManager.instance.trashCan
+                || uIObject.gameObject == ReferenceManager.instance.questTrashCan)
+            {
+                foundtC = true;
+                mouseOverUIObject = "trashCan";
+                UIManager.instance.SwitchTrashImage(true, uIObject.gameObject);
+            }
             //over the wordcase
-            if (uIObject.gameObject == ReferenceManager.instance.wordCase)
+            else if (uIObject.gameObject == ReferenceManager.instance.wordCase)
                 mouseOverUIObject = "wordCase";
+            //over the questlog
+            else if (uIObject.gameObject == ReferenceManager.instance.questCase)
+                mouseOverUIObject = "questLog";
             //over a promptbubble
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {
@@ -152,13 +181,6 @@ public class WordClickManager : MonoBehaviour
                 foundPB = true;
                 mouseOverUIObject = "playerInput";
                 promptBubble.OnBubbleHover(true);
-            }
-            //over the trashcan
-            else if (uIObject.gameObject == ReferenceManager.instance.trashCan)
-            {
-                foundtC = true;
-                mouseOverUIObject = "trashCan";
-                UIManager.instance.SwitchTrashImage(true);
             }
         }
         if (!foundPB) //if not hovering over prompt
@@ -172,48 +194,110 @@ public class WordClickManager : MonoBehaviour
         if (!foundtC) //if not over trashCan
         {
             {
-                UIManager.instance.SwitchTrashImage(false);
+                UIManager.instance.SwitchTrashImage(false, null);
             }
         }
         stillOnWord = false;
         //Check for the exact word the mouse is hovering over
         foreach (RaycastResult uIObject in results)
         {
-            
+
             foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
             {
-                
+
                 //if the mouse is currently over an Interactable text
                 if (uIObject.gameObject == text.gameObject)
                 {
-                    int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventDataCurrentPosition.position, eventDataCurrentPosition.enterEventCamera);
-                    if (wordIndex != -1)
+                    FindWordsHoveredOver(text, eventDataCurrentPosition);
+                }
+            }
+        }
+        if (!stillOnWord && currentWord == null
+            && wordLastHighlighted != null) //stopped Hovering over the iteractable word
+        {
+            DestroyLastHighlighted();
+        }
+    }
+    /// <summary>
+    /// Checks the text for colored words, finds the relating ones and creates a bubble
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="eventData"></param>
+    void FindWordsHoveredOver(TMP_Text text, PointerEventData eventData)
+    {
+        int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventData.position, eventData.enterEventCamera);
+        if (wordIndex != -1) //the function above gives out -1 if they find nothing
+        {
+            TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
+            TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
+
+            //Get Color of the first character of the word
+            Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
+            if (currentCharacterColor[charInfo.vertexIndex] == ReferenceManager.instance.interactableColor)
+            {
+                TMP_WordInfo[] wordInfos = FindAllWordsToBubble(text, wordIndex);
+                WordUtilities.CreateABubble(text, wordInfos); //Word info of the START word, not the hovered word
+            }
+
+            //if the mouse is STILL over the created bubble, dont delete it this round
+            if (wordLastHighlighted != null)
+            {
+                //go through the signle words of a (possibly longer) word
+                foreach (string word in wordLastHighlighted.GetComponentInChildren<TMP_Text>().text.Trim().Split(" "[0]))
+                {
+                    //if ANY of the words in the bubble are the word we are currently hovering over, dont destroy
+                    if (word == wordInfo.GetWord())
+                        stillOnWord = true;
+                }
+            }
+        }
+    }
+    /// <summary>
+    /// Takes one given wordInfo and finds all words that are part of that word into an TMP_WordInfo[]
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="wordInfoIndex"></param>
+    /// <returns></returns>
+    TMP_WordInfo[] FindAllWordsToBubble(TMP_Text text, int wordInfoIndex)
+    {
+        List<TMP_WordInfo[]> wordInfosList = new List<TMP_WordInfo[]>();
+        //Check if the word is in the list of important single words
+        if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[wordInfoIndex], out TMP_WordInfo[] wordInfos))
+        {
+            return wordInfos;
+        }
+
+        //Check if the word is in the list of important long words
+        //go from wordIndex - 3 to wordIndex + 3
+        int startIndex = wordInfoIndex - ReferenceManager.instance.maxLongWordLength;
+        int endIndex = wordInfoIndex + ReferenceManager.instance.maxLongWordLength;
+        for (int i = startIndex < 0 ? 0 : startIndex;
+            i < (endIndex > text.textInfo.wordCount ? text.textInfo.wordCount : endIndex); i++)
+        {
+            if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[i], out wordInfos))
+            {
+                wordInfosList.Add(wordInfos);
+            }
+        }
+        foreach (TMP_WordInfo[] infos in wordInfosList) // this should prevent single words in the area to accidentally get added
+        {
+            if (infos.Length > 1)
+            {
+                foreach (TMP_WordInfo info in infos) // is the word contained in this word list or did it by coincidence catch another word list?
+                {
+                    if (info.GetWord() == text.textInfo.wordInfo[wordInfoIndex].GetWord())
                     {
-                        TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
-                        TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
-
-
-                        //Get Color of the first character of the word
-                        Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
-                        if (currentCharacterColor[charInfo.vertexIndex] == ReferenceManager.instance.interactableColor)
-                        {
-                            WordUtilities.CreateABubble(text, wordInfo);
-                        }
-                        //if the mouse is STILL over the created bubble, dont delete it this round
-                        if (WordClickManager.instance.wordLastHighlighted != null &&
-                            WordClickManager.instance.wordLastHighlighted.GetComponentInChildren<TMP_Text>().text == wordInfo.GetWord())
-                        {
-                            stillOnWord = true;
-                        }
+                        return infos;
                     }
                 }
             }
         }
-        if (!stillOnWord && WordClickManager.instance.currentWord == null
-            && WordClickManager.instance.wordLastHighlighted != null) //stopped Hovering over the iteractable word
-        {
-            WordClickManager.instance.DestroyLastHighlighted();
-        }
+        //Check if the word is in the list of unimportant general words
+        if (WordLookupReader.instance.CheckForUnimportantWord(text.textInfo.wordInfo[wordInfoIndex], out wordInfos))
+            return wordInfos;
+        //else
+        Debug.Log("The hovered word couldnt be found.");
+        return null;
     }
     /// <summary>
     /// Return the mouse position in screen space

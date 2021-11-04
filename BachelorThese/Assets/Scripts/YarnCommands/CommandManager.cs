@@ -72,9 +72,9 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenu")]
     public void DisplayPromptMenu(string promptQ)
     {
-        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.promptMenu, 
-            ReferenceManager.instance.promptAnswer, ReferenceManager.instance.promptQuestion, 
-            ReferenceManager.instance.promptBubbleParent.transform, PlayerInputManager.instance.currentPromptBubbles);
+        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.promptMenu,
+            ReferenceManager.instance.promptAnswer, ReferenceManager.instance.promptBubbleParent.transform,
+            PlayerInputManager.instance.currentPromptBubbles);
     }
     /// <summary>
     /// Open Ask Prompt Menu and related question
@@ -84,8 +84,8 @@ public class CommandManager : MonoBehaviour
     public void DisplayPromptMenuAsk(string promptQ)
     {
         PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.askField,
-            ReferenceManager.instance.askQuestion, ReferenceManager.instance.askPrompt, 
-            ReferenceManager.instance.askPromptBubbleParent.transform, PlayerInputManager.instance.currentPromptAskBubbles);
+            ReferenceManager.instance.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
+            PlayerInputManager.instance.currentPromptAskBubbles);
         //activate the "continue" button above the Ask button
         ReferenceManager.instance.askContinueButton.SetActive(true);
     }
@@ -136,7 +136,7 @@ public class CommandManager : MonoBehaviour
             }
         }
         //name wasnt in list yet
-        if (!nameExists) 
+        if (!nameExists)
         {
             info.visitedNodes.Add(characterName, new List<string>() { nodeName });
         }

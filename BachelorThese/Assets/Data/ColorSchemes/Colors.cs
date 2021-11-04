@@ -16,6 +16,7 @@ public class Colors : ScriptableObject
     public Color generalColor;
     public Color nameColor;
     public Color itemColor;
+    public Color questColor;
     
 
     // Other colors

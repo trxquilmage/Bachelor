@@ -11,7 +11,7 @@ public class WordPointer : MonoBehaviour, IPointerClickHandler
     [SerializeField] bool checkForText = true; //does the UI object need a check for the written text?
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (checkForText && eventData.button == PointerEventData.InputButton.Left)
+        /*if (checkForText && eventData.button == PointerEventData.InputButton.Left)
         {
             int wordIndex = TMP_TextUtilities.FindIntersectingWord(referenceText, eventData.position, eventData.enterEventCamera);
             if (wordIndex != -1)
@@ -19,6 +19,6 @@ public class WordPointer : MonoBehaviour, IPointerClickHandler
                 TMP_WordInfo wordInfo = referenceText.textInfo.wordInfo[wordIndex];
                 WordClickManager.instance.CheckWord(wordInfo.GetWord(), eventData.position, wordInfo);
             }
-        }
+        }*/
     }
 }
