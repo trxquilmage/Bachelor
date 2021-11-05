@@ -107,9 +107,9 @@ public class UIManager : MonoBehaviour
         //[0] is spacing
         buttons[1].color = refM.allColor;
         buttons[2].color = refM.locationColor;
-        buttons[3].color = refM.otherColor;
-        buttons[4].color = refM.nameColor;
-        buttons[5].color = refM.itemColor;
+        buttons[3].color = refM.nameColor;
+        buttons[4].color = refM.itemColor;
+        buttons[5].color = refM.otherColor;
         refM.ask.GetComponent<Image>().color = refM.askColor;
         refM.barter.GetComponent<Image>().color = refM.askColor;
         refM.trashCan.GetComponent<Image>().color = refM.askColor;

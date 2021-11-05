@@ -15,7 +15,7 @@ title: Karl.Question
 tags: 
 ---
 <<displaypromptmenu Managers LocAAA>>
-Where are you from, my friend?
+Where are you from, friend? Maybe Neverre?
 <<set $direction to react("position", "", "Karl")>>
 <<set $origin to react("name", "placeOfOrigin", "Karl")>>
 <<if $direction eq "West">>

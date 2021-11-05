@@ -55,16 +55,21 @@ public static class WordUtilities
     /// <param name="wordMousePos"></param>
     public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
+        bool inAsk = !DialogueInputManager.instance.continueEnabledAsk;
         ReferenceManager refM = ReferenceManager.instance;
-        GameObject word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
-        if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
-            word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
-        else // in an ask
-            word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
-        word.transform.position = wordMousePos;
-        Word wordScript = word.AddComponent<Word>();
-        wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
-        return word;
+        if (!inAsk || inAsk && origin != WordInfo.Origin.Dialogue)
+        {
+            GameObject word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
+            if (!inAsk) 
+                word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+            else 
+                word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
+            word.transform.position = wordMousePos;
+            Word wordScript = word.AddComponent<Word>();
+            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
+            return word;
+        }
+        return null;
     }
     public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
@@ -169,9 +174,9 @@ public static class WordUtilities
                 for (int i = 0; i < text.textInfo.wordCount; i++)
                 {
                     TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
-                    if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos))
+                    if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos, out bool isFillerWord))
                     {
-                        if (CheckIfWordIsUsed(WordInfoToString(wordInfos), wordInfos.Length))
+                        if (CheckIfWordIsUsed(WordInfoToString(wordInfos), wordInfos.Length, isFillerWord))
                         {
                             ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
                         }
@@ -259,7 +264,16 @@ public static class WordUtilities
         text.ForceMeshUpdate();
         Vector2 wordPosition = GetWordPosition(text, wordInfos[0]);
         Vector2 firstAndLastWordIndex = GetFirstAndLastWordIndex(text, wordInfos);
-        WordClickManager.instance.CheckWord(WordInfoToString(wordInfos), wordPosition, wordInfos[0], firstAndLastWordIndex);
+
+        WordInfo.Origin origin;
+        if (text == ReferenceManager.instance.interactableTextList[0])
+            origin = WordInfo.Origin.Dialogue;
+        else if (text == ReferenceManager.instance.interactableTextList[2])
+            origin = WordInfo.Origin.Ask;
+        else
+            origin = WordInfo.Origin.Environment;
+
+        WordClickManager.instance.CheckWord(WordInfoToString(wordInfos), wordPosition, wordInfos[0], firstAndLastWordIndex, origin);
         // Set the hovered word to interacted
         ReColorAllInteractableWords();
     }
@@ -339,16 +353,23 @@ public static class WordUtilities
     /// <param name="wordInfo"></param>
     /// <param name="wordTagList"></param>
     /// <returns></returns>
-    static bool CheckIfWordIsUsed(string wordName, int wordLength)
+    static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord)
     {
         Dictionary<string, string[]> wordTagList;
-        if (wordLength == 1)
+        if (isFillerWord)
+        {
+            wordTagList = WordLookupReader.instance.fillerTag;
+        }
+        else if (wordLength == 1)
             wordTagList = WordLookupReader.instance.wordTag;
         else
             wordTagList = WordLookupReader.instance.longWordTag;
         bool isUsed = false;
-        string tag = wordTagList[wordName][0];
-
+        string tag = "";
+        if (!isFillerWord || wordTagList.ContainsKey(wordName))
+            tag = wordTagList[wordName][0];
+        else
+            tag = "Other";
         //for all words in the word's tag in the word case
         //this array can be empty
         foreach (Word.WordData data in WordCaseManager.instance.tagRelatedWords[StringToTag(tag)])
@@ -369,7 +390,6 @@ public static class WordUtilities
             {
                 isUsed = true;
             }
-
         }
         //foreach Quest in QuestLog
         foreach (Word.WordData data in QuestManager.instance.allQuests)
@@ -457,7 +477,7 @@ public static class WordUtilities
         bool hasFirst = false;
         for (int k = 0; k < text.textInfo.wordCount; k++)
         {
-            if (text.textInfo.wordInfo[k].GetWord() == wordInfos[j].GetWord())
+            if (j < wordInfos.Length && text.textInfo.wordInfo[k].GetWord() == wordInfos[j].GetWord())
             {
                 if (!hasFirst)
                 {

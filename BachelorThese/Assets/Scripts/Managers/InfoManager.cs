@@ -80,8 +80,8 @@ public class InfoManager : MonoBehaviour
             if (rumor.name == variableName)
                 return rumor;
         }
-        Debug.Log("the name " + variableName + "doesnt exist");
-        return null;
+        //Debug.Log("the name " + variableName + "doesnt exist");
+        return new Rumor() { name = variableName, toldTo = new  Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject()};
     }
 }
 //Saves ANY given information in a Rumor, containing the value's name,

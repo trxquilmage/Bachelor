@@ -44,6 +44,7 @@ public class QuestManager : MonoBehaviour
                 ReferenceManager.instance.questCase.SetActive(false);
             }
         }
+        ResetScrollbar();
     }
     /// <summary>
     /// Open case manually through UI. will not close on AutomaticOpenCase(false)
@@ -52,6 +53,7 @@ public class QuestManager : MonoBehaviour
     {
         ReferenceManager.instance.questCase.SetActive(!ReferenceManager.instance.questCase.activeInHierarchy);
         ReloadQuests();
+        ResetScrollbar();
     }
     /// <summary>
     /// Reloads existing Quests.
@@ -175,8 +177,7 @@ public class QuestManager : MonoBehaviour
     public void SpawnQuestReplacement(Word word)
     {
         wordReplacement = SpawnQuestInLog(word.data);
-
-        Color color = word.GetComponent<Image>().color;
+        Color color = refM.questColor;
         color.a = 0.3f;
         foreach (Image img in wordReplacement.GetComponentsInChildren<Image>())
         {
@@ -242,6 +243,10 @@ public class QuestManager : MonoBehaviour
         float overlappingWords = Mathf.Clamp(questCount - refM.spaceForQuestsOnCanvas, 0, Mathf.Infinity);
         refM.currQuestScrollbarDistance = overlappingWords * refM.questScrollbarDistance;
         scrollbar.size = scrollbarSize;
+    }
+    void ResetScrollbar()
+    {
+        refM.questScrollbar.value = 0;
     }
     #endregion
 }

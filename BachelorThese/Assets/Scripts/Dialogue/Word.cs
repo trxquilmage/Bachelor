@@ -72,7 +72,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
 
         if (longWord) //See how the word should be shaped
         {
-            if (origin == WordInfo.Origin.Dialogue)
+            if (origin == WordInfo.Origin.Dialogue || origin == WordInfo.Origin.Ask || origin == WordInfo.Origin.Environment)
                 FitToText(nameText, relatedText, (int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
             else if (origin == WordInfo.Origin.QuestLog)
                 FitToBubbleShape(nameText);
@@ -154,7 +154,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         }
 
         // if the word is being dragged out of the dialogue
-        if (data.origin == WordInfo.Origin.Dialogue)
+        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             if (data.tag != WordInfo.WordTags.Quest)
             {
@@ -191,7 +191,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     void IsOverWordCase()
     {
-        if (data.origin == WordInfo.Origin.Dialogue)
+        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //if its NOT a quest, put into word case
             if (data.tag != WordInfo.WordTags.Quest)
@@ -226,7 +226,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     void IsOverQuestLog()
     {
-        if (data.origin == WordInfo.Origin.Dialogue)
+        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //if its a quest, put into quest Log
             if (data.tag == WordInfo.WordTags.Quest)
@@ -262,7 +262,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
-            if (data.origin == WordInfo.Origin.Dialogue)
+            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
                 //parent to word
                 WordUtilities.ParentBubbleToPrompt(this.gameObject);
@@ -283,7 +283,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     public void IsOverNothing()
     {
-        if (data.origin == WordInfo.Origin.Dialogue)
+        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);

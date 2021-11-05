@@ -54,7 +54,7 @@ public class WordClickManager : MonoBehaviour
     /// </summary>
     /// <param name="sentWord"></param>
     /// <param name="wordPos"></param>
-    public void CheckWord(string sentWord, Vector2 wordPos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
+    public void CheckWord(string sentWord, Vector2 wordPos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
     {
         //check if the sent word is actually in the keyword list
         if (wlReader.wordTag.ContainsKey(sentWord))
@@ -68,8 +68,10 @@ public class WordClickManager : MonoBehaviour
             };
             if (wordLastHighlighted != null)
                 DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, WordInfo.Origin.Dialogue, false);
-            AddToArray(activeWords, wordLastHighlighted);
+
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            if (wordLastHighlighted != null)
+                AddToArray(activeWords, wordLastHighlighted);
         }
         else if (wlReader.longWordTag.ContainsKey(sentWord))
         {
@@ -82,8 +84,39 @@ public class WordClickManager : MonoBehaviour
             };
             if (wordLastHighlighted != null)
                 DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, WordInfo.Origin.Dialogue, true);
-            AddToArray(activeWords, wordLastHighlighted);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, true);
+            if (wordLastHighlighted != null)
+                AddToArray(activeWords, wordLastHighlighted);
+        }
+        else if (wlReader.fillerTag.ContainsKey(sentWord))
+        {
+            // Create Word Data to send
+            Word.WordData data = new Word.WordData()
+            {
+                name = sentWord,
+                tag = WordUtilities.StringToTag(wlReader.fillerTag[sentWord][0]),
+                tagInfo = wlReader.fillerTag[sentWord]
+            };
+            if (wordLastHighlighted != null)
+                DestroyLastHighlighted();
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            if (wordLastHighlighted != null)
+                AddToArray(activeWords, wordLastHighlighted);
+        }
+        else // is filler word without entry
+        {
+            // Create Word Data to send
+            Word.WordData data = new Word.WordData()
+            {
+                name = sentWord,
+                tag = WordInfo.WordTags.Other,
+                tagInfo = new string[] { "Other", "wrongInfo" }
+            };
+            if (wordLastHighlighted != null)
+                DestroyLastHighlighted();
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            if (wordLastHighlighted != null)
+                AddToArray(activeWords, wordLastHighlighted);
         }
     }
 
@@ -243,7 +276,7 @@ public class WordClickManager : MonoBehaviour
             if (wordLastHighlighted != null)
             {
                 //go through the signle words of a (possibly longer) word
-                foreach (string word in wordLastHighlighted.GetComponentInChildren<TMP_Text>().text.Trim().Split(" "[0]))
+                foreach (string word in wordLastHighlighted.GetComponentInChildren<Word>().data.name.Trim().Split(" "[0]))
                 {
                     //if ANY of the words in the bubble are the word we are currently hovering over, dont destroy
                     if (word == wordInfo.GetWord())
@@ -262,19 +295,19 @@ public class WordClickManager : MonoBehaviour
     {
         List<TMP_WordInfo[]> wordInfosList = new List<TMP_WordInfo[]>();
         //Check if the word is in the list of important single words
-        if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[wordInfoIndex], out TMP_WordInfo[] wordInfos))
+        if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[wordInfoIndex], out TMP_WordInfo[] wordInfos, out bool isFiller) && !isFiller)
         {
             return wordInfos;
         }
 
         //Check if the word is in the list of important long words
-        //go from wordIndex - 3 to wordIndex + 3
+        //go from wordIndex - x to wordIndex + x
         int startIndex = wordInfoIndex - ReferenceManager.instance.maxLongWordLength;
         int endIndex = wordInfoIndex + ReferenceManager.instance.maxLongWordLength;
         for (int i = startIndex < 0 ? 0 : startIndex;
             i < (endIndex > text.textInfo.wordCount ? text.textInfo.wordCount : endIndex); i++)
         {
-            if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[i], out wordInfos))
+            if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[i], out wordInfos, out isFiller))
             {
                 wordInfosList.Add(wordInfos);
             }
@@ -292,10 +325,12 @@ public class WordClickManager : MonoBehaviour
                 }
             }
         }
-        //Check if the word is in the list of unimportant general words
-        if (WordLookupReader.instance.CheckForUnimportantWord(text.textInfo.wordInfo[wordInfoIndex], out wordInfos))
-            return wordInfos;
         //else
+        if (WordLookupReader.instance.CheckForWord(text.textInfo.wordInfo[wordInfoIndex], out wordInfos, out isFiller) && isFiller)
+        {
+            return wordInfos;
+        }
+
         Debug.Log("The hovered word couldnt be found.");
         return null;
     }

@@ -11,6 +11,6 @@ public class WordInfo
     }
     public enum Origin
     {
-        Dialogue, WordCase, QuestLog
+        Dialogue, Ask, WordCase, QuestLog, Environment
     }
 }

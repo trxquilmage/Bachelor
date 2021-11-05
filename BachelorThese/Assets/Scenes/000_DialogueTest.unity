@@ -2033,7 +2033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &401640149
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11380,6 +11380,7 @@ MonoBehaviour:
   scrollbarMaxSize: 35
   maxLongWordLength: 8
   maxQuestCount: 5
+  allWordsInteractable: 1
   currBubbleScrollbarDistance: 0
   currQuestScrollbarDistance: 0
 --- !u!114 &2098945803

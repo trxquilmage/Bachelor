@@ -100,6 +100,8 @@ public class ReferenceManager : MonoBehaviour
     public int scrollbarMaxSize = 60;
     public int maxLongWordLength = 3;
     public int maxQuestCount = 5;
+    [Header("Game Options")]
+    public bool allWordsInteractable = false;
 
     [HideInInspector] public float currBubbleScrollbarDistance = 0;
     [HideInInspector] public float currQuestScrollbarDistance = 0;

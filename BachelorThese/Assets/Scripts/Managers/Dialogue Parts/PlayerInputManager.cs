@@ -14,7 +14,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool givenManualPrompt;
     DialogueInputManager diManager;
     WordLookupReader wlReader;
-    ReferenceManager refManager;
+    ReferenceManager refM;
     InfoManager info;
     DialogueUI uiHandler;
     DialogueRunner runner;
@@ -29,7 +29,7 @@ public class PlayerInputManager : MonoBehaviour
         currentPromptAskBubbles = new PromptBubble[3];
         diManager = DialogueInputManager.instance;
         wlReader = WordLookupReader.instance;
-        refManager = ReferenceManager.instance;
+        refM = ReferenceManager.instance;
         info = InfoManager.instance;
         runner = ReferenceManager.instance.askRunner;
         uiHandler = ReferenceManager.instance.askDialogueUI;
@@ -181,20 +181,22 @@ public class PlayerInputManager : MonoBehaviour
         //disable continue
         DialogueInputManager.instance.AskMenuOpen(true);
         // open the fake ask menu
-        ReferenceManager.instance.askField.SetActive(true);
+        refM.askField.SetActive(true);
         // grey out ask and barter
         WordCaseManager.instance.DisableAskAndBarter(true);
         //Enable the 2nd DialogueRunner
-        ReferenceManager.instance.askRunner.gameObject.SetActive(true);
+        refM.askRunner.gameObject.SetActive(true);
         //start the second runner
-        ReferenceManager.instance.askRunner.StartDialogue(DialogueManager.instance.currentTarget.askNode);
+        refM.askRunner.StartDialogue(DialogueManager.instance.currentTarget.askNode);
         //generate prompt bubble
-        DisplayPrompt(promptID, refManager.askField, refManager.askPrompt,
-            refManager.askPromptBubbleParent.transform, currentPromptAskBubbles);
+        DisplayPrompt(promptID, refM.askField, refM.askPrompt,
+            refM.askPromptBubbleParent.transform, currentPromptAskBubbles);
         // Temporarily disable any other active prompts
         TemporarilyClosePromptMenu(true);
         //Reload the word case, so any possibly missing words from other prompt inputs respawn
         WordCaseManager.instance.OpenOnTag(false);
+        //disable the text below for the moment, because its causing quite some problems
+        refM.interactableTextList[0].gameObject.SetActive(false);
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -237,6 +239,8 @@ public class PlayerInputManager : MonoBehaviour
         ReferenceManager.instance.askRunner.gameObject.SetActive(false);
         // if the prompt menu has been closed, reopen it
         TemporarilyClosePromptMenu(false);
+        //enable the text below again
+        refM.interactableTextList[0].gameObject.SetActive(true);
     }
     /// <summary>
     /// When an ask line is done (called in Dialogue Runner) -> enable continue for ContinueText()

@@ -7,12 +7,13 @@ using TMPro;
 public class WordLookupReader : MonoBehaviour
 {
     public static WordLookupReader instance;
-    string pathWord, pathLongWord, pathQuestion, pathTagLookup, allWords, allLongWords, allQuestions, allTags;
+    string pathWord, pathLongWord, pathQuestion, pathTagLookup, pathFillers, allWords, allLongWords, allQuestions, allTags, allFillers;
     [HideInInspector]
     public Dictionary<string, string[]> wordTag = new Dictionary<string, string[]>();
     public Dictionary<string[], string[]> longWordTagSingular = new Dictionary<string[], string[]>();
     public Dictionary<string, string[]> longWordTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> questionTag = new Dictionary<string, string[]>();
+    public Dictionary<string, string[]> fillerTag = new Dictionary<string, string[]>();
     public Dictionary<WordInfo.WordTags, string[]> tagSubtag = new Dictionary<WordInfo.WordTags, string[]>();
     List<TMP_WordInfo> currentWordList;
     string[] currentLongWord;
@@ -28,6 +29,7 @@ public class WordLookupReader : MonoBehaviour
         LookUpLongWord();
         LookUpQuestion();
         LookUpTag();
+        LookUpFiller();
         currentWordList = new List<TMP_WordInfo>();
     }
     /// <summary>
@@ -93,6 +95,26 @@ public class WordLookupReader : MonoBehaviour
         }
 
     }
+    void LookUpFiller()
+    {
+        pathFillers = Application.dataPath + "/Data/Filler-LookupTable.csv";
+        allFillers = File.ReadAllText(pathFillers);
+        string[] lines = allFillers.Split("\n"[0]);
+        foreach (string s in lines)
+        {
+            if (s != "")
+            {
+                string[] lineData = s.Trim().Split(";"[0]);
+                string[] lineInfo = new string[lineData.Length - 1];
+                for (int i = 0; i < lineInfo.Length; i++)
+                {
+                    lineInfo[i] = lineData[i + 1];
+                }
+                fillerTag.Add(lineData[0], lineInfo);
+            }
+        }
+
+    }
     void LookUpTag()
     {
         pathTagLookup = Application.dataPath + "/Data/Tag-Subtag-Table.csv";
@@ -132,10 +154,28 @@ public class WordLookupReader : MonoBehaviour
         Debug.Log("Found nothing");
         return 0;
     }
-    public bool CheckForWord(TMP_WordInfo wordInfo, out TMP_WordInfo[] wordCollection)
+    /// <summary>
+    /// Checks if the given word is a short word, a long word or a filler word
+    /// </summary>
+    /// <param name="wordInfo"></param>
+    /// <param name="wordCollection"></param>
+    /// <returns></returns>
+    public bool CheckForWord(TMP_WordInfo wordInfo, out TMP_WordInfo[] wordCollection, out bool isFillerWord)
     {
         wordCollection = null;
         bool isWord = false;
+        isFillerWord = false;
+        if (wordInfo.GetWord().Length == 1)
+        {
+            if (!char.IsLetterOrDigit(wordInfo.GetWord()[0]))
+            {
+                currentLongWord = null;
+                currentWordList = new List<TMP_WordInfo>();
+                currentLongWordIndex = 0;
+                return false;
+            }
+        }
+
         if (currentWordList.Count != 0) // doing this first block out the chance for a word list to be broken up
         {
             currentLongWordIndex++;
@@ -144,6 +184,17 @@ public class WordLookupReader : MonoBehaviour
                 if (currentLongWord[currentLongWordIndex] == wordInfo.GetWord())
                 {
                     currentWordList.Add(wordInfo);
+                    if (currentWordList.Count == currentLongWord.Length)
+                    {
+                        isWord = true;
+                        wordCollection = currentWordList.ToArray();
+                        currentLongWord = null;
+                        currentWordList = new List<TMP_WordInfo>();
+                        currentLongWordIndex = 0;
+                        return isWord;
+                    }
+                    else
+                        return false;
                 }
                 else
                 {
@@ -152,14 +203,6 @@ public class WordLookupReader : MonoBehaviour
                     currentWordList = new List<TMP_WordInfo>();
                     currentLongWordIndex = 0;
                 }
-            }
-            if (currentLongWord != null && currentLongWordIndex + 1 == currentLongWord.Length) //finish off word #1
-            {
-                isWord = true;
-                wordCollection = currentWordList.ToArray();
-                currentLongWord = null;
-                currentWordList = new List<TMP_WordInfo>();
-                currentLongWordIndex = 0;
             }
         }
         if (wordTag.ContainsKey(wordInfo.GetWord()))
@@ -170,26 +213,37 @@ public class WordLookupReader : MonoBehaviour
             currentLongWord = null;
             currentWordList = new List<TMP_WordInfo>();
             currentLongWordIndex = 0;
+            return isWord;
         }
         else if (currentWordList.Count == 0) //needs a first word
         {
             foreach (string[] words in longWordTagSingular.Keys)
             {
+
                 if (words[0] == wordInfo.GetWord())
                 {
                     currentLongWord = words;
                     currentWordList.Add(wordInfo);
                     currentLongWordIndex = 0;
-                    break;
+                    return false;
                 }
             }
         }
-
+        if (currentWordList.Count == 0) // if after the above else if, the list is still empty: filler word
+        {
+            // Game Mode: all Interactable Words
+            if (ReferenceManager.instance.allWordsInteractable)
+            {
+                isWord = true;
+                isFillerWord = true;
+                wordCollection = new TMP_WordInfo[] { wordInfo };
+                //delete long word progress if not already done
+                currentLongWord = null;
+                currentWordList = new List<TMP_WordInfo>();
+                currentLongWordIndex = 0;
+                return isWord;
+            }
+        }
         return isWord;
-    }
-    public bool CheckForUnimportantWord(TMP_WordInfo wordInfo, out TMP_WordInfo[] wordInfos)
-    {
-        wordInfos = new TMP_WordInfo[0];
-        return false;
     }
 }
