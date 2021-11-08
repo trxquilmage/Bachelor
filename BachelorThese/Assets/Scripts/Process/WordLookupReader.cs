@@ -7,13 +7,15 @@ using TMPro;
 public class WordLookupReader : MonoBehaviour
 {
     public static WordLookupReader instance;
-    string pathWord, pathLongWord, pathQuestion, pathTagLookup, pathFillers, allWords, allLongWords, allQuestions, allTags, allFillers;
+    string pathWord, pathLongWord, pathQuestion, pathTagLookup, pathFillers, pathBlocked;
+    string allWords, allLongWords, allQuestions, allTags, allFillers, allBlocked;
     [HideInInspector]
     public Dictionary<string, string[]> wordTag = new Dictionary<string, string[]>();
     public Dictionary<string[], string[]> longWordTagSingular = new Dictionary<string[], string[]>();
     public Dictionary<string, string[]> longWordTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> questionTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> fillerTag = new Dictionary<string, string[]>();
+    public List<string> blocked = new List<string>();
     public Dictionary<WordInfo.WordTags, string[]> tagSubtag = new Dictionary<WordInfo.WordTags, string[]>();
     List<TMP_WordInfo> currentWordList;
     string[] currentLongWord;
@@ -30,6 +32,7 @@ public class WordLookupReader : MonoBehaviour
         LookUpQuestion();
         LookUpTag();
         LookUpFiller();
+        LookUpBlocked();
         currentWordList = new List<TMP_WordInfo>();
     }
     /// <summary>
@@ -134,6 +137,24 @@ public class WordLookupReader : MonoBehaviour
             }
         }
     }
+    void LookUpBlocked()
+    {
+        if (ReferenceManager.instance.includeStopWords)
+            pathBlocked = Application.dataPath + "/Data/stop_words_english.txt";
+        else
+            pathBlocked = Application.dataPath + "/Data/Word-Blocklist.csv";
+        allBlocked = File.ReadAllText(pathBlocked);
+        string[] lines = allBlocked.Split("\n"[0]);
+        foreach (string s in lines)
+        {
+            if (s != "")
+            {
+                string line = s.Substring(0, s.Length - 1);
+                line = WordUtilities.CapitalizeAllWordsInString(line);
+                blocked.Add(line);
+            }
+        }
+    }
     /// <summary>
     /// Returns the index of the word that is being looked for
     /// </summary>
@@ -165,6 +186,9 @@ public class WordLookupReader : MonoBehaviour
         wordCollection = null;
         bool isWord = false;
         isFillerWord = false;
+        string word = WordUtilities.CapitalizeAllWordsInString(wordInfo.GetWord());
+
+        // isnt a word, something like - * / ( etc.
         if (wordInfo.GetWord().Length == 1)
         {
             if (!char.IsLetterOrDigit(wordInfo.GetWord()[0]))
@@ -175,13 +199,12 @@ public class WordLookupReader : MonoBehaviour
                 return false;
             }
         }
-
         if (currentWordList.Count != 0) // doing this first block out the chance for a word list to be broken up
         {
             currentLongWordIndex++;
             if (currentLongWordIndex < currentLongWord.Length)
             {
-                if (currentLongWord[currentLongWordIndex] == wordInfo.GetWord())
+                if (currentLongWord[currentLongWordIndex] == word)
                 {
                     currentWordList.Add(wordInfo);
                     if (currentWordList.Count == currentLongWord.Length)
@@ -205,7 +228,16 @@ public class WordLookupReader : MonoBehaviour
                 }
             }
         }
-        if (wordTag.ContainsKey(wordInfo.GetWord()))
+        // the word COULD be part of a longer word,
+        // so only if it isnt, check if the word is in the block list
+        else if (ReferenceManager.instance.blockListOn && blocked.Contains(word))
+        {
+            currentLongWord = null;
+            currentWordList = new List<TMP_WordInfo>();
+            currentLongWordIndex = 0;
+            return false;
+        }
+        if (wordTag.ContainsKey(word))
         {
             isWord = true;
             wordCollection = new TMP_WordInfo[] { wordInfo };
@@ -220,7 +252,7 @@ public class WordLookupReader : MonoBehaviour
             foreach (string[] words in longWordTagSingular.Keys)
             {
 
-                if (words[0] == wordInfo.GetWord())
+                if (words[0] == word)
                 {
                     currentLongWord = words;
                     currentWordList.Add(wordInfo);

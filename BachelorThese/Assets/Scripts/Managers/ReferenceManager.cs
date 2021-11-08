@@ -66,6 +66,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject askContinueButton;
     public GameObject continueButton;
     public GameObject askButton;
+    public GameObject feedbackTextOtherTag;
     public TMP_Text[] interactableTextList;
     public Scrollbar buttonScrollbar;
     public Scrollbar bubbleScrollbar;
@@ -102,6 +103,9 @@ public class ReferenceManager : MonoBehaviour
     public int maxQuestCount = 5;
     [Header("Game Options")]
     public bool allWordsInteractable = false;
+    public bool blockListOn = false;
+    public bool includeStopWords = false;
+    public bool reuseableWords = false;
 
     [HideInInspector] public float currBubbleScrollbarDistance = 0;
     [HideInInspector] public float currQuestScrollbarDistance = 0;

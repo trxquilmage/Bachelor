@@ -40,10 +40,17 @@ public class PromptBubble : MonoBehaviour
             if (WordClickManager.instance.currentWord != null &&
                 WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag ||
                 WordClickManager.instance.currentWord != null &&
-                data.tag == WordInfo.WordTags.AllWords)
+                data.tag == WordInfo.WordTags.AllWords && WordClickManager.instance.currentWord.GetComponent<Word>().data.tag != WordInfo.WordTags.Other)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
+            }
+            else if (data.tag == WordInfo.WordTags.AllWords && WordClickManager.instance.currentWord != null &&
+                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == WordInfo.WordTags.Other)
+            {
+                acceptsCurrentWord = false;
+                bubble.color = Color.red;
+                UIManager.instance.BlendInUI(ReferenceManager.instance.feedbackTextOtherTag, 3);
             }
             else
                 acceptsCurrentWord = false;

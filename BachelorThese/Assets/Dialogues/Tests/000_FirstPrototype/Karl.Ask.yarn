@@ -12,7 +12,9 @@ tags:
 title: Karl.Continue
 tags:
 ---
-But back to the topic...
+<<if not checkonlyask()>>
+    But back to the topic...
+<<endif>>
 ===
 
 title: Karl.Mayfair
@@ -127,6 +129,19 @@ tags:
 ---
 She's an icon. And she IS the moment.
 [[Karl.Continue]]
+===
+
+title: Karl.Me
+tags:
+---
+You? What am I supposed to tell you about that?
+[[Karl.Continue]]
+===
+
+title: Karl.You
+tags:
+---
+[[Karl.Karl]]
 ===
 
 title: Karl.Catchall

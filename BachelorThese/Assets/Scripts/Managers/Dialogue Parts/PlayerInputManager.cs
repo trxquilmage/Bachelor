@@ -176,8 +176,15 @@ public class PlayerInputManager : MonoBehaviour
     /// <summary>
     /// called, when the "ask" button is pressed. opens the prompt "ASK"
     /// </summary>
-    public void AskButton(string promptID)
+    public void AskButton()
     {
+        if (!DialogueManager.instance.isInDialogue)
+        {
+            DialogueManager.instance.isOnlyInAsk = true;
+            DialogueInputManager.instance.enabled = true;
+        }
+
+        string promptID = "AskAAA";
         //disable continue
         DialogueInputManager.instance.AskMenuOpen(true);
         // open the fake ask menu
@@ -192,11 +199,14 @@ public class PlayerInputManager : MonoBehaviour
         DisplayPrompt(promptID, refM.askField, refM.askPrompt,
             refM.askPromptBubbleParent.transform, currentPromptAskBubbles);
         // Temporarily disable any other active prompts
-        TemporarilyClosePromptMenu(true);
+        if (DialogueManager.instance.isInDialogue)
+        {
+            TemporarilyClosePromptMenu(true);
+            //disable the text below for the moment, because its causing quite some problems
+            refM.interactableTextList[0].gameObject.SetActive(false);
+        }
         //Reload the word case, so any possibly missing words from other prompt inputs respawn
         WordCaseManager.instance.OpenOnTag(false);
-        //disable the text below for the moment, because its causing quite some problems
-        refM.interactableTextList[0].gameObject.SetActive(false);
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -232,15 +242,25 @@ public class PlayerInputManager : MonoBehaviour
         //enable continue
         DialogueInputManager.instance.AskMenuOpen(false);
         // close the fake ask menu
-        ReferenceManager.instance.askField.SetActive(false);
+        refM.askField.SetActive(false);
         //set ask and barter buttons active again
         WordCaseManager.instance.DisableAskAndBarter(false);
         //disable 2nd runner again
-        ReferenceManager.instance.askRunner.gameObject.SetActive(false);
+        refM.askRunner.gameObject.SetActive(false);
         // if the prompt menu has been closed, reopen it
-        TemporarilyClosePromptMenu(false);
-        //enable the text below again
-        refM.interactableTextList[0].gameObject.SetActive(true);
+        if (DialogueManager.instance.isInDialogue)
+        {
+            TemporarilyClosePromptMenu(false);
+            //enable the text below again
+            refM.interactableTextList[0].gameObject.SetActive(true);
+        }
+        if (DialogueManager.instance.isOnlyInAsk)
+        {
+            DialogueManager.instance.isOnlyInAsk = false;
+            DialogueManager.instance.currentTarget = null;
+            DialogueInputManager.instance.enabled = false;
+        }
+        DialogueManager.instance.isOnlyInAsk = false;
     }
     /// <summary>
     /// When an ask line is done (called in Dialogue Runner) -> enable continue for ContinueText()

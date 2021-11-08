@@ -79,6 +79,7 @@ public class QuestManager : MonoBehaviour
         }
         UpdateQuestCount();
         RescaleScrollbar();
+        DestroyQuestReplacement();
     }
     /// <summary>
     /// Updates the Quest-count text UI of the quest case
@@ -221,7 +222,7 @@ public class QuestManager : MonoBehaviour
     /// Takes the ScrollBar and re-scales it according to the current amount of words
     /// </summary>
     /// <param name="bubbleCount"></param>
-    void RescaleScrollbar()
+    public void RescaleScrollbar()
     {
         int questCount = 0;
         foreach (Word.WordData data in allQuests)
@@ -244,7 +245,7 @@ public class QuestManager : MonoBehaviour
         refM.currQuestScrollbarDistance = overlappingWords * refM.questScrollbarDistance;
         scrollbar.size = scrollbarSize;
     }
-    void ResetScrollbar()
+    public void ResetScrollbar()
     {
         refM.questScrollbar.value = 0;
     }

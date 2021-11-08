@@ -153,6 +153,14 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""DoubleClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""179e4688-0c29-42d7-87d3-9f0aa0a6589e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -188,6 +196,17 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d22b8ad-bfdd-4ce0-afc4-50b52f5c6bd2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""MultiTap(tapTime=0.59)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DoubleClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -203,6 +222,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_Click = m_Dialogue.FindAction("Click", throwIfNotFound: true);
         m_Dialogue_MousePosition = m_Dialogue.FindAction("MousePosition", throwIfNotFound: true);
+        m_Dialogue_DoubleClick = m_Dialogue.FindAction("DoubleClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -303,12 +323,14 @@ public class @InputMap : IInputActionCollection, IDisposable
     private IDialogueActions m_DialogueActionsCallbackInterface;
     private readonly InputAction m_Dialogue_Click;
     private readonly InputAction m_Dialogue_MousePosition;
+    private readonly InputAction m_Dialogue_DoubleClick;
     public struct DialogueActions
     {
         private @InputMap m_Wrapper;
         public DialogueActions(@InputMap wrapper) { m_Wrapper = wrapper; }
         public InputAction @Click => m_Wrapper.m_Dialogue_Click;
         public InputAction @MousePosition => m_Wrapper.m_Dialogue_MousePosition;
+        public InputAction @DoubleClick => m_Wrapper.m_Dialogue_DoubleClick;
         public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -324,6 +346,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @MousePosition.started -= m_Wrapper.m_DialogueActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_DialogueActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_DialogueActionsCallbackInterface.OnMousePosition;
+                @DoubleClick.started -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
+                @DoubleClick.performed -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
+                @DoubleClick.canceled -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
             }
             m_Wrapper.m_DialogueActionsCallbackInterface = instance;
             if (instance != null)
@@ -334,6 +359,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
+                @DoubleClick.started += instance.OnDoubleClick;
+                @DoubleClick.performed += instance.OnDoubleClick;
+                @DoubleClick.canceled += instance.OnDoubleClick;
             }
         }
     }
@@ -348,5 +376,6 @@ public class @InputMap : IInputActionCollection, IDisposable
     {
         void OnClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
+        void OnDoubleClick(InputAction.CallbackContext context);
     }
 }

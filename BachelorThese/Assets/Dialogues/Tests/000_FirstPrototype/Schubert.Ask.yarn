@@ -11,7 +11,9 @@ tags:
 title: Schubert.Continue
 tags:
 ---
-Oh, but as I was saying...
+<<if not checkonlyask()>>
+    Oh, but as I was saying...
+<<endif>>
 ===
 
 title: Schubert.Mayfair
@@ -85,6 +87,20 @@ Yup, that's me. Born and raised in Mayfair.
 I get out of town sometimes to trade, 
 but really, "trader" is a bit of a reach to call me.
 [[Schubert.Continue]]
+===
+
+title: Schubert.Me
+tags:
+---
+You? I don't know you.
+You look sympathetic though?
+[[Schubert.Continue]]
+===
+
+title: Schubert.You
+tags:
+---
+[[Schubert.Schubert]]
 ===
 
 title: Schubert.Rebecca

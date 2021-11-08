@@ -174,7 +174,7 @@ public class WordCaseManager : MonoBehaviour
                 }
             }
         }
-
+        DestroyWordReplacement();
         UpdateWordCount();
         RescaleScrollbar(GetTagWordCount(openTag));
         if (resetScrollbar)
@@ -213,6 +213,7 @@ public class WordCaseManager : MonoBehaviour
     public void PutWordBack(Word word, Transform parent)
     {
         word.transform.SetParent(parent);
+        OpenOnTag(false);
     }
     /// <summary>
     /// Deletes the set word out of the word case
@@ -333,11 +334,17 @@ public class WordCaseManager : MonoBehaviour
             DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
             UpdateWordCount();
+            RescaleScrollbar(GetTagWordCount(openTag));
+            ResetScrollbar();
+            DestroyWordReplacement();
         }
         else if (data.tag == WordInfo.WordTags.Quest)
         {
             QuestManager.instance.DeleteOutOfLog();
             WordClickManager.instance.DestroyCurrentWord();
+            QuestManager.instance.RescaleScrollbar();
+            QuestManager.instance.ResetScrollbar();
+            QuestManager.instance.DestroyQuestReplacement();
         }
     }
     /// <summary>

@@ -7,7 +7,6 @@ using TMPro;
 
 public class DialogueInputManager : MonoBehaviour
 {
-    [SerializeField] GameObject wordCase, playerInput, npcDialogueField, uiLog;
     public static DialogueInputManager instance;
 
     public bool continueEnabledPrompt = true;
@@ -17,6 +16,7 @@ public class DialogueInputManager : MonoBehaviour
     public bool closeAWindow;
     public bool askTextFinished;
 
+    WordClickManager wcManager;
     DialogueUI uiHandler;
     InputMap controls;
     bool textFinished;
@@ -29,7 +29,9 @@ public class DialogueInputManager : MonoBehaviour
     private void Start()
     {
         uiHandler = ReferenceManager.instance.standartDialogueUI;
+        wcManager = WordClickManager.instance;
         controls.Dialogue.Click.performed += context => ContinueTextOnClick();
+        controls.Dialogue.DoubleClick.performed += context => CheckDoubleClick();
     }
 
     /// <summary>
@@ -113,6 +115,16 @@ public class DialogueInputManager : MonoBehaviour
         }
         target.SetActive(false);
         closeAWindow = false;
+    }
+    /// <summary>
+    /// after a double click was performed, check if it was on a word. Save the word to the related box immediately.
+    /// </summary>
+    void CheckDoubleClick()
+    {
+        if (wcManager.currentWord != null)
+        {
+            wcManager.currentWord.GetComponent<Word>().MoveToCase();
+        }
     }
     private void OnEnable()
     {

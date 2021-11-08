@@ -140,6 +140,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DoubleClick",
+                    "type": "Button",
+                    "id": "179e4688-0c29-42d7-87d3-9f0aa0a6589e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -173,6 +181,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3d22b8ad-bfdd-4ce0-afc4-50b52f5c6bd2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "MultiTap(tapTime=0.59)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DoubleClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

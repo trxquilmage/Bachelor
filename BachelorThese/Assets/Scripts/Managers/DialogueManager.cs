@@ -9,6 +9,7 @@ public class DialogueManager : MonoBehaviour
 
     public static DialogueManager instance;
     public bool isInDialogue;
+    public bool isOnlyInAsk;
     public float interactionRadius = 2.0f;
     public NPC currentTarget;
 
@@ -44,19 +45,23 @@ public class DialogueManager : MonoBehaviour
         {
             // Kick off the dialogue at this node.
             //Debug.Log("Found A Dialogue Partner: " + target.characterName);
-            //runner.
             currentTarget = target;
             runner.StartDialogue(target.talkToNode);
         }
         //else
         //Debug.Log("Found No One");
     }
-
+    /// <summary>
+    /// called in Dialogue UI -> start Dialogue
+    /// </summary>
     public void StartDialogue()
     {
         isInDialogue = true;
         UIManager.instance.PortrayEButton(null);
     }
+    /// <summary>
+    /// called in Dialogue UI -> end Dialogue
+    /// </summary>
     public void EndDialogue()
     {
         isInDialogue = false;

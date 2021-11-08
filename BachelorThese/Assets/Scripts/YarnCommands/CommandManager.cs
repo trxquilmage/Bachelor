@@ -54,6 +54,10 @@ public class CommandManager : MonoBehaviour
         {
             return GetVisited(parameters[0].AsString, parameters[1].AsString);
         });
+        ReferenceManager.instance.askRunner.AddFunction("checkonlyask", 0, delegate (Yarn.Value[] parameters)
+        {
+            return CheckIfOnlyAsk();
+        });
     }
     /// <summary>
     /// Change speaking character's name
@@ -141,5 +145,13 @@ public class CommandManager : MonoBehaviour
             info.visitedNodes.Add(characterName, new List<string>() { nodeName });
         }
         return nodeAlreadyExists;
+    }
+    /// <summary>
+    /// Checks, wheter the dialogue is currently running, or if we just randomly asked a question outside the dialogue
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckIfOnlyAsk()
+    {
+        return DialogueManager.instance.isOnlyInAsk;
     }
 }

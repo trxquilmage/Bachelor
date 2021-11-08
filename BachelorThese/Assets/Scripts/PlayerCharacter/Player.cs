@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     float timer = 0;
     float fixedTime = 0.25f;
     GameObject target;
+    Rigidbody rigid;
     private void Awake()
     {
         controls = new InputMap();
@@ -20,32 +21,41 @@ public class Player : MonoBehaviour
         controls.Player.WalkUD.performed += context => Movement(-10, context.ReadValue<float>());
         controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
         controls.Player.Talk.performed += context => Interact();
+        rigid = this.GetComponent<Rigidbody>();
     }
     private void Update()
     {
-        transform.position += movementAddition * speed;
         FixedCheckForEButton();
     }
 
     public void Movement(float directionX, float directionY)
     {
-        if (!DialogueManager.instance.isInDialogue)
+        if (!DialogueManager.instance.isInDialogue || !DialogueManager.instance.isOnlyInAsk)
         {
             if (directionX == -10)
-                movementAddition = new Vector3(movementAddition.x, 0, directionY);
+                rigid.velocity = new Vector3(rigid.velocity.normalized.x, 0, directionY);
             else if (directionY == -10)
-                movementAddition = new Vector3(directionX, 0, movementAddition.z);
+                rigid.velocity = new Vector3(directionX, 0, rigid.velocity.normalized.z);
+            rigid.velocity = rigid.velocity.normalized;
+            rigid.velocity *= speed * Time.deltaTime;
         }
     }
-
+    void StopWalking()
+    {
+        rigid.velocity = Vector3.zero;
+    }
     void Interact()
     {
-        if (!DialogueManager.instance.isInDialogue)
+        if (!DialogueManager.instance.isInDialogue || !DialogueManager.instance.isOnlyInAsk)
         {
-            if (target.TryGetComponent<NPC>(out NPC npc))
-                DialogueManager.instance.CheckForNearbyNPC();
-            else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
-                iO.Interact(true);
+            if (target != null)
+            {
+                StopWalking();
+                if (target.TryGetComponent<NPC>(out NPC npc))
+                    DialogueManager.instance.CheckForNearbyNPC();
+                else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
+                    iO.Interact(true);
+            }
         }
     }
     private void OnEnable()
@@ -86,7 +96,7 @@ public class Player : MonoBehaviour
     }
     void FixedCheckForEButton()
     {
-        if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue)
+        if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue || !DialogueManager.instance.isOnlyInAsk)
         {
             timer = 0;
             if (CheckForNPCRange())

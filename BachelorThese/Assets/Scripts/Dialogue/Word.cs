@@ -10,11 +10,18 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
 {
     TMP_Text nameText;
     bool wasDragged; //after the mouse goes up, after it was dragged it checks, where the object is now at
+    bool fadingOut;
     public WordData data;
 
     public TMP_WordInfo relatedWordInfo;
     public TMP_Text relatedText;
     Vector3 wordSize;
+    PlayerInputManager piManager;
+    float floatTime = 0.75f;
+    private void Start()
+    {
+        piManager = PlayerInputManager.instance;
+    }
     public struct WordData
     {
         public string name;
@@ -39,7 +46,10 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     public void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, bool hasWordInfo, bool longWord)
     {
         data = new WordData();
-        data.name = name;
+
+        //capitalize name
+        data.name = WordUtilities.CapitalizeAllWordsInString(name);
+
         data.tagInfo = tags;
         data.tag = WordUtilities.StringToTag(tags[0]);
         data.origin = origin;
@@ -49,7 +59,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             relatedText = wordInfo.textComponent;
         }
         nameText = transform.GetComponentInChildren<TMP_Text>();
-        nameText.text = name;
+        nameText.text = data.name;
         ScaleRect(nameText, GetComponent<RectTransform>());
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
         WordUtilities.ColorTag(this.gameObject, data.tag);
@@ -91,53 +101,52 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     }
     public void OnDrag(PointerEventData eventData)
     {
-        //drag the object through the scene
-
-        transform.position = WordClickManager.instance.GetMousePos();
-        transform.position -= wordSize / 2;
-        wasDragged = true;
+        if (!fadingOut)
+        {
+            //drag the object through the scene
+            transform.position = WordClickManager.instance.GetMousePos();
+            transform.position -= wordSize / 2;
+            wasDragged = true;
+        }
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        // if mouse was dragging the object and now releases it
-        if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
+        if (!fadingOut)
         {
-            WordClickManager clickM = WordClickManager.instance;
-            // check where it is released
-            //if it was dragged into the case, save it
-            if (clickM.isActiveAndEnabled)
+            // if mouse was dragging the object and now releases it
+            if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
             {
-                if (clickM.mouseOverUIObject == "wordCase")
+                WordClickManager clickM = WordClickManager.instance;
+                // check where it is released
+                //if it was dragged into the case, save it
+                if (clickM.isActiveAndEnabled)
                 {
-                    IsOverWordCase();
+                    if (clickM.mouseOverUIObject == "trashCan")
+                    {
+                        WordCaseManager.instance.TrashAWord();
+                    }
+                    else if (clickM.mouseOverUIObject == "wordCase")
+                    {
+                        IsOverWordCase();
+                    }
+                    else if (clickM.mouseOverUIObject == "questLog")
+                    {
+                        IsOverQuestLog();
+                    }
+                    // if it was dragged onto a prompt, react
+                    else if (clickM.mouseOverUIObject == "playerInput")
+                    {
+                        IsOverPlayerInput();
+                    }
+                    else
+                    {
+                        IsOverNothing();
+                    }
                 }
-                if (clickM.mouseOverUIObject == "questLog")
-                {
-                    IsOverQuestLog();
-                }
-                else if (clickM.mouseOverUIObject == "trashCan")
-                {
-                    WordCaseManager.instance.TrashAWord();
-                }
-                // if it was dragged onto a prompt, react
-                else if (clickM.mouseOverUIObject == "playerInput")
-                {
-                    IsOverPlayerInput();
-                }
-                else
-                {
-                    IsOverNothing();
-                }
-            }
 
-        }
-        if (data.origin == WordInfo.Origin.WordCase)
-        {
-            WordCaseManager.instance.DestroyWordReplacement();
-        }
-        if (data.origin == WordInfo.Origin.QuestLog)
-        {
-            QuestManager.instance.DestroyQuestReplacement();
+            }
+            //else
+            //    IsOverNothing();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -146,45 +155,47 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        // This is basically OnDragStart()
-
-        if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
+        if (!fadingOut)
         {
-            pB.child = null;
-        }
+            // This is basically OnDragStart()
 
-        // if the word is being dragged out of the dialogue
-        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
-        {
-            if (data.tag != WordInfo.WordTags.Quest)
+            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
             {
-                WordCaseManager.instance.AutomaticOpenCase(true);
-                WordCaseManager.instance.openTag = data.tag;
+                pB.child = null;
             }
-            else if (data.tag == WordInfo.WordTags.Quest)
+
+            // if the word is being dragged out of the dialogue
+            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
-                QuestManager.instance.AutomaticOpenCase(true);
-                UpdateToBubbleShape();
+                if (data.tag != WordInfo.WordTags.Quest)
+                {
+                    WordCaseManager.instance.AutomaticOpenCase(true);
+                    WordCaseManager.instance.openTag = data.tag;
+                }
+                else if (data.tag == WordInfo.WordTags.Quest)
+                {
+                    QuestManager.instance.AutomaticOpenCase(true);
+                    UpdateToBubbleShape();
+                }
+                WordClickManager.instance.currentWord = this.gameObject;
+                WordClickManager.instance.wordLastHighlighted = null;
+
             }
-            WordClickManager.instance.currentWord = this.gameObject;
-            WordClickManager.instance.wordLastHighlighted = null;
-
+            else if (data.origin == WordInfo.Origin.WordCase)
+            {
+                transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
+                //Delete Word from case list
+                WordClickManager.instance.currentWord = this.gameObject;
+                WordCaseManager.instance.SpawnWordReplacement(this);
+            }
+            else if (data.origin == WordInfo.Origin.QuestLog)
+            {
+                transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
+                //Spawn Replacement
+                WordClickManager.instance.currentWord = this.gameObject;
+                QuestManager.instance.SpawnQuestReplacement(this);
+            }
         }
-        else if (data.origin == WordInfo.Origin.WordCase)
-        {
-            transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
-            //Delete Word from case list
-            WordClickManager.instance.currentWord = this.gameObject;
-            WordCaseManager.instance.SpawnWordReplacement(this);
-        }
-        else if (data.origin == WordInfo.Origin.QuestLog)
-        {
-            transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
-            //Spawn Replacement
-            WordClickManager.instance.currentWord = this.gameObject;
-            QuestManager.instance.SpawnQuestReplacement(this);
-        }
-
     }
     /// <summary>
     /// The bubble was dragged onto the word case and dropped
@@ -283,6 +294,33 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     public void IsOverNothing()
     {
+        //Check, if the word is above a character
+        Vector2 mousePos = WordClickManager.instance.GetMousePos();
+        RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(mousePos));
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.transform.TryGetComponent<NPC>(out NPC npc))
+            {
+                if (DialogueManager.instance.currentTarget == null || DialogueManager.instance.currentTarget == npc)
+                {
+                    DialogueManager.instance.currentTarget = npc;
+                    piManager.AskButton();
+                    //force the prompt bubble to check, whether the word fits or not
+                    if (ReferenceManager.instance.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
+                    {
+                        WordClickManager.instance.CheckPromptBubbleForCurrentWord(pB);
+                        IsOverPlayerInput();
+                        return;
+                    }
+                    else
+                        Debug.Log("no prompt was found?");
+                }
+                else
+                    Debug.Log("cant be in a conversation with a different npc");
+            }
+        }
+
+        //this happens, regardless wheter a character was hit or not
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //close the case & Delete the UI word
@@ -292,11 +330,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
+            WordClickManager.instance.DestroyCurrentWord();
             WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
         }
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
+            WordClickManager.instance.DestroyCurrentWord();
             WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
         }
     }
@@ -305,6 +345,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     void FitToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
     {
+        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
         Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
         // set variables
@@ -328,13 +369,14 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             {
                 line = line + sourceText.textInfo.characterInfo[i].character;
             }
+            line = WordUtilities.CapitalizeAllWordsInString(line);
             editableText.text = line;
 
             // Scale the text boxes
             child.GetComponentsInChildren<RectTransform>()[1].sizeDelta = new Vector2(1000, child.GetComponentsInChildren<RectTransform>()[1].sizeDelta.y);
             ScaleRect(editableText, child.GetComponent<RectTransform>());
             // color the boxes
-            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            child.GetComponent<Image>().color = tagColor;
             j++;
         }
         //remove the iamge and text from the original bubble
@@ -348,6 +390,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     void FitToBubbleShape(TMP_Text text)
     {
+        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         text.ForceMeshUpdate();
         // set variables
         TMP_CharacterInfo[] fullText = text.textInfo.characterInfo;
@@ -366,12 +409,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             {
                 line = line + fullText[i].character;
             }
+            line = WordUtilities.CapitalizeAllWordsInString(line);
             text.text = line;
 
             // Scale the text boxes
             ScaleRect(text, child.GetComponent<RectTransform>());
             // color the boxes
-            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            child.GetComponent<Image>().color = tagColor;
             j++;
         }
         //remove the iamge and text from the original bubble
@@ -385,6 +429,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// </summary>
     public void UpdateToBubbleShape()
     {
+        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         GameObject toUpdate = WordClickManager.instance.wordLastHighlighted;
         TMP_Text mainText = toUpdate.GetComponentInChildren<TMP_Text>();
         //Set the main text to full text again
@@ -411,16 +456,71 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             {
                 line = line + fullText[i].character;
             }
+            line = WordUtilities.CapitalizeAllWordsInString(line);
             mainText.text = line;
 
             // Scale the text boxes
             ScaleRect(mainText, child.GetComponent<RectTransform>());
             // color the boxes
-            child.GetComponent<Image>().color = ReferenceManager.instance.questColor;
+            child.GetComponent<Image>().color = tagColor;
             j++;
         }
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+    }
+    /// <summary>
+    /// Move the word to the case it belongs to
+    /// </summary>
+    public void MoveToCase()
+    {
+        bool isQuest = data.tag == WordInfo.WordTags.Quest;
+        bool fits = false;
+        //check, if the word fits in the case right now
+        if (isQuest)
+        {
+            fits = true;
+        }
+        else
+        {
+            fits = true;
+        }
+        //if yes slowly animate this to the correct case & save it in there
+        if (fits)
+            StartCoroutine(AnimateMoveToCase(isQuest));
+        //if not, shaking animation
+        else
+            Debug.Log("shake anim");
+    }
+    /// <summary>
+    /// Animate the word's movement to it's case, 
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator AnimateMoveToCase(bool isQuest)
+    {
+        fadingOut = true;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        RectTransform rT = GetComponent<RectTransform>();
+        Vector2 startPos = rT.position;
+        Vector2 targetPos;
+        if (isQuest)
+            targetPos = ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center + 
+                (Vector2)ReferenceManager.instance.questCase.GetComponent<RectTransform>().position;
+        else
+            targetPos = ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
+                (Vector2)ReferenceManager.instance.wordCase.GetComponent<RectTransform>().position;
+        float timer = 0;
+        float t = 0;
+        while (timer < floatTime)
+        {
+            timer += Time.deltaTime;
+            t = WordUtilities.Remap(timer, 0, floatTime, 0, 1);
+            rT.position = Vector2.Lerp(startPos, targetPos, t);
+            yield return delay;
+        }
+        if (isQuest)
+            IsOverQuestLog();
+        else
+            IsOverWordCase();
     }
     /// <summary>
     /// Gives back an array of Vector2s, each containing the index of the first and last letter of each line in the text

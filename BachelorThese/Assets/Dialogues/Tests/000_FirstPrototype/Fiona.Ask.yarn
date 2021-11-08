@@ -11,7 +11,9 @@ tags:
 title: Fiona.Continue
 tags:
 ---
-What were we talking about... Oh, yes.
+<<if not checkonlyask()>>
+    What were we talking about... Oh, yes.
+<<endif>>
 ===
 
 title: Fiona.Mayfair
@@ -104,6 +106,19 @@ Like, I said. Schubert knew her.
 I, hovever, don't know much more than the name.
 And that she's dead.
 [[Karl.Continue]]
+===
+
+title: Fiona.Me
+tags:
+---
+You? What am I supposed to tell you about that?
+[[Fiona.Continue]]
+===
+
+title: Fiona.You
+tags:
+---
+[[Fiona.Fiona]]
 ===
 
 title: Fiona.Catchall

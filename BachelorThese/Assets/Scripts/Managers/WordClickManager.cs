@@ -136,7 +136,6 @@ public class WordClickManager : MonoBehaviour
     /// </summary>
     public void DestroyLastHighlighted()
     {
-        TMP_Text text = wordLastHighlighted.GetComponent<Word>().relatedText;
         // Destroy the Word
         Destroy(wordLastHighlighted);
         wordLastHighlighted = null;
@@ -202,18 +201,17 @@ public class WordClickManager : MonoBehaviour
                 UIManager.instance.SwitchTrashImage(true, uIObject.gameObject);
             }
             //over the wordcase
-            else if (uIObject.gameObject == ReferenceManager.instance.wordCase)
+            else if (uIObject.gameObject == ReferenceManager.instance.wordCase && mouseOverUIObject == "none")
                 mouseOverUIObject = "wordCase";
             //over the questlog
-            else if (uIObject.gameObject == ReferenceManager.instance.questCase)
+            else if (uIObject.gameObject == ReferenceManager.instance.questCase && mouseOverUIObject == "none")
                 mouseOverUIObject = "questLog";
             //over a promptbubble
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {
-                promptBubble = pB;
                 foundPB = true;
                 mouseOverUIObject = "playerInput";
-                promptBubble.OnBubbleHover(true);
+                CheckPromptBubbleForCurrentWord(pB);
             }
         }
         if (!foundPB) //if not hovering over prompt
@@ -234,7 +232,6 @@ public class WordClickManager : MonoBehaviour
         //Check for the exact word the mouse is hovering over
         foreach (RaycastResult uIObject in results)
         {
-
             foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
             {
 
@@ -279,7 +276,7 @@ public class WordClickManager : MonoBehaviour
                 foreach (string word in wordLastHighlighted.GetComponentInChildren<Word>().data.name.Trim().Split(" "[0]))
                 {
                     //if ANY of the words in the bubble are the word we are currently hovering over, dont destroy
-                    if (word == wordInfo.GetWord())
+                    if (word == WordUtilities.CapitalizeAllWordsInString(wordInfo.GetWord()))
                         stillOnWord = true;
                 }
             }
@@ -342,6 +339,14 @@ public class WordClickManager : MonoBehaviour
     {
         Vector2 mousePos = controls.Dialogue.MousePosition.ReadValue<Vector2>();
         return mousePos;
+    }
+    /// <summary>
+    /// takes the current word, (pretends as) if the current word is hovering over it, checks if it fits
+    /// </summary>
+    public void CheckPromptBubbleForCurrentWord(PromptBubble pB)
+    {
+        promptBubble = pB;
+        promptBubble.OnBubbleHover(true);
     }
     void OnEnable()
     {

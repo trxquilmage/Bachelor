@@ -60,9 +60,9 @@ public static class WordUtilities
         if (!inAsk || inAsk && origin != WordInfo.Origin.Dialogue)
         {
             GameObject word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
-            if (!inAsk) 
+            if (!inAsk)
                 word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
-            else 
+            else
                 word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
             word.transform.position = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
@@ -273,7 +273,8 @@ public static class WordUtilities
         else
             origin = WordInfo.Origin.Environment;
 
-        WordClickManager.instance.CheckWord(WordInfoToString(wordInfos), wordPosition, wordInfos[0], firstAndLastWordIndex, origin);
+        string wordToSend = CapitalizeAllWordsInString(WordInfoToString(wordInfos));
+        WordClickManager.instance.CheckWord(wordToSend, wordPosition, wordInfos[0], firstAndLastWordIndex, origin);
         // Set the hovered word to interacted
         ReColorAllInteractableWords();
     }
@@ -340,8 +341,6 @@ public static class WordUtilities
     /// </summary>
     public static void ReturnWordIntoText(Word word)
     {
-        TMP_Text relatedText = word.relatedText;
-
         //delete the bubble
         WordClickManager.instance.DestroyCurrentWord();
         //update text colors
@@ -355,6 +354,7 @@ public static class WordUtilities
     /// <returns></returns>
     static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord)
     {
+        wordName = CapitalizeAllWordsInString(wordName);
         Dictionary<string, string[]> wordTagList;
         if (isFillerWord)
         {
@@ -366,7 +366,7 @@ public static class WordUtilities
             wordTagList = WordLookupReader.instance.longWordTag;
         bool isUsed = false;
         string tag = "";
-        if (!isFillerWord || wordTagList.ContainsKey(wordName))
+        if (wordTagList.ContainsKey(wordName))
             tag = wordTagList[wordName][0];
         else
             tag = "Other";
@@ -508,5 +508,20 @@ public static class WordUtilities
         //finish off
         firstAndLast = new Vector2(firstAndLast.x, i - 1);
         return firstAndLast;
+    }
+    /// <summary>
+    /// takes a string and returns it with every word capitalized
+    /// </summary>
+    /// <param name="givenSentence"></param>
+    /// <returns></returns>
+    public static string CapitalizeAllWordsInString(string givenSentence)
+    {
+        string s = "";
+        foreach (string word in givenSentence.Trim().Split(@" "[0]))
+        {
+            s += char.ToUpper(word[0]) + word.Substring(1) + " ";
+        }
+        s = s.Substring(0, s.Length - 1); //removes last character
+        return s;
     }
 }
