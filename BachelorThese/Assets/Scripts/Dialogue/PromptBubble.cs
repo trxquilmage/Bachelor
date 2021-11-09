@@ -45,20 +45,29 @@ public class PromptBubble : MonoBehaviour
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
+            // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
             else if (data.tag == WordInfo.WordTags.AllWords && WordClickManager.instance.currentWord != null &&
                 WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == WordInfo.WordTags.Other)
             {
                 acceptsCurrentWord = false;
-                bubble.color = Color.red;
+                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 UIManager.instance.BlendInUI(ReferenceManager.instance.feedbackTextOtherTag, 3);
             }
             else
+            {
                 acceptsCurrentWord = false;
+                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject, new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+            }
+
         }
         else if (!isOnHover && isHover) //mouse stops hover
         {
             acceptsCurrentWord = false;
-            bubble.color = data.imageColor;
+            StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
+            StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject, 
+                new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), 
+                    WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Word>().data.tag) }, 0.3f));
         }
         isHover = isOnHover;
     }

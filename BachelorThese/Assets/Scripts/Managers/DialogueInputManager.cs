@@ -92,7 +92,7 @@ public class DialogueInputManager : MonoBehaviour
 
         // Color all interactable words, force update, so there are no errors
         ReferenceManager.instance.interactableTextList[0].ForceMeshUpdate();
-        WordUtilities.ReColorAllInteractableWords();
+        EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// When a line is done (called in Dialogue Runner) -> enable continue  for ContinueText()
@@ -121,9 +121,16 @@ public class DialogueInputManager : MonoBehaviour
     /// </summary>
     void CheckDoubleClick()
     {
-        if (wcManager.currentWord != null)
+        if (wcManager.wordLastHighlighted != null)
         {
-            wcManager.currentWord.GetComponent<Word>().MoveToCase();
+            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Word>().data.tag == WordInfo.WordTags.Quest;
+            if (isQuest)
+                QuestManager.instance.AutomaticOpenCase(true);
+            else
+                WordCaseManager.instance.AutomaticOpenCase(true);
+            wcManager.currentWord = wcManager.wordLastHighlighted;
+            wcManager.wordLastHighlighted = null;
+            wcManager.currentWord.GetComponent<Word>().MoveToCase(isQuest);
         }
     }
     private void OnEnable()

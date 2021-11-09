@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 using UnityEngine.UI;
 using TMPro;
 
@@ -81,7 +82,7 @@ public class UIManager : MonoBehaviour
         if (DialogueInputManager.instance.isActiveAndEnabled)
         {
             foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
-                WordUtilities.ReColorAllInteractableWords();
+                EffectUtilities.ReColorAllInteractableWords();
         }
 
     }
@@ -177,7 +178,7 @@ public class UIManager : MonoBehaviour
                 currentAlpha = WordUtilities.Remap(timer, 0, 1, 0, 1);
             else if (timer > time - 1)
                 currentAlpha = WordUtilities.Remap(timer, time - 1, time, 1, 0);
-            else 
+            else
                 currentAlpha = 1;
             timer += Time.deltaTime;
             foreach (TMP_Text text in allTexts)
@@ -195,5 +196,10 @@ public class UIManager : MonoBehaviour
             yield return delay;
         }
         uiElement.SetActive(false);
+    }
+    public void PlayVFX(VisualEffect vfx)
+    {
+        if (vfx != null)
+            vfx.SendEvent("Start");
     }
 }

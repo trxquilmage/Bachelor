@@ -129,7 +129,7 @@ public class WordClickManager : MonoBehaviour
         Destroy(currentWord);
         currentWord = null;
         // Set the word color back to interactable
-        WordUtilities.ReColorAllInteractableWords();
+        EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// Destroy the word you highlighted (after it is no longer hovered)
@@ -141,7 +141,7 @@ public class WordClickManager : MonoBehaviour
         wordLastHighlighted = null;
 
         // Set the word color back to interactable
-        WordUtilities.ReColorAllInteractableWords();
+        EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// Destroy the buttons that have spawned this dialogue

@@ -102,49 +102,62 @@ public class QuestManager : MonoBehaviour
     public void SaveQuest(Word wordItem)
     {
         Word.WordData word = wordItem.data;
-        if (!CheckIfQuestInList(word))
+        if (CheckIfCanSaveQuest(word.name, out int index))
         {
-            bool foundASpot = false;
-            for (int i = 0; i < ReferenceManager.instance.maxQuestCount; i++)
-            {
-                if (allQuests[i].name == null)
-                {
-                    allQuests[i] = word;
-                    foundASpot = true;
-                    break;
-                }
-            }
-            //Reload
-            ReloadQuests();
-            WordUtilities.ReColorAllInteractableWords();
-
-            if (!foundASpot) //word list full, put the word back into the dialogue
-            {
-                WordUtilities.ReturnWordIntoText(wordItem);
-            }
+            allQuests[index] = word;
         }
         else
         {
             //put the word back into the dialogue
             WordUtilities.ReturnWordIntoText(wordItem);
         }
+        //Reload
+        ReloadQuests();
+        EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// Checks, if the Quest that is supposed to be saved is already in the list
     /// </summary>
     /// <param name=""></param>
     /// <returns></returns>
-    bool CheckIfQuestInList(Word.WordData word)
+    bool CheckIfQuestInList(string name)
     {
         bool inList = false;
         foreach (Word.WordData data in allQuests)
         {
-            if (data.name != null && data.name == word.name)
+            if (data.name != null && data.name == name)
             {
                 inList = true;
             }
         }
         return inList;
+    }
+    public bool CheckIfCanSaveQuest(string name, out int index)
+    {
+        index = -1;
+        bool inQuestList;
+        if (ReferenceManager.instance.duplicateWords)
+            inQuestList = false;
+        else
+            inQuestList = CheckIfQuestInList(name);
+
+        if (!inQuestList)
+        {
+            bool foundASpot = false;
+            for (int i = 0; i < ReferenceManager.instance.maxQuestCount; i++)
+            {
+                if (allQuests[i].name == null)
+                {
+                    index = i;
+                    foundASpot = true;
+                    break;
+                }
+            }
+            if (foundASpot)
+                return true;
+            return false;
+        }
+        return false;
     }
     /// <summary>
     /// Delete currentWord out of the QuestLog
@@ -203,7 +216,7 @@ public class QuestManager : MonoBehaviour
     /// <returns></returns>
     GameObject SpawnQuestInLog(Word.WordData data)
     {
-        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero,Vector2.zero, WordInfo.Origin.QuestLog, true);
+        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, Vector2.zero, WordInfo.Origin.QuestLog, true);
         //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
         bubble.transform.SetParent(refM.questListingParent.transform);
         return bubble;

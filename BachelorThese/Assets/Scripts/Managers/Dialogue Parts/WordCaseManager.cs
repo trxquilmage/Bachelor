@@ -91,32 +91,45 @@ public class WordCaseManager : MonoBehaviour
     public void SaveWord(Word wordItem)
     {
         Word.WordData word = wordItem.data;
-        if (!CheckIfWordInList(word))
+
+        if (CheckIfCanSaveWord(word.name, word.tag, out int index))
+        {
+            tagRelatedWords[openTag][index] = word;
+        }
+        else
+        {
+            WordUtilities.ReturnWordIntoText(wordItem);
+        }
+
+        //Reload
+        OpenOnTag(false);
+        EffectUtilities.ReColorAllInteractableWords();
+    }
+    public bool CheckIfCanSaveWord(string name, WordInfo.WordTags tag, out int index)
+    {
+        index = -1;
+        bool inWordList;
+        if (ReferenceManager.instance.duplicateWords)
+            inWordList = false;
+        else
+            inWordList = CheckIfWordInList(name, tag);
+        if (!inWordList)
         {
             bool foundASpot = false;
             for (int i = 0; i < ReferenceManager.instance.maxWordsPerTag; i++)
             {
                 if (tagRelatedWords[openTag][i].name == null)
                 {
-                    tagRelatedWords[openTag][i] = word;
+                    index = i;
                     foundASpot = true;
                     break;
                 }
             }
-            //Reload
-            OpenOnTag(false);
-            WordUtilities.ReColorAllInteractableWords();
-
-            if (!foundASpot) //word list full, put the word back into the dialogue
-            {
-                WordUtilities.ReturnWordIntoText(wordItem);
-            }
+            if (foundASpot)
+                return true;
+            return false;
         }
-        else
-        {
-            //put the word back into the dialogue
-            WordUtilities.ReturnWordIntoText(wordItem);
-        }
+        return false;
     }
     /// <summary>
     /// Loads the Word Case on the given tag. removes the previous words.
@@ -245,44 +258,26 @@ public class WordCaseManager : MonoBehaviour
     /// </summary>
     public void UpdateWordCount()
     {
-        int wordCount = 0;
+        int wordCount = GetTagWordCount(openTag);
         if (openTag != WordInfo.WordTags.AllWords)
         {
-            Word.WordData[] data = tagRelatedWords[openTag];
-            foreach (Word.WordData word in data)
-            {
-                if (word.name != null)
-                {
-                    wordCount++;
-                }
-            }
-            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b>/20</b>";
+            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b>/" + ReferenceManager.instance.maxWordsPerTag + "</b>";
         }
         else
         {
-            foreach (Word.WordData[] data in tagRelatedWords.Values)
-            {
-                foreach (Word.WordData word in data)
-                {
-                    if (word.name != null)
-                    {
-                        wordCount++;
-                    }
-                }
-            }
-            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b>/" + (ReferenceManager.instance.maxWordsPerTag * tagAmount).ToString() + "</b>";
+            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b> Words</b>";
         }
     }
     /// <summary>
     /// Checks if the given Word is in the word case already and doesnt need to be added
     /// </summary>
     /// <returns></returns>
-    bool CheckIfWordInList(Word.WordData word)
+    bool CheckIfWordInList(string word, WordInfo.WordTags tag)
     {
         bool inList = false;
-        foreach (Word.WordData data in tagRelatedWords[word.tag])
+        foreach (Word.WordData data in tagRelatedWords[tag])
         {
-            if (data.name != null && data.name == word.name)
+            if (data.name != null && data.name == word)
             {
                 inList = true;
             }
@@ -372,6 +367,7 @@ public class WordCaseManager : MonoBehaviour
             barter.GetComponent<Image>().color = activeColor;
         }
     }
+    #region Scrollbars
     /// <summary>
     /// Called, when tag-scrollbar is scrolled. move all buttons from left-right
     /// </summary>
@@ -411,6 +407,8 @@ public class WordCaseManager : MonoBehaviour
         refM.currBubbleScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
         scrollbar.size = scrollbarSize;
     }
+
+    #endregion
     /// <summary>
     /// Count the number of words that are in the current tag
     /// </summary>

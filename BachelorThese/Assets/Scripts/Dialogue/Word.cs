@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Pinwheel.UIEffects;
 using UnityEngine.EventSystems;
 using Yarn.Unity;
 
-public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IPointerDownHandler
+public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler
 {
     TMP_Text nameText;
     bool wasDragged; //after the mouse goes up, after it was dragged it checks, where the object is now at
-    bool fadingOut;
+    public bool fadingOut;
     public WordData data;
 
     public TMP_WordInfo relatedWordInfo;
@@ -18,6 +19,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     Vector3 wordSize;
     PlayerInputManager piManager;
     float floatTime = 0.75f;
+    float shakeTime = 0.6f;
     private void Start()
     {
         piManager = PlayerInputManager.instance;
@@ -62,7 +64,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         nameText.text = data.name;
         ScaleRect(nameText, GetComponent<RectTransform>());
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
-        WordUtilities.ColorTag(this.gameObject, data.tag);
+        EffectUtilities.ColorTag(this.gameObject, data.tag);
 
         //initialize the tag Object
         data.tagObj = new TagObject();
@@ -153,7 +155,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         // this cant be deleted bc for some reasons the other functions dont work without it
     }
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)
     {
         if (!fadingOut)
         {
@@ -207,7 +209,6 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             //if its NOT a quest, put into word case
             if (data.tag != WordInfo.WordTags.Quest)
             {
-
                 //save it
                 WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
 
@@ -380,6 +381,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             j++;
         }
         //remove the iamge and text from the original bubble
+        Destroy(GetComponent<UIEffectStack>());
         Destroy(GetComponent<Image>());
         Destroy(transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
@@ -419,6 +421,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             j++;
         }
         //remove the iamge and text from the original bubble
+        Destroy(GetComponent<UIEffectStack>());
         Destroy(GetComponent<Image>());
         Destroy(transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
@@ -471,25 +474,31 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// <summary>
     /// Move the word to the case it belongs to
     /// </summary>
-    public void MoveToCase()
+    public void MoveToCase(bool isQuest)
     {
-        bool isQuest = data.tag == WordInfo.WordTags.Quest;
+        WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
         //check, if the word fits in the case right now
         if (isQuest)
         {
-            fits = true;
+            if (QuestManager.instance.CheckIfCanSaveQuest(data.name, out int index))
+                fits = true;
         }
         else
         {
-            fits = true;
+            if (WordCaseManager.instance.CheckIfCanSaveWord(data.name, data.tag, out int index))
+                fits = true;
         }
         //if yes slowly animate this to the correct case & save it in there
         if (fits)
             StartCoroutine(AnimateMoveToCase(isQuest));
         //if not, shaking animation
         else
-            Debug.Log("shake anim");
+        {
+            StartCoroutine(ShakeNo(isQuest));
+            Color color = GetComponentInChildren<Image>().color;
+            StartCoroutine(EffectUtilities.ColorTagGradient(this.gameObject, new Color[] { color , Color.red, Color.red, Color.red, color }, 0.6f));
+        }
     }
     /// <summary>
     /// Animate the word's movement to it's case, 
@@ -503,7 +512,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         Vector2 startPos = rT.position;
         Vector2 targetPos;
         if (isQuest)
-            targetPos = ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center + 
+            targetPos = ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
                 (Vector2)ReferenceManager.instance.questCase.GetComponent<RectTransform>().position;
         else
             targetPos = ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
@@ -518,9 +527,52 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             yield return delay;
         }
         if (isQuest)
+        {
             IsOverQuestLog();
+            QuestManager.instance.AutomaticOpenCase(false);
+        }
         else
+        {
             IsOverWordCase();
+            WordCaseManager.instance.AutomaticOpenCase(false);
+        }
+        EffectUtilities.ReColorAllInteractableWords();
+    }
+    /// <summary>
+    /// if the word doesnt fit the case, shake it
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator ShakeNo(bool isQuest)
+    {
+        fadingOut = true;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        if (isQuest)
+            QuestManager.instance.AutomaticOpenCase(false);
+        else
+            WordCaseManager.instance.AutomaticOpenCase(false);
+
+        RectTransform rT = GetComponent<RectTransform>();
+        Vector2 startPos = rT.position;
+        Vector2 targetPosRight = startPos + Vector2.right * 4 + Vector2.up * 3;
+        Vector2 targetPosLeft = startPos + Vector2.left * 4 + Vector2.down * 3;
+
+        float t;
+        float timer = 0;
+        while (timer < shakeTime)
+        {
+            timer += Time.deltaTime;
+            if (timer < shakeTime / 4)
+                t = WordUtilities.Remap(timer, 0, shakeTime / 4, 0.5f, 1);
+            else if (timer < shakeTime * 3 / 4)
+                t = WordUtilities.Remap(timer, shakeTime / 4, shakeTime * 3 / 4, 1, 0);
+            else
+                t = WordUtilities.Remap(timer, shakeTime * 3 / 4, shakeTime, 0, 0.5f);
+            rT.position = Vector2.Lerp(targetPosLeft, targetPosRight, t);
+            yield return delay;
+        }
+        fadingOut = false;
+        WordClickManager.instance.wordLastHighlighted = WordClickManager.instance.currentWord;
+        WordClickManager.instance.currentWord = null;
     }
     /// <summary>
     /// Gives back an array of Vector2s, each containing the index of the first and last letter of each line in the text
@@ -593,5 +645,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         lineStarts = lineStartsList.ToArray();
         return firstAndLast.ToArray();
     }
+
+
 }
 

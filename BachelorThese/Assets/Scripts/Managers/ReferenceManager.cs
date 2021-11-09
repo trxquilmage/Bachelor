@@ -105,7 +105,8 @@ public class ReferenceManager : MonoBehaviour
     public bool allWordsInteractable = false;
     public bool blockListOn = false;
     public bool includeStopWords = false;
-    public bool reuseableWords = false;
+    public bool noGreyOut = false;
+    public bool duplicateWords = false;
 
     [HideInInspector] public float currBubbleScrollbarDistance = 0;
     [HideInInspector] public float currQuestScrollbarDistance = 0;

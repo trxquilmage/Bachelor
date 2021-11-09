@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 7304470745898806669}
   - component: {fileID: 1516686108452192541}
   - component: {fileID: 4489590012268787666}
+  - component: {fileID: 6292127944297133889}
   m_Layer: 5
   m_Name: SelectedWord
   m_TagString: Untagged
@@ -237,3 +238,16 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6292127944297133889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5852034671021583850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f467a5f23f8044a91e8919177d2f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 8ab23cd11ad15da47bdee522f7913de2, type: 2}

@@ -278,7 +278,7 @@ public class PlayerInputManager : MonoBehaviour
 
         // Color all interactable words, force update, so there are no errors
         ReferenceManager.instance.askNPCText.ForceMeshUpdate();
-        WordUtilities.ReColorAllInteractableWords();
+        EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
     /// Called to continue on an ask prompt. disables itself afterwards.
