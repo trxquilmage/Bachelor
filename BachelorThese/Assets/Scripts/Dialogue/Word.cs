@@ -147,8 +147,8 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 }
 
             }
-            //else
-            //    IsOverNothing();
+            else
+                IsOverNothing();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -159,7 +159,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         if (!fadingOut)
         {
-            // This is basically OnDragStart()
+            WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
 
             if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
             {
@@ -179,8 +179,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                     QuestManager.instance.AutomaticOpenCase(true);
                     UpdateToBubbleShape();
                 }
-                WordClickManager.instance.currentWord = this.gameObject;
-                WordClickManager.instance.wordLastHighlighted = null;
+                WordClickManager.instance.SwitchFromHighlightedToCurrent();
 
             }
             else if (data.origin == WordInfo.Origin.WordCase)
@@ -210,11 +209,11 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             if (data.tag != WordInfo.WordTags.Quest)
             {
                 //save it
-                WordCaseManager.instance.SaveWord(WordClickManager.instance.currentWord.GetComponent<Word>());
+                WordCaseManager.instance.SaveWord(this);
 
                 //close the case & Delete the UI word
                 WordCaseManager.instance.AutomaticOpenCase(false);
-                WordClickManager.instance.DestroyCurrentWord();
+                WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its a quest, pretend as if is over nothing
             else if (data.tag == WordInfo.WordTags.Quest)
@@ -244,11 +243,11 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             if (data.tag == WordInfo.WordTags.Quest)
             {
                 //save it
-                QuestManager.instance.SaveQuest(WordClickManager.instance.currentWord.GetComponent<Word>());
+                QuestManager.instance.SaveQuest(this);
 
                 //close the case & Delete the UI word
                 QuestManager.instance.AutomaticOpenCase(false);
-                WordClickManager.instance.DestroyCurrentWord();
+                WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its NOT a quest, pretend as if is over nothing
             else if (data.tag != WordInfo.WordTags.Quest)
@@ -571,8 +570,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             yield return delay;
         }
         fadingOut = false;
-        WordClickManager.instance.wordLastHighlighted = WordClickManager.instance.currentWord;
-        WordClickManager.instance.currentWord = null;
+        WordClickManager.instance.SwitchFromCurrentToHighlight();
     }
     /// <summary>
     /// Gives back an array of Vector2s, each containing the index of the first and last letter of each line in the text

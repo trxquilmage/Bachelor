@@ -128,8 +128,7 @@ public class DialogueInputManager : MonoBehaviour
                 QuestManager.instance.AutomaticOpenCase(true);
             else
                 WordCaseManager.instance.AutomaticOpenCase(true);
-            wcManager.currentWord = wcManager.wordLastHighlighted;
-            wcManager.wordLastHighlighted = null;
+            wcManager.SwitchFromHighlightedToCurrent();
             wcManager.currentWord.GetComponent<Word>().MoveToCase(isQuest);
         }
     }

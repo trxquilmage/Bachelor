@@ -29,7 +29,7 @@ public class WordClickManager : MonoBehaviour
     }
     public GameObject CurrentWord;
     WordLookupReader wlReader;
-    GameObject[] activeWords = new GameObject[20];
+    public GameObject[] activeWords = new GameObject[20];
     public string mouseOverUIObject;
     InputMap controls;
     public PromptBubble promptBubble;
@@ -66,8 +66,7 @@ public class WordClickManager : MonoBehaviour
                 tag = WordUtilities.StringToTag(wlReader.wordTag[sentWord][0]),
                 tagInfo = wlReader.wordTag[sentWord]
             };
-            if (wordLastHighlighted != null)
-                DestroyLastHighlighted();
+            DestroyLastHighlighted();
 
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
@@ -97,8 +96,7 @@ public class WordClickManager : MonoBehaviour
                 tag = WordUtilities.StringToTag(wlReader.fillerTag[sentWord][0]),
                 tagInfo = wlReader.fillerTag[sentWord]
             };
-            if (wordLastHighlighted != null)
-                DestroyLastHighlighted();
+            DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 AddToArray(activeWords, wordLastHighlighted);
@@ -112,8 +110,7 @@ public class WordClickManager : MonoBehaviour
                 tag = WordInfo.WordTags.Other,
                 tagInfo = new string[] { "Other", "wrongInfo" }
             };
-            if (wordLastHighlighted != null)
-                DestroyLastHighlighted();
+            DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 AddToArray(activeWords, wordLastHighlighted);
@@ -125,23 +122,61 @@ public class WordClickManager : MonoBehaviour
     /// </summary>
     public void DestroyCurrentWord()
     {
-        // Destroy the Word
-        Destroy(currentWord);
-        currentWord = null;
-        // Set the word color back to interactable
-        EffectUtilities.ReColorAllInteractableWords();
+        if (currentWord != null)
+        {
+            // Destroy the Word
+            Destroy(currentWord);
+            currentWord = null;
+            // Set the word color back to interactable
+            EffectUtilities.ReColorAllInteractableWords();
+        }
+    }
+    /// <summary>
+    /// this additionally checks, if the word IS the current word and if not, just deletes this word instead
+    /// </summary>
+    /// <param name="wordForCheck"></param>
+    public void DestroyCurrentWord(Word wordForCheck)
+    {
+        if (wordForCheck.gameObject == currentWord && currentWord != null)
+        {
+            // Destroy the Word
+            Destroy(currentWord);
+            currentWord = null;
+            // Set the word color back to interactable
+            EffectUtilities.ReColorAllInteractableWords();
+        }
+        else
+        {
+            Destroy(wordForCheck.gameObject);
+            EffectUtilities.ReColorAllInteractableWords();
+        }
     }
     /// <summary>
     /// Destroy the word you highlighted (after it is no longer hovered)
     /// </summary>
     public void DestroyLastHighlighted()
     {
-        // Destroy the Word
-        Destroy(wordLastHighlighted);
-        wordLastHighlighted = null;
+        if (wordLastHighlighted != null)
+        {
+            // Destroy the Word
+            Destroy(wordLastHighlighted);
+            wordLastHighlighted = null;
 
-        // Set the word color back to interactable
-        EffectUtilities.ReColorAllInteractableWords();
+            // Set the word color back to interactable
+            EffectUtilities.ReColorAllInteractableWords();
+        }
+    }
+    public void SwitchFromHighlightedToCurrent()
+    {
+        DestroyCurrentWord();
+        currentWord = wordLastHighlighted;
+        wordLastHighlighted = null;
+    }
+    public void SwitchFromCurrentToHighlight()
+    {
+        DestroyLastHighlighted();
+        wordLastHighlighted = currentWord;
+        currentWord = null;
     }
     /// <summary>
     /// Destroy the buttons that have spawned this dialogue
@@ -158,6 +193,15 @@ public class WordClickManager : MonoBehaviour
                     activeWords[i] = null;
                 }
             }
+        }
+    }
+    public void RemoveFromArray(GameObject[] array, GameObject toRemove)
+    {
+        if (array.Contains(toRemove))
+        {
+            for (int i = 0; i < array.Length; i++)
+                if (array[i] == toRemove)
+                    array[i] = null;
         }
     }
     /// <summary>
@@ -224,9 +268,7 @@ public class WordClickManager : MonoBehaviour
         }
         if (!foundtC) //if not over trashCan
         {
-            {
-                UIManager.instance.SwitchTrashImage(false, null);
-            }
+            UIManager.instance.SwitchTrashImage(false, null);
         }
         stillOnWord = false;
         //Check for the exact word the mouse is hovering over
