@@ -43,7 +43,7 @@ public static class WordUtilities
         }
         return color;
     }
-   
+
     /// <summary>
     /// Creates a word-Object at the mouse's position
     /// </summary>
@@ -61,7 +61,7 @@ public static class WordUtilities
                 word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
             else
                 word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
-            word.transform.position = wordMousePos;
+            word.GetComponent<RectTransform>().position = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
             wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
             return word;
@@ -77,7 +77,7 @@ public static class WordUtilities
         else // in an ask
             word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
 
-        word.transform.position = wordMousePos;
+        word.GetComponent<RectTransform>().position = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
         wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex, false, isLongWord);
         return word;
@@ -129,7 +129,7 @@ public static class WordUtilities
     /// <param name="firstLetter"></param>
     /// <param name="lastLetter"></param>
     /// <param name="color"></param>
-   
+
     /// <summary>
     /// Get The Position of a wordInfo that is added to this
     /// </summary>
@@ -139,22 +139,24 @@ public static class WordUtilities
     public static Vector2 GetWordPosition(TMP_Text text, TMP_WordInfo word)
     {
         text.ForceMeshUpdate();
-        Vector2 wordPosition = new Vector2(0, 0);
-        Vector2 lowerLeftCorner = new Vector2(0, 0);
+        Vector2 wordPosition;
+        Vector2 lowerLeftCorner;
 
         // Get the StartPosition (lower left corner) of the button
         TMP_CharacterInfo charInfo = text.textInfo.characterInfo[word.firstCharacterIndex];
-        int meshIndex = charInfo.materialReferenceIndex;
-        int vertexIndex = charInfo.vertexIndex;
         TMP_Vertex vertexBL = charInfo.vertex_BL;
         lowerLeftCorner = vertexBL.position;
 
         // Get the StartPosition of the bounds (lower left corner)
-        Vector2 lowerLeftTextBox = text.rectTransform.position;
+
+        Vector2 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
         Canvas can = ReferenceManager.instance.dialogueCanvas;
         float scaleFactor = can.scaleFactor * 2;
-        wordPosition = lowerLeftTextBox + (lowerLeftCorner * scaleFactor) - new Vector2(2, 2); //Der Vector Am Ende macht die kleine Verschiebung weg
+        Vector3 spaceInScreenSpace = lowerLeftTextBox; // + (lowerLeftCorner * scaleFactor) - new Vector2(3, 3);
 
+        wordPosition = Camera.main.ScreenToWorldPoint(spaceInScreenSpace); //Der Vector Am Ende macht die kleine Verschiebung weg
+        wordPosition = new Vector3(wordPosition.x, wordPosition.y, can.planeDistance);
+        Debug.Log(wordPosition);
         return wordPosition;
     }
     /// <summary>

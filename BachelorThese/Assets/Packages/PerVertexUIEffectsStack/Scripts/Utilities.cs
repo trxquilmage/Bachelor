@@ -235,7 +235,7 @@ namespace Pinwheel.UIEffects
             return sb.ToString();
         }
 
-        public static void MailTo(string receiverEmail, string subject, string body)
+        /*public static void MailTo(string receiverEmail, string subject, string body)
         {
             subject = EscapeURL(subject);
             body = EscapeURL(body);
@@ -245,7 +245,7 @@ namespace Pinwheel.UIEffects
         public static string EscapeURL(string url)
         {
             return WWW.EscapeURL(url).Replace("+", "%20");
-        }
+        }*/
 
         public static UIVertex GetMidPoint(UIVertex v0, UIVertex v1)
         {

@@ -7,9 +7,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float speed = 1f;
     public InputMap controls;
-    Vector3 movementAddition;
-    float timer = 0;
-    float fixedTime = 0.25f;
+    float timer;
     GameObject target;
     Rigidbody rigid;
     private void Awake()

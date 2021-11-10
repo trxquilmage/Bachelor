@@ -37,7 +37,7 @@ public class InfoManager : MonoBehaviour
     {
         Rumor rumor = new Rumor()
         {
-            name = variableName,
+            rumorName = variableName,
             value = valueToSave,
             toldTo = new Yarn.Value(nameOfNPC),
             tagObject = tagObj
@@ -77,18 +77,18 @@ public class InfoManager : MonoBehaviour
     {
         foreach (Rumor rumor in allRumors)
         {
-            if (rumor.name == variableName)
+            if (rumor.rumorName == variableName)
                 return rumor;
         }
         //Debug.Log("the name " + variableName + "doesnt exist");
-        return new Rumor() { name = variableName, toldTo = new  Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject()};
+        return new Rumor() { rumorName = variableName, toldTo = new  Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject()};
     }
 }
 //Saves ANY given information in a Rumor, containing the value's name,
 //it's value as a Yarn.Value and the name of the character the Info was told
 public class Rumor : MonoBehaviour
 {
-    public string name;
+    public string rumorName;
     public Yarn.Value toldTo;
     public Yarn.Value value;
     public Word.TagObject tagObject;

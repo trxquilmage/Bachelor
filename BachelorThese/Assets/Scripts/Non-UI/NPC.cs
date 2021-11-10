@@ -10,7 +10,6 @@ public class NPC : MonoBehaviour
     public string talkToNode = "";
     public string askNode = "";
 
-    float timer = 0;
     [Header("Optional")]
     public YarnProgram scriptToLoad;
     public YarnProgram askScript;

@@ -644,6 +644,5 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         return firstAndLast.ToArray();
     }
 
-
 }
 

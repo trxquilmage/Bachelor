@@ -236,6 +236,7 @@ public class WordClickManager : MonoBehaviour
         bool foundtC = false; //found the trash can
         foreach (RaycastResult uIObject in results)
         {
+
             //over the trashcan
             if (uIObject.gameObject == ReferenceManager.instance.trashCan
                 || uIObject.gameObject == ReferenceManager.instance.questTrashCan)
@@ -297,7 +298,7 @@ public class WordClickManager : MonoBehaviour
     /// <param name="eventData"></param>
     void FindWordsHoveredOver(TMP_Text text, PointerEventData eventData)
     {
-        int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventData.position, eventData.enterEventCamera);
+        int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventData.position, Camera.main);// eventData.enterEventCamera);
         if (wordIndex != -1) //the function above gives out -1 if they find nothing
         {
             TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
