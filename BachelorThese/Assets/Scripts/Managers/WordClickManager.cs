@@ -54,7 +54,7 @@ public class WordClickManager : MonoBehaviour
     /// </summary>
     /// <param name="sentWord"></param>
     /// <param name="wordPos"></param>
-    public void CheckWord(string sentWord, Vector2 wordPos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
+    public void CheckWord(string sentWord, Vector3 wordPos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
     {
         //check if the sent word is actually in the keyword list
         if (wlReader.wordTag.ContainsKey(sentWord))

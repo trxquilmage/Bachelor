@@ -50,7 +50,7 @@ public static class WordUtilities
     /// <param name="name"></param>
     /// <param name="tag"></param>
     /// <param name="wordMousePos"></param>
-    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
+    public static GameObject CreateWord(Word.WordData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
         bool inAsk = !DialogueInputManager.instance.continueEnabledAsk;
         ReferenceManager refM = ReferenceManager.instance;
@@ -61,14 +61,14 @@ public static class WordUtilities
                 word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
             else
                 word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
-            word.GetComponent<RectTransform>().position = wordMousePos;
+            word.GetComponent<RectTransform>().localPosition = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
             wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
             return word;
         }
         return null;
     }
-    public static GameObject CreateWord(Word.WordData data, Vector2 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
+    public static GameObject CreateWord(Word.WordData data, Vector3 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
     {
         ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
@@ -77,7 +77,7 @@ public static class WordUtilities
         else // in an ask
             word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
 
-        word.GetComponent<RectTransform>().position = wordMousePos;
+        word.GetComponent<RectTransform>().localPosition = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
         wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex, false, isLongWord);
         return word;
@@ -136,10 +136,10 @@ public static class WordUtilities
     /// <param name="text"></param>
     /// <param name="word"></param>
     /// <returns></returns>
-    public static Vector2 GetWordPosition(TMP_Text text, TMP_WordInfo word)
+    public static Vector3 GetWordPosition(TMP_Text text, TMP_WordInfo word)
     {
         text.ForceMeshUpdate();
-        Vector2 wordPosition;
+        Vector3 wordPosition;
         Vector2 lowerLeftCorner;
 
         // Get the StartPosition (lower left corner) of the button
@@ -152,11 +152,9 @@ public static class WordUtilities
         Vector2 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
         Canvas can = ReferenceManager.instance.dialogueCanvas;
         float scaleFactor = can.scaleFactor * 2;
-        Vector3 spaceInScreenSpace = lowerLeftTextBox; // + (lowerLeftCorner * scaleFactor) - new Vector2(3, 3);
+        wordPosition = lowerLeftTextBox / (can.scaleFactor * 2) + (lowerLeftCorner * scaleFactor) - new Vector2(3, 3);//Der Vector Am Ende macht die kleine Verschiebung weg
 
-        wordPosition = Camera.main.ScreenToWorldPoint(spaceInScreenSpace); //Der Vector Am Ende macht die kleine Verschiebung weg
-        wordPosition = new Vector3(wordPosition.x, wordPosition.y, can.planeDistance);
-        Debug.Log(wordPosition);
+        //Debug.Log(wordPosition);
         return wordPosition;
     }
     /// <summary>
@@ -207,7 +205,7 @@ public static class WordUtilities
     public static void CreateABubble(TMP_Text text, TMP_WordInfo[] wordInfos)
     {
         text.ForceMeshUpdate();
-        Vector2 wordPosition = GetWordPosition(text, wordInfos[0]);
+        Vector3 wordPosition = GetWordPosition(text, wordInfos[0]);
         Vector2 firstAndLastWordIndex = GetFirstAndLastWordIndex(text, wordInfos);
 
         WordInfo.Origin origin;
