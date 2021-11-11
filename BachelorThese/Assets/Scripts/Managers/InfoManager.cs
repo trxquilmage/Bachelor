@@ -86,7 +86,7 @@ public class InfoManager : MonoBehaviour
 }
 //Saves ANY given information in a Rumor, containing the value's name,
 //it's value as a Yarn.Value and the name of the character the Info was told
-public class Rumor : MonoBehaviour
+public class Rumor
 {
     public string rumorName;
     public Yarn.Value toldTo;

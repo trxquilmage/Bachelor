@@ -131,6 +131,30 @@ public class DialogueInputManager : MonoBehaviour
             wcManager.SwitchFromHighlightedToCurrent();
             wcManager.currentWord.GetComponent<Word>().MoveToCase(isQuest);
         }
+        //Check if above a word
+        else
+        {
+            //Raycast For words that may be underneath the mouse pos
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = WordClickManager.instance.GetMousePos();
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            foreach(RaycastResult result in results)
+            {
+                if (result.gameObject.TryGetComponent<Word>(out Word word))
+                {
+                    bool isQuest = word.data.tag == WordInfo.WordTags.Quest;
+                    word.MoveToCase(isQuest); //this will result in a wiggle animation
+                    break;
+                }
+                else if (result.gameObject.transform.parent.TryGetComponent<Word>(out word))
+                {
+                    bool isQuest = word.data.tag == WordInfo.WordTags.Quest;
+                    word.MoveToCase(isQuest); //this will result in a wiggle animation
+                    break;
+                }
+            }
+        }
     }
     private void OnEnable()
     {

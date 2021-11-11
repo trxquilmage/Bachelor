@@ -11,7 +11,7 @@ public class WordCaseManager : MonoBehaviour
     public GameObject wordReplacement;
     [SerializeField] Image background;
     [HideInInspector]
-    public WordInfo.WordTags openTag
+    public string openTag
     {
         get { return OpenTag; }
         set
@@ -30,10 +30,10 @@ public class WordCaseManager : MonoBehaviour
     }
     //[HideInInspector] public bool overTrashcan;
 
-    WordInfo.WordTags OpenTag;
+    string OpenTag;
     ReferenceManager refM;
     public Image[] buttons;
-    public Dictionary<WordInfo.WordTags, Word.WordData[]> tagRelatedWords;
+    public Dictionary<string, Word.WordData[]> tagRelatedWords;
     bool alreadyOpen;
     int tagAmount; // number of all tags except for "all" & "none"
     private void Awake()
@@ -42,14 +42,14 @@ public class WordCaseManager : MonoBehaviour
     }
     private void Start()
     {
-        tagRelatedWords = new Dictionary<WordInfo.WordTags, Word.WordData[]>();
+        tagRelatedWords = new Dictionary<string, Word.WordData[]>();
 
         //initialize the dictionary of selcted words
-        foreach (WordInfo.WordTags wordTags in (WordInfo.WordTags[])Enum.GetValues(typeof(WordInfo.WordTags)))
+        foreach (WordInfo.WordTag wordTags in refM.wordTags)
         {
-            tagRelatedWords.Add(wordTags, new Word.WordData[ReferenceManager.instance.maxWordsPerTag]);
+            tagRelatedWords.Add(wordTags.name, new Word.WordData[ReferenceManager.instance.maxWordsPerTag]);
         }
-        tagAmount = tagRelatedWords.Count - 2; //minus "all" & "none"
+        tagAmount = tagRelatedWords.Count - 3; //minus "all", "quests" & "none"
         refM = ReferenceManager.instance;
     }
     /// <summary>
@@ -82,7 +82,7 @@ public class WordCaseManager : MonoBehaviour
     public void ManuallyOpenCase()
     {
         ReferenceManager.instance.wordCase.SetActive(!ReferenceManager.instance.wordCase.activeInHierarchy);
-        openTag = WordInfo.WordTags.AllWords;
+        openTag = ReferenceManager.instance.wordTags[0].name;
     }
     /// <summary>
     /// save a word dragged into the case in the Dict tagRelatedWords
@@ -105,7 +105,7 @@ public class WordCaseManager : MonoBehaviour
         OpenOnTag(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
-    public bool CheckIfCanSaveWord(string name, WordInfo.WordTags tag, out int index)
+    public bool CheckIfCanSaveWord(string name, string tag, out int index)
     {
         index = -1;
         bool inWordList;
@@ -161,7 +161,7 @@ public class WordCaseManager : MonoBehaviour
         }
 
         // Load words of current tag
-        if (openTag != WordInfo.WordTags.AllWords) // go through ONE tag
+        if (openTag != "AllWords") // go through ONE tag
         {
             foreach (Word.WordData word in tagRelatedWords[openTag])
             {
@@ -176,9 +176,9 @@ public class WordCaseManager : MonoBehaviour
         }
         else // go through ALL tags
         {
-            foreach (WordInfo.WordTags wordTags in (WordInfo.WordTags[])Enum.GetValues(typeof(WordInfo.WordTags)))
+            foreach (WordInfo.WordTag tag in ReferenceManager.instance.wordTags)
             {
-                foreach (Word.WordData word in tagRelatedWords[wordTags])
+                foreach (Word.WordData word in tagRelatedWords[tag.name])
                 {
                     if (word.name != null)
                     {
@@ -192,33 +192,6 @@ public class WordCaseManager : MonoBehaviour
         RescaleScrollbar(GetTagWordCount(openTag));
         if (resetScrollbar)
             ResetScrollbar();
-    }
-    /// <summary>
-    /// for UI buttons on the word case: change to the according case
-    /// </summary>
-    public void ChangeToTag(int i)
-    {
-        switch (i)
-        {
-            case 0:
-                openTag = WordInfo.WordTags.AllWords;
-                break;
-            case 1:
-                openTag = WordInfo.WordTags.Location;
-                break;
-            case 2:
-                openTag = WordInfo.WordTags.Other;
-                break;
-            case 3:
-                openTag = WordInfo.WordTags.Name;
-                break;
-            case 4:
-                openTag = WordInfo.WordTags.Item;
-                break;
-            default:
-                Debug.Log("tag doesnt exist");
-                break;
-        }
     }
     /// <summary>
     /// Put the word that was dragged out of the case back into the case
@@ -259,7 +232,7 @@ public class WordCaseManager : MonoBehaviour
     public void UpdateWordCount()
     {
         int wordCount = GetTagWordCount(openTag);
-        if (openTag != WordInfo.WordTags.AllWords)
+        if (openTag != ReferenceManager.instance.wordTags[0].name)
         {
             ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b>/" + ReferenceManager.instance.maxWordsPerTag + "</b>";
         }
@@ -272,7 +245,7 @@ public class WordCaseManager : MonoBehaviour
     /// Checks if the given Word is in the word case already and doesnt need to be added
     /// </summary>
     /// <returns></returns>
-    bool CheckIfWordInList(string word, WordInfo.WordTags tag)
+    bool CheckIfWordInList(string word, string tag)
     {
         bool inList = false;
         foreach (Word.WordData data in tagRelatedWords[tag])
@@ -324,7 +297,7 @@ public class WordCaseManager : MonoBehaviour
     public void TrashAWord()
     {
         Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
-        if (data.tag != WordInfo.WordTags.Quest)
+        if (data.tag.name != ReferenceManager.instance.wordTags[2].name) // isnt quest
         {
             DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
@@ -333,7 +306,7 @@ public class WordCaseManager : MonoBehaviour
             ResetScrollbar();
             DestroyWordReplacement();
         }
-        else if (data.tag == WordInfo.WordTags.Quest)
+        else if (data.tag.name == ReferenceManager.instance.wordTags[2].name)
         {
             QuestManager.instance.DeleteOutOfLog();
             WordClickManager.instance.DestroyCurrentWord();
@@ -413,10 +386,10 @@ public class WordCaseManager : MonoBehaviour
     /// Count the number of words that are in the current tag
     /// </summary>
     /// <param name="tag"></param>
-    int GetTagWordCount(WordInfo.WordTags tag)
+    int GetTagWordCount(string tag)
     {
         int wordCount = 0;
-        if (tag != WordInfo.WordTags.AllWords)
+        if (tag != ReferenceManager.instance.wordTags[0].name)
         {
             foreach (Word.WordData data in tagRelatedWords[tag])
             {
@@ -426,9 +399,11 @@ public class WordCaseManager : MonoBehaviour
         }
         else
         {
-            foreach (WordInfo.WordTags allTags in tagRelatedWords.Keys)
+            foreach (string allTags in tagRelatedWords.Keys)
             {
-                if (allTags != WordInfo.WordTags.AllWords && allTags != WordInfo.WordTags.None)
+                if (allTags != ReferenceManager.instance.wordTags[0].name &&
+                    allTags != ReferenceManager.instance.wordTags[1].name &&
+                    allTags != ReferenceManager.instance.wordTags[2].name)
                 {
                     wordCount += GetTagWordCount(allTags);
                 }

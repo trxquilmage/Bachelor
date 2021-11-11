@@ -14,10 +14,10 @@ public static class EffectUtilities
     /// </summary>
     /// <param name="word"></param>
     /// <param name="tag"></param>
-    public static void ColorTag(GameObject word, WordInfo.WordTags tag)
+    public static void ColorTag(GameObject word, WordInfo.WordTag tag)
     {
         foreach (Image image in word.GetComponentsInChildren<Image>())
-            image.color = WordUtilities.MatchColorToTag(tag);
+            image.color = tag.tagColor;
     }
     public static void ColorTag(GameObject word, Color color)
     {
@@ -44,7 +44,7 @@ public static class EffectUtilities
             if (word != null)
             {
                 index = Mathf.FloorToInt(timer / (time / 5)); //returns the current int we are starting from
-                
+
                 if (index < 4)
                 {
                     t = WordUtilities.Remap(timer, index * (time / 5), (index + 1) * (time / 5), 0, 1);
@@ -156,4 +156,22 @@ public static class EffectUtilities
         }
         return calculatedColorGradient;
     }
+    /// <summary>
+    /// Lerp between different alpha values for an image
+    /// </summary>
+    /// <returns></returns>
+    /*IEnumerator AlphaWave(Image img)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
+        Color color = img.color;
+        float alpha = 0;
+        float highAlpha = color.a;
+
+        while (true)
+        {
+
+            yield return delay;
+        }
+    }*/
 }

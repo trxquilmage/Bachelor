@@ -16,13 +16,6 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color normalColor;
     [HideInInspector] public Color interactableColor;
     [HideInInspector] public Color interactedColor;
-    //public TagColors tagColors;
-    [HideInInspector] public Color locationColor;
-    [HideInInspector] public Color questColor;
-    [HideInInspector] public Color otherColor;
-    [HideInInspector] public Color nameColor;
-    [HideInInspector] public Color itemColor;
-    [HideInInspector] public Color allColor;
     //public OtherColors otherColors;
     [HideInInspector] public Color shadowButtonColor; //Color that mixes into Button Shadows
     [HideInInspector] public Color askColor; //Color for ask & barter button (not set on start rn)
@@ -107,7 +100,8 @@ public class ReferenceManager : MonoBehaviour
     public bool includeStopWords = false;
     public bool noGreyOut = false;
     public bool duplicateWords = false;
-
+    [Header("Game Options")]
+    public WordInfo.WordTag[] wordTags;
     [HideInInspector] public float currBubbleScrollbarDistance = 0;
     [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()
@@ -125,12 +119,10 @@ public class ReferenceManager : MonoBehaviour
         interactableColor = colors.interactableColor;
         interactedColor = colors.interactedColor;
         // tag Colors
-        locationColor = colors.locationColor;
-        questColor = colors.questColor;
-        otherColor = colors.generalColor;
-        nameColor = colors.nameColor;
-        itemColor = colors.itemColor;
-        allColor = colors.allColor;
+        for(int i = 0; i < wordTags.Length; i++)
+        {
+            wordTags[i].tagColor = colors.generalTagColors[i];
+        }
         //other colors
         shadowButtonColor = colors.shadowButtonColor;
         askColor = colors.askColor;

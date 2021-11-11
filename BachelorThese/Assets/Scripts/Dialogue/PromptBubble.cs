@@ -12,15 +12,16 @@ public class PromptBubble : MonoBehaviour
     public GameObject child;
     public struct PromptBubbleData
     {
-        public WordInfo.WordTags tag;
+        public WordInfo.WordTag tag;
         public Color imageColor;
     }
     public void Initialize(string tag, PromptBubble[] saveIn)
     {
         bubble = GetComponent<Image>();
+        WordInfo.WordTag tagInfo = WordUtilities.GetTag(tag);
         data = new PromptBubbleData()
         {
-            tag = WordUtilities.StringToTag(tag)
+            tag = tagInfo
         };
         data.imageColor = WordUtilities.MatchColorToTag(data.tag);
         data.imageColor.a = 1;
@@ -56,18 +57,25 @@ public class PromptBubble : MonoBehaviour
             else
             {
                 acceptsCurrentWord = false;
-                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject, new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                if (WordClickManager.instance.currentWord != null)
+                {
+                    StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject,
+                                        new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                    StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject,
+                        new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                }
             }
-
         }
         else if (!isOnHover && isHover) //mouse stops hover
         {
             acceptsCurrentWord = false;
-            StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
-            StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject, 
-                new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), 
+            if (WordClickManager.instance.currentWord != null)
+            {
+                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
+                StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject,
+                    new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(),
                     WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Word>().data.tag) }, 0.3f));
+            }
         }
         isHover = isOnHover;
     }

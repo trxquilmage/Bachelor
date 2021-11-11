@@ -16,7 +16,7 @@ public class WordLookupReader : MonoBehaviour
     public Dictionary<string, string[]> questionTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> fillerTag = new Dictionary<string, string[]>();
     public List<string> blocked = new List<string>();
-    public Dictionary<WordInfo.WordTags, string[]> tagSubtag = new Dictionary<WordInfo.WordTags, string[]>();
+    public Dictionary<string, string[]> tagSubtag = new Dictionary<string, string[]>();
     List<TMP_WordInfo> currentWordList;
     string[] currentLongWord;
     int currentLongWordIndex;
@@ -133,7 +133,7 @@ public class WordLookupReader : MonoBehaviour
                 {
                     lineInfo[i] = lineData[i + 1];
                 }
-                tagSubtag.Add(WordUtilities.StringToTag(lineData[0]), lineInfo);
+                tagSubtag.Add(lineData[0], lineInfo);
             }
         }
     }

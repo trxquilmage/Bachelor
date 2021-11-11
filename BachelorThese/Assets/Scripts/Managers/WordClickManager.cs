@@ -272,23 +272,28 @@ public class WordClickManager : MonoBehaviour
             UIManager.instance.SwitchTrashImage(false, null);
         }
         stillOnWord = false;
-        //Check for the exact word the mouse is hovering over
-        foreach (RaycastResult uIObject in results)
-        {
-            foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
-            {
 
-                //if the mouse is currently over an Interactable text
-                if (uIObject.gameObject == text.gameObject)
+        //Check for the exact word the mouse is hovering over
+        //dont spawn words, if you are currently dragging one
+        if (currentWord == null || !currentWord.GetComponent<Word>().wasDragged)
+        {
+            foreach (RaycastResult uIObject in results)
+            {
+                foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
                 {
-                    FindWordsHoveredOver(text, eventDataCurrentPosition);
+
+                    //if the mouse is currently over an Interactable text
+                    if (uIObject.gameObject == text.gameObject)
+                    {
+                        FindWordsHoveredOver(text, eventDataCurrentPosition);
+                    }
                 }
             }
-        }
-        if (!stillOnWord && currentWord == null
-            && wordLastHighlighted != null) //stopped Hovering over the iteractable word
-        {
-            DestroyLastHighlighted();
+            if (!stillOnWord && currentWord == null
+                && wordLastHighlighted != null) //stopped Hovering over the iteractable word
+            {
+                DestroyLastHighlighted();
+            }
         }
     }
     /// <summary>

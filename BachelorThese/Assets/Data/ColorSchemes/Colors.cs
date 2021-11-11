@@ -11,6 +11,7 @@ public class Colors : ScriptableObject
 
     //Tag colors
     [Header("Tag Colors")]
+    public Color[] generalTagColors;
     public Color allColor;
     public Color locationColor;
     public Color generalColor;

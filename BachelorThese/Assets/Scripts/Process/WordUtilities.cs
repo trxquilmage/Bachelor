@@ -13,33 +13,19 @@ public static class WordUtilities
     /// Match the word to a color fitting the tag
     /// </summary>
     /// <param name="word"></param>
-    public static Color MatchColorToTag(WordInfo.WordTags tag)
+    public static Color MatchColorToTag(string tagName)
     {
         ReferenceManager refM = ReferenceManager.instance;
         Color color = Color.magenta;
-        switch (tag)
+        foreach (WordInfo.WordTag tag in refM.specificWordTags)
         {
-            case WordInfo.WordTags.Location:
-                color = refM.locationColor;
-                break;
-            case WordInfo.WordTags.Other:
-                color = refM.otherColor;
-                break;
-            case WordInfo.WordTags.Name:
-                color = refM.nameColor;
-                break;
-            case WordInfo.WordTags.Item:
-                color = refM.itemColor;
-                break;
-            case WordInfo.WordTags.Quest:
-                color = refM.questColor;
-                break;
-            case WordInfo.WordTags.AllWords:
-                color = refM.allColor;
-                break;
-            case WordInfo.WordTags.None:
-                Debug.Log("this tag doesnt exist");
-                break;
+            if (tag.name == tagName)
+                color = tag.tagColor;
+        }
+        foreach (WordInfo.WordTag tag in refM.wordTags)
+        {
+            if (tag.name == tagName)
+                color = tag.tagColor;
         }
         return color;
     }
@@ -83,52 +69,26 @@ public static class WordUtilities
         return word;
     }
     /// <summary>
-    /// Turn A String into a WordInfo.WordTags enum
+    /// Find the correct struct WordInfo.WordTag for the given string
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public static WordInfo.WordTags StringToTag(string tag)
+    public static WordInfo.WordTag GetTag(string tagName)
     {
-        switch (tag)
+        WordInfo.WordTag tagInfo = new WordInfo.WordTag();
+        ReferenceManager refM = ReferenceManager.instance;
+        foreach (WordInfo.WordTag tag in refM.specificWordTags)
         {
-            case "Location":
-                return WordInfo.WordTags.Location;
-            case "Other":
-                return WordInfo.WordTags.Other;
-            case "Name":
-                return WordInfo.WordTags.Name;
-            case "Item":
-                return WordInfo.WordTags.Item;
-            case "Quest":
-                return WordInfo.WordTags.Quest;
-            case "AllWords":
-                return WordInfo.WordTags.AllWords;
-            default:
-                Debug.Log("Tag Doesnt exist: " + tag);
-                return WordInfo.WordTags.None; //for Debug Reasons
+            if (tag.name == tagName)
+                tagInfo = tag;
         }
+        foreach (WordInfo.WordTag tag in refM.wordTags)
+        {
+            if (tag.name == tagName)
+                tagInfo = tag;
+        }
+        return tagInfo;
     }
-    /// <summary>
-    /// turns the words "Yes" and "No" into the correstponding bool
-    /// </summary>
-    /// <param name="word"></param>
-    /// <returns></returns>
-    public static bool StringToBool(string word)
-    {
-        bool affirmative;
-        if (word == "Yes")
-            affirmative = true;
-        else
-            affirmative = false;
-        return affirmative;
-    }
-    /// <summary>
-    /// Colors a word in an TMP_Text in a certain color
-    /// </summary>
-    /// <param name="text"></param>
-    /// <param name="firstLetter"></param>
-    /// <param name="lastLetter"></param>
-    /// <param name="color"></param>
 
     /// <summary>
     /// Get The Position of a wordInfo that is added to this
@@ -140,7 +100,7 @@ public static class WordUtilities
     {
         text.ForceMeshUpdate();
         Vector3 wordPosition;
-        Vector2 lowerLeftCorner;
+        Vector3 lowerLeftCorner;
 
         // Get the StartPosition (lower left corner) of the button
         TMP_CharacterInfo charInfo = text.textInfo.characterInfo[word.firstCharacterIndex];
@@ -149,12 +109,10 @@ public static class WordUtilities
 
         // Get the StartPosition of the bounds (lower left corner)
 
-        Vector2 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
-        Canvas can = ReferenceManager.instance.dialogueCanvas;
-        float scaleFactor = can.scaleFactor * 2;
-        wordPosition = lowerLeftTextBox / (can.scaleFactor * 2) + (lowerLeftCorner * scaleFactor) - new Vector2(3, 3);//Der Vector Am Ende macht die kleine Verschiebung weg
+        Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
+        lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
+        wordPosition = lowerLeftTextBox + lowerLeftCorner - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
 
-        //Debug.Log(wordPosition);
         return wordPosition;
     }
     /// <summary>
@@ -165,7 +123,7 @@ public static class WordUtilities
     /// <param name="word"></param>
     /// <param name="hasIgnoredletters"></param>
     /// <returns></returns>
-    public static Vector2[] GetWordParameters(TMP_Text text, TMP_WordInfo word, bool hasIgnoredChars)
+    public static Vector3[] GetWordParameters(TMP_Text text, TMP_WordInfo word, bool hasIgnoredChars)
     {
         text.ForceMeshUpdate();
 
@@ -177,7 +135,7 @@ public static class WordUtilities
             lastCharacter++;
         }
 
-        Vector2[] parameters = new Vector2[2] { new Vector2(0, 0), new Vector2(0, 0) };
+        Vector3[] parameters = new Vector3[2] { Vector3.zero, Vector3.zero };
 
         // Get the StartPosition (lower left corner) of the button
         TMP_CharacterInfo charInfo = text.textInfo.characterInfo[firstCharacter];
@@ -187,14 +145,13 @@ public static class WordUtilities
         parameters[0] = vertexBL.position;
 
         // Get the StartPosition of the bounds (lower left corner)
-        Vector2 lowerLeftTextBox = text.rectTransform.position;
-        Canvas can = ReferenceManager.instance.dialogueCanvas;
-        float scaleFactor = can.scaleFactor * 2;
-        parameters[0] = lowerLeftTextBox + (parameters[0] * scaleFactor) - new Vector2(2, 2); //Der Vector Am Ende macht die kleine Verschiebung weg
+        Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
+        lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
+        parameters[0] = lowerLeftTextBox + parameters[0] - new Vector3(3, 3, 0); //Der Vector Am Ende macht die kleine Verschiebung weg
 
         // Get the length of the word
         parameters[1] = vertexTR.position - vertexBL.position;
-        parameters[1] += new Vector2(4, 4); // Für die Verschiebung 3 Zeilen höher
+        parameters[1] += new Vector3(6, 6, 0); // Für die Verschiebung 3 Zeilen höher
         return parameters;
     }
     /// <summary>
@@ -251,10 +208,13 @@ public static class WordUtilities
     /// <param name="wordInfo"></param>
     public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, PromptBubble[] saveIn)
     {
-        Vector2[] wordParameters = GetWordParameters(text, wordInfo, true);
+        Vector3[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
-        promptBubble.transform.SetParent(bubbleParent);
-        promptBubble.GetComponent<RectTransform>().sizeDelta = wordParameters[1];
+        promptBubble.transform.SetParent(bubbleParent, false);
+        RectTransform rT = promptBubble.GetComponent<RectTransform>();
+        rT.localPosition = wordParameters[0];
+        rT.sizeDelta = wordParameters[1];
+        rT.localEulerAngles = Vector3.zero;
         PromptBubble pB = promptBubble.AddComponent<PromptBubble>();
         pB.Initialize(wordInfo.GetWord(), saveIn);
     }
@@ -471,5 +431,21 @@ public static class WordUtilities
         }
         s = s.Substring(0, s.Length - 1); //removes last character
         return s;
+    }
+    /// <summary>
+    /// Takes a Screen Position and changes it to a canvas rednder mode: Camera coordinates
+    /// </summary>
+    /// <param name="screenPosition"></param>
+    /// <returns></returns>
+    public static Vector3 LocalScreenToCanvasPosition(Vector3 screenPosition)
+    {
+        Vector3 canvasPosition = screenPosition / (ReferenceManager.instance.canvas.scaleFactor * 2);
+        return canvasPosition;
+    }
+    public static Vector3 GlobalScreenToCanvasPosition(Vector3 screenPosition)
+    {
+        Vector3 canvasPosition = Camera.main.WorldToScreenPoint(screenPosition);
+        canvasPosition = canvasPosition / (ReferenceManager.instance.canvas.scaleFactor * 2);
+        return canvasPosition;
     }
 }
