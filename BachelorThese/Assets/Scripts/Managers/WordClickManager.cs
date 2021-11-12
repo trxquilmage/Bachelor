@@ -63,7 +63,7 @@ public class WordClickManager : MonoBehaviour
             Word.WordData data = new Word.WordData()
             {
                 name = sentWord,
-                tag = WordUtilities.StringToTag(wlReader.wordTag[sentWord][0]),
+                tag = wlReader.wordTag[sentWord][0],
                 tagInfo = wlReader.wordTag[sentWord]
             };
             DestroyLastHighlighted();
@@ -78,7 +78,7 @@ public class WordClickManager : MonoBehaviour
             Word.WordData data = new Word.WordData()
             {
                 name = sentWord,
-                tag = WordUtilities.StringToTag(wlReader.longWordTag[sentWord][0]),
+                tag = wlReader.longWordTag[sentWord][0],
                 tagInfo = wlReader.longWordTag[sentWord]
             };
             if (wordLastHighlighted != null)
@@ -93,7 +93,7 @@ public class WordClickManager : MonoBehaviour
             Word.WordData data = new Word.WordData()
             {
                 name = sentWord,
-                tag = WordUtilities.StringToTag(wlReader.fillerTag[sentWord][0]),
+                tag = wlReader.fillerTag[sentWord][0],
                 tagInfo = wlReader.fillerTag[sentWord]
             };
             DestroyLastHighlighted();
@@ -107,8 +107,8 @@ public class WordClickManager : MonoBehaviour
             Word.WordData data = new Word.WordData()
             {
                 name = sentWord,
-                tag = WordInfo.WordTags.Other,
-                tagInfo = new string[] { "Other", "wrongInfo" }
+                tag = ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name,
+                tagInfo = new string[] { ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
@@ -281,7 +281,6 @@ public class WordClickManager : MonoBehaviour
             {
                 foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
                 {
-
                     //if the mouse is currently over an Interactable text
                     if (uIObject.gameObject == text.gameObject)
                     {
@@ -310,8 +309,11 @@ public class WordClickManager : MonoBehaviour
             TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
 
             //Get Color of the first character of the word
+            //if its interactable OR inList, you can instantiate a word from it (not from interactedColor though)
             Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
-            if (currentCharacterColor[charInfo.vertexIndex] == ReferenceManager.instance.interactableColor)
+
+            if (EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.interactableColor) ||
+                EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.inListColor))
             {
                 TMP_WordInfo[] wordInfos = FindAllWordsToBubble(text, wordIndex);
                 WordUtilities.CreateABubble(text, wordInfos); //Word info of the START word, not the hovered word

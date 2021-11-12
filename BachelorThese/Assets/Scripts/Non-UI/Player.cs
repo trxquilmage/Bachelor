@@ -7,7 +7,6 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float speed = 1f;
     public InputMap controls;
-    float timer;
     GameObject target;
     Rigidbody rigid;
     private void Awake()
@@ -97,7 +96,6 @@ public class Player : MonoBehaviour
     {
         if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
-            timer = 0;
             if (CheckForNPCRange())
             {
                 UIManager.instance.PortrayEButton(target);

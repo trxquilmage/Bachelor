@@ -16,6 +16,7 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color normalColor;
     [HideInInspector] public Color interactableColor;
     [HideInInspector] public Color interactedColor;
+    [HideInInspector] public Color inListColor;
     //public OtherColors otherColors;
     [HideInInspector] public Color shadowButtonColor; //Color that mixes into Button Shadows
     [HideInInspector] public Color askColor; //Color for ask & barter button (not set on start rn)
@@ -41,6 +42,7 @@ public class ReferenceManager : MonoBehaviour
     [Header("Prefabs")]
     public GameObject selectedWordPrefab;
     public GameObject promptBoxPrefab;
+    public GameObject buttonPrefab;
     [Header("Fields")]
     public GameObject nPCDialogueField;
     public GameObject playerInputField;
@@ -81,6 +83,8 @@ public class ReferenceManager : MonoBehaviour
     [Header("Non-Dialogue UI")]
     public Canvas canvas;
     public Image eButtonSprite;
+    public Image rightClickIcon;
+    public Image rightClickAskIcon;
     public GameObject worldMap;
     [Header("Environment")]
     public Transform[] allInteractableObjects;
@@ -118,6 +122,7 @@ public class ReferenceManager : MonoBehaviour
         normalColor = colors.normalColor;
         interactableColor = colors.interactableColor;
         interactedColor = colors.interactedColor;
+        inListColor = colors.inListColor;
         // tag Colors
         for(int i = 0; i < wordTags.Length; i++)
         {

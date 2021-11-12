@@ -23,7 +23,7 @@ public class PromptBubble : MonoBehaviour
         {
             tag = tagInfo
         };
-        data.imageColor = WordUtilities.MatchColorToTag(data.tag);
+        data.imageColor = WordUtilities.MatchColorToTag(data.tag.name);
         data.imageColor.a = 1;
         bubble.color = data.imageColor;
         GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
@@ -39,16 +39,18 @@ public class PromptBubble : MonoBehaviour
         {
             //if there is a currentWord AND it has the same tag as this specific word
             if (WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag ||
+                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag.name ||
                 WordClickManager.instance.currentWord != null &&
-                data.tag == WordInfo.WordTags.AllWords && WordClickManager.instance.currentWord.GetComponent<Word>().data.tag != WordInfo.WordTags.Other)
+                data.tag.name == ReferenceManager.instance.wordTags[0].name 
+                && WordClickManager.instance.currentWord.GetComponent<Word>().data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
             // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
-            else if (data.tag == WordInfo.WordTags.AllWords && WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == WordInfo.WordTags.Other)
+            else if (data.tag.name == ReferenceManager.instance.wordTags[WordCaseManager.instance.allTagIndex].name && 
+                WordClickManager.instance.currentWord != null &&
+                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));

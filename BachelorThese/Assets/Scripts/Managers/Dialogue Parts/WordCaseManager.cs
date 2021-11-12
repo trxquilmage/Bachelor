@@ -9,6 +9,8 @@ public class WordCaseManager : MonoBehaviour
     //Handles everything happening in the word case
     public static WordCaseManager instance;
     public GameObject wordReplacement;
+    public int allTagIndex = 0;
+    public int otherTagIndex = 3;
     [SerializeField] Image background;
     [HideInInspector]
     public string openTag
@@ -35,22 +37,25 @@ public class WordCaseManager : MonoBehaviour
     public Image[] buttons;
     public Dictionary<string, Word.WordData[]> tagRelatedWords;
     bool alreadyOpen;
-    int tagAmount; // number of all tags except for "all" & "none"
+    int tagAmount; // number of all tags except for "all" & "quests"
     private void Awake()
     {
         instance = this;
     }
     private void Start()
     {
+        refM = ReferenceManager.instance;
         tagRelatedWords = new Dictionary<string, Word.WordData[]>();
+        openTag = refM.wordTags[allTagIndex].name;
 
         //initialize the dictionary of selcted words
         foreach (WordInfo.WordTag wordTags in refM.wordTags)
         {
-            tagRelatedWords.Add(wordTags.name, new Word.WordData[ReferenceManager.instance.maxWordsPerTag]);
+            if (wordTags.name != refM.wordTags[allTagIndex].name || wordTags.name != refM.wordTags[QuestManager.instance.questTagIndex].name)
+                tagRelatedWords.Add(wordTags.name, new Word.WordData[refM.maxWordsPerTag]);
         }
-        tagAmount = tagRelatedWords.Count - 3; //minus "all", "quests" & "none"
-        refM = ReferenceManager.instance;
+        tagAmount = tagRelatedWords.Count - 2; //minus "all" & "quests"
+
     }
     /// <summary>
     /// Only for automatically opening the word case when draggin something in
@@ -132,6 +137,14 @@ public class WordCaseManager : MonoBehaviour
         return false;
     }
     /// <summary>
+    /// For button Inputs: Changes the open tag
+    /// </summary>
+    /// <param name="info"></param>
+    public void ChangeToTag(TagButtonInfo info)
+    {
+        openTag = info.wordTag.name;
+    }
+    /// <summary>
     /// Loads the Word Case on the given tag. removes the previous words.
     /// </summary>
     public void OpenOnTag(bool resetScrollbar)
@@ -161,7 +174,7 @@ public class WordCaseManager : MonoBehaviour
         }
 
         // Load words of current tag
-        if (openTag != "AllWords") // go through ONE tag
+        if (openTag != ReferenceManager.instance.wordTags[allTagIndex].name) // tag isnt "AllWords"
         {
             foreach (Word.WordData word in tagRelatedWords[openTag])
             {
@@ -178,11 +191,14 @@ public class WordCaseManager : MonoBehaviour
         {
             foreach (WordInfo.WordTag tag in ReferenceManager.instance.wordTags)
             {
-                foreach (Word.WordData word in tagRelatedWords[tag.name])
+                if (tagRelatedWords.ContainsKey(tag.name))
                 {
-                    if (word.name != null)
+                    foreach (Word.WordData word in tagRelatedWords[tag.name])
                     {
-                        SpawnWordInCase(word);
+                        if (word.name != null)
+                        {
+                            SpawnWordInCase(word);
+                        }
                     }
                 }
             }
@@ -297,7 +313,7 @@ public class WordCaseManager : MonoBehaviour
     public void TrashAWord()
     {
         Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
-        if (data.tag.name != ReferenceManager.instance.wordTags[2].name) // isnt quest
+        if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name) // isnt quest
         {
             DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
@@ -306,7 +322,7 @@ public class WordCaseManager : MonoBehaviour
             ResetScrollbar();
             DestroyWordReplacement();
         }
-        else if (data.tag.name == ReferenceManager.instance.wordTags[2].name)
+        else if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
         {
             QuestManager.instance.DeleteOutOfLog();
             WordClickManager.instance.DestroyCurrentWord();
@@ -380,7 +396,6 @@ public class WordCaseManager : MonoBehaviour
         refM.currBubbleScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
         scrollbar.size = scrollbarSize;
     }
-
     #endregion
     /// <summary>
     /// Count the number of words that are in the current tag

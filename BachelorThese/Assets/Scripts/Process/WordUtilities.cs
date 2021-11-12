@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine;
-using TMPro;
-using Yarn.Unity;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using TMPro;
+using UnityEngine;
+using Yarn.Unity;
 
 public static class WordUtilities
 {
@@ -15,18 +13,8 @@ public static class WordUtilities
     /// <param name="word"></param>
     public static Color MatchColorToTag(string tagName)
     {
-        ReferenceManager refM = ReferenceManager.instance;
-        Color color = Color.magenta;
-        foreach (WordInfo.WordTag tag in refM.specificWordTags)
-        {
-            if (tag.name == tagName)
-                color = tag.tagColor;
-        }
-        foreach (WordInfo.WordTag tag in refM.wordTags)
-        {
-            if (tag.name == tagName)
-                color = tag.tagColor;
-        }
+        WordInfo.WordTag tag = GetTag(tagName);
+        Color color = tag.tagColor;
         return color;
     }
 
@@ -77,11 +65,6 @@ public static class WordUtilities
     {
         WordInfo.WordTag tagInfo = new WordInfo.WordTag();
         ReferenceManager refM = ReferenceManager.instance;
-        foreach (WordInfo.WordTag tag in refM.specificWordTags)
-        {
-            if (tag.name == tagName)
-                tagInfo = tag;
-        }
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
             if (tag.name == tagName)
@@ -251,13 +234,18 @@ public static class WordUtilities
     }
     /// <summary>
     /// Check if a word is currently in use, meaning, it is in the word case, is highlighted or is currently being dragged
+    /// true means its being used, out cant be saved ONLY refers to words that are actually in a word case or the questlog
     /// </summary>
     /// <param name="wordInfo"></param>
     /// <param name="wordTagList"></param>
     /// <returns></returns>
-    public static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord)
+    public static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord, out bool cantBeSaved)
     {
         wordName = CapitalizeAllWordsInString(wordName);
+        bool isUsed = false;
+        cantBeSaved = true;
+
+        //Get the list we should check for words (from the wordlookupreader)
         Dictionary<string, string[]> wordTagList;
         if (isFillerWord)
         {
@@ -267,30 +255,33 @@ public static class WordUtilities
             wordTagList = WordLookupReader.instance.wordTag;
         else
             wordTagList = WordLookupReader.instance.longWordTag;
-        bool isUsed = false;
-        string tagName = "";
+
+        // Get the tag
+        string tagName;
         if (wordTagList.ContainsKey(wordName))
             tagName = wordTagList[wordName][0];
+        //if its a non existent filler word, tag it as "Other"
         else
-            tagName = "Other";
-        WordInfo.WordTags tag = StringToTag(tagName);
+            tagName = ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name; // Set tag name to "Other"
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {
-            if (tag == WordInfo.WordTags.Quest)
+            if (tagName == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name) // is a quest
             {
                 //if it's in the quest case or the quest case is full
                 if (!QuestManager.instance.CheckIfCanSaveQuest(wordName, out int index))
                 {
                     isUsed = true;
+                    cantBeSaved = true;
                 }
             }
-            else
+            else // is not a quest
             {
                 //if it's in the word case or the word case is full
-                if (!WordCaseManager.instance.CheckIfCanSaveWord(wordName, tag, out int index))
+                if (!WordCaseManager.instance.CheckIfCanSaveWord(wordName, tagName, out int index))
                 {
                     isUsed = true;
+                    cantBeSaved = true;
                 }
             }
 

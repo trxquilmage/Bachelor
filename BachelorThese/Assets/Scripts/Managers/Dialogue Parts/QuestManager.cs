@@ -11,6 +11,7 @@ public class QuestManager : MonoBehaviour
     public Word.WordData[] allQuests;
     ReferenceManager refM;
     public GameObject wordReplacement;
+    public int questTagIndex = 2; //in the tag list, the number of the Quest Tag
     void Awake()
     {
         instance = this;
@@ -191,7 +192,7 @@ public class QuestManager : MonoBehaviour
     public void SpawnQuestReplacement(Word word)
     {
         wordReplacement = SpawnQuestInLog(word.data);
-        Color color = refM.questColor;
+        Color color = refM.wordTags[questTagIndex].tagColor;
         color.a = 0.3f;
         foreach (Image img in wordReplacement.GetComponentsInChildren<Image>())
         {

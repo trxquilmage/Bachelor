@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
 
     [HideInInspector] public bool isInteracting;
     public static UIManager instance;
+    public RefBool clickFeedbackIsRunning = new RefBool() { refBool = false };
+
     ReferenceManager refM;
     WordCaseManager wcM;
     float scaleFactor = 0;
@@ -26,6 +28,7 @@ public class UIManager : MonoBehaviour
         wcM = WordCaseManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
         ColorUI();
+
     }
     private void Update()
     {
@@ -106,11 +109,8 @@ public class UIManager : MonoBehaviour
         //color everything
         buttons = tagParent.GetComponentsInChildren<Image>();
         //[0] is spacing
-        buttons[1].color = refM.allColor;
-        buttons[2].color = refM.locationColor;
-        buttons[3].color = refM.nameColor;
-        buttons[4].color = refM.itemColor;
-        buttons[5].color = refM.otherColor;
+        InitializeButtons();
+
         refM.ask.GetComponent<Image>().color = refM.askColor;
         refM.barter.GetComponent<Image>().color = refM.askColor;
         refM.trashCan.GetComponent<Image>().color = refM.askColor;
@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
         refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
 
         //color quest case (word case is colored on OpenOnTag())
-        Color color = refM.questColor;
+        Color color = refM.wordTags[QuestManager.instance.questTagIndex].tagColor;
         Color greyColor = Color.Lerp(color, Color.grey, 0.35f);
         Color colorHighlight = Color.Lerp(color, Color.white, 0.3f);
         refM.questCase.GetComponent<Image>().color = greyColor;
@@ -201,5 +201,59 @@ public class UIManager : MonoBehaviour
     {
         if (vfx != null)
             vfx.SendEvent("Start");
+    }
+
+    /// <summary>
+    /// Create All Buttons in the WordCaseManager that are used to change the current tag
+    /// </summary>
+    void InitializeButtons()
+    {
+        int i = 0;
+        foreach (WordInfo.WordTag tag in refM.wordTags)
+        {
+            //dont initialize a quest tag and initialize the "other" tag last
+            if (tag.name != refM.wordTags[QuestManager.instance.questTagIndex].name && tag.name != refM.wordTags[WordCaseManager.instance.otherTagIndex].name)
+            {
+                InstantiateButton(i, tag);
+            }
+            i++;
+        }
+        //initialize the "Other" tag last
+        InstantiateButton(WordCaseManager.instance.otherTagIndex, refM.wordTags[WordCaseManager.instance.otherTagIndex]);
+    }
+    /// <summary>
+    /// Instantiate a Tag-Button (into the wordCase)
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="tag"></param>
+    void InstantiateButton(int i, WordInfo.WordTag tag)
+    {
+        GameObject button = GameObject.Instantiate(refM.buttonPrefab, Vector2.zero, Quaternion.identity);
+        button.transform.SetParent(refM.tagButtonParent.transform, false);
+        TagButtonInfo info = button.GetComponent<TagButtonInfo>();
+        info.Initizalize(i, tag);
+    }
+    public void StartClickFeedback()
+    {
+        clickFeedbackIsRunning.refBool = true;
+        StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickIcon, clickFeedbackIsRunning));
+        StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickAskIcon, clickFeedbackIsRunning));
+    }
+    public void OnRightClicked(bool isInAsk)
+    {
+        //Fade out the click Feedback
+        clickFeedbackIsRunning.refBool = false;
+
+        Image rightClickIcon;
+        if (!isInAsk)
+            rightClickIcon = refM.rightClickIcon;
+        else
+            rightClickIcon = refM.rightClickAskIcon;
+
+        Color startColor = rightClickIcon.color;
+        startColor.a = 1;
+        Color32 endColor = startColor;
+        endColor.a = 1; //not zero bc otherwise its indistinguishable from new Color()
+        StartCoroutine(EffectUtilities.ColorTagGradient(rightClickIcon.gameObject, new Color[5] {startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
     }
 }

@@ -10,16 +10,6 @@ public class InfoManager : MonoBehaviour
     public static InfoManager instance;
 
     public List<Rumor> allRumors = new List<Rumor>();
-    //strings
-    public string placeOfOrigin; //born in
-
-    //bools
-    public bool local; // is a local
-    public bool isSingle; // not in a relationship
-    public bool katherineMother; // katherine is their mom
-    public bool likesMayfair; // said, they like Mayfair
-
-    //floats
 
     //Dictionary containing all names of visited nodes
     [HideInInspector] public Dictionary<string, List<string>> visitedNodes = new Dictionary<string, List<string>>();
@@ -81,7 +71,7 @@ public class InfoManager : MonoBehaviour
                 return rumor;
         }
         //Debug.Log("the name " + variableName + "doesnt exist");
-        return new Rumor() { rumorName = variableName, toldTo = new  Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject()};
+        return new Rumor() { rumorName = variableName, toldTo = new Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject() };
     }
 }
 //Saves ANY given information in a Rumor, containing the value's name,

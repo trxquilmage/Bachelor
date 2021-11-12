@@ -68,10 +68,12 @@ public class DialogueInputManager : MonoBehaviour
             && continueEnabledDrag && continueEnabledAsk)
         {
             Continue(uiHandler);
+            UIManager.instance.OnRightClicked(false);
         }
         else if (!continueEnabledAsk && continueEnabledPromptAsk && askTextFinished) //continue the ask text instead
         {
             Continue(ReferenceManager.instance.askDialogueUI);
+            UIManager.instance.OnRightClicked(true);
         }
     }
     /// <summary>
@@ -89,7 +91,8 @@ public class DialogueInputManager : MonoBehaviour
     public void TextFinished()
     {
         textFinished = true;
-
+        if (continueEnabledPrompt && continueEnabledPromptAsk)
+            UIManager.instance.StartClickFeedback();
         // Color all interactable words, force update, so there are no errors
         ReferenceManager.instance.interactableTextList[0].ForceMeshUpdate();
         EffectUtilities.ReColorAllInteractableWords();
@@ -123,7 +126,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         if (wcManager.wordLastHighlighted != null)
         {
-            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Word>().data.tag == WordInfo.WordTags.Quest;
+            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Word>().data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
             if (isQuest)
                 QuestManager.instance.AutomaticOpenCase(true);
             else
@@ -139,17 +142,17 @@ public class DialogueInputManager : MonoBehaviour
             eventDataCurrentPosition.position = WordClickManager.instance.GetMousePos();
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-            foreach(RaycastResult result in results)
+            foreach (RaycastResult result in results)
             {
                 if (result.gameObject.TryGetComponent<Word>(out Word word))
                 {
-                    bool isQuest = word.data.tag == WordInfo.WordTags.Quest;
+                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
                     word.MoveToCase(isQuest); //this will result in a wiggle animation
                     break;
                 }
                 else if (result.gameObject.transform.parent.TryGetComponent<Word>(out word))
                 {
-                    bool isQuest = word.data.tag == WordInfo.WordTags.Quest;
+                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
                     word.MoveToCase(isQuest); //this will result in a wiggle animation
                     break;
                 }

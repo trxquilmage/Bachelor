@@ -14,10 +14,11 @@ public static class EffectUtilities
     /// </summary>
     /// <param name="word"></param>
     /// <param name="tag"></param>
-    public static void ColorTag(GameObject word, WordInfo.WordTag tag)
+    public static void ColorTag(GameObject word, string tagName)
     {
+        Color tagColor = WordUtilities.MatchColorToTag(tagName);
         foreach (Image image in word.GetComponentsInChildren<Image>())
-            image.color = tag.tagColor;
+            image.color = tagColor;
     }
     public static void ColorTag(GameObject word, Color color)
     {
@@ -106,9 +107,12 @@ public static class EffectUtilities
                     TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
                     if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos, out bool isFillerWord))
                     {
-                        if (WordUtilities.CheckIfWordIsUsed(WordUtilities.WordInfoToString(wordInfos), wordInfos.Length, isFillerWord))
+                        if (WordUtilities.CheckIfWordIsUsed(WordUtilities.WordInfoToString(wordInfos), wordInfos.Length, isFillerWord, out bool cantBeSaved))
                         {
-                            ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
+                            if (!cantBeSaved)
+                                ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
+                            else
+                                ColorAWord(text, wordInfos, ReferenceManager.instance.inListColor);
                         }
                         else
                             ColorAWord(text, wordInfos, ReferenceManager.instance.interactableColor);
@@ -157,21 +161,52 @@ public static class EffectUtilities
         return calculatedColorGradient;
     }
     /// <summary>
+    /// Takes Two Colors and Compares them. If they are equal, return true
+    /// </summary>
+    /// <param name="colorA"></param>
+    /// <param name="colorB"></param>
+    /// <returns></returns>
+    public static bool CompareColor32(Color32 colorA, Color32 colorB)
+    {
+        if (colorA.r == colorB.r)
+        {
+            if (colorA.g == colorB.g)
+            {
+                if (colorA.b == colorB.b)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /// <summary>
     /// Lerp between different alpha values for an image
     /// </summary>
     /// <returns></returns>
-    /*IEnumerator AlphaWave(Image img)
+    public static IEnumerator AlphaWave(Image img, RefBool checkBool)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        checkBool.refBool = true;
 
         Color color = img.color;
-        float alpha = 0;
-        float highAlpha = color.a;
-
-        while (true)
+        float alpha;
+        float t;
+        float timer = 0;
+        while (checkBool.refBool)
         {
-
+            timer += Time.deltaTime;
+            t = WordUtilities.Remap(Mathf.Sin(timer * 2.8f), -1, 1, 0, 1.3f);
+            t = Mathf.Clamp01(t);
+            alpha = Mathf.Lerp(0.3f, 1, t);
+            color.a = alpha;
+            img.color = color;
             yield return delay;
         }
-    }*/
+    }
+
+}
+public class RefBool
+{
+   public bool refBool = false;
 }

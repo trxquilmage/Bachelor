@@ -29,7 +29,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     {
         public string name;
         public string[] tagInfo;
-        public WordInfo.WordTag tag;
+        public string tag;
         public WordInfo.Origin origin;
         public TagObject tagObj;
         public Vector2[] lineLengths;
@@ -171,12 +171,12 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             // if the word is being dragged out of the dialogue
             if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
-                if (data.tag != WordInfo.WordTags.Quest)
+                if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
                 {
                     WordCaseManager.instance.AutomaticOpenCase(true);
                     WordCaseManager.instance.openTag = data.tag;
                 }
-                else if (data.tag == WordInfo.WordTags.Quest)
+                else if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
                 {
                     QuestManager.instance.AutomaticOpenCase(true);
                     UpdateToBubbleShape();
@@ -202,7 +202,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //if its NOT a quest, put into word case
-            if (data.tag != WordInfo.WordTags.Quest)
+            if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 //save it
                 WordCaseManager.instance.SaveWord(this);
@@ -212,7 +212,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its a quest, pretend as if is over nothing
-            else if (data.tag == WordInfo.WordTags.Quest)
+            else if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 IsOverNothing();
             }
@@ -236,7 +236,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //if its a quest, put into quest Log
-            if (data.tag == WordInfo.WordTags.Quest)
+            if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 //save it
                 QuestManager.instance.SaveQuest(this);
@@ -246,7 +246,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its NOT a quest, pretend as if is over nothing
-            else if (data.tag != WordInfo.WordTags.Quest)
+            else if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 IsOverNothing();
             }
