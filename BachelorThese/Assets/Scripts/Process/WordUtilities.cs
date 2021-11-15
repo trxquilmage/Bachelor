@@ -289,6 +289,7 @@ public static class WordUtilities
             if (WordClickManager.instance.currentWord != null &&
                 wordName == WordClickManager.instance.currentWord.GetComponent<Word>().data.name)
             {
+                cantBeSaved = false;
                 isUsed = true;
             }
         }
@@ -296,6 +297,7 @@ public static class WordUtilities
         if (WordClickManager.instance.wordLastHighlighted != null &&
             wordName == WordClickManager.instance.wordLastHighlighted.GetComponent<Word>().data.name)
         {
+            cantBeSaved = false;
             isUsed = true;
         }
 

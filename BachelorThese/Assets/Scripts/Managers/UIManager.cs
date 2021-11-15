@@ -11,8 +11,8 @@ public class UIManager : MonoBehaviour
 
     [HideInInspector] public bool isInteracting;
     public static UIManager instance;
-    public RefBool clickFeedbackIsRunning = new RefBool() { refBool = false };
-
+    [HideInInspector] public RefBool clickFeedbackIsRunning = new RefBool() { refBool = false };
+    [HideInInspector] public float buttonWidth = 0;
     ReferenceManager refM;
     WordCaseManager wcM;
     float scaleFactor = 0;
@@ -95,7 +95,6 @@ public class UIManager : MonoBehaviour
     void ColorUI()
     {
         //Declare variables
-        Image[] buttons = WordCaseManager.instance.buttons;
         GameObject tagParent = refM.tagButtonParent;
 
         //activate UI elements
@@ -106,9 +105,6 @@ public class UIManager : MonoBehaviour
         refM.askNPCField.SetActive(true);
         refM.questCase.SetActive(true);
 
-        //color everything
-        buttons = tagParent.GetComponentsInChildren<Image>();
-        //[0] is spacing
         InitializeButtons();
 
         refM.ask.GetComponent<Image>().color = refM.askColor;
@@ -220,6 +216,20 @@ public class UIManager : MonoBehaviour
         }
         //initialize the "Other" tag last
         InstantiateButton(WordCaseManager.instance.otherTagIndex, refM.wordTags[WordCaseManager.instance.otherTagIndex]);
+
+        //get button width
+        float padding = refM.tagButtonParent.GetComponent<HorizontalLayoutGroup>().spacing;
+        buttonWidth += padding;
+        foreach (RectTransform rT in refM.tagButtonParent.GetComponentsInChildren<RectTransform>())
+        {
+            if (rT.gameObject.TryGetComponent<Button>(out Button button))
+            {
+                buttonWidth += rT.sizeDelta.x;
+                buttonWidth += padding;
+            }
+        }
+        //minus the size thats already on screen
+        buttonWidth -= refM.tagButtonParent.transform.parent.GetComponent<RectTransform>().sizeDelta.x;
     }
     /// <summary>
     /// Instantiate a Tag-Button (into the wordCase)
@@ -239,11 +249,19 @@ public class UIManager : MonoBehaviour
         StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickIcon, clickFeedbackIsRunning));
         StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickAskIcon, clickFeedbackIsRunning));
     }
+    /// <summary>
+    /// When a right click happened, fade out the current feedback to rightclick and briefly light it up
+    /// </summary>
+    /// <param name="isInAsk"></param>
     public void OnRightClicked(bool isInAsk)
     {
         //Fade out the click Feedback
         clickFeedbackIsRunning.refBool = false;
-
+        StartCoroutine(LightUpFeedback(isInAsk));
+    }
+    IEnumerator LightUpFeedback(bool isInAsk)
+    {
+        yield return new WaitForEndOfFrame();
         Image rightClickIcon;
         if (!isInAsk)
             rightClickIcon = refM.rightClickIcon;
@@ -254,6 +272,6 @@ public class UIManager : MonoBehaviour
         startColor.a = 1;
         Color32 endColor = startColor;
         endColor.a = 1; //not zero bc otherwise its indistinguishable from new Color()
-        StartCoroutine(EffectUtilities.ColorTagGradient(rightClickIcon.gameObject, new Color[5] {startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
+        StartCoroutine(EffectUtilities.ColorTagGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
     }
 }

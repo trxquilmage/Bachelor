@@ -18,12 +18,16 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     public TMP_Text relatedText;
     Vector3 wordSize;
     PlayerInputManager piManager;
+    ReferenceManager refM;
     float floatTime = 0.75f;
     float shakeTime = 0.6f;
+    RefBool movementDone;
 
     private void Start()
     {
+        movementDone = new RefBool() { refBool = false };
         piManager = PlayerInputManager.instance;
+        refM = ReferenceManager.instance;
     }
     public struct WordData
     {
@@ -212,7 +216,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its a quest, pretend as if is over nothing
-            else if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            else if (data.tag == refM.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 IsOverNothing();
             }
@@ -220,12 +224,12 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
+            AnimateMovementBackToCase(false);
         }
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
+            AnimateMovementBackToCase(true);
         }
     }
     /// <summary>
@@ -236,7 +240,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //if its a quest, put into quest Log
-            if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            if (data.tag == refM.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 //save it
                 QuestManager.instance.SaveQuest(this);
@@ -246,7 +250,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                 WordClickManager.instance.DestroyCurrentWord(this);
             }
             //if its NOT a quest, pretend as if is over nothing
-            else if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            else if (data.tag != refM.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 IsOverNothing();
             }
@@ -254,12 +258,12 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
+            AnimateMovementBackToCase(false);
         }
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
+            AnimateMovementBackToCase(true);
         }
     }
     /// <summary>
@@ -302,7 +306,7 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
                     DialogueManager.instance.currentTarget = npc;
                     piManager.AskButton();
                     //force the prompt bubble to check, whether the word fits or not
-                    if (ReferenceManager.instance.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
+                    if (refM.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
                     {
                         WordClickManager.instance.CheckPromptBubbleForCurrentWord(pB);
                         IsOverPlayerInput();
@@ -327,13 +331,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         {
             // put it back
             WordClickManager.instance.DestroyCurrentWord();
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.listingParent.transform);
+            AnimateMovementBackToCase(false);
         }
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
             WordClickManager.instance.DestroyCurrentWord();
-            WordCaseManager.instance.PutWordBack(this, ReferenceManager.instance.questListingParent.transform);
+            AnimateMovementBackToCase(true);
         }
     }
     /// <summary>
@@ -509,7 +513,10 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         }
         //if yes slowly animate this to the correct case & save it in there
         if (fits)
-            StartCoroutine(AnimateMoveToCase(isQuest));
+        {
+            AnimateMovementIntoCase(isQuest);
+        }
+
         //if not, shaking animation
         else
         {
@@ -519,24 +526,63 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         }
     }
     /// <summary>
-    /// Animate the word's movement to it's case, 
+    /// Animates a word from its current position into a fitting case and saves it
+    /// </summary>
+    /// <param name="isQuest"></param>
+    void AnimateMovementIntoCase(bool isQuest)
+    {
+        //get target position
+        Vector2 targetPos = GetCaseTargetPosition(isQuest);
+        StartCoroutine(AnimateMovement(movementDone, targetPos));
+        StartCoroutine(AfterMovement_ToCase(movementDone, isQuest));
+    }
+    /// <summary>
+    /// Animates a word from its current position into a fitting prompt
+    /// </summary>
+    void AnimateMovementIntoPrompt()
+    {
+
+    }
+    /// <summary>
+    /// Animates a word from its current position back into the case where it came from
+    /// </summary>
+    /// <param name="isQuest"></param>
+    void AnimateMovementBackToCase(bool isQuest)
+    {
+        //get target position
+        Vector2 targetPos = GetCaseTargetPosition(isQuest);
+        StartCoroutine(AnimateMovement(movementDone, targetPos));
+        StartCoroutine(AfterMovement_BackToCase(movementDone, isQuest));
+    }
+    /// <summary>
+    /// Get the target position of the case we want to animate to 
+    /// </summary>
+    /// <param name="isQuest"></param>
+    /// <returns></returns>
+    Vector2 GetCaseTargetPosition(bool isQuest)
+    {
+        if (isQuest)
+            return ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
+                 (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
+                     ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
+        else
+            return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
+                            (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
+                                ReferenceManager.instance.wordCase.GetComponent<RectTransform>().position);
+    }
+    /// <summary>
+    /// Animate this word from its position to a targetPosition
     /// </summary>
     /// <returns></returns>
-    IEnumerator AnimateMoveToCase(bool isQuest)
+    IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
     {
         if (data.isLongWord)
             UpdateToBubbleShape();
+
         fadingOut = true;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         RectTransform rT = GetComponent<RectTransform>();
         Vector2 startPos = rT.localPosition;
-        Vector2 targetPos;
-        if (isQuest)
-            targetPos = ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
-                (Vector2)WordUtilities.GlobalScreenToCanvasPosition(ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
-        else
-            targetPos = ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
-                (Vector2)WordUtilities.GlobalScreenToCanvasPosition(ReferenceManager.instance.wordCase.GetComponent<RectTransform>().position);
         float timer = 0;
         float t;
         while (timer < floatTime)
@@ -546,6 +592,22 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             rT.localPosition = Vector2.Lerp(startPos, targetPos, t);
             yield return delay;
         }
+        isDone.refBool = true;
+    }
+    /// <summary>
+    /// wait until movement is done and then save the word in the fitting case
+    /// </summary>
+    /// <param name="isQuest"></param>
+    /// <returns></returns>
+    IEnumerator AfterMovement_ToCase(RefBool isDone, bool isQuest)
+    {
+        //wait until movement is done
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+
+        //treat the word as if it was dragged onto the Questlog/Wordcase
+        movementDone.refBool = false;
         if (isQuest)
         {
             IsOverQuestLog();
@@ -556,6 +618,25 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             IsOverWordCase();
             WordCaseManager.instance.AutomaticOpenCase(false);
         }
+        EffectUtilities.ReColorAllInteractableWords();
+    }
+    IEnumerator AfterMovement_BackToCase(RefBool isDone, bool isQuest)
+    {
+        //wait until movement is done
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+
+        //put the word back
+        movementDone.refBool = false;
+        Transform parent;
+        if (isQuest)
+            parent = refM.questListingParent.transform;
+        else
+            parent = refM.listingParent.transform;
+
+        transform.SetParent(parent);
+        WordCaseManager.instance.OpenOnTag(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
@@ -577,19 +658,6 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
             else if (data.origin == WordInfo.Origin.QuestLog)
                 QuestManager.instance.SpawnQuestReplacement(this);
         }
-    }
-    /// <summary>
-    /// Put back to its parent, if there were any word replacements spawned, destroy them
-    /// </summary>
-    /// <param name="newParent"></param>
-    /// <param name="isWordCase"></param>
-    void Reparent(Transform newParent, bool isWordCase)
-    {
-        transform.SetParent(newParent);
-        if (isWordCase)
-            WordCaseManager.instance.DestroyWordReplacement();
-        else
-            QuestManager.instance.DestroyQuestReplacement();
     }
     /// <summary>
     /// if the word doesnt fit the case, shake it

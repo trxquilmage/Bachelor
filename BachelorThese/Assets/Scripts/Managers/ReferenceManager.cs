@@ -57,6 +57,7 @@ public class ReferenceManager : MonoBehaviour
     public TMP_Text wordLimit;
     public TMP_Text questLimit;
     public GameObject ask;
+    public GameObject abortAsk;
     public GameObject barter;
     public GameObject askContinueButton;
     public GameObject continueButton;
@@ -90,12 +91,9 @@ public class ReferenceManager : MonoBehaviour
     public Transform[] allInteractableObjects;
     [Header("Game Data")]
     public int maxWordsPerTag;
-    public int tagScrollbarDistance = 10;
-    public int bubbleScrollbarDistance = 10;
     public int questScrollbarDistance = 10;
-    public int spaceForBubblesOnCanvas = 6;
     public int spaceForQuestsOnCanvas = 7;
-    public int scrollbarMaxSize = 60;
+    public int bubbleScreenHeightMaxSize = 60;
     public int maxLongWordLength = 3;
     public int maxQuestCount = 5;
     [Header("Game Options")]
@@ -106,7 +104,6 @@ public class ReferenceManager : MonoBehaviour
     public bool duplicateWords = false;
     [Header("Game Options")]
     public WordInfo.WordTag[] wordTags;
-    [HideInInspector] public float currBubbleScrollbarDistance = 0;
     [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()
     {

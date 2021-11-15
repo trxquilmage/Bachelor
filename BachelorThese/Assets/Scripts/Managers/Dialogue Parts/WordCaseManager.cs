@@ -8,10 +8,11 @@ public class WordCaseManager : MonoBehaviour
 {
     //Handles everything happening in the word case
     public static WordCaseManager instance;
-    public GameObject wordReplacement;
+    [HideInInspector] public GameObject wordReplacement;
     public int allTagIndex = 0;
     public int otherTagIndex = 3;
     [SerializeField] Image background;
+
     [HideInInspector]
     public string openTag
     {
@@ -33,11 +34,10 @@ public class WordCaseManager : MonoBehaviour
     //[HideInInspector] public bool overTrashcan;
 
     string OpenTag;
+    float bubbleScreenHeight = 0, screenHeight;
     ReferenceManager refM;
-    public Image[] buttons;
-    public Dictionary<string, Word.WordData[]> tagRelatedWords;
+    [HideInInspector] public Dictionary<string, Word.WordData[]> tagRelatedWords;
     bool alreadyOpen;
-    int tagAmount; // number of all tags except for "all" & "quests"
     private void Awake()
     {
         instance = this;
@@ -54,8 +54,7 @@ public class WordCaseManager : MonoBehaviour
             if (wordTags.name != refM.wordTags[allTagIndex].name || wordTags.name != refM.wordTags[QuestManager.instance.questTagIndex].name)
                 tagRelatedWords.Add(wordTags.name, new Word.WordData[refM.maxWordsPerTag]);
         }
-        tagAmount = tagRelatedWords.Count - 2; //minus "all" & "quests"
-
+        screenHeight = refM.listingParent.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
     }
     /// <summary>
     /// Only for automatically opening the word case when draggin something in
@@ -205,17 +204,7 @@ public class WordCaseManager : MonoBehaviour
         }
         DestroyWordReplacement();
         UpdateWordCount();
-        RescaleScrollbar(GetTagWordCount(openTag));
-        if (resetScrollbar)
-            ResetScrollbar();
-    }
-    /// <summary>
-    /// Put the word that was dragged out of the case back into the case
-    /// </summary>
-    public void PutWordBack(Word word, Transform parent)
-    {
-        word.transform.SetParent(parent);
-        OpenOnTag(false);
+        StartCoroutine(RescaleScrollbar(resetScrollbar));
     }
     /// <summary>
     /// Deletes the set word out of the word case
@@ -318,7 +307,7 @@ public class WordCaseManager : MonoBehaviour
             DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
             UpdateWordCount();
-            RescaleScrollbar(GetTagWordCount(openTag));
+            StartCoroutine(RescaleScrollbar(true));
             ResetScrollbar();
             DestroyWordReplacement();
         }
@@ -331,31 +320,6 @@ public class WordCaseManager : MonoBehaviour
             QuestManager.instance.DestroyQuestReplacement();
         }
     }
-    /// <summary>
-    /// Disable the ask and barter buttons (when in barter or question mode)
-    /// </summary>
-    /// <param name="setInactive"></param>
-    public void DisableAskAndBarter(bool setInactive)
-    {
-        Color activeColor = ReferenceManager.instance.askColor;
-        Color grey = ReferenceManager.instance.greyedOutColor;
-        GameObject ask = ReferenceManager.instance.ask; ;
-        GameObject barter = ReferenceManager.instance.barter;
-        if (setInactive) //turn off
-        {
-            ask.GetComponent<Button>().enabled = false;
-            ask.GetComponent<Image>().color = Color.Lerp(activeColor, grey, 0.5f);
-            barter.GetComponent<Button>().enabled = false;
-            barter.GetComponent<Image>().color = Color.Lerp(activeColor, grey, 0.5f);
-        }
-        else //turn on
-        {
-            ask.GetComponent<Button>().enabled = true;
-            ask.GetComponent<Image>().color = activeColor;
-            barter.GetComponent<Button>().enabled = true;
-            barter.GetComponent<Image>().color = activeColor;
-        }
-    }
     #region Scrollbars
     /// <summary>
     /// Called, when tag-scrollbar is scrolled. move all buttons from left-right
@@ -363,16 +327,20 @@ public class WordCaseManager : MonoBehaviour
     public void ScrollThroughButtons()
     {
         float value = ReferenceManager.instance.buttonScrollbar.GetComponent<Scrollbar>().value;
-        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(-value * ReferenceManager.instance.tagScrollbarDistance,
-            ReferenceManager.instance.tagButtonParent.transform.localPosition.y);
+        float posX = Mathf.Lerp(0, -UIManager.instance.buttonWidth, value);
+        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(posX, ReferenceManager.instance.tagButtonParent.transform.localPosition.y);
     }
     /// <summary>
     /// Call when the bubble scrollbar is scrolled. moves the words up & down. resets on tag.
     /// </summary>
     public void ScrollThroughBubbles()
     {
-        float value = ReferenceManager.instance.bubbleScrollbar.GetComponent<Scrollbar>().value;
-        ReferenceManager.instance.listingParent.transform.localPosition = new Vector2(0, value * ReferenceManager.instance.currBubbleScrollbarDistance);
+        if (bubbleScreenHeight > 0)
+        {
+            float value = ReferenceManager.instance.bubbleScrollbar.GetComponent<Scrollbar>().value;
+            float posY = Mathf.Lerp(0, bubbleScreenHeight, value);
+            ReferenceManager.instance.listingParent.transform.localPosition = new Vector2(0, posY);
+        }
     }
     /// <summary>
     /// Resets on OpenOnTag(), so that we arent lost in the sauce
@@ -385,16 +353,41 @@ public class WordCaseManager : MonoBehaviour
     /// Takes the ScrollBar and re-scales it according to the current amount of words
     /// </summary>
     /// <param name="bubbleCount"></param>
-    void RescaleScrollbar(int bubbleCount)
+    IEnumerator RescaleScrollbar(bool resetScrollbar)
     {
+        yield return new WaitForEndOfFrame(); //The old names arent deleted until the frame is over
+        UpdateBubbleHeight();
         Scrollbar scrollbar = refM.bubbleScrollbar;
+
         //if the value is smaller than what fits the canvas, it is irrelevant
-        Mathf.Clamp(bubbleCount, refM.spaceForBubblesOnCanvas, refM.scrollbarMaxSize);
+        float addedHeight = Mathf.Clamp(bubbleScreenHeight, 0, refM.bubbleScreenHeightMaxSize);
+
         //between biggest size (1) and smallest we want (0.05f)
-        float scrollbarSize = WordUtilities.Remap(bubbleCount, refM.spaceForBubblesOnCanvas, refM.scrollbarMaxSize, 1, 0.05f);
-        float overlappingWords = Mathf.Clamp(bubbleCount - refM.spaceForBubblesOnCanvas, 0, Mathf.Infinity);
-        refM.currBubbleScrollbarDistance = overlappingWords * refM.bubbleScrollbarDistance;
+        float scrollbarSize = WordUtilities.Remap(addedHeight, 0, refM.bubbleScreenHeightMaxSize, 1, 0.05f);
         scrollbar.size = scrollbarSize;
+
+        //if required, reset scrollbar
+        if (resetScrollbar)
+        {
+            ResetScrollbar();
+        }
+    }
+    /// <summary>
+    /// Get the complete height of all bubbles stacked on top of each other minus the height of the visible screen
+    /// </summary>
+    void UpdateBubbleHeight()
+    {
+        float spacing = refM.listingParent.GetComponent<VerticalLayoutGroup>().spacing;
+        bubbleScreenHeight = spacing;
+        foreach (RectTransform rT in refM.listingParent.GetComponentsInChildren<RectTransform>())
+        {
+            if (rT.gameObject.TryGetComponent<Word>(out Word word) && rT.gameObject != null)
+            {
+                bubbleScreenHeight += rT.sizeDelta.y;
+                bubbleScreenHeight += spacing;
+            }
+        }
+        bubbleScreenHeight -= screenHeight;
     }
     #endregion
     /// <summary>

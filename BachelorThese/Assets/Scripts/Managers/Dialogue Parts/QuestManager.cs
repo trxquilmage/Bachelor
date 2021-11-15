@@ -252,9 +252,9 @@ public class QuestManager : MonoBehaviour
         }
         Scrollbar scrollbar = refM.questScrollbar;
         //if the value is smaller than what fits the canvas, it is irrelevant
-        Mathf.Clamp(questCount, refM.spaceForQuestsOnCanvas, refM.scrollbarMaxSize);
+        Mathf.Clamp(questCount, refM.spaceForQuestsOnCanvas, refM.bubbleScreenHeightMaxSize);
         //between biggest size (1) and smallest we want (0.05f)
-        float scrollbarSize = WordUtilities.Remap(questCount, refM.spaceForQuestsOnCanvas, refM.scrollbarMaxSize, 1, 0.05f);
+        float scrollbarSize = WordUtilities.Remap(questCount, refM.spaceForQuestsOnCanvas, refM.bubbleScreenHeightMaxSize, 1, 0.05f);
         float overlappingWords = Mathf.Clamp(questCount - refM.spaceForQuestsOnCanvas, 0, Mathf.Infinity);
         refM.currQuestScrollbarDistance = overlappingWords * refM.questScrollbarDistance;
         scrollbar.size = scrollbarSize;

@@ -189,8 +189,11 @@ public class PlayerInputManager : MonoBehaviour
         DialogueInputManager.instance.AskMenuOpen(true);
         // open the fake ask menu
         refM.askField.SetActive(true);
-        // grey out ask and barter
-        WordCaseManager.instance.DisableAskAndBarter(true);
+        // disable ask and barter
+        AskAndBarterButton(false);
+        //make new button "abort ask" available
+        AbortAskButton(true);
+        
         //Enable the 2nd DialogueRunner
         refM.askRunner.gameObject.SetActive(true);
         //start the second runner
@@ -232,19 +235,22 @@ public class PlayerInputManager : MonoBehaviour
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
             // Close Prompt Field
             ReferenceManager.instance.askField.SetActive(false);
+            //make new button "abort ask" unavailable
+            AbortAskButton(false);
         }
     }
     /// <summary>
     /// called, when the dialogue ends. Closes all Managers & windows
+    /// natural end = dialoge is over, otherwise = dialogue was abborted
     /// </summary>
-    public void OnQuestionDialogueEnded()
+    public void OnQuestionDialogueEnded(bool naturalEnd)
     {
         //enable continue
         DialogueInputManager.instance.AskMenuOpen(false);
         // close the fake ask menu
         refM.askField.SetActive(false);
         //set ask and barter buttons active again
-        WordCaseManager.instance.DisableAskAndBarter(false);
+        AskAndBarterButton(true);
         //disable 2nd runner again
         refM.askRunner.gameObject.SetActive(false);
         // if the prompt menu has been closed, reopen it
@@ -261,6 +267,21 @@ public class PlayerInputManager : MonoBehaviour
             DialogueInputManager.instance.enabled = false;
         }
         DialogueManager.instance.isOnlyInAsk = false;
+        if (!naturalEnd) //was aborted
+        {
+            //enable click continue
+            DialogueInputManager.instance.continueEnabledPromptAsk = true;
+            //Delete existing prompts
+            DeleteAllPrompts(currentPromptAskBubbles);
+            //Delete current word gets deleted, so empty the currentWord var
+            WordClickManager.instance.currentWord = null;
+            //Reload, so that the missing word comes back
+            WordCaseManager.instance.OpenOnTag(false);
+            // Close Prompt Field
+            ReferenceManager.instance.askField.SetActive(false);
+            //make new button "abort ask" unavailable
+            AbortAskButton(false);
+        }
     }
     /// <summary>
     /// When an ask line is done (called in Dialogue Runner) -> enable continue for ContinueText()
@@ -314,6 +335,15 @@ public class PlayerInputManager : MonoBehaviour
             ReferenceManager.instance.playerInputField.SetActive(true);
             ReferenceManager.instance.promptBubbleParent.SetActive(true);
         }
+    }
+    void AbortAskButton(bool show)
+    {
+        refM.abortAsk.SetActive(show);
+    }
+    void AskAndBarterButton(bool show)
+    {
+        refM.ask.SetActive(show);
+        refM.barter.SetActive(show);
     }
     #endregion
 }

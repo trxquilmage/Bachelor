@@ -201,7 +201,7 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""3d22b8ad-bfdd-4ce0-afc4-50b52f5c6bd2"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""MultiTap(tapTime=0.59)"",
+                    ""interactions"": ""MultiTap(tapTime=0.2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DoubleClick"",
