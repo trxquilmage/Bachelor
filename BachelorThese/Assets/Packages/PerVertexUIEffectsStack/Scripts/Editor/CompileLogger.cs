@@ -20,28 +20,7 @@ namespace Pinwheel.UIEffects
         private const string LINK_COLOR_PLACEHOLDER = "${LC}";
 
         private const float LOG_MESSAGE_PROBABIILITY = 0.02F;
-        private static string[] messages = new string[]
-        {
-            "Thanks for using the ${PACKAGE_NAME}, please visit <color=${LC}>${WEBSITE}</color> for more interesting products!"
-        };
 
-        [DidReloadScripts]
-        public static void ShowMessageOnCompileSucceeded()
-        {
-            ValidatePackageAndNamespace();
-            if (Random.value < LOG_MESSAGE_PROBABIILITY)
-            {
-                if (messages.Length == 0)
-                    return;
-                int msgIndex = Random.Range(0, messages.Length);
-                string msg = messages[msgIndex]
-                    .Replace(PACKAGE_NAME_PLACEHOLDER, PACKAGE_NAME)
-                    .Replace(WEBSITE_PLACEHOLDER, WEBSITE)
-                    .Replace(PATREON_PLACEHOLDER, PATREON)
-                    .Replace(LINK_COLOR_PLACEHOLDER, LINK_COLOR);
-                Debug.Log(msg);
-            }
-        }
 
         private static void ValidatePackageAndNamespace()
         {

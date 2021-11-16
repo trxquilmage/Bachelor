@@ -22,8 +22,9 @@ public static class EffectUtilities
     }
     public static void ColorTag(GameObject word, Color color)
     {
-        foreach (Image image in word.GetComponentsInChildren<Image>())
-            image.color = color;
+        if (word != null)
+            foreach (Image image in word.GetComponentsInChildren<Image>())
+                image.color = color;
     }
     /// <summary>
     /// put in a Color Gradient here with FIVE (5) Colors. empty colors will be ignored
@@ -204,9 +205,46 @@ public static class EffectUtilities
             yield return delay;
         }
     }
+    /// <summary>
+    /// Take an object and shake it as feedback
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="shakeTime"></param>
+    /// <returns></returns>
+    public static IEnumerator ShakeNo(GameObject obj, float shakeTime)
+    {
+        if (!WordUtilities.ArrayContains(UIManager.instance.activeEffects, obj))
+        {
+            RefBool activeEffect = new RefBool() { refBool = true, refObject = obj };
+            WordUtilities.AddToArray(UIManager.instance.activeEffects, activeEffect);
+            WaitForEndOfFrame delay = new WaitForEndOfFrame();
 
+            RectTransform rT = obj.GetComponent<RectTransform>();
+            Vector2 startPos = rT.localPosition;
+            Vector2 targetPosRight = startPos + Vector2.right * 4 + Vector2.up * 3;
+            Vector2 targetPosLeft = startPos + Vector2.left * 4 + Vector2.down * 3;
+
+            float t;
+            float timer = 0;
+            while (timer < shakeTime)
+            {
+                timer += Time.deltaTime;
+                if (timer < shakeTime / 4)
+                    t = WordUtilities.Remap(timer, 0, shakeTime / 4, 0.5f, 1);
+                else if (timer < shakeTime * 3 / 4)
+                    t = WordUtilities.Remap(timer, shakeTime / 4, shakeTime * 3 / 4, 1, 0);
+                else
+                    t = WordUtilities.Remap(timer, shakeTime * 3 / 4, shakeTime, 0, 0.5f);
+                rT.localPosition = Vector2.Lerp(targetPosLeft, targetPosRight, t);
+                yield return delay;
+            }
+            rT.localPosition = startPos;
+            WordUtilities.RemoveFromArray(UIManager.instance.activeEffects, activeEffect);
+        }
+    }
 }
 public class RefBool
 {
-   public bool refBool = false;
+    public bool refBool = false;
+    public GameObject refObject = null;
 }

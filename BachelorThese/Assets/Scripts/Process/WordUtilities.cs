@@ -117,7 +117,6 @@ public static class WordUtilities
             firstCharacter--;
             lastCharacter++;
         }
-
         Vector3[] parameters = new Vector3[2] { Vector3.zero, Vector3.zero };
 
         // Get the StartPosition (lower left corner) of the button
@@ -164,7 +163,7 @@ public static class WordUtilities
     /// <summary>
     /// checks the given text for promt inputs in the type of "\Tag\"
     /// </summary>
-    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent, PromptBubble[] saveIn)
+    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent)
     {
         text.ForceMeshUpdate();
         // Variables
@@ -179,7 +178,7 @@ public static class WordUtilities
             {
                 if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"|"[0])
                 {
-                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, saveIn);
+                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent);
                 }
             }
         }
@@ -189,7 +188,7 @@ public static class WordUtilities
     /// </summary>
     /// <param name="text"></param>
     /// <param name="wordInfo"></param>
-    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, PromptBubble[] saveIn)
+    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent)
     {
         Vector3[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
@@ -199,7 +198,7 @@ public static class WordUtilities
         rT.sizeDelta = wordParameters[1];
         rT.localEulerAngles = Vector3.zero;
         PromptBubble pB = promptBubble.AddComponent<PromptBubble>();
-        pB.Initialize(wordInfo.GetWord(), saveIn);
+        pB.Initialize(wordInfo.GetWord());
     }
     /// <summary>
     /// Parents the child to the prompt the mouse is currently hovering over
@@ -213,6 +212,7 @@ public static class WordUtilities
         if (bubble.child != null) // if there is already a prompt put in
         {
             // remove the word
+            bubble.child.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
             bubble.child.GetComponent<Word>().IsOverNothing(); // put the OG word back where it came from
             bubble.child = null;
         }
@@ -440,5 +440,53 @@ public static class WordUtilities
         Vector3 canvasPosition = Camera.main.WorldToScreenPoint(screenPosition);
         canvasPosition = canvasPosition / (ReferenceManager.instance.canvas.scaleFactor * 2);
         return canvasPosition;
+    }
+    /// <summary>
+    /// Goes through the array and places the Object in the first free Spot
+    /// </summary>
+    public static void AddToArray(GameObject[] array, GameObject toAdd)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == null)
+            {
+                array[i] = toAdd;
+            }
+        }
+    }
+    public static void AddToArray(RefBool[] array, RefBool toAdd)
+    {
+        bool isFull = true;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i].refObject == null)
+            {
+                array[i] = toAdd;
+                isFull = false;
+            }
+        }
+        if (isFull)
+            Debug.Log("THIS ARRAY IS FULL");
+    }
+    public static void RemoveFromArray(RefBool[] array, RefBool toRemove)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == toRemove)
+            {
+                array[i] = new RefBool();
+            }
+        }
+    }
+    public static bool ArrayContains(RefBool[] array, GameObject contains)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i].refObject != null && array[i].refObject == contains)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

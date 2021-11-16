@@ -17,6 +17,7 @@ public class DialogueInputManager : MonoBehaviour
     public bool askTextFinished;
 
     WordClickManager wcManager;
+    ReferenceManager refM;
     DialogueUI uiHandler;
     InputMap controls;
     bool textFinished;
@@ -30,6 +31,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         uiHandler = ReferenceManager.instance.standartDialogueUI;
         wcManager = WordClickManager.instance;
+        refM = ReferenceManager.instance;
         controls.Dialogue.Click.performed += context => ContinueTextOnClick();
         controls.Dialogue.DoubleClick.performed += context => CheckDoubleClick();
     }
@@ -47,16 +49,16 @@ public class DialogueInputManager : MonoBehaviour
     /// </summary>
     public void ContinueButton()
     {
-        if (PlayerInputManager.instance.CheckForPromptsFilled(PlayerInputManager.instance.currentPromptBubbles) && continueEnabledAsk)
+        if (PlayerInputManager.instance.CheckForPromptsFilled() && continueEnabledAsk)
         {
-            PlayerInputManager.instance.SaveGivenAnswer(PlayerInputManager.instance.currentPromptBubbles);
+            PlayerInputManager.instance.SaveGivenAnswer();
             Continue(uiHandler);
             continueEnabledPrompt = true;
             closeAWindow = true;
             PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.OpenOnTag(false); //Reload, so that the missing word comes back
-            ReferenceManager.instance.playerInputField.SetActive(false);
+            refM.playerInputField.SetActive(false);
         }
     }
     /// <summary>
@@ -72,8 +74,15 @@ public class DialogueInputManager : MonoBehaviour
         }
         else if (!continueEnabledAsk && continueEnabledPromptAsk && askTextFinished) //continue the ask text instead
         {
-            Continue(ReferenceManager.instance.askDialogueUI);
+            Continue(refM.askDialogueUI);
             UIManager.instance.OnRightClicked(true);
+        }
+        else //Shake no feedback for the text box
+        {
+            if (!PlayerInputManager.instance.inAsk)
+                StartCoroutine(EffectUtilities.ShakeNo(refM.npcDialogueTextBox, 0.3f));
+            else
+                StartCoroutine(EffectUtilities.ShakeNo(refM.npcDialogueTextBoxAsk, 0.3f));
         }
     }
     /// <summary>
@@ -132,7 +141,7 @@ public class DialogueInputManager : MonoBehaviour
             else
                 WordCaseManager.instance.AutomaticOpenCase(true);
             wcManager.SwitchFromHighlightedToCurrent();
-            wcManager.currentWord.GetComponent<Word>().MoveToCase(isQuest);
+            wcManager.currentWord.GetComponent<Word>().OnDoubleClicked(isQuest);
         }
         //Check if above a word
         else
@@ -147,13 +156,13 @@ public class DialogueInputManager : MonoBehaviour
                 if (result.gameObject.TryGetComponent<Word>(out Word word))
                 {
                     bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
-                    word.MoveToCase(isQuest); //this will result in a wiggle animation
+                    word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
                     break;
                 }
                 else if (result.gameObject.transform.parent.TryGetComponent<Word>(out word))
                 {
                     bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
-                    word.MoveToCase(isQuest); //this will result in a wiggle animation
+                    word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
                     break;
                 }
             }

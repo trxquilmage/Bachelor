@@ -68,6 +68,8 @@ public class ReferenceManager : MonoBehaviour
     public Scrollbar bubbleScrollbar;
     public Scrollbar questScrollbar;
     public GameObject nameField;
+    public GameObject npcDialogueTextBox;
+    public GameObject npcDialogueTextBoxAsk;
     [Header("UI Elements (Only For Color)")]
     public GameObject wButton;
     public GameObject qButton;
@@ -102,7 +104,7 @@ public class ReferenceManager : MonoBehaviour
     public bool includeStopWords = false;
     public bool noGreyOut = false;
     public bool duplicateWords = false;
-    [Header("Game Options")]
+    [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()

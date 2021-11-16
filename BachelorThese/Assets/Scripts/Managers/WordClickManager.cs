@@ -70,7 +70,7 @@ public class WordClickManager : MonoBehaviour
 
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
-                AddToArray(activeWords, wordLastHighlighted);
+                WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else if (wlReader.longWordTag.ContainsKey(sentWord))
         {
@@ -85,7 +85,7 @@ public class WordClickManager : MonoBehaviour
                 DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, true);
             if (wordLastHighlighted != null)
-                AddToArray(activeWords, wordLastHighlighted);
+                WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else if (wlReader.fillerTag.ContainsKey(sentWord))
         {
@@ -99,7 +99,7 @@ public class WordClickManager : MonoBehaviour
             DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
-                AddToArray(activeWords, wordLastHighlighted);
+                WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else // is filler word without entry
         {
@@ -113,7 +113,7 @@ public class WordClickManager : MonoBehaviour
             DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
-                AddToArray(activeWords, wordLastHighlighted);
+                WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
     }
 
@@ -202,19 +202,6 @@ public class WordClickManager : MonoBehaviour
             for (int i = 0; i < array.Length; i++)
                 if (array[i] == toRemove)
                     array[i] = null;
-        }
-    }
-    /// <summary>
-    /// Goes through the array and places the Object in the first free Spot
-    /// </summary>
-    void AddToArray(GameObject[] array, GameObject toAdd)
-    {
-        for (int i = 0; i < array.Length; i++)
-        {
-            if (array[i] == null)
-            {
-                array[i] = toAdd;
-            }
         }
     }
     /// <summary>

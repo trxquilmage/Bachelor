@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 
     [HideInInspector] public bool isInteracting;
     public static UIManager instance;
+    public RefBool[] activeEffects;
     [HideInInspector] public RefBool clickFeedbackIsRunning = new RefBool() { refBool = false };
     [HideInInspector] public float buttonWidth = 0;
     ReferenceManager refM;
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour
     float scaleFactor = 0;
     float timer = 0;
     GameObject currentTrashCan;
+    
     private void Awake()
     {
         instance = this;
@@ -28,7 +30,7 @@ public class UIManager : MonoBehaviour
         wcM = WordCaseManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
         ColorUI();
-
+        FillActiveEffects();
     }
     private void Update()
     {
@@ -114,8 +116,8 @@ public class UIManager : MonoBehaviour
         refM.qButton.GetComponent<Image>().color = refM.askColor;
 
         refM.playerInputField.GetComponent<Image>().color = refM.inputFieldColor;
-        refM.nPCDialogueField.GetComponent<Image>().color = refM.textFieldColor;
-        refM.askNPCField.GetComponent<Image>().color = refM.textFieldColor;
+        refM.npcDialogueTextBox.GetComponent<Image>().color = refM.textFieldColor;
+        refM.npcDialogueTextBoxAsk.GetComponent<Image>().color = refM.textFieldColor;
         refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
 
         //color quest case (word case is colored on OpenOnTag())
@@ -273,5 +275,13 @@ public class UIManager : MonoBehaviour
         Color32 endColor = startColor;
         endColor.a = 1; //not zero bc otherwise its indistinguishable from new Color()
         StartCoroutine(EffectUtilities.ColorTagGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
+    }
+    void FillActiveEffects()
+    {
+        activeEffects = new RefBool[20];
+        for (int i = 0; i < activeEffects.Length; i++)
+        {
+            activeEffects[i] = new RefBool();
+        }
     }
 }

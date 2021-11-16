@@ -59,7 +59,7 @@ public class QuestManager : MonoBehaviour
     /// <summary>
     /// Reloads existing Quests.
     /// </summary>
-    void ReloadQuests()
+    public void ReloadQuests()
     {
         // Delete all possibly active bubbles
         foreach (Transform word in refM.questListingParent.GetComponentsInChildren<Transform>())

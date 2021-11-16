@@ -19,8 +19,8 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     Vector3 wordSize;
     PlayerInputManager piManager;
     ReferenceManager refM;
-    float floatTime = 0.75f;
-    float shakeTime = 0.6f;
+    float floatTime = 0.4f;
+    float shakeTime = 0.5f;
     RefBool movementDone;
 
     private void Start()
@@ -330,13 +330,11 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         else if (data.origin == WordInfo.Origin.WordCase)
         {
             // put it back
-            WordClickManager.instance.DestroyCurrentWord();
             AnimateMovementBackToCase(false);
         }
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            WordClickManager.instance.DestroyCurrentWord();
             AnimateMovementBackToCase(true);
         }
     }
@@ -482,17 +480,17 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
     /// <summary>
-    /// Move the word to the case it belongs to
+    /// Called when the word is double clicked
     /// </summary>
-    public void MoveToCase(bool isQuest)
+    public void OnDoubleClicked(bool isQuest)
     {
         if (data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Environment)
         {
             DoubleClickedOnDialogue(isQuest);
         }
-        else
+        else //is in word case or quest log
         {
-            StartCoroutine(ShakeNo(isQuest, true, false));
+            DoubleClickedOnCase();
         }
 
     }
@@ -516,13 +514,24 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         {
             AnimateMovementIntoCase(isQuest);
         }
-
         //if not, shaking animation
         else
         {
-            StartCoroutine(ShakeNo(isQuest, false, false));
+            StartCoroutine(ShakeNoWord(isQuest, false, false));
             Color color = GetComponentInChildren<Image>().color;
             StartCoroutine(EffectUtilities.ColorTagGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
+        }
+    }
+    void DoubleClickedOnCase()
+    {
+        //figure out, if there is a promptbubble nearby()
+        if (piManager.CheckForPromptsWithTag(data.tag, out PromptBubble pB))
+        {
+            AnimateMovementIntoPrompt(pB);
+        }
+        else
+        {
+            StartCoroutine(ShakeNoWord(false, true, false)); //isQuest is irrelevant
         }
     }
     /// <summary>
@@ -539,9 +548,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// <summary>
     /// Animates a word from its current position into a fitting prompt
     /// </summary>
-    void AnimateMovementIntoPrompt()
+    void AnimateMovementIntoPrompt(PromptBubble pB)
     {
-
+        //get target position
+        transform.SetParent(refM.selectedWordParentAsk.transform);
+        Vector2 targetPos = pB.transform.localPosition;
+        StartCoroutine(AnimateMovement(movementDone, targetPos));
+        StartCoroutine(AfterMovement_ToPromptBubble(movementDone, pB));
     }
     /// <summary>
     /// Animates a word from its current position back into the case where it came from
@@ -620,23 +633,38 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
         }
         EffectUtilities.ReColorAllInteractableWords();
     }
+    /// <summary>
+    /// wait until movement is done and then parent the word to a promptbubble
+    /// </summary>
+    /// <param name="isDone"></param>
+    /// <param name="pB"></param>
+    /// <returns></returns>
+    IEnumerator AfterMovement_ToPromptBubble(RefBool isDone, PromptBubble pB)
+    {
+        //wait until movement is done
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+        movementDone.refBool = false;
+
+        WordClickManager.instance.promptBubble = pB;
+        WordUtilities.ParentBubbleToPrompt(this.gameObject);
+        WordClickManager.instance.promptBubble = null;
+    }
     IEnumerator AfterMovement_BackToCase(RefBool isDone, bool isQuest)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (!isDone.refBool)
             yield return delay;
+        movementDone.refBool = false;
 
         //put the word back
-        movementDone.refBool = false;
-        Transform parent;
-        if (isQuest)
-            parent = refM.questListingParent.transform;
+        WordClickManager.instance.DestroyCurrentWord(this);
+        if (!isQuest)
+            WordCaseManager.instance.OpenOnTag(false);
         else
-            parent = refM.listingParent.transform;
-
-        transform.SetParent(parent);
-        WordCaseManager.instance.OpenOnTag(false);
+            QuestManager.instance.ReloadQuests();
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
@@ -663,13 +691,13 @@ public class Word : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClic
     /// if the word doesnt fit the case, shake it
     /// </summary>
     /// <returns></returns>
-    IEnumerator ShakeNo(bool isQuest, bool inACase, bool isDuplicate)
+    IEnumerator ShakeNoWord(bool isQuest, bool inACase, bool isDuplicate)
     {
         GameObject duplicate = null;
         if (inACase)
         {
             duplicate = SpawnDuplicate();
-            StartCoroutine(duplicate.GetComponent<Word>().ShakeNo(isQuest, false, true));
+            StartCoroutine(duplicate.GetComponent<Word>().ShakeNoWord(isQuest, false, true));
             MakeInvisible(true);
         }
         fadingOut = true;

@@ -1,5 +1,5 @@
-LocAAA;I'm from<br><color=white>|Location|</color>
-LocAAB;<color=white>|Other|</color>.
-OriAAA;<color=white>|Other|</color>.
-AskAAA;Can you tell me about<br><color=white>|AllWords|</color> ?
-PerAAA;<color=white>|Other|</color>.
+LocAAA;I'm from<br><alpha=#00>|Location|
+LocAAB;<alpha=#00>|Other|
+OriAAA;<alpha=#00>|Other|
+AskAAA;Can you tell me about<br><alpha=#00>|AllWords|
+PerAAA;<alpha=#00>|Other|
