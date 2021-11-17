@@ -24,7 +24,7 @@ public static class WordUtilities
     /// <param name="name"></param>
     /// <param name="tag"></param>
     /// <param name="wordMousePos"></param>
-    public static GameObject CreateWord(Word.WordData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
+    public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
     {
         bool inAsk = !DialogueInputManager.instance.continueEnabledAsk;
         ReferenceManager refM = ReferenceManager.instance;
@@ -36,13 +36,26 @@ public static class WordUtilities
             else
                 word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
             word.GetComponent<RectTransform>().localPosition = wordMousePos;
-            Word wordScript = word.AddComponent<Word>();
-            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex, true, isLongWord);
+
+            if (data is WordData || data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            {
+                Word wordScript = word.AddComponent<Word>();
+                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+            }
+            else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            {
+                Quest wordScript = word.AddComponent<Quest>();
+                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+            }
+            else
+            {
+                Debug.Log("This word seems to be empty");
+            }
             return word;
         }
         return null;
     }
-    public static GameObject CreateWord(Word.WordData data, Vector3 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool isLongWord)
+    public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
     {
         ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
@@ -52,8 +65,20 @@ public static class WordUtilities
             word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
 
         word.GetComponent<RectTransform>().localPosition = wordMousePos;
-        Word wordScript = word.AddComponent<Word>();
-        wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex, false, isLongWord);
+        if (data is WordData || data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+        {
+            Word wordScript = word.AddComponent<Word>();
+            wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
+        }
+        else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+        {
+            Quest wordScript = word.AddComponent<Quest>();
+            wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
+        }
+        else
+        {
+            Debug.Log("This word seems to be empty");
+        }
         return word;
     }
     /// <summary>
@@ -213,7 +238,7 @@ public static class WordUtilities
         {
             // remove the word
             bubble.child.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
-            bubble.child.GetComponent<Word>().IsOverNothing(); // put the OG word back where it came from
+            bubble.child.GetComponent<Bubble>().IsOverNothing(); // put the OG word back where it came from
             bubble.child = null;
         }
         child.transform.SetParent(promptBubble.transform);
@@ -225,7 +250,7 @@ public static class WordUtilities
     /// <summary>
     /// returns a given word into the text it was taken from
     /// </summary>
-    public static void ReturnWordIntoText(Word word)
+    public static void ReturnWordIntoText(Bubble word)
     {
         //delete the bubble
         WordClickManager.instance.DestroyCurrentWord();
@@ -287,7 +312,7 @@ public static class WordUtilities
 
             // if it is the currently highlighted word OR is the current word 
             if (WordClickManager.instance.currentWord != null &&
-                wordName == WordClickManager.instance.currentWord.GetComponent<Word>().data.name)
+                wordName == WordClickManager.instance.currentWord.GetComponent<Bubble>().data.name)
             {
                 cantBeSaved = false;
                 isUsed = true;
@@ -295,7 +320,7 @@ public static class WordUtilities
         }
         //otherwise only grey out the word that is being highlighted night now
         if (WordClickManager.instance.wordLastHighlighted != null &&
-            wordName == WordClickManager.instance.wordLastHighlighted.GetComponent<Word>().data.name)
+            wordName == WordClickManager.instance.wordLastHighlighted.GetComponent<Bubble>().data.name)
         {
             cantBeSaved = false;
             isUsed = true;

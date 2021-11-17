@@ -135,13 +135,13 @@ public class DialogueInputManager : MonoBehaviour
     {
         if (wcManager.wordLastHighlighted != null)
         {
-            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Word>().data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
+            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
             if (isQuest)
                 QuestManager.instance.AutomaticOpenCase(true);
             else
                 WordCaseManager.instance.AutomaticOpenCase(true);
             wcManager.SwitchFromHighlightedToCurrent();
-            wcManager.currentWord.GetComponent<Word>().OnDoubleClicked(isQuest);
+            wcManager.currentWord.GetComponent<Bubble>().OnDoubleClicked(isQuest);
         }
         //Check if above a word
         else
@@ -153,13 +153,13 @@ public class DialogueInputManager : MonoBehaviour
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
             foreach (RaycastResult result in results)
             {
-                if (result.gameObject.TryGetComponent<Word>(out Word word))
+                if (result.gameObject.TryGetComponent<Bubble>(out Bubble word))
                 {
                     bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
                     word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
                     break;
                 }
-                else if (result.gameObject.transform.parent.TryGetComponent<Word>(out word))
+                else if (result.gameObject.transform.parent.TryGetComponent<Bubble>(out word))
                 {
                     bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
                     word.OnDoubleClicked(isQuest); //this will result in a wiggle animation

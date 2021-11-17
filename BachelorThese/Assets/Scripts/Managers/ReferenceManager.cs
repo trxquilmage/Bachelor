@@ -43,6 +43,8 @@ public class ReferenceManager : MonoBehaviour
     public GameObject selectedWordPrefab;
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
+    public GameObject questCountPrefab;
+    public GameObject dropDownPrefab;
     [Header("Fields")]
     public GameObject nPCDialogueField;
     public GameObject playerInputField;
@@ -98,6 +100,7 @@ public class ReferenceManager : MonoBehaviour
     public int bubbleScreenHeightMaxSize = 60;
     public int maxLongWordLength = 3;
     public int maxQuestCount = 5;
+    public int maxQuestAdditions = 5;
     [Header("Game Options")]
     public bool allWordsInteractable = false;
     public bool blockListOn = false;

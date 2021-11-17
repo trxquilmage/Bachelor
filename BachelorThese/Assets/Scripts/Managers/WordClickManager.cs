@@ -59,23 +59,24 @@ public class WordClickManager : MonoBehaviour
         //check if the sent word is actually in the keyword list
         if (wlReader.wordTag.ContainsKey(sentWord))
         {
-            // Create Word Data to send
-            Word.WordData data = new Word.WordData()
+            // Create Bubble Data to send
+            BubbleData data = new BubbleData()
             {
                 name = sentWord,
                 tag = wlReader.wordTag[sentWord][0],
                 tagInfo = wlReader.wordTag[sentWord]
             };
+
             DestroyLastHighlighted();
 
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else if (wlReader.longWordTag.ContainsKey(sentWord))
         {
             // Create Word Data to send
-            Word.WordData data = new Word.WordData()
+            BubbleData data = new BubbleData()
             {
                 name = sentWord,
                 tag = wlReader.longWordTag[sentWord][0],
@@ -83,35 +84,35 @@ public class WordClickManager : MonoBehaviour
             };
             if (wordLastHighlighted != null)
                 DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, true);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else if (wlReader.fillerTag.ContainsKey(sentWord))
         {
             // Create Word Data to send
-            Word.WordData data = new Word.WordData()
+            BubbleData data = new BubbleData()
             {
                 name = sentWord,
                 tag = wlReader.fillerTag[sentWord][0],
                 tagInfo = wlReader.fillerTag[sentWord]
             };
             DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
         else // is filler word without entry
         {
             // Create Word Data to send
-            Word.WordData data = new Word.WordData()
+            BubbleData data = new BubbleData()
             {
                 name = sentWord,
                 tag = ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name,
                 tagInfo = new string[] { ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
@@ -135,7 +136,7 @@ public class WordClickManager : MonoBehaviour
     /// this additionally checks, if the word IS the current word and if not, just deletes this word instead
     /// </summary>
     /// <param name="wordForCheck"></param>
-    public void DestroyCurrentWord(Word wordForCheck)
+    public void DestroyCurrentWord(Bubble wordForCheck)
     {
         if (wordForCheck.gameObject == currentWord && currentWord != null)
         {
@@ -262,7 +263,7 @@ public class WordClickManager : MonoBehaviour
 
         //Check for the exact word the mouse is hovering over
         //dont spawn words, if you are currently dragging one
-        if (currentWord == null || !currentWord.GetComponent<Word>().wasDragged)
+        if (currentWord == null || !currentWord.GetComponent<Bubble>().wasDragged)
         {
             foreach (RaycastResult uIObject in results)
             {
@@ -310,7 +311,7 @@ public class WordClickManager : MonoBehaviour
             if (wordLastHighlighted != null)
             {
                 //go through the signle words of a (possibly longer) word
-                foreach (string word in wordLastHighlighted.GetComponentInChildren<Word>().data.name.Trim().Split(" "[0]))
+                foreach (string word in wordLastHighlighted.GetComponentInChildren<Bubble>().data.name.Trim().Split(" "[0]))
                 {
                     //if ANY of the words in the bubble are the word we are currently hovering over, dont destroy
                     if (word == WordUtilities.CapitalizeAllWordsInString(wordInfo.GetWord()))

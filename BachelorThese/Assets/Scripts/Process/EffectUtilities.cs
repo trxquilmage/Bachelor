@@ -86,11 +86,11 @@ public static class EffectUtilities
         }
 
     }
-    public static void ColorAWord(Word word, Color color)
+    public static void ColorAWord(Bubble word, Color color)
     {
-        if (word.relatedText != null)
+        if (word.originalText != null)
         {
-            ColorAWord(word.relatedText, new TMP_WordInfo[1] { word.relatedWordInfo }, color);
+            ColorAWord(word.originalText, new TMP_WordInfo[1] { word.originalWordInfo }, color);
         }
     }
     /// <summary>

@@ -1,4 +1,7 @@
-Lady Katherine;Name;nobility
-Pick Up A Roastbeef At The Tavern;Quest;
-Deliver The Roastbeef To Lady Katherine;Quest;
-Follow The Cooks Instructions;Quest;
+Lady Katherine;Name;nobility;;;;
+Go Shopping;Quest;Eggs;Ham;Firestones;Flour;Marmelade
+Quest B;Quest;;;;;
+Quest C;Quest;;;;;
+Quest D;Quest;;;;;
+Quest E;Quest;;;;;
+Quest F;Quest;;;;;

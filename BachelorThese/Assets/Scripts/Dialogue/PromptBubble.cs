@@ -54,10 +54,10 @@ public class PromptBubble : MonoBehaviour
         {
             //if there is a currentWord AND it has the same tag as this specific prompt
             if (WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == data.tag.name ||
+                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == data.tag.name ||
                 WordClickManager.instance.currentWord != null &&
                 data.tag.name == ReferenceManager.instance.wordTags[0].name 
-                && WordClickManager.instance.currentWord.GetComponent<Word>().data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+                && WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
@@ -65,7 +65,7 @@ public class PromptBubble : MonoBehaviour
             // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
             else if (data.tag.name == ReferenceManager.instance.wordTags[WordCaseManager.instance.allTagIndex].name && 
                 WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Word>().data.tag == ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name)
+                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
@@ -91,7 +91,7 @@ public class PromptBubble : MonoBehaviour
                 StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
                 StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject,
                     new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(),
-                    WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Word>().data.tag) }, 0.3f));
+                    WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag) }, 0.3f));
             }
         }
         isHover = isOnHover;

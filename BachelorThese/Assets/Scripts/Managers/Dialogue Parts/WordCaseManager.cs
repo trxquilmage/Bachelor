@@ -31,12 +31,11 @@ public class WordCaseManager : MonoBehaviour
             }
         }
     }
-    //[HideInInspector] public bool overTrashcan;
 
     string OpenTag;
     float bubbleScreenHeight = 0, screenHeight;
     ReferenceManager refM;
-    [HideInInspector] public Dictionary<string, Word.WordData[]> tagRelatedWords;
+    [HideInInspector] public Dictionary<string, WordData[]> tagRelatedWords;
     bool alreadyOpen;
     private void Awake()
     {
@@ -45,16 +44,30 @@ public class WordCaseManager : MonoBehaviour
     private void Start()
     {
         refM = ReferenceManager.instance;
-        tagRelatedWords = new Dictionary<string, Word.WordData[]>();
+        tagRelatedWords = new Dictionary<string, WordData[]>();
         openTag = refM.wordTags[allTagIndex].name;
-
+        FillTagRelatedWords();
+        screenHeight = refM.listingParent.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+    }
+    /// <summary>
+    /// Fills the Dictionary TagRelatedWords, as WordData needs a constructor to actually be spawned
+    /// </summary>
+    void FillTagRelatedWords()
+    {
         //initialize the dictionary of selcted words
         foreach (WordInfo.WordTag wordTags in refM.wordTags)
         {
+            //if the tag isnt "all" or "quest"
             if (wordTags.name != refM.wordTags[allTagIndex].name || wordTags.name != refM.wordTags[QuestManager.instance.questTagIndex].name)
-                tagRelatedWords.Add(wordTags.name, new Word.WordData[refM.maxWordsPerTag]);
+            {
+                WordData[] dataList = new WordData[refM.maxWordsPerTag];
+                for (int i = 0; i < refM.maxWordsPerTag; i++)
+                {
+                    dataList[i] = new WordData(new BubbleData());
+                }
+                tagRelatedWords.Add(wordTags.name, dataList);
+            }
         }
-        screenHeight = refM.listingParent.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
     }
     /// <summary>
     /// Only for automatically opening the word case when draggin something in
@@ -94,7 +107,7 @@ public class WordCaseManager : MonoBehaviour
     /// <param name="word"></param>
     public void SaveWord(Word wordItem)
     {
-        Word.WordData word = wordItem.data;
+        WordData word = wordItem.wordData;
 
         if (CheckIfCanSaveWord(word.name, word.tag, out int index))
         {
@@ -175,11 +188,11 @@ public class WordCaseManager : MonoBehaviour
         // Load words of current tag
         if (openTag != ReferenceManager.instance.wordTags[allTagIndex].name) // tag isnt "AllWords"
         {
-            foreach (Word.WordData word in tagRelatedWords[openTag])
+            foreach (WordData word in tagRelatedWords[openTag])
             {
                 if (word.name != null)
                 {
-                    GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase, false);
+                    GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase);
                     //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
                     bubble.transform.SetParent(refM.listingParent.transform);
                 }
@@ -192,7 +205,7 @@ public class WordCaseManager : MonoBehaviour
             {
                 if (tagRelatedWords.ContainsKey(tag.name))
                 {
-                    foreach (Word.WordData word in tagRelatedWords[tag.name])
+                    foreach (WordData word in tagRelatedWords[tag.name])
                     {
                         if (word.name != null)
                         {
@@ -212,10 +225,10 @@ public class WordCaseManager : MonoBehaviour
     /// <param name="data"></param>
     public void DeleteOutOfCase()
     {
-        Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
+        WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().wordData;
         int deleteInt = -1;
         int i = 0;
-        foreach (Word.WordData word in tagRelatedWords[data.tag])
+        foreach (WordData word in tagRelatedWords[data.tag])
         {
             if (word.name == data.name)
             {
@@ -226,7 +239,7 @@ public class WordCaseManager : MonoBehaviour
         }
         if (deleteInt > -1)
         {
-            tagRelatedWords[data.tag][deleteInt] = new Word.WordData();
+            tagRelatedWords[data.tag][deleteInt] = new WordData(new BubbleData());
         }
         else
             Debug.Log("The word to delete couldne be found " + data.name);
@@ -253,7 +266,7 @@ public class WordCaseManager : MonoBehaviour
     bool CheckIfWordInList(string word, string tag)
     {
         bool inList = false;
-        foreach (Word.WordData data in tagRelatedWords[tag])
+        foreach (WordData data in tagRelatedWords[tag])
         {
             if (data.name != null && data.name == word)
             {
@@ -268,7 +281,7 @@ public class WordCaseManager : MonoBehaviour
     /// <param name="word"></param>
     public void SpawnWordReplacement(Word word)
     {
-        wordReplacement = SpawnWordInCase(word.data);
+        wordReplacement = SpawnWordInCase(word.wordData);
         Color color = word.GetComponent<Image>().color;
         color.a = 0.3f;
         wordReplacement.GetComponent<Image>().color = color;
@@ -289,9 +302,9 @@ public class WordCaseManager : MonoBehaviour
     /// </summary>
     /// <param name="word"></param>
     /// <returns></returns>
-    public GameObject SpawnWordInCase(Word.WordData word)
+    public GameObject SpawnWordInCase(WordData word)
     {
-        GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase, false);
+        GameObject bubble = WordUtilities.CreateWord(word, Vector2.zero, Vector2.zero, WordInfo.Origin.WordCase);
         //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
         bubble.transform.SetParent(ReferenceManager.instance.listingParent.transform);
         return bubble;
@@ -301,7 +314,7 @@ public class WordCaseManager : MonoBehaviour
     /// </summary>
     public void TrashAWord()
     {
-        Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
+        WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().wordData;
         if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name) // isnt quest
         {
             DeleteOutOfCase();
@@ -381,7 +394,7 @@ public class WordCaseManager : MonoBehaviour
         bubbleScreenHeight = spacing;
         foreach (RectTransform rT in refM.listingParent.GetComponentsInChildren<RectTransform>())
         {
-            if (rT.gameObject.TryGetComponent<Word>(out Word word) && rT.gameObject != null)
+            if (rT.gameObject.TryGetComponent<Bubble>(out Bubble word) && rT.gameObject != null)
             {
                 bubbleScreenHeight += rT.sizeDelta.y;
                 bubbleScreenHeight += spacing;
@@ -399,7 +412,7 @@ public class WordCaseManager : MonoBehaviour
         int wordCount = 0;
         if (tag != ReferenceManager.instance.wordTags[0].name)
         {
-            foreach (Word.WordData data in tagRelatedWords[tag])
+            foreach (WordData data in tagRelatedWords[tag])
             {
                 if (data.name != null)
                     wordCount++;

@@ -18,7 +18,7 @@ public class WordLookupReader : MonoBehaviour
     public List<string> blocked = new List<string>();
     public Dictionary<string, string[]> tagSubtag = new Dictionary<string, string[]>();
     List<TMP_WordInfo> currentWordList;
-    string[] currentLongWord;
+    List<string[]> currentReferenceWords;
     int currentLongWordIndex;
     private void Awake()
     {
@@ -34,6 +34,7 @@ public class WordLookupReader : MonoBehaviour
         LookUpFiller();
         LookUpBlocked();
         currentWordList = new List<TMP_WordInfo>();
+        currentReferenceWords = new List<string[]>();
     }
     /// <summary>
     /// Go through the excel sheet & save the info
@@ -160,10 +161,10 @@ public class WordLookupReader : MonoBehaviour
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public int CheckForSubtags(Word.WordData data, string lookingFor)
+    public int CheckForSubtags(BubbleData data, string lookingFor)
     {
+        //MISSING: QUEST
         //check the dictionary for the tag
-
         int i = 0;
         foreach (string subtag in tagSubtag[data.tag])
         {
@@ -188,30 +189,45 @@ public class WordLookupReader : MonoBehaviour
         isFillerWord = false;
         string word = WordUtilities.CapitalizeAllWordsInString(wordInfo.GetWord());
 
-        // isnt a word, something like - * / ( etc.
+        // is this a word or is it something like "-" etc.?
         if (wordInfo.GetWord().Length == 1)
         {
             if (!char.IsLetterOrDigit(wordInfo.GetWord()[0]))
             {
-                currentLongWord = null;
+                currentReferenceWords = new List<string[]>();
                 currentWordList = new List<TMP_WordInfo>();
                 currentLongWordIndex = 0;
                 return false;
             }
         }
-        if (currentWordList.Count != 0) // doing this first block out the chance for a word list to be broken up
+        // is this part of a longer word (but not the first word)?
+        if (currentWordList.Count != 0) //if a chain is checked right now, this has highest priority
         {
             currentLongWordIndex++;
-            if (currentLongWordIndex < currentLongWord.Length)
+            if (currentLongWordIndex < currentReferenceWords[0].Length)
             {
-                if (currentLongWord[currentLongWordIndex] == word)
+                //go through all long words that could POSSIBLY be this word
+                //remove all words that do not fit after this new word has been added
+                List<string[]> remainingReferenceWords = new List<string[]>();
+                foreach (string[] referenceWord in currentReferenceWords)
+                {
+                    if (referenceWord[currentLongWordIndex] == word)
+                    {
+                        remainingReferenceWords.Add(referenceWord);
+                    }
+                }
+                currentReferenceWords = remainingReferenceWords;
+
+                // this could still be at least one word
+                if (currentReferenceWords.Count > 0)
                 {
                     currentWordList.Add(wordInfo);
-                    if (currentWordList.Count == currentLongWord.Length)
+                    //the word is done
+                    if (currentWordList.Count == currentReferenceWords[0].Length)
                     {
                         isWord = true;
                         wordCollection = currentWordList.ToArray();
-                        currentLongWord = null;
+                        currentReferenceWords = new List<string[]>();
                         currentWordList = new List<TMP_WordInfo>();
                         currentLongWordIndex = 0;
                         return isWord;
@@ -219,49 +235,54 @@ public class WordLookupReader : MonoBehaviour
                     else
                         return false;
                 }
+                // this wasnt actually a long word
                 else
                 {
-                    // this wasnt actually a word
-                    currentLongWord = null;
+                    currentReferenceWords = new List<string[]>();
                     currentWordList = new List<TMP_WordInfo>();
                     currentLongWordIndex = 0;
                 }
             }
         }
-        // the word COULD be part of a longer word,
-        // so only if it isnt, check if the word is in the block list
-        else if (ReferenceManager.instance.blockListOn && blocked.Contains(word))
-        {
-            currentLongWord = null;
-            currentWordList = new List<TMP_WordInfo>();
-            currentLongWordIndex = 0;
-            return false;
-        }
+        //is this just a regular word?
         if (wordTag.ContainsKey(word))
         {
             isWord = true;
             wordCollection = new TMP_WordInfo[] { wordInfo };
             //Might be temporary, but delete long word progress, when finding a short word
-            currentLongWord = null;
+            currentReferenceWords = new List<string[]>();
             currentWordList = new List<TMP_WordInfo>();
             currentLongWordIndex = 0;
             return isWord;
         }
-        else if (currentWordList.Count == 0) //needs a first word
+        //is this the first word of a longer word chain?
+        if (currentWordList.Count == 0)
         {
             foreach (string[] words in longWordTagSingular.Keys)
             {
-
                 if (words[0] == word)
                 {
-                    currentLongWord = words;
-                    currentWordList.Add(wordInfo);
-                    currentLongWordIndex = 0;
-                    return false;
+                    currentReferenceWords.Add(words);
                 }
             }
+            if (currentReferenceWords.Count > 0)
+            {
+                currentWordList.Add(wordInfo);
+                currentLongWordIndex = 0;
+                return false;
+            }
         }
-        if (currentWordList.Count == 0) // if after the above else if, the list is still empty: filler word
+        // is this word on the block list?
+        if (ReferenceManager.instance.blockListOn && blocked.Contains(word))
+        {
+            currentReferenceWords = new List<string[]>();
+            currentWordList = new List<TMP_WordInfo>();
+            currentLongWordIndex = 0;
+            return false;
+        }
+
+        //none of the above applied, so this is a filler word
+        if (currentWordList.Count == 0)
         {
             // Game Mode: all Interactable Words
             if (ReferenceManager.instance.allWordsInteractable)
@@ -270,7 +291,7 @@ public class WordLookupReader : MonoBehaviour
                 isFillerWord = true;
                 wordCollection = new TMP_WordInfo[] { wordInfo };
                 //delete long word progress if not already done
-                currentLongWord = null;
+                currentReferenceWords = new List<string[]>();
                 currentWordList = new List<TMP_WordInfo>();
                 currentLongWordIndex = 0;
                 return isWord;

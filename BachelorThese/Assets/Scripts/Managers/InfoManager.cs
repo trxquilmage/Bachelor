@@ -23,7 +23,7 @@ public class InfoManager : MonoBehaviour
     /// <param name="variableName"></param>
     /// <param name="valueToSave"></param>
     /// <param name="nameOfNPC"></param>
-    public void SaveInfo(string variableName, Yarn.Value valueToSave, string nameOfNPC, Word.TagObject tagObj)
+    public void SaveInfo(string variableName, Yarn.Value valueToSave, string nameOfNPC, Bubble.TagObject tagObj)
     {
         Rumor rumor = new Rumor()
         {
@@ -52,11 +52,21 @@ public class InfoManager : MonoBehaviour
     /// <param name="data"></param>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value FindValue(Word.WordData data, string LookingFor)
+    public Yarn.Value FindValue(BubbleData data, string LookingFor)
     {
-        Word.TagObject tagObject = data.tagObj;
-        int i = WordLookupReader.instance.CheckForSubtags(data, LookingFor);
-        return tagObject.allGivenValues[i];
+        if (data is WordData)
+        {
+            Bubble.TagObject tagObject = ((WordData)data).tagObj;
+            int i = WordLookupReader.instance.CheckForSubtags(((WordData)data), LookingFor);
+            return tagObject.allGivenValues[i];
+        }
+        else if (data is QuestData)
+        {
+            //MISSING: QUEST
+        }
+        else
+            Debug.Log("This shouldnt happen");
+        return new Yarn.Value();
     }
     /// <summary>
     /// for get info, find the rumor we are looking for
@@ -71,7 +81,7 @@ public class InfoManager : MonoBehaviour
                 return rumor;
         }
         //Debug.Log("the name " + variableName + "doesnt exist");
-        return new Rumor() { rumorName = variableName, toldTo = new Yarn.Value(), value = new Yarn.Value(), tagObject = new Word.TagObject() };
+        return new Rumor() { rumorName = variableName, toldTo = new Yarn.Value(), value = new Yarn.Value(), tagObject = new Bubble.TagObject() };
     }
 }
 //Saves ANY given information in a Rumor, containing the value's name,
@@ -81,5 +91,5 @@ public class Rumor
     public string rumorName;
     public Yarn.Value toldTo;
     public Yarn.Value value;
-    public Word.TagObject tagObject;
+    public Bubble.TagObject tagObject;
 }

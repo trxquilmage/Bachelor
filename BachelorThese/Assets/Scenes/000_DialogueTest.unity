@@ -12015,6 +12015,8 @@ MonoBehaviour:
   selectedWordPrefab: {fileID: 5852034671021583850, guid: 106f18fcba3934a48a0c882772aa9508, type: 3}
   promptBoxPrefab: {fileID: 963336575433151735, guid: 989cc530c3779d143b3785874e3e2733, type: 3}
   buttonPrefab: {fileID: 7763063162860796098, guid: bcb407604247ffc4e9c59eba6069787b, type: 3}
+  questCountPrefab: {fileID: 7520584500212586685, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
+  dropDownPrefab: {fileID: 7520584500212586685, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
   nPCDialogueField: {fileID: 143820001}
   playerInputField: {fileID: 1890754800}
   wordCase: {fileID: 1251959677}
@@ -12069,6 +12071,7 @@ MonoBehaviour:
   bubbleScreenHeightMaxSize: 60
   maxLongWordLength: 8
   maxQuestCount: 5
+  maxQuestAdditions: 5
   allWordsInteractable: 1
   blockListOn: 1
   includeStopWords: 1

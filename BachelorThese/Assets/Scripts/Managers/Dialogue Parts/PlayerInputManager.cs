@@ -9,8 +9,8 @@ public class PlayerInputManager : MonoBehaviour
     public static PlayerInputManager instance;
     public PromptBubble[] currentPromptBubbles;
     public PromptBubble[] currentPromptAskBubbles;
-    public Word.WordData givenAnswer;
-    public Word.WordData givenAnswerAsk;
+    public AnswerData givenAnswer;
+    public AnswerData givenAnswerAsk;
     public bool givenManualPrompt;
     public bool inAsk;
     DialogueInputManager diManager;
@@ -42,24 +42,36 @@ public class PlayerInputManager : MonoBehaviour
     /// </summary>
     public void SaveGivenAnswer()
     {
+        //get the list we should save the answer into
         if (CheckForActivePromptBubbleParent(out PromptBubble[] promptBubbles))
         {
+            //go through all prompts and look for one that is filled
             foreach (PromptBubble prompt in promptBubbles)
             {
+
                 if (prompt != null && prompt.child != null)
                 {
+                    AnswerData answer;
+                    Bubble bubble = prompt.child.GetComponent<Bubble>();
+                    if (bubble is Word)
+                        answer = new AnswerData() { wordData = ((Word)bubble).wordData, bubbleData = bubble.data };
+                    else // bubble is Quest
+                        answer = new AnswerData() { questData = ((Quest)bubble).questData, bubbleData = bubble.data };
+
                     if (promptBubbles == currentPromptBubbles)
                     {
-                        givenAnswer = prompt.child.GetComponent<Word>().data;
+
+                        givenAnswer = answer;
                     }
                     else if (promptBubbles == currentPromptAskBubbles)
                     {
-                        givenAnswerAsk = prompt.child.GetComponent<Word>().data;
+                        givenAnswerAsk = answer;
                     }
                 }
             }
         }
     }
+
     /// <summary>
     /// see if there are any prompt bubbles 
     /// </summary>
@@ -178,10 +190,11 @@ public class PlayerInputManager : MonoBehaviour
     /// <param name="saveIn"></param>
     /// <param name="isAsk"></param>
     /// <returns></returns>
-    public Yarn.Value ReactToInput(string lookingFor, string NPCname, string saveIn, bool isAsk)
+    public Yarn.Value ReactToInput(string lookingFor, string NPCname, string saveIn)
     {
-        Word.WordData data;
-        if (!isAsk)
+        Yarn.Value val = null;
+        AnswerData data;
+        if (!inAsk)
         {
             data = givenAnswer;
         }
@@ -190,10 +203,18 @@ public class PlayerInputManager : MonoBehaviour
             data = givenAnswerAsk;
         }
 
-        Word.TagObject tagObj = data.tagObj;
-        Yarn.Value val = InfoManager.instance.FindValue(data, lookingFor);
-        //save the required Info
-        if (CheckIfShouldSave(saveIn)) { info.SaveInfo(saveIn, val, NPCname, tagObj); }
+        //MISSING: QUEST
+        if (data.questData != null) //is quest
+        {
+
+        }
+        else
+        {
+            Bubble.TagObject tagObj = data.wordData.tagObj;
+            val = InfoManager.instance.FindValue(data.wordData, lookingFor);
+            //save the required Info
+            if (CheckIfShouldSave(saveIn)) { info.SaveInfo(saveIn, val, NPCname, tagObj); }
+        }
 
         return val;
     }
@@ -302,7 +323,7 @@ public class PlayerInputManager : MonoBehaviour
             //Reload, so that the missing word comes back
             WordCaseManager.instance.OpenOnTag(false);
             //Jump to NPC.answer
-            WordUtilities.JumpToNode(ReferenceManager.instance.askRunner, givenAnswerAsk.name);
+            WordUtilities.JumpToNode(ReferenceManager.instance.askRunner, givenAnswerAsk.bubbleData.name);
             //Continue()
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
             //make new button "abort ask" unavailable
@@ -419,4 +440,10 @@ public class PlayerInputManager : MonoBehaviour
         refM.barter.SetActive(show);
     }
     #endregion
+}
+public class AnswerData
+{
+    public WordData wordData;
+    public QuestData questData;
+    public BubbleData bubbleData;
 }

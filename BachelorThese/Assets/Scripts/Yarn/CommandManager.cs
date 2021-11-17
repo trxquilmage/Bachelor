@@ -18,11 +18,11 @@ public class CommandManager : MonoBehaviour
         {
             if (parameters.Length == 2)
             {
-                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString, false);
+                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, false);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString);
             }
         });
         ReferenceManager.instance.runner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
@@ -39,11 +39,11 @@ public class CommandManager : MonoBehaviour
         {
             if (parameters.Length == 2)
             {
-                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString, true);
+                return ReactToAnswer(parameters[0].AsString, "", parameters[1].AsString);
             }
             else
             {
-                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString, true);
+                return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString);
             }
         });
         ReferenceManager.instance.askRunner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
@@ -99,9 +99,9 @@ public class CommandManager : MonoBehaviour
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, string npcName, bool isAsk)
+    public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, string npcName)
     {
-        return PlayerInputManager.instance.ReactToInput(lookingFor, npcName, saveIn, isAsk);
+        return PlayerInputManager.instance.ReactToInput(lookingFor, npcName, saveIn);
     }
     /// <summary>
     /// Get back an Info from the code. ChosenValue: 0 = get value; 1 = get the name of the npc who was told that info

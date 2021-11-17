@@ -8,7 +8,7 @@ public class QuestManager : MonoBehaviour
     //Handles everything happening in the quest case
     public static QuestManager instance;
     bool alreadyOpen;
-    public Word.WordData[] allQuests;
+    public QuestData[] allQuests;
     ReferenceManager refM;
     public GameObject wordReplacement;
     public int questTagIndex = 2; //in the tag list, the number of the Quest Tag
@@ -19,8 +19,19 @@ public class QuestManager : MonoBehaviour
     void Start()
     {
         refM = ReferenceManager.instance;
-        allQuests = new Word.WordData[refM.maxQuestCount];
+        FillAllQuests();
         UpdateQuestCount();
+    }
+    /// <summary>
+    /// As QuestData needas a Constructor, we cant just create an empty array
+    /// </summary>
+    void FillAllQuests()
+    {
+        allQuests = new QuestData[refM.maxQuestCount];
+        for (int i = 0; i < refM.maxQuestCount; i++)
+        {
+            allQuests[i] = new QuestData(new BubbleData());
+        }
     }
     /// <summary>
     /// Opens case and memorizes, if it was open before. If not, it will close on false.
@@ -71,7 +82,7 @@ public class QuestManager : MonoBehaviour
         }
 
         // Spawn words again
-        foreach (Word.WordData word in allQuests)
+        foreach (QuestData word in allQuests)
         {
             if (word.name != null)
             {
@@ -88,7 +99,7 @@ public class QuestManager : MonoBehaviour
     public void UpdateQuestCount()
     {
         int wordCount = 0;
-        foreach (Word.WordData word in allQuests)
+        foreach (QuestData word in allQuests)
         {
             if (word.name != null)
                 wordCount++;
@@ -100,9 +111,9 @@ public class QuestManager : MonoBehaviour
     /// Saves quests that are dragged onto the quest log
     /// </summary>
     /// <param name="wordItem"></param>
-    public void SaveQuest(Word wordItem)
+    public void SaveQuest(Quest wordItem)
     {
-        Word.WordData word = wordItem.data;
+        QuestData word = wordItem.questData;
         if (CheckIfCanSaveQuest(word.name, out int index))
         {
             allQuests[index] = word;
@@ -124,7 +135,7 @@ public class QuestManager : MonoBehaviour
     bool CheckIfQuestInList(string name)
     {
         bool inList = false;
-        foreach (Word.WordData data in allQuests)
+        foreach (QuestData data in allQuests)
         {
             if (data.name != null && data.name == name)
             {
@@ -165,10 +176,10 @@ public class QuestManager : MonoBehaviour
     /// </summary>
     public void DeleteOutOfLog()
     {
-        Word.WordData data = WordClickManager.instance.currentWord.GetComponent<Word>().data;
+        QuestData data = WordClickManager.instance.currentWord.GetComponent<Quest>().questData;
         int deleteInt = -1;
         int i = 0;
-        foreach (Word.WordData word in allQuests)
+        foreach (QuestData word in allQuests)
         {
             if (word.name == data.name)
             {
@@ -179,7 +190,7 @@ public class QuestManager : MonoBehaviour
         }
         if (deleteInt > -1)
         {
-            allQuests[deleteInt] = new Word.WordData();
+            allQuests[deleteInt] = new QuestData(new BubbleData());
         }
         else
             Debug.Log("The quest to delete couldne be found " + data.name);
@@ -189,9 +200,9 @@ public class QuestManager : MonoBehaviour
     /// Create a less visible version of the quest in the wordcase to indicate its position
     /// </summary>
     /// <param name="word"></param>
-    public void SpawnQuestReplacement(Word word)
+    public void SpawnQuestReplacement(Quest word)
     {
-        wordReplacement = SpawnQuestInLog(word.data);
+        wordReplacement = SpawnQuestInLog(word.questData);
         Color color = refM.wordTags[questTagIndex].tagColor;
         color.a = 0.3f;
         foreach (Image img in wordReplacement.GetComponentsInChildren<Image>())
@@ -215,9 +226,10 @@ public class QuestManager : MonoBehaviour
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    GameObject SpawnQuestInLog(Word.WordData data)
+    GameObject SpawnQuestInLog(QuestData data)
     {
-        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, Vector2.zero, WordInfo.Origin.QuestLog, true);
+        //MISSING: QUEST
+        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, Vector2.zero, WordInfo.Origin.QuestLog);
         //place bubbles correctly (for protoype: below each other until i find out how the UI is supposed to work)
         bubble.transform.SetParent(refM.questListingParent.transform);
         return bubble;
@@ -239,7 +251,7 @@ public class QuestManager : MonoBehaviour
     public void RescaleScrollbar()
     {
         int questCount = 0;
-        foreach (Word.WordData data in allQuests)
+        foreach (QuestData data in allQuests)
         {
             if (data.lineLengths != null)
             {
