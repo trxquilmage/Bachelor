@@ -121,7 +121,7 @@ public class UIManager : MonoBehaviour
         refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
 
         //color quest case (word case is colored on OpenOnTag())
-        Color color = refM.wordTags[QuestManager.instance.questTagIndex].tagColor;
+        Color color = refM.wordTags[ReferenceManager.instance.questTagIndex].tagColor;
         Color greyColor = Color.Lerp(color, Color.grey, 0.35f);
         Color colorHighlight = Color.Lerp(color, Color.white, 0.3f);
         refM.questCase.GetComponent<Image>().color = greyColor;
@@ -210,14 +210,14 @@ public class UIManager : MonoBehaviour
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
             //dont initialize a quest tag and initialize the "other" tag last
-            if (tag.name != refM.wordTags[QuestManager.instance.questTagIndex].name && tag.name != refM.wordTags[WordCaseManager.instance.otherTagIndex].name)
+            if (tag.name != refM.wordTags[ReferenceManager.instance.questTagIndex].name && tag.name != refM.wordTags[ReferenceManager.instance.otherTagIndex].name)
             {
                 InstantiateButton(i, tag);
             }
             i++;
         }
         //initialize the "Other" tag last
-        InstantiateButton(WordCaseManager.instance.otherTagIndex, refM.wordTags[WordCaseManager.instance.otherTagIndex]);
+        InstantiateButton(ReferenceManager.instance.otherTagIndex, refM.wordTags[ReferenceManager.instance.otherTagIndex]);
 
         //get button width
         float padding = refM.tagButtonParent.GetComponent<HorizontalLayoutGroup>().spacing;
@@ -282,6 +282,30 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < activeEffects.Length; i++)
         {
             activeEffects[i] = new RefBool();
+        }
+    }
+    /// <summary>
+    /// throw a word out of the case OR throw a quest out of the log
+    /// </summary>
+    public void TrashAWord()
+    {
+        BubbleData data = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
+        if (data is WordData) // isnt quest
+        {
+            WordCaseManager.instance.DeleteOutOfCase();
+            WordClickManager.instance.DestroyCurrentWord();
+            WordCaseManager.instance.UpdateContentCount();
+            StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
+            WordCaseManager.instance.ResetScrollbar();
+            WordCaseManager.instance.DestroyReplacement();
+        }
+        else if (data is QuestData)
+        {
+            QuestManager.instance.DeleteOutOfCase();
+            WordClickManager.instance.DestroyCurrentWord();
+            StartCoroutine(QuestManager.instance.RescaleScrollbar(true));
+            QuestManager.instance.ResetScrollbar();
+            QuestManager.instance.DestroyReplacement();
         }
     }
 }

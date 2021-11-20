@@ -57,7 +57,7 @@ public class DialogueInputManager : MonoBehaviour
             closeAWindow = true;
             PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.OpenOnTag(false); //Reload, so that the missing word comes back
+            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
             refM.playerInputField.SetActive(false);
         }
     }
@@ -135,7 +135,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         if (wcManager.wordLastHighlighted != null)
         {
-            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
+            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
             if (isQuest)
                 QuestManager.instance.AutomaticOpenCase(true);
             else
@@ -155,13 +155,13 @@ public class DialogueInputManager : MonoBehaviour
             {
                 if (result.gameObject.TryGetComponent<Bubble>(out Bubble word))
                 {
-                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
+                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
                     word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
                     break;
                 }
                 else if (result.gameObject.transform.parent.TryGetComponent<Bubble>(out word))
                 {
-                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name;
+                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
                     word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
                     break;
                 }

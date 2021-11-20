@@ -359,7 +359,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66482614}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.03, y: 0.75, z: 4.17}
+  m_LocalPosition: {x: 6.57, y: 0.75, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -889,7 +889,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 19.4, y: 0}
   m_SizeDelta: {x: 137.5, y: 150}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &174086089
@@ -954,8 +954,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25.1, y: -35.5}
-  m_SizeDelta: {x: 138.36, y: 153.8}
+  m_AnchoredPosition: {x: 6.7, y: -35.5}
+  m_SizeDelta: {x: 199.2, y: 153.8}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &199334779
 MonoBehaviour:
@@ -2239,8 +2239,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2098945806}
-        m_TargetAssemblyTypeName: QuestManager, Assembly-CSharp
-        m_MethodName: ScrollThroughQuests
+        m_TargetAssemblyTypeName: Case, Assembly-CSharp
+        m_MethodName: ScrollThroughBubbles
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11976,6 +11976,7 @@ MonoBehaviour:
   - {fileID: 0}
   mouseOverUIObject: 
   promptBubble: {fileID: 0}
+  lastSavedQuestCase: {fileID: 0}
 --- !u!114 &2098945802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12013,6 +12014,7 @@ MonoBehaviour:
   askRunner: {fileID: 1262876672}
   askDialogueUI: {fileID: 1262876671}
   selectedWordPrefab: {fileID: 5852034671021583850, guid: 106f18fcba3934a48a0c882772aa9508, type: 3}
+  questBubblePrefab: {fileID: 5852034671021583850, guid: 9756cf9175a20f945a80c4dbdd53ef32, type: 3}
   promptBoxPrefab: {fileID: 963336575433151735, guid: 989cc530c3779d143b3785874e3e2733, type: 3}
   buttonPrefab: {fileID: 7763063162860796098, guid: bcb407604247ffc4e9c59eba6069787b, type: 3}
   questCountPrefab: {fileID: 7520584500212586685, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
@@ -12090,6 +12092,9 @@ MonoBehaviour:
     tagColor: {r: 0, g: 0, b: 0, a: 0}
   - name: Item
     tagColor: {r: 0, g: 0, b: 0, a: 0}
+  allTagIndex: 0
+  questTagIndex: 1
+  otherTagIndex: 2
   currQuestScrollbarDistance: 0
 --- !u!114 &2098945803
 MonoBehaviour:
@@ -12103,10 +12108,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a5cf419b288cd44a89e8a58d02a1bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordReplacement: {fileID: 0}
-  allTagIndex: 0
-  otherTagIndex: 2
-  background: {fileID: 1251959679}
+  caseObject: {fileID: 0}
+  listingParent: {fileID: 0}
+  contentCount: {fileID: 0}
+  origin: 0
+  scrollbar: {fileID: 0}
+  maxContentAmount: 0
+  bubbleReplacement: {fileID: 0}
+  automaticallyOpen: 0
+  caseScreenHeight: 0
+  bubbleScreenHeight: 0
+  refM: {fileID: 0}
+  overrideTag: 
 --- !u!114 &2098945804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12147,8 +12160,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f87ab983a84c34cba5cdc4eeb773fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordReplacement: {fileID: 0}
-  questTagIndex: 1
+  caseObject: {fileID: 0}
+  listingParent: {fileID: 0}
+  contentCount: {fileID: 0}
+  origin: 0
+  scrollbar: {fileID: 0}
+  maxContentAmount: 0
+  bubbleReplacement: {fileID: 0}
+  automaticallyOpen: 0
+  caseScreenHeight: 0
+  bubbleScreenHeight: 0
+  refM: {fileID: 0}
 --- !u!1 &2105242548
 GameObject:
   m_ObjectHideFlags: 0

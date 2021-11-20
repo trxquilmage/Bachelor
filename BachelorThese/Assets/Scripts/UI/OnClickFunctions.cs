@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class OnClickFunctions : MonoBehaviour
 {
-    [HideInInspector] public Quest relatedQuest;
+    [HideInInspector] public QuestCase relatedQuest;
     [SerializeField] Sprite normal, onClick;
     bool open = false;
     public void ChangeToOpen()
@@ -25,13 +25,7 @@ public class OnClickFunctions : MonoBehaviour
     }
     public void ChangeDropDownStatus()
     {
-        if (open)
-        {
-            relatedQuest.OpenDropDown();
-        }
-        else
-        {
-            relatedQuest.CloseDropDown();
-        }
+        relatedQuest.ManuallyOpenCase();
+        relatedQuest.ChangeAddedParentScale(false);
     }
 }

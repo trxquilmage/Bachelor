@@ -41,6 +41,7 @@ public class ReferenceManager : MonoBehaviour
     public DialogueUI askDialogueUI;
     [Header("Prefabs")]
     public GameObject selectedWordPrefab;
+    public GameObject questBubblePrefab;
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
     public GameObject questCountPrefab;
@@ -109,6 +110,9 @@ public class ReferenceManager : MonoBehaviour
     public bool duplicateWords = false;
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
+    public int allTagIndex = 0;
+    public int questTagIndex = 2;
+    public int otherTagIndex = 3;
     [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()
     {

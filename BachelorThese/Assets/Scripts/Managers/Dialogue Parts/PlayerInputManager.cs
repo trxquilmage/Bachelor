@@ -302,7 +302,7 @@ public class PlayerInputManager : MonoBehaviour
             refM.interactableTextList[0].gameObject.SetActive(false);
         }
         //Reload the word case, so any possibly missing words from other prompt inputs respawn
-        WordCaseManager.instance.OpenOnTag(false);
+        WordCaseManager.instance.ReloadContents(false);
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -321,7 +321,7 @@ public class PlayerInputManager : MonoBehaviour
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
-            WordCaseManager.instance.OpenOnTag(false);
+            WordCaseManager.instance.ReloadContents(false);
             //Jump to NPC.answer
             WordUtilities.JumpToNode(ReferenceManager.instance.askRunner, givenAnswerAsk.bubbleData.name);
             //Continue()
@@ -369,7 +369,7 @@ public class PlayerInputManager : MonoBehaviour
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
-            WordCaseManager.instance.OpenOnTag(false);
+            WordCaseManager.instance.ReloadContents(false);
             // Close Prompt Field
             ReferenceManager.instance.askField.SetActive(false);
             //make new button "abort ask" unavailable
@@ -407,7 +407,7 @@ public class PlayerInputManager : MonoBehaviour
             DialogueInputManager.instance.continueEnabledPromptAsk = true;
             DeleteAllPrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.OpenOnTag(false); //Reload, so that the missing word comes back
+            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
             ReferenceManager.instance.askField.SetActive(false);
         }
         ReferenceManager.instance.askContinueButton.SetActive(false);

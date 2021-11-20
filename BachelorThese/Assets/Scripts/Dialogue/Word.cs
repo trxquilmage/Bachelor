@@ -10,8 +10,14 @@ using Yarn.Unity;
 public class Word : Bubble
 {
     public WordData wordData; //is the same a data, but casted as WordData
+    public QuestCase currentParent;
+    public override void Start()
+    {
+        base.Start();
+    }
     public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
+        wordParent = this.gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new WordData(bubbleData);
         wordData = (WordData)data;
@@ -38,7 +44,7 @@ public class Word : Bubble
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //save it
-            WordCaseManager.instance.SaveWord(this);
+            WordCaseManager.instance.SaveBubble(this);
 
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
@@ -108,13 +114,33 @@ public class Word : Bubble
             // this can happen if the word is a child of a quest
         }
     }
+    public override void IsOverQuestCase()
+    {
+        base.IsOverQuestCase();
+
+        //not in a quest already
+        if (data.origin != WordInfo.Origin.QuestLog)
+        {
+            WordClickManager.instance.lastSavedQuestCase.SaveBubble(this);
+            WordClickManager.instance.DestroyCurrentWord(this);
+        }
+        //in the same or a different quest already
+        else
+        {
+            if (currentParent != WordClickManager.instance.lastSavedQuestCase)
+            {
+                currentParent.DeleteOutOfCase();
+                WordClickManager.instance.lastSavedQuestCase.SaveBubble(this);
+            }
+        }
+    }
     public override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
         {
             if (data.origin == WordInfo.Origin.WordCase)
-                WordCaseManager.instance.SpawnWordReplacement(this);
+                WordCaseManager.instance.SpawnReplacement(this);
         }
     }
 }

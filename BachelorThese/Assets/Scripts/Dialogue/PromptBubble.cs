@@ -57,15 +57,15 @@ public class PromptBubble : MonoBehaviour
                 WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == data.tag.name ||
                 WordClickManager.instance.currentWord != null &&
                 data.tag.name == ReferenceManager.instance.wordTags[0].name 
-                && WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+                && WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
             {
                 bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
             // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
-            else if (data.tag.name == ReferenceManager.instance.wordTags[WordCaseManager.instance.allTagIndex].name && 
+            else if (data.tag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name && 
                 WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name)
+                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
@@ -104,8 +104,8 @@ public class PromptBubble : MonoBehaviour
     {
         if (givenTag == data.tag.name)
             return true;
-        else if (data.tag.name == ReferenceManager.instance.wordTags[WordCaseManager.instance.allTagIndex].name &&
-            givenTag != ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name) // the bubble is a "All"-bubble and the tag isnt "other"
+        else if (data.tag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name &&
+            givenTag != ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name) // the bubble is a "All"-bubble and the tag isnt "other"
             return true;
         else
             return false;

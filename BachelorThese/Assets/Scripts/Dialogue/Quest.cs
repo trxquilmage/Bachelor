@@ -10,19 +10,22 @@ using Yarn.Unity;
 public class Quest : Bubble
 {
     public QuestData questData; //is the same a data, but casted as QuestData
-    GameObject questCountObject;
-    GameObject dropDownObject;
-    GameObject addedWordParent;
+    QuestCase questCase;
 
+    public override void Start()
+    {
+        base.Start();
+        
+    }
     public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
+        wordParent = transform.GetChild(0).gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new QuestData(bubbleData);
         questData = (QuestData)data;
+        questCase = GetComponent<QuestCase>();
+        questCase.wordParent = wordParent;
         InitializeBubbleShaping(firstAndLastWordIndex);
-        InitalizeVerticalLayoutGroup();
-        InitializeQuestCountObject();
-        InitializeHideObject();
     }
     #region OVERRIDES
     public override void IsOverWordCase()
@@ -42,7 +45,7 @@ public class Quest : Bubble
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
             //save it
-            QuestManager.instance.SaveQuest(this);
+            QuestManager.instance.SaveBubble(this);
 
             //close the case & Delete the UI word
             QuestManager.instance.AutomaticOpenCase(false);
@@ -85,93 +88,21 @@ public class Quest : Bubble
             AnimateMovementBackToCase(true);
         }
     }
+    public override void IsOverQuestCase()
+    {
+        //pretend to ignore the word 
+        IsOverQuestLog();
+    }
     public override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
         {
             if (data.origin == WordInfo.Origin.QuestLog)
-                QuestManager.instance.SpawnQuestReplacement(this);
+                QuestManager.instance.SpawnReplacement(this);
         }
     }
     #endregion
-
-    public void SaveWordData(WordData wordData, int index)
-    {
-        questData.assignedWords[index] = wordData;
-        UpdateQuestCountObject();
-    }
-    /// <summary>
-    /// Check If there is enough space for the word and the word isnt there already
-    /// </summary>
-    public bool CheckIfWordFits(WordData wordData, out int index)
-    {
-        index = -1;
-        int i = 0;
-        bool foundSpot = false;
-        foreach (WordData wData in questData.assignedWords)
-        {
-            if (wData.name == null && index == -1)
-            {
-                index = i;
-                foundSpot = true;
-            }
-            if (wData.name == wordData.name)
-            {
-                return false;
-            }
-            i++;
-        }
-        return foundSpot;
-    }
-    /// <summary>
-    /// The current VerticalLayoutGroup would have problems with other icons that belong to the QuestBubble
-    /// So we are creating it again, one layer lower
-    /// </summary>
-    void InitalizeVerticalLayoutGroup()
-    {
-        addedWordParent = transform.GetChild(1).gameObject;
-    }
-    /// <summary>
-    /// Initialize a small counter next to the quest
-    /// </summary>
-    void InitializeQuestCountObject()
-    {
-        questCountObject = transform.GetChild(3).gameObject;
-        questCountObject.transform.localPosition = new Vector2(GetComponent<RectTransform>().sizeDelta.x + 8, 0);
-        UpdateQuestCountObject();
-    }
-    void InitializeHideObject()
-    {
-        dropDownObject = transform.GetChild(2).gameObject;
-        dropDownObject.transform.localPosition = new Vector2(-dropDownObject.GetComponent<RectTransform>().sizeDelta.x - 5, 0);
-        dropDownObject.GetComponent<OnClickFunctions>().relatedQuest = this;
-    }
-    /// <summary>
-    /// Update the text of the object next to the Quest
-    /// </summary>
-    void UpdateQuestCountObject()
-    {
-        int i = 0;
-        foreach (WordData wData in questData.assignedWords)
-        {
-            if (wData.name != null)
-            {
-                i++;
-            }
-        }
-        // make object show "x/5"
-        questCountObject.GetComponentInChildren<TMP_Text>().text =
-            i.ToString() + "<b>/" + ReferenceManager.instance.maxQuestAdditions.ToString() + "</b>";
-    }
-    public void OpenDropDown()
-    {
-
-    }
-    public void CloseDropDown()
-    {
-
-    }
 }
 public class QuestData : BubbleData
 {

@@ -33,6 +33,7 @@ public class WordClickManager : MonoBehaviour
     public string mouseOverUIObject;
     InputMap controls;
     public PromptBubble promptBubble;
+    public QuestCase lastSavedQuestCase;
     bool stillOnWord;
 
     void Awake()
@@ -108,8 +109,8 @@ public class WordClickManager : MonoBehaviour
             BubbleData data = new BubbleData()
             {
                 name = sentWord,
-                tag = ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name,
-                tagInfo = new string[] { ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name, "wrongInfo" }
+                tag = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name,
+                tagInfo = new string[] { ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();
             wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
@@ -224,7 +225,6 @@ public class WordClickManager : MonoBehaviour
         bool foundtC = false; //found the trash can
         foreach (RaycastResult uIObject in results)
         {
-
             //over the trashcan
             if (uIObject.gameObject == ReferenceManager.instance.trashCan
                 || uIObject.gameObject == ReferenceManager.instance.questTrashCan)
@@ -236,6 +236,15 @@ public class WordClickManager : MonoBehaviour
             //over the wordcase
             else if (uIObject.gameObject == ReferenceManager.instance.wordCase && mouseOverUIObject == "none")
                 mouseOverUIObject = "wordCase";
+            //over a quest in the quest log
+            else if (uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
+            {
+                if (qCase.isInCase)
+                {
+                    mouseOverUIObject = "questCase";
+                    lastSavedQuestCase = qCase;
+                }
+            }
             //over the questlog
             else if (uIObject.gameObject == ReferenceManager.instance.questCase && mouseOverUIObject == "none")
                 mouseOverUIObject = "questLog";

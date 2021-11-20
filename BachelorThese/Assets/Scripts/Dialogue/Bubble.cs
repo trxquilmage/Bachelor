@@ -11,6 +11,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 {
     public TMP_Text relatedText;
     public BubbleData data;
+    public GameObject prefabReference;
+    public GameObject wordParent;
 
     public bool wasDragged; //checks if the object was actually dragged
     public bool fadingOut;
@@ -33,6 +35,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
 
     #region VIRTUAL
+    public virtual void Start()
+    {
+        movementDone = new RefBool() { refBool = false };
+        piManager = PlayerInputManager.instance;
+        refM = ReferenceManager.instance;
+    }
     /// <summary>
     /// Call this, when creating a Word. If you dont have a Word Info, create one and set "hasWordInfo" to false
     /// </summary>
@@ -67,7 +75,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
         //Color the bubble correctly
-        EffectUtilities.ColorTag(this.gameObject, data.tag);
+        EffectUtilities.ColorTag(wordParent, data.tag);
 
         //Get how many lines the word would use
         data.lineLengths = GetLineLengths();
@@ -108,6 +116,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         }
     }
     /// <summary>
+    /// The bubble was dragged onto a quest in the quest case and dropped
+    /// </summary>
+    public virtual void IsOverQuestCase()
+    {
+    }
+    /// <summary>
     /// Takes a word and unparents it from its current parent, to the new parent & Spawns a word replacement
     /// </summary>
     /// <param name="newParent"></param>
@@ -122,12 +136,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     #endregion
 
     #region NOT VIRTUAL
-    public void Start()
-    {
-        movementDone = new RefBool() { refBool = false };
-        piManager = PlayerInputManager.instance;
-        refM = ReferenceManager.instance;
-    }
+
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
     /// </summary>
@@ -164,7 +173,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                 {
                     if (clickM.mouseOverUIObject == "trashCan")
                     {
-                        WordCaseManager.instance.TrashAWord();
+                        UIManager.instance.TrashAWord();
                     }
                     else if (clickM.mouseOverUIObject == "wordCase")
                     {
@@ -173,6 +182,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                     else if (clickM.mouseOverUIObject == "questLog")
                     {
                         IsOverQuestLog();
+                    }
+                    else if (clickM.mouseOverUIObject == "questCase")
+                    {
+                        IsOverQuestCase();
                     }
                     // if it was dragged onto a prompt, react
                     else if (clickM.mouseOverUIObject == "playerInput")
@@ -206,12 +219,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             // if the word is being dragged out of the dialogue
             if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
-                if (data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+                if (data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
                 {
                     WordCaseManager.instance.AutomaticOpenCase(true);
                     WordCaseManager.instance.openTag = data.tag;
                 }
-                else if (data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+                else if (data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
                 {
                     QuestManager.instance.AutomaticOpenCase(true);
                     UpdateToBubbleShape();
@@ -268,19 +281,16 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
         Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
-        // set variables
-        TMP_CharacterInfo[] fullText = editableText.textInfo.characterInfo;
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
-        GameObject child = this.gameObject;
-        GetComponent<VerticalLayoutGroup>().enabled = false;
+        GameObject child;
+        wordParent.GetComponent<VerticalLayoutGroup>().enabled = false;
 
         int j = 0;
         foreach (Vector2 startEnd in sourceLineLengths)
         {
             Vector3 position = WordUtilities.GetWordPosition(sourceText, lineStarts[j]);
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, position, Quaternion.identity);
-            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
             child.transform.localPosition = position - GetComponent<RectTransform>().localPosition; //- parent transform, because of the new canvas scaling
             editableText = child.GetComponentInChildren<TMP_Text>();
 
@@ -299,10 +309,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
+        if (this is Quest)
+            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //remove the iamge and text from the original bubble
-        Destroy(GetComponent<UIEffectStack>());
-        Destroy(GetComponent<Image>());
-        Destroy(transform.GetChild(0).gameObject);
+        Destroy(wordParent.GetComponent<UIEffectStack>());
+        Destroy(wordParent.GetComponent<Image>());
+        Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
@@ -318,12 +330,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
         GameObject child;
-        GetComponent<VerticalLayoutGroup>().enabled = true;
+        wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, Vector2.zero, Quaternion.identity);
-            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
             text = child.GetComponentInChildren<TMP_Text>();
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
@@ -339,10 +350,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
+        if (this is Quest)
+            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //remove the iamge and text from the original bubble
-        Destroy(GetComponent<UIEffectStack>());
-        Destroy(GetComponent<Image>());
-        Destroy(transform.GetChild(0).gameObject);
+        Destroy(wordParent.GetComponent<UIEffectStack>());
+        Destroy(wordParent.GetComponent<Image>());
+        Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
@@ -353,16 +366,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
 
-        GameObject toUpdate;
-        if (WordClickManager.instance.wordLastHighlighted != null)
-            toUpdate = WordClickManager.instance.wordLastHighlighted;
-        else if (WordClickManager.instance.currentWord != null)
-            toUpdate = WordClickManager.instance.currentWord;
-        else
-        {
-            toUpdate = null;
-            Debug.Log("Neither a current word or last highlighted exists");
-        }
+        GameObject toUpdate = wordParent;
 
         TMP_Text mainText = toUpdate.GetComponentInChildren<TMP_Text>();
         //Set the main text to full text again
@@ -377,12 +381,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
         GameObject child;
-        GetComponent<VerticalLayoutGroup>().enabled = true;
+        wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, Vector2.zero, Quaternion.identity);
-            child.transform.SetParent(transform, false); // false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false); // false fixes a scaling issue
             mainText = child.GetComponentInChildren<TMP_Text>();
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
@@ -398,6 +401,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
+        if (this is Quest)
+            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
@@ -611,12 +616,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //check, if the word fits in the case right now
         if (isQuest)
         {
-            if (QuestManager.instance.CheckIfCanSaveQuest(data.name, out int index))
+            if (QuestManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
         }
         else
         {
-            if (WordCaseManager.instance.CheckIfCanSaveWord(data.name, data.tag, out int index))
+            if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
         }
         //if yes slowly animate this to the correct case & save it in there
@@ -772,9 +777,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //put the word back
         WordClickManager.instance.DestroyCurrentWord(this);
         if (!isQuest)
-            WordCaseManager.instance.OpenOnTag(false);
+            WordCaseManager.instance.ReloadContents(false);
         else
-            QuestManager.instance.ReloadQuests();
+            QuestManager.instance.ReloadContents(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
     #endregion

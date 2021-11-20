@@ -28,22 +28,31 @@ public static class WordUtilities
     {
         bool inAsk = !DialogueInputManager.instance.continueEnabledAsk;
         ReferenceManager refM = ReferenceManager.instance;
+        GameObject word = null;
         if (!inAsk || inAsk && origin != WordInfo.Origin.Dialogue)
         {
-            GameObject word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
+            Transform parent;
             if (!inAsk)
-                word.transform.SetParent(refM.selectedWordParent.transform, false); // the false makes sure it isnt some random size
+                parent = refM.selectedWordParent.transform;
             else
-                word.transform.SetParent(refM.selectedWordParentAsk.transform, false);
-            word.GetComponent<RectTransform>().localPosition = wordMousePos;
-
-            if (data is WordData || data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+                parent = refM.selectedWordParentAsk.transform;
+            //Instantiate Word
+            if (data is WordData || data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
             {
+                word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
+                word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
+                word.GetComponent<RectTransform>().localPosition = wordMousePos;
                 Word wordScript = word.AddComponent<Word>();
                 wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
             }
-            else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+            //Instantiate Quest
+            else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
             {
+                word = GameObject.Instantiate(refM.questBubblePrefab, wordMousePos, Quaternion.identity);
+                word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
+                word.GetComponent<RectTransform>().localPosition = wordMousePos;
+                QuestCase caseScript = word.AddComponent<QuestCase>();
+                caseScript.Initialize();
                 Quest wordScript = word.AddComponent<Quest>();
                 wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
             }
@@ -58,20 +67,28 @@ public static class WordUtilities
     public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
     {
         ReferenceManager refHandler = ReferenceManager.instance;
-        GameObject word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
-        if (DialogueInputManager.instance.continueEnabledAsk) // not in an ask
-            word.transform.SetParent(refHandler.selectedWordParent.transform, false); // the false makes sure it isnt some random size
-        else // in an ask
-            word.transform.SetParent(refHandler.selectedWordParentAsk.transform, false);
-
-        word.GetComponent<RectTransform>().localPosition = wordMousePos;
-        if (data is WordData || data.tag != ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+        GameObject word = null;
+        Transform parent;
+        if (!PlayerInputManager.instance.inAsk) // not in an ask
+            parent = refHandler.selectedWordParent.transform;
+        else
+            parent = refHandler.selectedWordParentAsk.transform;
+        
+        if (data is WordData || data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
         {
+            word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
+            word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
+            word.GetComponent<RectTransform>().localPosition = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
             wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
         }
-        else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name)
+        else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
         {
+            word = GameObject.Instantiate(refHandler.questBubblePrefab, wordMousePos, Quaternion.identity);
+            word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
+            word.GetComponent<RectTransform>().localPosition = wordMousePos;
+            QuestCase caseScript = word.AddComponent<QuestCase>();
+            caseScript.Initialize();
             Quest wordScript = word.AddComponent<Quest>();
             wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
         }
@@ -287,14 +304,14 @@ public static class WordUtilities
             tagName = wordTagList[wordName][0];
         //if its a non existent filler word, tag it as "Other"
         else
-            tagName = ReferenceManager.instance.wordTags[WordCaseManager.instance.otherTagIndex].name; // Set tag name to "Other"
+            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name; // Set tag name to "Other"
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {
-            if (tagName == ReferenceManager.instance.wordTags[QuestManager.instance.questTagIndex].name) // is a quest
+            if (tagName == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name) // is a quest
             {
                 //if it's in the quest case or the quest case is full
-                if (!QuestManager.instance.CheckIfCanSaveQuest(wordName, out int index))
+                if (!QuestManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
                 {
                     isUsed = true;
                     cantBeSaved = true;
@@ -303,7 +320,7 @@ public static class WordUtilities
             else // is not a quest
             {
                 //if it's in the word case or the word case is full
-                if (!WordCaseManager.instance.CheckIfCanSaveWord(wordName, tagName, out int index))
+                if (!WordCaseManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
                 {
                     isUsed = true;
                     cantBeSaved = true;

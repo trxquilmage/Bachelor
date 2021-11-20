@@ -23,7 +23,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         RectTransform rT = GetComponent<RectTransform>();
 
         //apply text into the buttons
-        if (tag.name == ReferenceManager.instance.wordTags[WordCaseManager.instance.allTagIndex].name) // if is "AllWords"
+        if (tag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name) // if is "AllWords"
             text.text = "All";
         else
             text.text = tag.name;
