@@ -5,7 +5,21 @@ using UnityEngine.UI;
 
 public class OnClickFunctions : MonoBehaviour
 {
-    [HideInInspector] public QuestCase relatedQuest;
+    [HideInInspector] public QuestCase relatedQuest
+    {
+        get { return RelatedQuest; }
+        set
+        {
+            RelatedQuest = value;
+            if (relatedQuest.dropDownOpen)
+            {
+                ChangeToOpen();
+                ChangeArrow();
+                ChangeDropDownStatus();
+            }
+        }
+    }
+    QuestCase RelatedQuest;
     [SerializeField] Sprite normal, onClick;
     bool open = false;
     public void ChangeToOpen()
@@ -26,6 +40,9 @@ public class OnClickFunctions : MonoBehaviour
     public void ChangeDropDownStatus()
     {
         relatedQuest.ManuallyOpenCase();
-        relatedQuest.ChangeAddedParentScale(false);
+        relatedQuest.ForceLayoutGroupUpdate();
+        relatedQuest.dropDownOpen = open;
+        Debug.Log("open : " + open);
+
     }
 }

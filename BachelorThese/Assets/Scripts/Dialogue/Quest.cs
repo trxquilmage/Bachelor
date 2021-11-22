@@ -9,20 +9,33 @@ using Yarn.Unity;
 
 public class Quest : Bubble
 {
-    public QuestData questData; //is the same a data, but casted as QuestData
     QuestCase questCase;
 
     public override void Start()
     {
         base.Start();
-        
+
     }
     public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new QuestData(bubbleData);
-        questData = (QuestData)data;
+        if (bubbleData is QuestData)
+        {
+            ((QuestData)data).dropDownOpen = ((QuestData)bubbleData).dropDownOpen;
+        }
+        questCase = GetComponent<QuestCase>();
+        questCase.wordParent = wordParent;
+        InitializeBubbleShaping(firstAndLastWordIndex);
+    }
+    public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
+    {
+        wordParent = transform.GetChild(0).gameObject;
+        base.Initialize(bubbleData, firstAndLastWordIndex);
+        data.origin = QuestManager.instance.origin;
+        data = new QuestData(data);
+        ((QuestData)data).dropDownOpen = ((QuestData)bubbleData).dropDownOpen;
         questCase = GetComponent<QuestCase>();
         questCase.wordParent = wordParent;
         InitializeBubbleShaping(firstAndLastWordIndex);
@@ -107,8 +120,9 @@ public class Quest : Bubble
 public class QuestData : BubbleData
 {
     public BubbleData bubbleData;
-    public WordData[] assignedWords;
+    public BubbleData[] contents;
     public string[] relevantWords;
+    public bool dropDownOpen;
     public QuestData(BubbleData data) : base()
     {
         name = data.name;
@@ -122,11 +136,11 @@ public class QuestData : BubbleData
         if (name != null)
         {
             int maxQuestAdditions = ReferenceManager.instance.maxQuestAdditions;
-            assignedWords = new WordData[maxQuestAdditions];
+            contents = new WordData[maxQuestAdditions];
             relevantWords = new string[maxQuestAdditions];
             for (int i = 0; i < maxQuestAdditions; i++)
             {
-                assignedWords[i] = new WordData(new BubbleData());
+                contents[i] = new WordData(new BubbleData());
                 if (data.tagInfo.Length > i + 1)
                     relevantWords[i] = data.tagInfo[i + 1];
                 else

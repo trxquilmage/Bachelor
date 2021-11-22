@@ -901,7 +901,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 174086087}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Script: {fileID: 11500000, guid: 79a59a3ff349a9c4886642ac241d1340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -910,7 +910,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
-  m_Spacing: 6
+  m_Spacing: 9
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0

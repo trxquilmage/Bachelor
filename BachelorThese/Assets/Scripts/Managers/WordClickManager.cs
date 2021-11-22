@@ -70,7 +70,7 @@ public class WordClickManager : MonoBehaviour
 
             DestroyLastHighlighted();
 
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
@@ -85,7 +85,7 @@ public class WordClickManager : MonoBehaviour
             };
             if (wordLastHighlighted != null)
                 DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
@@ -99,7 +99,7 @@ public class WordClickManager : MonoBehaviour
                 tagInfo = wlReader.fillerTag[sentWord]
             };
             DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
@@ -113,7 +113,7 @@ public class WordClickManager : MonoBehaviour
                 tagInfo = new string[] { ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();
-            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin);
+            wordLastHighlighted = WordUtilities.CreateWord(data, wordPos, wordInfo, firstAndLastWordIndex, origin, false);
             if (wordLastHighlighted != null)
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }

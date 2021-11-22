@@ -56,7 +56,7 @@ public class PlayerInputManager : MonoBehaviour
                     if (bubble is Word)
                         answer = new AnswerData() { wordData = ((Word)bubble).wordData, bubbleData = bubble.data };
                     else // bubble is Quest
-                        answer = new AnswerData() { questData = ((Quest)bubble).questData, bubbleData = bubble.data };
+                        answer = new AnswerData() { questData = ((QuestData)bubble.data), bubbleData = bubble.data };
 
                     if (promptBubbles == currentPromptBubbles)
                     {

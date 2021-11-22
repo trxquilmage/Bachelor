@@ -83,6 +83,28 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         // is there more than one word?
         data.isLongWord = (data.name.Trim().Split(@" "[0]).Length > 1);
     }
+    public virtual void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
+    {
+        data = new BubbleData();
+        //capitalize name
+        data.name = bubbleData.name;
+        data.tagInfo = bubbleData.tagInfo;
+        data.tag = bubbleData.tag;
+        data.origin = bubbleData.origin;
+        data.lineLengths = bubbleData.lineLengths;
+        data.isLongWord = bubbleData.isLongWord;
+
+        // Set the bubble to the correct text
+        relatedText = transform.GetComponentInChildren<TMP_Text>();
+        relatedText.text = data.name;
+
+        //Scale the bubble correctly
+        ScaleRect(relatedText, GetComponent<RectTransform>());
+        wordSize = this.GetComponent<RectTransform>().sizeDelta;
+
+        //Color the bubble correctly
+        EffectUtilities.ColorTag(wordParent, data.tag);
+    }
     /// <summary>
     /// The bubble was dragged onto the word case and dropped
     /// </summary>
@@ -330,6 +352,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
         GameObject child;
+
+        //if this isnt empty for some reason, delete the contents
+        for (int i = wordParent.transform.childCount - 1; i >= 0; i--)
+            Destroy(wordParent.transform.GetChild(i).gameObject);
+
         wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
@@ -355,6 +382,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //remove the iamge and text from the original bubble
         Destroy(wordParent.GetComponent<UIEffectStack>());
         Destroy(wordParent.GetComponent<Image>());
+
         Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
@@ -591,7 +619,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         {
             if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
                 FitToText(relatedText, originalText, (int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
-            else if (data.origin == WordInfo.Origin.QuestLog)
+            else
                 FitToBubbleShape(relatedText);
         }
     }

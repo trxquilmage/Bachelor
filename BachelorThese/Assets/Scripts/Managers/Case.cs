@@ -163,6 +163,7 @@ public class Case : MonoBehaviour
         }
         else
             Debug.Log("The bubble to delete couldnt be found " + currentData.name);
+        contents = currentContents;
         ReloadContents(true);
     }
     #region SCROLLBAR
@@ -214,7 +215,7 @@ public class Case : MonoBehaviour
     /// </summary>
     public virtual void UpdateBubbleHeight()
     {
-        float spacing = listingParent.GetComponent<VerticalLayoutGroup>().spacing;
+        float spacing = listingParent.GetComponent<HorizontalOrVerticalLayoutGroup>().spacing;
         bubbleScreenHeight = spacing;
         foreach (RectTransform rT in listingParent.GetComponentsInChildren<RectTransform>())
         {
@@ -258,7 +259,7 @@ public class Case : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnBubbleInCase(BubbleData data)
     {
-        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, Vector2.zero, origin);
+        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, new TMP_WordInfo(), Vector2.zero, origin, true);
         bubble.transform.SetParent(listingParent.transform);
         return bubble;
     }

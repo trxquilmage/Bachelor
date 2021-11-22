@@ -20,6 +20,7 @@ public class Word : Bubble
         wordParent = this.gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new WordData(bubbleData);
+        
         wordData = (WordData)data;
         //initialize the tag Object
         wordData.tagObj = new TagObject();
@@ -39,6 +40,32 @@ public class Word : Bubble
 
         InitializeBubbleShaping(firstAndLastWordIndex);
     }
+    public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
+    {
+        wordParent = transform.GetChild(0).gameObject;
+        base.Initialize(bubbleData, firstAndLastWordIndex);
+
+        data = new WordData(bubbleData);
+        data.origin = WordCaseManager.instance.origin;
+        wordData = (WordData)data;
+        //initialize the tag Object
+        wordData.tagObj = new TagObject();
+        wordData.tagObj.allGivenValues = new List<Yarn.Value>();
+        wordData.tagObj.allGivenValues.Add(new Yarn.Value(data.name));
+
+        int i = 0;
+        foreach (string tag in data.tagInfo)
+        {
+            if (i != 0)
+            {
+                Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
+                wordData.tagObj.allGivenValues.Add(val);
+            }
+            i++; //we dont want the location to be in this
+        }
+        InitializeBubbleShaping(firstAndLastWordIndex);
+    }
+
     public override void IsOverWordCase()
     {
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)

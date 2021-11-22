@@ -17,80 +17,48 @@ public static class WordUtilities
         Color color = tag.tagColor;
         return color;
     }
-
     /// <summary>
     /// Creates a word-Object at the mouse's position
     /// </summary>
     /// <param name="name"></param>
     /// <param name="tag"></param>
     /// <param name="wordMousePos"></param>
-    public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
+    public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool createBubbleFromBubble)
     {
-        bool inAsk = !DialogueInputManager.instance.continueEnabledAsk;
         ReferenceManager refM = ReferenceManager.instance;
-        GameObject word = null;
-        if (!inAsk || inAsk && origin != WordInfo.Origin.Dialogue)
-        {
-            Transform parent;
-            if (!inAsk)
-                parent = refM.selectedWordParent.transform;
-            else
-                parent = refM.selectedWordParentAsk.transform;
-            //Instantiate Word
-            if (data is WordData || data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
-            {
-                word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
-                word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
-                word.GetComponent<RectTransform>().localPosition = wordMousePos;
-                Word wordScript = word.AddComponent<Word>();
-                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-            }
-            //Instantiate Quest
-            else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
-            {
-                word = GameObject.Instantiate(refM.questBubblePrefab, wordMousePos, Quaternion.identity);
-                word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
-                word.GetComponent<RectTransform>().localPosition = wordMousePos;
-                QuestCase caseScript = word.AddComponent<QuestCase>();
-                caseScript.Initialize();
-                Quest wordScript = word.AddComponent<Quest>();
-                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-            }
-            else
-            {
-                Debug.Log("This word seems to be empty");
-            }
-            return word;
-        }
-        return null;
-    }
-    public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, Vector2 firstAndLastWordIndex, WordInfo.Origin origin)
-    {
-        ReferenceManager refHandler = ReferenceManager.instance;
         GameObject word = null;
         Transform parent;
         if (!PlayerInputManager.instance.inAsk) // not in an ask
-            parent = refHandler.selectedWordParent.transform;
+            parent = refM.selectedWordParent.transform;
         else
-            parent = refHandler.selectedWordParentAsk.transform;
-        
-        if (data is WordData || data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+            parent = refM.selectedWordParentAsk.transform;
+
+        //Instantiate Word
+        if (data is WordData || refM.wordTags[refM.questTagIndex].name != data.tag)
         {
-            word = GameObject.Instantiate(refHandler.selectedWordPrefab, wordMousePos, Quaternion.identity);
+            word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
             word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
             word.GetComponent<RectTransform>().localPosition = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
-            wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
+            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
         }
-        else if (data is QuestData || data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+        //Instantiate Quest
+        else if (data is QuestData || refM.wordTags[refM.questTagIndex].name == data.tag)
         {
-            word = GameObject.Instantiate(refHandler.questBubblePrefab, wordMousePos, Quaternion.identity);
+            word = GameObject.Instantiate(refM.questBubblePrefab, wordMousePos, Quaternion.identity);
             word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
             word.GetComponent<RectTransform>().localPosition = wordMousePos;
             QuestCase caseScript = word.AddComponent<QuestCase>();
+            if (data is QuestData && ((QuestData)data).contents != null)
+                caseScript.contents = ((QuestData)data).contents;
             caseScript.Initialize();
             Quest wordScript = word.AddComponent<Quest>();
-            wordScript.Initialize(data.name, data.tagInfo, origin, new TMP_WordInfo(), firstAndLastWordIndex);
+            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+
+            if (!createBubbleFromBubble)
+                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+            else
+                wordScript.Initialize(data, firstAndLastWordIndex);
         }
         else
         {

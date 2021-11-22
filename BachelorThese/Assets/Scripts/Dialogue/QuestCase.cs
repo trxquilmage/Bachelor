@@ -8,8 +8,21 @@ public class QuestCase : Case
 {
     GameObject contentCountObject;
     GameObject dropDownObject;
+    Quest quest;
+    VerticalLayoutGroupChildren layoutGroup;
     public GameObject wordParent;
     public bool isInCase = false;
+    public bool dropDownOpen
+    {
+        get { return DropDownOpen; }
+        set
+        {
+            DropDownOpen = value;
+            ((QuestData)quest.data).dropDownOpen = value;
+            Debug.Log("data : " + ((QuestData)quest.data).dropDownOpen);
+        }
+    }
+    bool DropDownOpen;
     #region OVERRIDES
     public override void Initialize()
     {
@@ -24,8 +37,12 @@ public class QuestCase : Case
         origin = WordInfo.Origin.QuestLog;
         scrollbar = null;
         InitializeHideObject();
-        if (origin == WordInfo.Origin.QuestLog)
-            isInCase = true;
+        StartCoroutine(InitializeValuesAfterQuest());
+    }
+    public override void FillArrayWithContents()
+    {
+        if (contents == null)
+            base.FillArrayWithContents();
     }
     //There is no scrollbar so these should be empty
     public override void ScrollThroughBubbles()
@@ -45,16 +62,43 @@ public class QuestCase : Case
     {
         base.SaveBubble(bubble);
         ((Word)bubble).currentParent = this;
-        ChangeAddedParentScale(false);
+        ForceLayoutGroupUpdate();
     }
     public override void DeleteOutOfCase()
     {
         base.DeleteOutOfCase();
         WordClickManager.instance.currentWord.GetComponent<Word>().currentParent = null;
-        ChangeAddedParentScale(false);
+        ForceLayoutGroupUpdate();
     }
     #endregion
-
+    /// <summary>
+    /// Updates the layout group when a child is added, because the layout group doesnt do it on its own
+    /// </summary>
+    public void ForceLayoutGroupUpdate()
+    {
+        StartCoroutine(ForceLayoutGroupUp());
+    }
+    IEnumerator ForceLayoutGroupUp()
+    {
+        yield return new WaitForEndOfFrame();
+        layoutGroup.ForceChildUpdate();
+    }
+    /// <summary>
+    /// Initializes all Values that need to be initialized after the Quest Script was initialized
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator InitializeValuesAfterQuest()
+    {
+        yield return new WaitForEndOfFrame();
+        quest = GetComponent<Quest>();
+        if (quest.data.origin == WordInfo.Origin.QuestLog)
+        {
+            isInCase = true;
+            layoutGroup = transform.parent.GetComponent<VerticalLayoutGroupChildren>();
+            dropDownOpen = ((QuestData)quest.data).dropDownOpen;
+            dropDownObject.GetComponent<OnClickFunctions>().relatedQuest = this;
+        }
+    }
     /// <summary>
     /// The current VerticalLayoutGroup would have problems with other icons that belong to the QuestBubble
     /// So we are creating it again, one layer lower
@@ -85,22 +129,7 @@ public class QuestCase : Case
             height = wordParent.GetComponent<RectTransform>().localPosition.y;
         dropDownObject = transform.GetChild(2).gameObject;
         dropDownObject.transform.localPosition = new Vector2(-dropDownObject.GetComponent<RectTransform>().sizeDelta.x - 5, height);
-        dropDownObject.GetComponent<OnClickFunctions>().relatedQuest = this;
-    }
-    IEnumerator ChangeAnchorPoint()
-    {
-        RectTransform rT = GetComponent<RectTransform>();
-        RectTransform rTwordParent = wordParent.GetComponent<RectTransform>();
-        rT.pivot = Vector2.up;
-        rT.localPosition += new Vector3(0, rT.sizeDelta.y, 0);
 
-        yield return new WaitForEndOfFrame();
-
-        float questLocalHeight = rT.sizeDelta.y - rTwordParent.sizeDelta.y;
-        rTwordParent.localPosition = new Vector3(0, questLocalHeight, 0);
-        InitalizeVerticalLayoutGroup();
-        InitializeQuestCountObject();
-        InitializeHideObject();
     }
     /// <summary>
     /// Takes the object that layouts the words added to this quest and fits its size to the bubble size
@@ -109,7 +138,6 @@ public class QuestCase : Case
     {
         RectTransform rTwordParent = listingParent.GetComponent<RectTransform>();
         RectTransform rTquestParent = wordParent.GetComponent<RectTransform>();
-        RectTransform generalParent = GetComponent<RectTransform>();
         float height;
 
         if (initializing)
@@ -131,31 +159,15 @@ public class QuestCase : Case
             }
             //set the quest parent to the width of the broadest width of the quest bubbles
 
-            rTquestParent.sizeDelta = new Vector2(broadestWidth, height);
+            rTquestParent.sizeDelta = new Vector2(broadestWidth, rTquestParent.sizeDelta.y);
             //set the word parent to the same size
             rTwordParent.sizeDelta = rTquestParent.sizeDelta;
             // move the Indicator bc its too far right at the moment
 
             InitializeQuestCountObject();
         }
-
-        VerticalLayoutGroup wordLayoutgroup = listingParent.GetComponent<VerticalLayoutGroup>();
-        height = rTwordParent.sizeDelta.y;
-
-        // Get the height of all word bubbles
-        if (wordLayoutgroup.isActiveAndEnabled)
-        {
-            foreach (Image wordSize in listingParent.GetComponentsInChildren<Image>())
-            {
-                if (wordSize != listingParent.GetComponent<Image>())
-                {
-                    height += wordSize.GetComponent<RectTransform>().sizeDelta.y;
-                    height += wordLayoutgroup.spacing;
-                }
-            }
-        }
-
-        generalParent.sizeDelta = new Vector2(generalParent.sizeDelta.x, height);
-        ChangeAnchorPoint();
+        InitalizeVerticalLayoutGroup();
+        InitializeQuestCountObject();
+        InitializeHideObject();
     }
 }

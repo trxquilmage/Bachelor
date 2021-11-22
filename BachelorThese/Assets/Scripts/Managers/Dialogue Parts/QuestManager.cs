@@ -8,7 +8,6 @@ public class QuestManager : Case
     //Handles everything happening in the quest case
     public static QuestManager instance;
 
-    //public QuestData[] allQuests;
 
     #region OVERRIDES
     public override void Awake()
