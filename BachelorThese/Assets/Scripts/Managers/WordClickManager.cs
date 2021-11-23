@@ -30,11 +30,73 @@ public class WordClickManager : MonoBehaviour
     public GameObject CurrentWord;
     WordLookupReader wlReader;
     public GameObject[] activeWords = new GameObject[20];
-    public string mouseOverUIObject;
+    public string mouseOverUIObject
+    {
+        get { return MouseOverUIObject; }
+        set
+        {
+            //wasn't over quest case and now is
+            
+            if (MouseOverUIObject != "questCase" && value == "questCase")
+            {
+                lastSavedQuestCase.EnableOrDisableQuestCountObject(true);
+
+                //Color the word if hovered on with a current word
+                if (currentWord != null && currentWord.TryGetComponent<Word>(out Word word))
+                {
+                    Color startColor = refM.wordTags[refM.questTagIndex].tagColor;
+                    Color endColor = EffectUtilities.ColorTintWhite(WordUtilities.MatchColorToTag(currentWord.GetComponent<Word>().data.tag));
+                    StartCoroutine(EffectUtilities.ColorObjectInGradient(lastSavedQuestCase.wordParent,
+                        new Color[5] { startColor, new Color(), new Color(), new Color(), endColor }, 0.3f));
+                }
+            }
+            //was over quest case and now isnt anymore
+            else if (MouseOverUIObject == "questCase" && value != "questCase")
+            {
+                lastSavedQuestCase.EnableOrDisableQuestCountObject(false);
+
+                //Color the word back to normal
+                Color endColor = refM.wordTags[refM.questTagIndex].tagColor;
+                Color startColor = lastSavedQuestCase.wordParent.GetComponentInChildren<Image>().color;
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(lastSavedQuestCase.wordParent,
+                    new Color[5] { startColor, new Color(), new Color(), new Color(), endColor }, 0.3f));
+            }
+            // wasn't over promptbubble and now is
+            if (MouseOverUIObject != "playerInput" && value == "playerInput")
+            {
+                CheckPromptBubbleForCurrentWord(lastSavedPromptBubble);
+            }
+            // was over prompt bubble and now isn't
+            else if (MouseOverUIObject == "playerInput" && value != "playerInput")
+            {
+                if (promptBubble != null)
+                {
+                    promptBubble.OnBubbleHover(false);
+                    promptBubble = null;
+                }
+            }
+            // wasn't over trash can and now is
+            if (MouseOverUIObject != "trashCan" && value == "trashCan")
+            {
+                UIManager.instance.SwitchTrashImage(true, lastSavedTrashCan);
+            }
+            // was over trash can and now isn't
+            else if (MouseOverUIObject == "trashCan" && value != "trashCan")
+            {
+                UIManager.instance.SwitchTrashImage(false, lastSavedTrashCan);
+            }
+            MouseOverUIObject = value;
+        }
+    }
+    string MouseOverUIObject;
     InputMap controls;
     public PromptBubble promptBubble;
     public QuestCase lastSavedQuestCase;
+    public PromptBubble lastSavedPromptBubble;
+    public GameObject lastSavedTrashCan;
     bool stillOnWord;
+
+    ReferenceManager refM;
 
     void Awake()
     {
@@ -44,7 +106,7 @@ public class WordClickManager : MonoBehaviour
     private void Start()
     {
         wlReader = WordLookupReader.instance;
-
+        refM = ReferenceManager.instance;
     }
     private void Update()
     {
@@ -220,54 +282,39 @@ public class WordClickManager : MonoBehaviour
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
 
         //Check above which Category of UI Element it is currently Hovering
-        mouseOverUIObject = "none";
-        bool foundPB = false; //found a prompt bubble
-        bool foundtC = false; //found the trash can
+        string currentlyOver = "none";
         foreach (RaycastResult uIObject in results)
         {
             //over the trashcan
             if (uIObject.gameObject == ReferenceManager.instance.trashCan
                 || uIObject.gameObject == ReferenceManager.instance.questTrashCan)
             {
-                foundtC = true;
-                mouseOverUIObject = "trashCan";
-                UIManager.instance.SwitchTrashImage(true, uIObject.gameObject);
+                lastSavedTrashCan = uIObject.gameObject;
+                currentlyOver = "trashCan";
             }
             //over the wordcase
-            else if (uIObject.gameObject == ReferenceManager.instance.wordCase && mouseOverUIObject == "none")
-                mouseOverUIObject = "wordCase";
+            else if (uIObject.gameObject == ReferenceManager.instance.wordCase && currentlyOver == "none")
+                currentlyOver = "wordCase";
             //over a quest in the quest log
             else if (uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
             {
                 if (qCase.isInCase)
                 {
-                    mouseOverUIObject = "questCase";
                     lastSavedQuestCase = qCase;
+                    currentlyOver = "questCase";
                 }
             }
             //over the questlog
-            else if (uIObject.gameObject == ReferenceManager.instance.questCase && mouseOverUIObject == "none")
-                mouseOverUIObject = "questLog";
+            else if (uIObject.gameObject == ReferenceManager.instance.questCase && currentlyOver == "none")
+                currentlyOver = "questLog";
             //over a promptbubble
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {
-                foundPB = true;
-                mouseOverUIObject = "playerInput";
-                CheckPromptBubbleForCurrentWord(pB);
+                lastSavedPromptBubble = pB;
+                currentlyOver = "playerInput";
             }
         }
-        if (!foundPB) //if not hovering over prompt
-        {
-            if (promptBubble != null)
-            {
-                promptBubble.OnBubbleHover(false);
-                promptBubble = null;
-            }
-        }
-        if (!foundtC) //if not over trashCan
-        {
-            UIManager.instance.SwitchTrashImage(false, null);
-        }
+        mouseOverUIObject = currentlyOver;
         stillOnWord = false;
 
         //Check for the exact word the mouse is hovering over

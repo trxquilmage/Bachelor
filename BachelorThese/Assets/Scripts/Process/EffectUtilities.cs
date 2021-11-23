@@ -14,25 +14,26 @@ public static class EffectUtilities
     /// </summary>
     /// <param name="word"></param>
     /// <param name="tag"></param>
-    public static void ColorTag(GameObject word, string tagName)
+    public static void ColorObject(GameObject word, string tagName)
     {
         Color tagColor = WordUtilities.MatchColorToTag(tagName);
         foreach (Image image in word.GetComponentsInChildren<Image>())
             image.color = tagColor;
     }
-    public static void ColorTag(GameObject word, Color color)
+    public static void ColorObject(GameObject word, Color color)
     {
         if (word != null)
             foreach (Image image in word.GetComponentsInChildren<Image>())
                 image.color = color;
     }
     /// <summary>
+    /// take a game object and color all its images in a gradient for "time"-seconds
     /// put in a Color Gradient here with FIVE (5) Colors. empty colors will be ignored
     /// </summary>
     /// <param name="word"></param>
     /// <param name="colorGradient"></param>
     /// <returns></returns>
-    public static IEnumerator ColorTagGradient(GameObject word, Color[] colorGradient, float time)
+    public static IEnumerator ColorObjectInGradient(GameObject word, Color[] colorGradient, float time)
     {
         Color[] calculatedColorGradient = ReadColorGradient(colorGradient);
         Color currentColor;
@@ -51,12 +52,12 @@ public static class EffectUtilities
                 {
                     t = WordUtilities.Remap(timer, index * (time / 5), (index + 1) * (time / 5), 0, 1);
                     currentColor = Color.Lerp(calculatedColorGradient[index], calculatedColorGradient[index + 1], t);
-                    ColorTag(word, currentColor);
+                    ColorObject(word, currentColor);
                 }
             }
             yield return delay;
         }
-        ColorTag(word, calculatedColorGradient[4]);
+        ColorObject(word, calculatedColorGradient[4]);
     }
     /// <summary>
     /// color the given word in the text in the given color
@@ -180,6 +181,19 @@ public static class EffectUtilities
             }
         }
         return false;
+    }
+    /// <summary>
+    /// Take a color and return a grey-ish version of it
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public static Color32 ColorTintGrey(Color32 color)
+    {
+        return Color.Lerp(color, ReferenceManager.instance.shadowButtonColor, 0.2f);
+    }
+    public static Color32 ColorTintWhite(Color32 color)
+    {
+        return Color.Lerp(color, Color.white, 0.2f);
     }
     /// <summary>
     /// Lerp between different alpha values for an image

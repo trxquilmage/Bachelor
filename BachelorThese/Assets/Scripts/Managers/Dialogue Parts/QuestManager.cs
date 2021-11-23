@@ -28,7 +28,20 @@ public class QuestManager : Case
         origin = WordInfo.Origin.QuestLog;
         scrollbar = refM.questScrollbar;
     }
-
+    public override void ReloadContents(bool resetScrollbar)
+    {
+        UpdateContentList();
+        //then use this data to reload the set
+        base.ReloadContents(resetScrollbar);
+    }
+    public void UpdateContentList()
+    {
+        //save the "contents" array of each questCase into the fitting bubbleData that is located on the same quest
+        foreach (QuestCase questCase in refM.questListingParent.GetComponentsInChildren<QuestCase>())
+        {
+            questCase.SaveContentsToQuest();
+        }
+    }
     #endregion
     public void Start()
     {

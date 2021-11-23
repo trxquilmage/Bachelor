@@ -19,7 +19,6 @@ public class QuestCase : Case
         {
             DropDownOpen = value;
             ((QuestData)quest.data).dropDownOpen = value;
-            Debug.Log("data : " + ((QuestData)quest.data).dropDownOpen);
         }
     }
     bool DropDownOpen;
@@ -36,8 +35,11 @@ public class QuestCase : Case
         maxContentAmount = refM.maxQuestAdditions;
         origin = WordInfo.Origin.QuestLog;
         scrollbar = null;
-        InitializeHideObject();
         StartCoroutine(InitializeValuesAfterQuest());
+    }
+    public override BubbleData[] GetContents()
+    {
+        return base.GetContents();
     }
     public override void FillArrayWithContents()
     {
@@ -61,14 +63,29 @@ public class QuestCase : Case
     public override void SaveBubble(Bubble bubble)
     {
         base.SaveBubble(bubble);
-        ((Word)bubble).currentParent = this;
+        Debug.Log("------------");
+        ((WordData)((Word)bubble).data).currentParent = this;
+        Debug.Log("------------");
         ForceLayoutGroupUpdate();
+        EnableOrDisableDropDownObject();
     }
     public override void DeleteOutOfCase()
     {
         base.DeleteOutOfCase();
-        WordClickManager.instance.currentWord.GetComponent<Word>().currentParent = null;
+        ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent = null;
         ForceLayoutGroupUpdate();
+    }
+    /// <summary>
+    /// Saves the array contents into the bubbleData data of the Quest script of the same quest
+    /// </summary>
+    /// <returns></returns>
+    public void SaveContentsToQuest()
+    {
+        if (quest != null && ((QuestData)quest.data).contents != null && contents != null)
+        {
+            ((QuestData)quest.data).contents = contents;
+            quest.data.UpdateBubbleData();
+        }
     }
     #endregion
     /// <summary>
@@ -98,6 +115,8 @@ public class QuestCase : Case
             dropDownOpen = ((QuestData)quest.data).dropDownOpen;
             dropDownObject.GetComponent<OnClickFunctions>().relatedQuest = this;
         }
+        ReloadContents(false);
+        InitializeDropDownObject();
     }
     /// <summary>
     /// The current VerticalLayoutGroup would have problems with other icons that belong to the QuestBubble
@@ -121,15 +140,39 @@ public class QuestCase : Case
         contentCountObject = transform.GetChild(3).gameObject;
         contentCountObject.transform.localPosition = new Vector2(GetComponent<RectTransform>().sizeDelta.x + 8, height);
         contentCount = contentCountObject.GetComponentInChildren<TMP_Text>();
+
+        EnableOrDisableQuestCountObject(false);
     }
-    void InitializeHideObject()
+    void InitializeDropDownObject()
     {
         float height = 0;
         if (wordParent != null)
             height = wordParent.GetComponent<RectTransform>().localPosition.y;
         dropDownObject = transform.GetChild(2).gameObject;
         dropDownObject.transform.localPosition = new Vector2(-dropDownObject.GetComponent<RectTransform>().sizeDelta.x - 5, height);
+        if (quest == null)
+            EnableOrDisableDropDownObject(false);
+        else
+            EnableOrDisableDropDownObject();
+    }
+    void EnableOrDisableDropDownObject()
+    {
+        //turn dropdown object on or off
+        int contentCount = GetContentCount();
+        bool setActive = true;
+        if (contentCount < 1)
+            setActive = false;
 
+        EnableOrDisableDropDownObject(setActive);
+    }
+    void EnableOrDisableDropDownObject(bool setActive)
+    {
+        dropDownObject.SetActive(setActive);
+    }
+    public void EnableOrDisableQuestCountObject(bool setActive)
+    {
+        if (isInCase || !setActive)
+            contentCountObject.SetActive(setActive);
     }
     /// <summary>
     /// Takes the object that layouts the words added to this quest and fits its size to the bubble size
@@ -168,6 +211,7 @@ public class QuestCase : Case
         }
         InitalizeVerticalLayoutGroup();
         InitializeQuestCountObject();
-        InitializeHideObject();
+        InitializeDropDownObject();
     }
+
 }

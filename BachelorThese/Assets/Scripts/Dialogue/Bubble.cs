@@ -29,7 +29,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// 0 = name, 1 = tags[0] (main tag), 2 = tags[1] (sub tag 1) ...
     /// </summary>
-    public struct TagObject
+    public class TagObject
     {
         public List<Yarn.Value> allGivenValues;
     }
@@ -75,7 +75,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
         //Color the bubble correctly
-        EffectUtilities.ColorTag(wordParent, data.tag);
+        EffectUtilities.ColorObject(wordParent, data.tag);
 
         //Get how many lines the word would use
         data.lineLengths = GetLineLengths();
@@ -103,7 +103,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
         //Color the bubble correctly
-        EffectUtilities.ColorTag(wordParent, data.tag);
+        EffectUtilities.ColorObject(wordParent, data.tag);
     }
     /// <summary>
     /// The bubble was dragged onto the word case and dropped
@@ -172,7 +172,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public void OnDrag(PointerEventData eventData)
     {
-        if (!fadingOut)
+        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
         {
             //drag the object through the scene
             RectTransform rT = GetComponent<RectTransform>();
@@ -229,7 +229,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!fadingOut)
+        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
         {
             WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
 
@@ -662,7 +662,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         {
             StartCoroutine(ShakeNoWord(isQuest, false, false));
             Color color = GetComponentInChildren<Image>().color;
-            StartCoroutine(EffectUtilities.ColorTagGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
+            StartCoroutine(EffectUtilities.ColorObjectInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
     }
     public void DoubleClickedOnCase()
@@ -814,10 +814,72 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 }
 public class BubbleData
 {
-    public string name;
-    public string[] tagInfo;
-    public string tag;
-    public WordInfo.Origin origin;
-    public Vector2[] lineLengths;
-    public bool isLongWord;
+    public string name
+    {
+        get { return Name; }
+        set
+        {
+            Name = value;
+            UpdateBubbleData();
+        }
+    }
+    public string[] tagInfo
+    {
+        get { return TagInfo; }
+        set
+        {
+            TagInfo = value;
+            UpdateBubbleData();
+        }
+    }
+    public string tag
+    {
+        get { return Tag; }
+        set
+        {
+            Tag = value;
+            UpdateBubbleData();
+        }
+    }
+    public WordInfo.Origin origin
+    {
+        get { return Origin; }
+        set
+        {
+            Origin = value;
+            UpdateBubbleData();
+        }
+    }
+    public Vector2[] lineLengths
+    {
+        get { return LineLengths; }
+        set
+        {
+            LineLengths = value;
+            UpdateBubbleData();
+        }
+    }
+    public bool isLongWord
+    {
+        get { return IsLongWord; }
+        set
+        {
+            IsLongWord = value;
+            UpdateBubbleData();
+        }
+    }
+
+    string Name;
+    string[] TagInfo;
+    string Tag;
+    WordInfo.Origin Origin;
+    Vector2[] LineLengths;
+    bool IsLongWord;
+
+    public virtual void UpdateBubbleData()
+    {
+        if (this is QuestData)
+            QuestManager.instance.UpdateBubbleData(this);
+        
+    }
 }

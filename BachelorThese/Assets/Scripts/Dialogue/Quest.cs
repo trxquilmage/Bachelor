@@ -119,10 +119,47 @@ public class Quest : Bubble
 }
 public class QuestData : BubbleData
 {
-    public BubbleData bubbleData;
-    public BubbleData[] contents;
-    public string[] relevantWords;
-    public bool dropDownOpen;
+    public BubbleData bubbleData
+    {
+        get { return BubbleData; }
+        set
+        {
+            BubbleData = value;
+            UpdateBubbleData();
+        }
+    }
+    public BubbleData[] contents
+    {
+        get { return Contents; }
+        set
+        {
+            Contents = value;
+            UpdateBubbleData();
+        }
+    }
+    public string[] relevantWords
+    {
+        get { return RelevantWords; }
+        set
+        {
+            RelevantWords = value;
+            UpdateBubbleData();
+        }
+    }
+    public bool dropDownOpen
+    {
+        get { return DropDownOpen; }
+        set
+        {
+            DropDownOpen = value;
+            UpdateBubbleData();
+        }
+    }
+
+    BubbleData BubbleData;
+    BubbleData[] Contents;
+    string[] RelevantWords;
+    bool DropDownOpen;
     public QuestData(BubbleData data) : base()
     {
         name = data.name;

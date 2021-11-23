@@ -5,18 +5,14 @@ using UnityEngine.UI;
 
 public class OnClickFunctions : MonoBehaviour
 {
-    [HideInInspector] public QuestCase relatedQuest
+    [HideInInspector]
+    public QuestCase relatedQuest
     {
         get { return RelatedQuest; }
         set
         {
             RelatedQuest = value;
-            if (relatedQuest.dropDownOpen)
-            {
-                ChangeToOpen();
-                ChangeArrow();
-                ChangeDropDownStatus();
-            }
+            OpenCase(relatedQuest.dropDownOpen);
         }
     }
     QuestCase RelatedQuest;
@@ -25,6 +21,10 @@ public class OnClickFunctions : MonoBehaviour
     public void ChangeToOpen()
     {
         open = !open;
+    }
+    public void ChangeToOpen(bool status)
+    {
+        open = status;
     }
     public void ChangeArrow()
     {
@@ -39,10 +39,14 @@ public class OnClickFunctions : MonoBehaviour
     }
     public void ChangeDropDownStatus()
     {
-        relatedQuest.ManuallyOpenCase();
+        relatedQuest.AutomaticOpenCase(open);
         relatedQuest.ForceLayoutGroupUpdate();
         relatedQuest.dropDownOpen = open;
-        Debug.Log("open : " + open);
-
+    }
+    public void OpenCase(bool open)
+    {
+        ChangeToOpen(open);
+        ChangeArrow();
+        ChangeDropDownStatus();
     }
 }

@@ -274,7 +274,7 @@ public class UIManager : MonoBehaviour
         startColor.a = 1;
         Color32 endColor = startColor;
         endColor.a = 1; //not zero bc otherwise its indistinguishable from new Color()
-        StartCoroutine(EffectUtilities.ColorTagGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
+        StartCoroutine(EffectUtilities.ColorObjectInGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
     }
     void FillActiveEffects()
     {
@@ -292,12 +292,26 @@ public class UIManager : MonoBehaviour
         BubbleData data = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
         if (data is WordData) // isnt quest
         {
-            WordCaseManager.instance.DeleteOutOfCase();
-            WordClickManager.instance.DestroyCurrentWord();
-            WordCaseManager.instance.UpdateContentCount();
-            StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
-            WordCaseManager.instance.ResetScrollbar();
-            WordCaseManager.instance.DestroyReplacement();
+            //is from the word case
+            if (data.origin == WordInfo.Origin.WordCase)
+            {
+                WordCaseManager.instance.DeleteOutOfCase();
+                WordClickManager.instance.DestroyCurrentWord();
+                WordCaseManager.instance.UpdateContentCount();
+                StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
+                WordCaseManager.instance.ResetScrollbar();
+                WordCaseManager.instance.DestroyReplacement();
+            }
+            //is from the quest log
+            else
+            {
+                QuestManager.instance.UpdateContentList();
+                QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
+                currentParent.DeleteOutOfCase();
+                WordClickManager.instance.DestroyCurrentWord();
+                currentParent.UpdateContentCount();
+                currentParent.DestroyReplacement();
+            }
         }
         else if (data is QuestData)
         {

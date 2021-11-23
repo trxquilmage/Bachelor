@@ -65,7 +65,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7776562540707380157
 RectTransform:
   m_ObjectHideFlags: 0
@@ -252,6 +252,22 @@ PrefabInstance:
       propertyPath: m_TagString
       value: IgnoreImageCast
       objectReference: {fileID: 0}
+    - target: {fileID: 747873013219332958, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
+      propertyPath: normal
+      value: 
+      objectReference: {fileID: 21300000, guid: e64b4094fb2ed764db13321b6149a85d, type: 3}
+    - target: {fileID: 747873013219332958, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
+      propertyPath: onClick
+      value: 
+      objectReference: {fileID: 21300000, guid: 54bd2b00505c85742905cae6bccfed61, type: 3}
+    - target: {fileID: 2312238722153413743, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2312238722153413743, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7520584500212586685, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
       propertyPath: m_Name
       value: DropDownQuest
@@ -290,7 +306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8010391841857983496, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 31.17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8010391841857983496, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
       propertyPath: m_SizeDelta.y
@@ -326,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8010391841857983496, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -42.399994
+      value: -29.2
       objectReference: {fileID: 0}
     - target: {fileID: 8010391841857983496, guid: 25d9e355bc6a9f24496b12ec0e75bc13, type: 3}
       propertyPath: m_AnchoredPosition.y

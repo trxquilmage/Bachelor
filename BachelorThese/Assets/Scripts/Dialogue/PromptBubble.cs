@@ -68,7 +68,7 @@ public class PromptBubble : MonoBehaviour
                 WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
-                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 UIManager.instance.BlendInUI(ReferenceManager.instance.feedbackTextOtherTag, 3);
             }
             else
@@ -76,9 +76,9 @@ public class PromptBubble : MonoBehaviour
                 acceptsCurrentWord = false;
                 if (WordClickManager.instance.currentWord != null)
                 {
-                    StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject,
+                    StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
                                         new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                    StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject,
+                    StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
                         new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 }
             }
@@ -88,8 +88,8 @@ public class PromptBubble : MonoBehaviour
             acceptsCurrentWord = false;
             if (WordClickManager.instance.currentWord != null && bubble.color == Color.red)
             {
-                StartCoroutine(EffectUtilities.ColorTagGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
-                StartCoroutine(EffectUtilities.ColorTagGradient(WordClickManager.instance.currentWord.gameObject,
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
                     new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(),
                     WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag) }, 0.3f));
             }

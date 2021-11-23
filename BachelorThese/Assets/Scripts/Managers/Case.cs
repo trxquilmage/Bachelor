@@ -19,7 +19,10 @@ public class Case : MonoBehaviour
     public BubbleData[] contents
     {
         get { return GetContents(); }
-        set { SetContents(value); }
+        set
+        {
+            SetContents(value);
+        }
     }
     [HideInInspector] public BubbleData[] Contents;
     [HideInInspector] public bool automaticallyOpen;
@@ -112,14 +115,8 @@ public class Case : MonoBehaviour
     /// </summary>
     public virtual void UpdateContentCount()
     {
-        int count = 0;
-        foreach (BubbleData data in contents)
-        {
-            if (data.name != null)
-                count++;
-        }
         contentCount.text =
-            count.ToString() + "<b>/" + maxContentAmount.ToString() + "</b>";
+            GetContentCount().ToString() + "<b>/" + maxContentAmount.ToString() + "</b>";
     }
     public virtual void SaveBubble(Bubble bubble)
     {
@@ -230,7 +227,62 @@ public class Case : MonoBehaviour
     #endregion
     #endregion
     #region NOT VIRTUAL
-
+    /// <summary>
+    /// counts how many contents there are in the list right now
+    /// </summary>
+    public int GetContentCount()
+    {
+        int count = 0;
+        foreach (BubbleData data in contents)
+        {
+            if (data.name != null)
+                count++;
+        }
+        return count;
+    }
+    /// <summary>
+    /// Checks if the given bubble data exists and Updates it from the given value
+    /// </summary>
+    /// <param name="data"></param>
+    public void UpdateBubbleData(BubbleData data)
+    {
+        GetBubbleData(data, out int index);
+        if (index != -1)
+        {
+            contents[index] = data;
+            if (this is WordCaseManager)
+                Debug.Log(((WordData)contents[index]).currentParent);
+        }
+        else
+            Debug.Log("failed");
+    }
+    /// <summary>
+    /// Checks if the given bubble data exists and returns the value and it's index
+    /// If there is no value, the return indey is -1
+    /// </summary>
+    /// <param name="data"></param>
+    public BubbleData GetBubbleData(BubbleData data, out int index)
+    {
+        BubbleData returnData = null;
+        index = -1;
+        int i = -1;
+        foreach (BubbleData contentData in contents)
+        {
+            i++;
+            if (contentData.name == data.name)
+            {
+                returnData = contentData;
+                index = i;
+            }
+        }
+        return returnData;
+    }
+    public BubbleData GetBubbleData(string dataName, out int index)
+    {
+        BubbleData data = new BubbleData() { name = dataName };
+        data = GetBubbleData(data, out index);
+        return data;
+    }
     /// <summary>
     /// Opens case and memorizes, if it was open before. If not, it will close on false.
     /// </summary>
@@ -348,7 +400,5 @@ public class Case : MonoBehaviour
             bubbleReplacement = null;
         }
     }
-
-
     #endregion
 }

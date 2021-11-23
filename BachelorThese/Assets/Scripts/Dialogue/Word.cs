@@ -9,8 +9,6 @@ using Yarn.Unity;
 
 public class Word : Bubble
 {
-    public WordData wordData; //is the same a data, but casted as WordData
-    public QuestCase currentParent;
     public override void Start()
     {
         base.Start();
@@ -20,12 +18,11 @@ public class Word : Bubble
         wordParent = this.gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new WordData(bubbleData);
-        
-        wordData = (WordData)data;
+
         //initialize the tag Object
-        wordData.tagObj = new TagObject();
-        wordData.tagObj.allGivenValues = new List<Yarn.Value>();
-        wordData.tagObj.allGivenValues.Add(new Yarn.Value(data.name));
+        ((WordData)data).tagObj = new TagObject();
+        ((WordData)data).tagObj.allGivenValues = new List<Yarn.Value>();
+        ((WordData)data).tagObj.allGivenValues.Add(new Yarn.Value(data.name));
 
         int i = 0;
         foreach (string tag in tags)
@@ -33,7 +30,7 @@ public class Word : Bubble
             if (i != 0)
             {
                 Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
-                wordData.tagObj.allGivenValues.Add(val);
+                ((WordData)data).tagObj.allGivenValues.Add(val);
             }
             i++; //we dont want the location to be in this
         }
@@ -44,25 +41,18 @@ public class Word : Bubble
     {
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(bubbleData, firstAndLastWordIndex);
-
-        data = new WordData(bubbleData);
-        data.origin = WordCaseManager.instance.origin;
-        wordData = (WordData)data;
-        //initialize the tag Object
-        wordData.tagObj = new TagObject();
-        wordData.tagObj.allGivenValues = new List<Yarn.Value>();
-        wordData.tagObj.allGivenValues.Add(new Yarn.Value(data.name));
-
-        int i = 0;
-        foreach (string tag in data.tagInfo)
+        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAB");
+        if (((WordData)bubbleData).currentParent == null)
+            data.origin = WordCaseManager.instance.origin;
+        else
         {
-            if (i != 0)
-            {
-                Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
-                wordData.tagObj.allGivenValues.Add(val);
-            }
-            i++; //we dont want the location to be in this
+            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            data.origin = QuestManager.instance.origin;
         }
+        data = new WordData(bubbleData);
+        ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
+        ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
+        ((WordData)data).currentParent = ((WordData)bubbleData).currentParent;
         InitializeBubbleShaping(firstAndLastWordIndex);
     }
 
@@ -150,14 +140,22 @@ public class Word : Bubble
         {
             WordClickManager.instance.lastSavedQuestCase.SaveBubble(this);
             WordClickManager.instance.DestroyCurrentWord(this);
+            if (((WordData)data).currentParent.GetContentCount() == 1)
+            {
+                ((WordData)data).currentParent.GetComponentInChildren<OnClickFunctions>().OpenCase(true);
+            }
         }
         //in the same or a different quest already
         else
         {
-            if (currentParent != WordClickManager.instance.lastSavedQuestCase)
+            if (((WordData)data).currentParent != WordClickManager.instance.lastSavedQuestCase)
             {
-                currentParent.DeleteOutOfCase();
+                ((WordData)data).currentParent.DeleteOutOfCase();
                 WordClickManager.instance.lastSavedQuestCase.SaveBubble(this);
+                if (((WordData)data).currentParent.GetContentCount() == 1)
+                {
+                    ((WordData)data).currentParent.GetComponentInChildren<OnClickFunctions>().OpenCase(true);
+                }
             }
         }
     }
@@ -173,8 +171,46 @@ public class Word : Bubble
 }
 public class WordData : BubbleData
 {
-    public Bubble.TagObject tagObj;
-    public BubbleData bubbleData;
+    public Bubble.TagObject tagObj
+    {
+        get
+        {
+            return TagObj;
+        }
+        set
+        {
+            TagObj = value;
+            UpdateBubbleData();
+        }
+    }
+    public BubbleData bubbleData
+    {
+        get
+        {
+            return BubbleData;
+        }
+        set
+        {
+            BubbleData = value;
+            UpdateBubbleData();
+        }
+    }
+    public QuestCase currentParent
+    {
+        get
+        {
+            return CurrentParent;
+        }
+        set
+        {
+            CurrentParent = value;
+            UpdateBubbleData();
+        }
+    }
+
+    Bubble.TagObject TagObj;
+    BubbleData BubbleData;
+    QuestCase CurrentParent;
     public WordData(BubbleData data) : base()
     {
         name = data.name;
@@ -184,6 +220,24 @@ public class WordData : BubbleData
         lineLengths = data.lineLengths;
         isLongWord = data.isLongWord;
         bubbleData = data;
+    }
+    public override void UpdateBubbleData()
+    {
+        base.UpdateBubbleData();
+        if (origin == WordInfo.Origin.WordCase)
+        {
+            WordCaseManager.instance.UpdateBubbleData(this);
+        }
+        else if (origin == WordInfo.Origin.QuestLog)
+        {
+            Debug.Log("RIGHT");
+            if (currentParent != null)
+            {
+                Debug.Log(currentParent);
+                currentParent.UpdateBubbleData(this);
+            }
+
+        }
     }
 }
 
