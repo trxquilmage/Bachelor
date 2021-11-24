@@ -57,7 +57,7 @@ The one we are standing on this very second, buddy.
 title: Karl.ChildOfLadyKatherine
 tags: 
 ---
-<<displaypromptmenu Managers OriAAA>>
+<<displaypromptmenu Managers GenAAA>>
 Wait - Yes or No - are you the child of Lady Katherine?
 <<set $katherinemother to react("value", "katherineMother", "Karl")>>
 <<if $katherinemother is true>>

@@ -5,10 +5,7 @@ tags:
 <<if not isvisited("Fiona","Start")>>
     You think you could do me a favor?
     Could you Go Shopping at the market for me?
-    I would need ham, eggs, flour and marmelade.
-    Oh and firestones, too if you find some.
-    Then do Quest B, Quest C, Quest D, Quest E
-    and Quest F please.
+    I would need oranges and melons.
 <<else>>
     [[Fiona.Idle]]
 <<endif>>
@@ -17,5 +14,7 @@ tags:
 title: Fiona.Idle
 tags:
 ---
-roastbeef....
+Please , it's hard for me to go shopping there.
+The market is so far away. 
+It's north, by the way.
 ===

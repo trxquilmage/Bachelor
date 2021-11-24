@@ -7,14 +7,14 @@ using TMPro;
 
 public class CommandManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI nameText;
     InfoManager info;
-
+    ReferenceManager refM;
     private void Start()
     {
         info = InfoManager.instance;
+        refM = ReferenceManager.instance;
         // runner
-        ReferenceManager.instance.runner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
+        refM.runner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
             if (parameters.Length == 2)
             {
@@ -25,17 +25,17 @@ public class CommandManager : MonoBehaviour
                 return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString);
             }
         });
-        ReferenceManager.instance.runner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
+        refM.runner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
         {
             return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });
-        ReferenceManager.instance.runner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
+        refM.runner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
         {
             return GetVisited(parameters[0].AsString, parameters[1].AsString);
         });
 
         // askRunner
-        ReferenceManager.instance.askRunner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
+        refM.askRunner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
             if (parameters.Length == 2)
             {
@@ -46,15 +46,15 @@ public class CommandManager : MonoBehaviour
                 return ReactToAnswer(parameters[0].AsString, parameters[1].AsString, parameters[2].AsString);
             }
         });
-        ReferenceManager.instance.askRunner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
+        refM.askRunner.AddFunction("getinfo", 2, delegate (Yarn.Value[] parameters)
         {
             return GetInfo(parameters[0].AsString, (int)parameters[1].AsNumber);
         });
-        ReferenceManager.instance.askRunner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
+        refM.askRunner.AddFunction("isvisited", 2, delegate (Yarn.Value[] parameters)
         {
             return GetVisited(parameters[0].AsString, parameters[1].AsString);
         });
-        ReferenceManager.instance.askRunner.AddFunction("checkonlyask", 0, delegate (Yarn.Value[] parameters)
+        refM.askRunner.AddFunction("checkonlyask", 0, delegate (Yarn.Value[] parameters)
         {
             return CheckIfOnlyAsk();
         });
@@ -66,7 +66,7 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("showcharactername")]
     public void ShowCharacterName(string characterName)
     {
-        nameText.text = characterName;
+        refM.interactableTextList[refM.characterNameIndex].text = characterName;
     }
 
     /// <summary>
@@ -76,8 +76,8 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenu")]
     public void DisplayPromptMenu(string promptQ)
     {
-        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.promptMenu,
-            ReferenceManager.instance.promptAnswer, ReferenceManager.instance.promptBubbleParent.transform,
+        PlayerInputManager.instance.DisplayPrompt(promptQ, refM.promptMenu,
+            refM.promptAnswer, refM.promptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptBubbles);
     }
     /// <summary>
@@ -87,11 +87,11 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenuask")]
     public void DisplayPromptMenuAsk(string promptQ)
     {
-        PlayerInputManager.instance.DisplayPrompt(promptQ, ReferenceManager.instance.askField,
-            ReferenceManager.instance.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
+        PlayerInputManager.instance.DisplayPrompt(promptQ, refM.askField,
+            refM.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptAskBubbles);
         //activate the "continue" button above the Ask button
-        ReferenceManager.instance.askContinueButton.SetActive(true);
+        refM.askContinueButton.SetActive(true);
     }
     /// <summary>
     /// Goes through all subtags of the main tag 

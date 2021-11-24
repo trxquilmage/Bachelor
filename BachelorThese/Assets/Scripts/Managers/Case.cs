@@ -86,7 +86,6 @@ public class Case : MonoBehaviour
         SpawnContents();
         UpdateContentCount();
         StartCoroutine(RescaleScrollbar(resetScrollbar));
-        DestroyReplacement();
     }
     /// <summary>
     /// Spawn all bubbles, that are in contents right now into the case
@@ -121,6 +120,7 @@ public class Case : MonoBehaviour
     public virtual void SaveBubble(Bubble bubble)
     {
         BubbleData data = bubble.data;
+        bubble.data.origin = origin;
         if (CheckIfCanSaveBubble(data.name, out int index))
         {
             contents[index] = data;
@@ -161,7 +161,10 @@ public class Case : MonoBehaviour
         else
             Debug.Log("The bubble to delete couldnt be found " + currentData.name);
         contents = currentContents;
+        
         ReloadContents(true);
+        DestroyReplacement();
+        UpdateContentCount();
     }
     #region SCROLLBAR
     /// <summary>
@@ -216,7 +219,7 @@ public class Case : MonoBehaviour
         bubbleScreenHeight = spacing;
         foreach (RectTransform rT in listingParent.GetComponentsInChildren<RectTransform>())
         {
-            if (rT.gameObject.TryGetComponent<Bubble>(out Bubble word) && rT.gameObject != null)
+            if (rT.gameObject.TryGetComponent<Image>(out Image image) && rT.gameObject.tag != "IgnoreImageCast")
             {
                 bubbleScreenHeight += rT.sizeDelta.y;
                 bubbleScreenHeight += spacing;
@@ -250,11 +253,7 @@ public class Case : MonoBehaviour
         if (index != -1)
         {
             contents[index] = data;
-            if (this is WordCaseManager)
-                Debug.Log(((WordData)contents[index]).currentParent);
         }
-        else
-            Debug.Log("failed");
     }
     /// <summary>
     /// Checks if the given bubble data exists and returns the value and it's index

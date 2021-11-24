@@ -192,7 +192,7 @@ public class WordLookupReader : MonoBehaviour
         // is this a word or is it something like "-" etc.?
         if (wordInfo.GetWord().Length == 1)
         {
-            if (!char.IsLetterOrDigit(wordInfo.GetWord()[0]))
+            if (!char.IsLetter(wordInfo.GetWord()[0]))
             {
                 currentReferenceWords = new List<string[]>();
                 currentWordList = new List<TMP_WordInfo>();

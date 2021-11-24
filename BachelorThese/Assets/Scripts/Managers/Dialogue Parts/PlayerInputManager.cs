@@ -7,12 +7,12 @@ using TMPro;
 public class PlayerInputManager : MonoBehaviour
 {
     public static PlayerInputManager instance;
-    public PromptBubble[] currentPromptBubbles;
-    public PromptBubble[] currentPromptAskBubbles;
-    public AnswerData givenAnswer;
-    public AnswerData givenAnswerAsk;
-    public bool givenManualPrompt;
-    public bool inAsk;
+    [HideInInspector] public PromptBubble[] currentPromptBubbles;
+    [HideInInspector] public PromptBubble[] currentPromptAskBubbles;
+    [HideInInspector] public AnswerData givenAnswer;
+    [HideInInspector] public AnswerData givenAnswerAsk;
+    [HideInInspector] public bool givenManualPrompt;
+    [HideInInspector] public bool inAsk;
     DialogueInputManager diManager;
     WordLookupReader wlReader;
     ReferenceManager refM;
@@ -70,7 +70,6 @@ public class PlayerInputManager : MonoBehaviour
             }
         }
     }
-
     /// <summary>
     /// see if there are any prompt bubbles 
     /// </summary>
@@ -128,6 +127,8 @@ public class PlayerInputManager : MonoBehaviour
         else if (!inAsk && refM.playerInputField.activeInHierarchy) //no ask and in prompt currently
             pBParent = currentPromptBubbles;
         else
+            return false;
+        if (pBParent == null)
             return false;
         return true;
     }

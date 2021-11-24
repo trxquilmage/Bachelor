@@ -9,12 +9,12 @@ public class DialogueInputManager : MonoBehaviour
 {
     public static DialogueInputManager instance;
 
-    public bool continueEnabledPrompt = true;
-    public bool continueEnabledPromptAsk = true;
-    public bool continueEnabledDrag = true;
-    public bool continueEnabledAsk = true;
-    public bool closeAWindow;
-    public bool askTextFinished;
+    [HideInInspector] public bool continueEnabledPrompt = true;
+    [HideInInspector] public bool continueEnabledPromptAsk = true;
+    [HideInInspector] public bool continueEnabledDrag = true;
+    [HideInInspector] public bool continueEnabledAsk = true;
+    [HideInInspector] public bool closeAWindow;
+    [HideInInspector] public bool askTextFinished;
 
     WordClickManager wcManager;
     ReferenceManager refM;

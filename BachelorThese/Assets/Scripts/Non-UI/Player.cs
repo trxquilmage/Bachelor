@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
         for (int i = 1; i < allNPCs.Length; i++)
         {
             if ((allNPCs[i].transform.position - this.transform.position)// is in range?
-                    .magnitude <= DialogueManager.instance.interactionRadius)
+                    .magnitude <= ReferenceManager.instance.interactionRadius)
             {
                 target = allNPCs[i].gameObject;
                 return true;
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < allObjects.Length; i++)
         {
             if ((allObjects[i].transform.position - this.transform.position)// is in range?
-                    .magnitude <= DialogueManager.instance.interactionRadius * 3)
+                    .magnitude <= ReferenceManager.instance.interactionRadius * 3)
             {
                 target = allObjects[i].gameObject;
                 return true;

@@ -6,12 +6,16 @@ using TMPro;
 
 public class QuestCase : Case
 {
+    
+    [HideInInspector] public OnClickFunctions dropDownScript;
+    [HideInInspector] public GameObject wordParent;
+    [HideInInspector] public bool isInCase = false;
+
     GameObject contentCountObject;
-    GameObject dropDownObject;
     Quest quest;
+    GameObject dropDownObject;
     VerticalLayoutGroupChildren layoutGroup;
-    public GameObject wordParent;
-    public bool isInCase = false;
+
     public bool dropDownOpen
     {
         get { return DropDownOpen; }
@@ -62,10 +66,9 @@ public class QuestCase : Case
     }
     public override void SaveBubble(Bubble bubble)
     {
-        base.SaveBubble(bubble);
-        Debug.Log("------------");
         ((WordData)((Word)bubble).data).currentParent = this;
-        Debug.Log("------------");
+        bubble.data.origin = origin;
+        base.SaveBubble(bubble);
         ForceLayoutGroupUpdate();
         EnableOrDisableDropDownObject();
     }
@@ -113,7 +116,8 @@ public class QuestCase : Case
             isInCase = true;
             layoutGroup = transform.parent.GetComponent<VerticalLayoutGroupChildren>();
             dropDownOpen = ((QuestData)quest.data).dropDownOpen;
-            dropDownObject.GetComponent<OnClickFunctions>().relatedQuest = this;
+            dropDownScript = dropDownObject.GetComponent<OnClickFunctions>();
+            dropDownScript.relatedQuest = this;
         }
         ReloadContents(false);
         InitializeDropDownObject();
@@ -165,8 +169,9 @@ public class QuestCase : Case
 
         EnableOrDisableDropDownObject(setActive);
     }
-    void EnableOrDisableDropDownObject(bool setActive)
+    public void EnableOrDisableDropDownObject(bool setActive)
     {
+
         dropDownObject.SetActive(setActive);
     }
     public void EnableOrDisableQuestCountObject(bool setActive)

@@ -305,7 +305,6 @@ public class UIManager : MonoBehaviour
             //is from the quest log
             else
             {
-                QuestManager.instance.UpdateContentList();
                 QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
                 currentParent.DeleteOutOfCase();
                 WordClickManager.instance.DestroyCurrentWord();

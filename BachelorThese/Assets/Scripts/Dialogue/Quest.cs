@@ -106,6 +106,16 @@ public class Quest : Bubble
         //pretend to ignore the word 
         IsOverQuestLog();
     }
+    public override void OnBeginDrag(PointerEventData eventData)
+    {
+        base.OnBeginDrag(eventData);
+        if (data.origin == WordInfo.Origin.QuestLog)
+        {
+            QuestManager.instance.UpdateContentList();
+            questCase.dropDownScript.OpenCase(false);
+            questCase.EnableOrDisableDropDownObject(false);
+        }
+    }
     public override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
@@ -173,17 +183,22 @@ public class QuestData : BubbleData
         if (name != null)
         {
             int maxQuestAdditions = ReferenceManager.instance.maxQuestAdditions;
-            contents = new WordData[maxQuestAdditions];
+            contents = new BubbleData[maxQuestAdditions];
             relevantWords = new string[maxQuestAdditions];
             for (int i = 0; i < maxQuestAdditions; i++)
             {
-                contents[i] = new WordData(new BubbleData());
+                contents[i] = new BubbleData();
                 if (data.tagInfo.Length > i + 1)
                     relevantWords[i] = data.tagInfo[i + 1];
                 else
                     relevantWords[i] = null;
             }
         }
-
+    }
+    public override void UpdateBubbleData()
+    {
+        base.UpdateBubbleData();
+        if (this is QuestData)
+            QuestManager.instance.UpdateBubbleData(this);
     }
 }

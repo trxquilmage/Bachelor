@@ -7,14 +7,14 @@ public class DialogueManager : MonoBehaviour
 {
     // Handles The Logic during a Dialogue
 
-    public static DialogueManager instance;
-    public bool isInDialogue;
-    public bool isOnlyInAsk;
-    public float interactionRadius = 2.0f;
-    public NPC currentTarget;
+    [HideInInspector] public static DialogueManager instance;
+    [HideInInspector] public bool isInDialogue;
+    [HideInInspector] public bool isOnlyInAsk;
+    [HideInInspector] public NPC currentTarget;
 
     List<NPC> allParticipants;
     DialogueRunner runner;
+    ReferenceManager refM;
 
 
     void Awake()
@@ -25,6 +25,7 @@ public class DialogueManager : MonoBehaviour
     void Start()
     {
         runner = ReferenceManager.instance.standartRunner;
+        refM = ReferenceManager.instance;
         allParticipants = new List<NPC>(FindObjectsOfType<NPC>());
     }
 
@@ -39,7 +40,7 @@ public class DialogueManager : MonoBehaviour
         {
             return string.IsNullOrEmpty(p.talkToNode) == false && // has a conversation node?
             (p.transform.position - this.transform.position)// is in range?
-            .magnitude <= interactionRadius;
+            .magnitude <= refM.interactionRadius;
         });
         if (target != null)
         {

@@ -1,0 +1,67 @@
+﻿title: Phoebe.Start
+tags:
+---
+<<showcharactername Managers Phoebe>>
+Hi!
+[[Phoebe.Shop]]
+===
+
+title: Phoebe.Shop
+tags:
+---
+<<displaypromptmenu Managers ItemAAA>>
+Hi, what can I get you?
+<<set $getItem to react("name", "", "Phoebe")>>
+<<if $getItem eq "Oranges">>
+    Well sure, here are some Oranges, that will be 2 Coins.
+    <<set $currentPrice to 2>>
+    [[Phoebe.Check]]
+<<elseif $getItem eq "Melons">>
+    I definetly do have Melons, that will be 6 Coins.
+    <<set $currentPrice to 6>>
+    [[Phoebe.Check]]
+<<else>>
+    Sorry, we don't have that. Only melons and oranges.
+<<endif>>
+===
+
+title: Phoebe.Payment
+tags: 
+---
+Here you go, that's {$currentPrice} in total.
+[[Phoebe.BackToShop]]
+===
+
+title: Phoebe.Check
+tags: 
+---
+<<displaypromptmenu Managers GenAAA>>
+Yes or no - Is that okay?
+<<set $answer to react("value", "", "Phoebe")>>
+<<if $answer eq true>>
+    [[Phoebe.Payment]]
+<<else>>
+    Oh, okay.
+    [[Phoebe.BackToShop]]
+<<endif>>
+===
+
+title: Phoebe.BackToShop
+tags: 
+---
+<<displaypromptmenu Managers GenAAA>>
+Can I do anything else for you?
+<<set $answer to react("value", "", "Phoebe")>>
+<<if $answer eq true>>
+    [[Phoebe.Shop]]
+<<else>>
+    Oh, okay.
+    [[Phoebe.Exit]]
+<<endif>>
+===
+
+title: Phoebe.Exit
+tags: 
+---
+Have a good day then!
+===

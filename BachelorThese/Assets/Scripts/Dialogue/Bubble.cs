@@ -155,6 +155,42 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         if (toCurrentWord)
             WordClickManager.instance.currentWord = this.gameObject;
     }
+    public virtual void OnBeginDrag(PointerEventData eventData)
+    {
+        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
+        {
+            WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
+
+            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
+            {
+                pB.child = null;
+            }
+            // if the word is being dragged out of the dialogue
+            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+            {
+                if (data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+                {
+                    WordCaseManager.instance.AutomaticOpenCase(true);
+                    WordCaseManager.instance.openTag = data.tag;
+                }
+                else if (data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+                {
+                    QuestManager.instance.AutomaticOpenCase(true);
+                    UpdateToBubbleShape();
+                }
+                WordClickManager.instance.SwitchFromHighlightedToCurrent();
+
+            }
+            else if (data.origin == WordInfo.Origin.WordCase)
+            {
+                Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
+            }
+            else if (data.origin == WordInfo.Origin.QuestLog)
+            {
+                Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
+            }
+        }
+    }
     #endregion
 
     #region NOT VIRTUAL
@@ -226,43 +262,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     public void OnPointerClick(PointerEventData eventData)
     {
         // this cant be deleted bc for some reasons the other functions dont work without it
-    }
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
-        {
-            WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
-
-            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
-            {
-                pB.child = null;
-            }
-
-            // if the word is being dragged out of the dialogue
-            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
-            {
-                if (data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
-                {
-                    WordCaseManager.instance.AutomaticOpenCase(true);
-                    WordCaseManager.instance.openTag = data.tag;
-                }
-                else if (data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
-                {
-                    QuestManager.instance.AutomaticOpenCase(true);
-                    UpdateToBubbleShape();
-                }
-                WordClickManager.instance.SwitchFromHighlightedToCurrent();
-
-            }
-            else if (data.origin == WordInfo.Origin.WordCase)
-            {
-                Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
-            }
-            else if (data.origin == WordInfo.Origin.QuestLog)
-            {
-                Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
-            }
-        }
     }
     /// <summary>
     /// If the word was over nothing, check, if it was above a character and open the ask menu to the according page
@@ -878,8 +877,5 @@ public class BubbleData
 
     public virtual void UpdateBubbleData()
     {
-        if (this is QuestData)
-            QuestManager.instance.UpdateBubbleData(this);
-        
     }
 }

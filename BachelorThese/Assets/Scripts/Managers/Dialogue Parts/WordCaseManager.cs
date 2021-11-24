@@ -29,7 +29,7 @@ public class WordCaseManager : Case
     }
 
     string OpenTag;
-    public string overrideTag = null;
+    [HideInInspector] public string overrideTag = null;
     [HideInInspector] public Dictionary<string, BubbleData[]> tagRelatedWords;
 
     public void Start()
@@ -158,6 +158,12 @@ public class WordCaseManager : Case
         {
             ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b> Words</b>";
         }
+    }
+    public override void SaveBubble(Bubble bubble)
+    {
+        ((WordData)bubble.data).currentParent = null;
+        ((WordData)bubble.data).origin = origin;
+        base.SaveBubble(bubble);
     }
     #endregion
 

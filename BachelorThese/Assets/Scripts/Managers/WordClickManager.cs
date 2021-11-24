@@ -11,7 +11,8 @@ public class WordClickManager : MonoBehaviour
     // Manages the currently clicked/dragged word
 
     public static WordClickManager instance;
-    public GameObject wordLastHighlighted;
+    [HideInInspector] public GameObject wordLastHighlighted;
+    [HideInInspector]
     public GameObject currentWord
     {
         get
@@ -27,16 +28,17 @@ public class WordClickManager : MonoBehaviour
                 DialogueInputManager.instance.continueEnabledDrag = false;
         }
     }
-    public GameObject CurrentWord;
+    [HideInInspector] public GameObject CurrentWord;
     WordLookupReader wlReader;
-    public GameObject[] activeWords = new GameObject[20];
+    [HideInInspector] public GameObject[] activeWords = new GameObject[20];
+    [HideInInspector]
     public string mouseOverUIObject
     {
         get { return MouseOverUIObject; }
         set
         {
             //wasn't over quest case and now is
-            
+
             if (MouseOverUIObject != "questCase" && value == "questCase")
             {
                 lastSavedQuestCase.EnableOrDisableQuestCountObject(true);
@@ -90,10 +92,10 @@ public class WordClickManager : MonoBehaviour
     }
     string MouseOverUIObject;
     InputMap controls;
-    public PromptBubble promptBubble;
-    public QuestCase lastSavedQuestCase;
-    public PromptBubble lastSavedPromptBubble;
-    public GameObject lastSavedTrashCan;
+    [HideInInspector] public PromptBubble promptBubble;
+    [HideInInspector] public QuestCase lastSavedQuestCase;
+    [HideInInspector] public PromptBubble lastSavedPromptBubble;
+    [HideInInspector] public GameObject lastSavedTrashCan;
     bool stillOnWord;
 
     ReferenceManager refM;
@@ -296,7 +298,8 @@ public class WordClickManager : MonoBehaviour
             else if (uIObject.gameObject == ReferenceManager.instance.wordCase && currentlyOver == "none")
                 currentlyOver = "wordCase";
             //over a quest in the quest log
-            else if (uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
+            else if (uIObject.gameObject.transform.parent.transform.parent != null &&
+                uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
             {
                 if (qCase.isInCase)
                 {
@@ -403,16 +406,13 @@ public class WordClickManager : MonoBehaviour
                 wordInfosList.Add(wordInfos);
             }
         }
-        foreach (TMP_WordInfo[] infos in wordInfosList) // this should prevent single words in the area to accidentally get added
+        foreach (TMP_WordInfo[] infos in wordInfosList)
         {
-            if (infos.Length > 1)
+            foreach (TMP_WordInfo info in infos) // is the word contained in this word list or did it by coincidence catch another word list?
             {
-                foreach (TMP_WordInfo info in infos) // is the word contained in this word list or did it by coincidence catch another word list?
+                if (info.firstCharacterIndex == text.textInfo.wordInfo[wordInfoIndex].firstCharacterIndex)
                 {
-                    if (info.GetWord() == text.textInfo.wordInfo[wordInfoIndex].GetWord())
-                    {
-                        return infos;
-                    }
+                    return infos;
                 }
             }
         }

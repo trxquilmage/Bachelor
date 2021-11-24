@@ -40,7 +40,11 @@ public static class WordUtilities
             word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
             word.GetComponent<RectTransform>().localPosition = wordMousePos;
             Word wordScript = word.AddComponent<Word>();
-            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+
+            if (!createBubbleFromBubble)
+                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
+            else
+                wordScript.Initialize(data, firstAndLastWordIndex);
         }
         //Instantiate Quest
         else if (data is QuestData || refM.wordTags[refM.questTagIndex].name == data.tag)

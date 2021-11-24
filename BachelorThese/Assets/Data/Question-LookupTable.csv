@@ -1,5 +1,4 @@
 LocAAA;I'm from<br><alpha=#00>|Location|
-LocAAB;<alpha=#00>|Other|
-OriAAA;<alpha=#00>|Other|
+GenAAA;<alpha=#00>|Other|
 AskAAA;Can you tell me about<br><alpha=#00>|AllWords|
-PerAAA;<alpha=#00>|Other|
+ItemAAA;I want to buy <br><alpha=#00>|Item|

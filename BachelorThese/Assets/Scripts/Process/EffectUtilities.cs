@@ -18,7 +18,9 @@ public static class EffectUtilities
     {
         Color tagColor = WordUtilities.MatchColorToTag(tagName);
         foreach (Image image in word.GetComponentsInChildren<Image>())
+        {
             image.color = tagColor;
+        }
     }
     public static void ColorObject(GameObject word, Color color)
     {

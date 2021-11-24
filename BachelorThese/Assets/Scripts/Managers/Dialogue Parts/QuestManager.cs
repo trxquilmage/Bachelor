@@ -34,12 +34,15 @@ public class QuestManager : Case
         //then use this data to reload the set
         base.ReloadContents(resetScrollbar);
     }
+    /// <summary>
+    /// save the "contents" array of each questCase into the fitting bubbleData that is located on the same quest
+    /// </summary>
     public void UpdateContentList()
     {
-        //save the "contents" array of each questCase into the fitting bubbleData that is located on the same quest
         foreach (QuestCase questCase in refM.questListingParent.GetComponentsInChildren<QuestCase>())
         {
             questCase.SaveContentsToQuest();
+            UpdateBubbleData(questCase.GetComponent<Quest>().data);
         }
     }
     #endregion

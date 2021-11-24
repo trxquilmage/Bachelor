@@ -23,7 +23,7 @@ tags:
 <<if not isvisited("Karl", "Mayfair")>>
     Mayfair, of course, is this wonderful town we find ourselves in today!
     We usually rank among the winners of the annual "best towns contest".
-    <<displaypromptmenuask Managers LocAAB>>
+    <<displaypromptmenuask Managers GenAAA>>
     Do you like the town? Be straight, Yes or No?
     <<set $likesMayfair to react("value", "likesMayfair", "Karl")>>
     <<if $likesMayfair is true>>
@@ -86,7 +86,7 @@ tags:
 Well who am *I*? 
 The most handsome bachelor in all of Mayfair. 
 Thank you very much for asking.
-<<displaypromptmenuask Managers PerAAA>>
+<<displaypromptmenuask Managers GenAAA>>
 Are you, perhaps, single?
 <<set $isSingle to react("value", "isSingle", "Karl")>>
 <<if $isSingle is true>>

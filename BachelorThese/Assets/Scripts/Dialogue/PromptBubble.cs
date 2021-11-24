@@ -23,10 +23,15 @@ public class PromptBubble : MonoBehaviour
     }
     GameObject Child;
     Vector2[] parameters;
+    ReferenceManager refM;
     public struct PromptBubbleData
     {
         public WordInfo.WordTag tag;
         public Color imageColor;
+    }
+    private void Start()
+    {
+        refM = ReferenceManager.instance;
     }
     public void Initialize(string tag)
     {
@@ -52,29 +57,28 @@ public class PromptBubble : MonoBehaviour
     {
         if (isOnHover && !isHover) //mouse starts hover
         {
+            bool hasCurrentWord = WordClickManager.instance.currentWord != null;
+            BubbleData currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
             //if there is a currentWord AND it has the same tag as this specific prompt
-            if (WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == data.tag.name ||
-                WordClickManager.instance.currentWord != null &&
-                data.tag.name == ReferenceManager.instance.wordTags[0].name 
-                && WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+            if (hasCurrentWord && currentBubbleData.tag == data.tag.name ||
+                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name 
+                && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name)
             {
-                bubble.color = Color.Lerp(data.imageColor, ReferenceManager.instance.shadowButtonColor, 0.2f);
+                bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
             // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
-            else if (data.tag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name && 
-                WordClickManager.instance.currentWord != null &&
-                WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name)
+            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name && 
+                hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                UIManager.instance.BlendInUI(ReferenceManager.instance.feedbackTextOtherTag, 3);
+                UIManager.instance.BlendInUI(refM.feedbackTextOtherTag, 3);
             }
             else
             {
                 acceptsCurrentWord = false;
-                if (WordClickManager.instance.currentWord != null)
+                if (hasCurrentWord)
                 {
                     StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
                                         new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));

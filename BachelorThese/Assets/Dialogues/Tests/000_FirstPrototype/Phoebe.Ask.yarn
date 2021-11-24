@@ -1,0 +1,137 @@
+﻿title: Phoebe.Ask
+tags:
+---
+<<if not isvisited("Phoebe", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Phoebe.Continue
+tags:
+---
+<<if not checkonlyask()>>
+    But back to the topic...
+<<endif>>
+===
+
+title: Phoebe.Mayfair
+tags:
+---
+Mayfair is a really small place.
+We're on the marketplace right now.
+There also is a tour guid who can help you.
+Karl usually is in the town sqare.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Neverre
+tags:
+---
+Neverre. Huh. Never been.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Borealis
+tags:
+---
+Borealis. Hm. Too hot.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Grandrun
+tags:
+---
+Grandrun? I heard there's a lot of explosions
+going on there. Maybe because of the civil war?
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Mukhosha
+tags:
+---
+Sorry, I don't sell that.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Karl
+tags:
+---
+Karl? He's the tour guide.
+Cant miss him, he's in the town square.
+I don't like him. 
+Every time he shows people around,
+he intentionally lets out the market.
+[[Karl.Continue]]
+===
+
+title: Phoebe.GoShopping
+tags:
+---
+<<if $questInfo eq "Fiona">>
+    Oh Fiona sent you?
+    If that's the case you'll get a discount.
+    <<set $discount to true>>
+<<endif>>
+<<if $oranges eq true>>
+    <<if $melons eq true>>
+        Okay so you want melons and oranges?
+    <<endif>>
+    Okay so you want oranges?
+<<elseif $melons eq melons>>
+Okay so you want melons?
+<<endif>>
+[[Karl.Continue]]
+===
+
+title: Phoebe.Fiona
+tags:
+---
+Fiona comes by here almost every week.
+I think she's cute.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Schubert
+tags:
+---
+I don't think I know him.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Rebecca
+tags:
+---
+Never heard that name before.
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.LadyKatherine
+tags:
+---
+Our tyrannical leader, yes.
+She is spending all of the town's money on herself. 
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.Me
+tags:
+---
+You? What am I supposed to tell you about that?
+[[Phoebe.Continue]]
+===
+
+title: Phoebe.You
+tags:
+---
+[[Phoebe.Phoebe]]
+===
+
+title: Phoebe.Catchall
+tags:
+---
+Okay, sorry, that isnt an actual question. 
+You know that, right?
+[[Phoebe.Continue]]
+===

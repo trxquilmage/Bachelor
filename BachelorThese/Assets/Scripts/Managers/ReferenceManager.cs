@@ -66,13 +66,17 @@ public class ReferenceManager : MonoBehaviour
     public GameObject continueButton;
     public GameObject askButton;
     public GameObject feedbackTextOtherTag;
-    public TMP_Text[] interactableTextList;
     public Scrollbar buttonScrollbar;
     public Scrollbar bubbleScrollbar;
     public Scrollbar questScrollbar;
     public GameObject nameField;
     public GameObject npcDialogueTextBox;
     public GameObject npcDialogueTextBoxAsk;
+    [Header("TEXTS")]
+    public TMP_Text[] interactableTextList;
+    public int npcTextIndex = 0;
+    public int characterNameIndex = 1;
+    public int npcTextAskIndex = 2;
     [Header("UI Elements (Only For Color)")]
     public GameObject wButton;
     public GameObject qButton;
@@ -102,12 +106,14 @@ public class ReferenceManager : MonoBehaviour
     public int maxLongWordLength = 3;
     public int maxQuestCount = 5;
     public int maxQuestAdditions = 5;
+    public int interactionRadius = 5;
     [Header("Game Options")]
     public bool allWordsInteractable = false;
     public bool blockListOn = false;
     public bool includeStopWords = false;
     public bool noGreyOut = false;
     public bool duplicateWords = false;
+    public bool startWithStartWords = false;
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;
