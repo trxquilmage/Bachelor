@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public InputMap controls;
     GameObject target;
     Rigidbody rigid;
+    ReferenceManager refM;
     private void Awake()
     {
         controls = new InputMap();
@@ -19,11 +20,12 @@ public class Player : MonoBehaviour
         controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
         controls.Player.Talk.performed += context => Interact();
         rigid = this.GetComponent<Rigidbody>();
+        refM = ReferenceManager.instance;
     }
     private void Update()
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
-            FixedCheckForEButton();
+            CheckForEButton();
     }
 
     public void Movement(float directionX, float directionY)
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
             else if (directionY == -10)
                 rigid.velocity = new Vector3(directionX, 0, rigid.velocity.normalized.z);
             rigid.velocity = rigid.velocity.normalized;
-            rigid.velocity *= speed * Time.deltaTime;
+            rigid.velocity *= speed;
         }
     }
     void StopWalking()
@@ -84,7 +86,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < allObjects.Length; i++)
         {
             if ((allObjects[i].transform.position - this.transform.position)// is in range?
-                    .magnitude <= ReferenceManager.instance.interactionRadius * 3)
+                    .magnitude <= ReferenceManager.instance.interactionRadius)
             {
                 target = allObjects[i].gameObject;
                 return true;
@@ -92,20 +94,20 @@ public class Player : MonoBehaviour
         }
         return false;
     }
-    void FixedCheckForEButton()
+    void CheckForEButton()
     {
         if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
             if (CheckForNPCRange())
             {
-                UIManager.instance.PortrayEButton(target);
+                UIManager.instance.PortrayButton(target, refM.eButtonSprite);
             }
             else if (CheckForInteractableObjectRange())
             {
-                UIManager.instance.PortrayEButton(target);
+                UIManager.instance.PortrayButton(target, refM.eButtonSprite);
             }
             else if (ReferenceManager.instance.eButtonSprite.enabled)
-                UIManager.instance.PortrayEButton(null);
+                UIManager.instance.PortrayButton(null, refM.eButtonSprite);
         }
 
     }

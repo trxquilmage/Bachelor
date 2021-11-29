@@ -1,0 +1,190 @@
+﻿title: Esther.Ask
+tags:
+---
+<<if not isvisited("Esther", "Ask")>>
+    What did you want to ask of me? 
+    Maybe some question about the beautiful town of Mayfair?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Esther.Continue
+tags:
+---
+<<if not checkonlyask()>>
+    But back to the topic...
+<<endif>>
+===
+
+title: Esther.Mayfair
+tags:
+---
+The only town in the region. It's really small though. 
+===
+
+title: Esther.Neverre
+tags:
+---
+Eh. Don't know much about it. 
+[[Esther.Continue]]
+===
+
+title: Esther.Borealis
+tags:
+---
+<<displaypromptmenuask Managers GenAAA>>
+Borealis. Have you ever been on vacation there?
+<<set $dirtyTourist to react("value", "dirtyTourist", "Esther")>>
+<<if $dirtyTourist eq false>>
+    Good.
+<<else>>
+    ............
+<<endif>>
+Borealis is the kind of place only idiots visit.
+Year after year, the native population is asking
+for tourists to stop coming over.
+You know we can't sustain ourselves in our own 
+region anymore? 
+We've become dependent on tourism. It's killing
+the land and it's commercializing our traditions.
+Me and my family didn't chose to run the Nautilus
+because we all loves tourist traps, you know?
+[[Esther.Continue]]
+===
+
+title: Esther.Grandrun
+tags:
+---
+I never went there. 
+I think there is a big University there?
+I wonder what they might teach there.
+[[Esther.Continue]]
+===
+
+title: Esther.Esther
+tags:
+---
+Me? I'm from Borealis. Born and 
+raised in a tourist trap. 
+I went to school there. Got my first job there.
+At some point I got bored and left.
+First only for a summer, where I worked
+on one of the Dockers travelling the country.
+Then I left for a year, I got paid to 
+help on a farm south of here.
+Were good times. Now I'm just looking 
+for anyone who want to hire me.
+===
+
+title: Esther.Family
+tags:
+---
+My family and I are from Borealis. 
+You might have guessed that.
+We ran a tourist trap near the beach.
+We kind of all drifted apart I fear.
+Maybe I should go visit my family sometime?
+I only know that my father is still in Borealis. 
+===
+
+title: Esther.TouristTrap
+tags:
+---
+Oh the tourist-trap? The name was Le Nautilus.
+We sold like... seashells and fake gemstones.
+Some postcards, cheap jewellery. You know.
+Standart stuff for a tourist trap.
+I probably shouldn't say 'was'. Like.
+My father is still running the place.
+[[Esther.Continue]]
+===
+
+title: Esther.LeNautilus
+tags:
+---
+[[Esther.TouristTrap]]
+===
+
+title: Esther.Nautilus
+tags:
+---
+[[Esther.TouristTrap]]
+===
+
+title: Esther.Father
+tags:
+---
+You're asking about my father? 
+He's the only family member I kinda care about.
+He's down there, guarding the good old Nautilus.
+We share our passion for long walks, but he always 
+insisted that people have to be silent on walks.
+I think that kind of makes it boring, no?
+[[Esther.Continue]]
+===
+
+title: Esther.Mother
+tags:
+---
+Hanging around somwhere in Grandrun.
+Probably forgot about her children by now.
+I can't blame her. I think she always felt
+like settling down wasn't for her. 
+My father was devastated when she left,
+but really, I can't blame her.
+I think my passion for travelling is from her.
+[[Esther.Continue]]
+===
+
+title: Esther.Brother
+tags:
+---
+I don't really want to talk about my brother.
+Made a lot of money. never contacted us again.
+Now he's a member of Red Square.
+[[Esther.Continue]]
+===
+
+title: Esther.RedSquare
+tags:
+---
+Red Square? Oh I guess if you're not in 
+seafaring buisness you don't know them.
+The four big trader companies. 
+My brother's company is a one of them.
+His company is called West Current.
+I bet you've seen some of their ships.
+He's the reason I stopped working with traders.
+I'd hate to have to do his dirty work.
+[[Esther.Continue]]
+===
+
+title: Esther.WestCurrent
+tags:
+---
+West Current? I feel like you're really
+trying to get under my skin here.
+I don't want too talk about it right now. 
+[[Esther.Continue]]
+===
+
+title: Esther.Me
+tags:
+---
+You? I don't know? You seem nice?
+[[Esther.Continue]]
+===
+
+title: Esther.You
+tags:
+---
+[[Esther.Esther]]
+===
+
+title: Esther.Catchall
+tags:
+---
+I don't think I understand.
+[[Esther.Continue]]
+===

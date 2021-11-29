@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Pinwheel.UIEffects;
 using UnityEngine.EventSystems;
+using UnityEngine.VFX;
 using Yarn.Unity;
 
 public class Quest : Bubble
@@ -14,10 +15,12 @@ public class Quest : Bubble
     public override void Start()
     {
         base.Start();
-
     }
     public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
+        VisualEffect[] effects = GetComponentsInChildren<VisualEffect>();
+        vfxParent = effects[effects.Length - 1].transform.parent.gameObject;
+        relatedCase = QuestManager.instance;
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new QuestData(bubbleData);
@@ -31,6 +34,8 @@ public class Quest : Bubble
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
+        VisualEffect[] effects = GetComponentsInChildren<VisualEffect>();
+        vfxParent = effects[effects.Length - 1].transform.parent.gameObject;
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(bubbleData, firstAndLastWordIndex);
         data.origin = QuestManager.instance.origin;
@@ -50,7 +55,7 @@ public class Quest : Bubble
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            AnimateMovementBackToCase(true);
+            AnimateMovementBackToCase();
         }
     }
     public override void IsOverQuestLog()
@@ -98,7 +103,7 @@ public class Quest : Bubble
         if (data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            AnimateMovementBackToCase(true);
+            AnimateMovementBackToCase();
         }
     }
     public override void IsOverQuestCase()
@@ -124,6 +129,12 @@ public class Quest : Bubble
             if (data.origin == WordInfo.Origin.QuestLog)
                 QuestManager.instance.SpawnReplacement(this);
         }
+    }
+    public override Vector2 GetCaseTargetPosition()
+    {
+        return ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
+                 (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
+                     ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
     }
     #endregion
 }

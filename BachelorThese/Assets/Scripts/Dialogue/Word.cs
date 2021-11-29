@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Pinwheel.UIEffects;
 using UnityEngine.EventSystems;
+using UnityEngine.VFX;
 using Yarn.Unity;
 
 public class Word : Bubble
@@ -15,6 +16,8 @@ public class Word : Bubble
     }
     public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
+        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
+        relatedCase = WordCaseManager.instance;
         wordParent = this.gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new WordData(bubbleData);
@@ -39,6 +42,7 @@ public class Word : Bubble
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
+        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         wordParent = this.gameObject;
         base.Initialize(bubbleData, firstAndLastWordIndex);
         data = new WordData(bubbleData);
@@ -65,34 +69,21 @@ public class Word : Bubble
         // this can happen if the word is a child of a quest
         else if (data.origin == WordInfo.Origin.QuestLog)
         {
-            //delete from QuestLog
-            QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
-            currentParent.DeleteOutOfCase();
-            currentParent.DestroyReplacement();
+            //delete replacement
+            ((WordData)data).currentParent.DestroyReplacement();
 
             //save it
             WordCaseManager.instance.SaveBubble(this);
 
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
-            WordClickManager.instance.DestroyCurrentWord(this);
+            data.origin = WordInfo.Origin.QuestLog;
+            IsOverNothing();
         }
     }
     public override void IsOverQuestLog()
     {
-        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
-        {
-            IsOverNothing();
-        }
-        else if (data.origin == WordInfo.Origin.WordCase)
-        {
-            IsOverNothing();
-        }
-        // this can happen if the word is a child of a quest
-        else if (data.origin == WordInfo.Origin.QuestLog)
-        {
-            IsOverNothing();
-        }
+        IsOverNothing();
     }
     public override void IsOverPlayerInput()
     {
@@ -113,8 +104,10 @@ public class Word : Bubble
             else if (data.origin == WordInfo.Origin.QuestLog)
             {
                 // parent to word
-                //MISSING this might be missing 
                 WordUtilities.ParentBubbleToPrompt(this.gameObject);
+                QuestCase currentParent = ((WordData)data).currentParent;
+                if (currentParent != null)
+                    currentParent.DestroyReplacement();
             }
         }
         else
@@ -126,34 +119,30 @@ public class Word : Bubble
         base.IsOverNothing();
 
         //this happens, regardless wheter a character was hit or not
-        if (data.origin == WordInfo.Origin.WordCase)
+        if (data.origin == WordInfo.Origin.WordCase || data.origin == WordInfo.Origin.QuestLog)
         {
             // put it back
-            AnimateMovementBackToCase(false);
-        }
-        // this can happen if the word is a child of a quest
-        else if (data.origin == WordInfo.Origin.QuestLog)
-        {
-            // put it back
-            AnimateMovementBackToCase(false);
+            AnimateMovementBackToCase();
+            QuestCase currentParent = ((WordData)data).currentParent;
+            if (currentParent != null)
+                currentParent.DestroyReplacement();
         }
     }
     public override void IsOverQuestCase()
     {
         base.IsOverQuestCase();
 
-
         if (data.origin == WordInfo.Origin.WordCase)
         {
             //delete from WordCase
-            WordCaseManager.instance.DeleteOutOfCase();
             WordCaseManager.instance.DestroyReplacement();
 
             //save it
             WordClickManager.instance.lastSavedQuestCase.SaveBubble(this);
 
-            //delete the UI word
-            WordClickManager.instance.DestroyCurrentWord(this);
+            //after instatiating the copy, send the word back to it's case
+            data.origin = WordInfo.Origin.WordCase;
+            IsOverNothing();
         }
         //not in a quest already 
         else if (data.origin != WordInfo.Origin.QuestLog)
@@ -164,6 +153,8 @@ public class Word : Bubble
             {
                 ((WordData)data).currentParent.GetComponentInChildren<OnClickFunctions>().OpenCase(true);
             }
+            //close wordCase
+            WordCaseManager.instance.AutomaticOpenCase(false);
         }
         // in a different quest already
         else
@@ -176,8 +167,16 @@ public class Word : Bubble
                 {
                     ((WordData)data).currentParent.GetComponentInChildren<OnClickFunctions>().OpenCase(true);
                 }
+                //close wordCase
+                WordCaseManager.instance.AutomaticOpenCase(false);
+                QuestCase currentParent = ((WordData)data).currentParent;
+                if (currentParent != null)
+                    currentParent.DestroyReplacement();
             }
+            else
+                IsOverNothing();
         }
+        
     }
     public override void OnBeginDrag(PointerEventData eventData)
     {
@@ -194,8 +193,22 @@ public class Word : Bubble
         {
             if (data.origin == WordInfo.Origin.WordCase)
                 WordCaseManager.instance.SpawnReplacement(this);
+            else if (data.origin == WordInfo.Origin.QuestLog && ((WordData)data).currentParent != null)
+                ((WordData)data).currentParent.SpawnReplacement(this);
         }
     }
+    public override Vector2 GetCaseTargetPosition()
+    {
+        if (data.origin != WordInfo.Origin.QuestLog)
+            return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
+                                (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
+                                    ReferenceManager.instance.wordCase.GetComponent<RectTransform>().position);
+        else
+            return ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
+                 (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
+                     ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
+    }
+
 }
 public class WordData : BubbleData
 {

@@ -135,13 +135,13 @@ public class DialogueInputManager : MonoBehaviour
     {
         if (wcManager.wordLastHighlighted != null)
         {
-            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>().data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
+            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>() is Quest;
             if (isQuest)
                 QuestManager.instance.AutomaticOpenCase(true);
             else
                 WordCaseManager.instance.AutomaticOpenCase(true);
             wcManager.SwitchFromHighlightedToCurrent();
-            wcManager.currentWord.GetComponent<Bubble>().OnDoubleClicked(isQuest);
+            wcManager.currentWord.GetComponent<Bubble>().OnDoubleClicked();
         }
         //Check if above a word
         else
@@ -153,17 +153,23 @@ public class DialogueInputManager : MonoBehaviour
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
             foreach (RaycastResult result in results)
             {
-                if (result.gameObject.TryGetComponent<Bubble>(out Bubble word))
+                if (result.gameObject.tag != "IgnoreImageCast")
                 {
-                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
-                    word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
-                    break;
-                }
-                else if (result.gameObject.transform.parent.TryGetComponent<Bubble>(out word))
-                {
-                    bool isQuest = word.data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name;
-                    word.OnDoubleClicked(isQuest); //this will result in a wiggle animation
-                    break;
+                    if (result.gameObject.TryGetComponent<Bubble>(out Bubble word))
+                    {
+                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        break;
+                    }
+                    else if (result.gameObject.transform.parent.TryGetComponent<Bubble>(out word))
+                    {
+                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        break;
+                    }
+                    else if (result.gameObject.transform.parent.parent != null && result.gameObject.transform.parent.parent.TryGetComponent<Bubble>(out word))
+                    {
+                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        break;
+                    }
                 }
             }
         }

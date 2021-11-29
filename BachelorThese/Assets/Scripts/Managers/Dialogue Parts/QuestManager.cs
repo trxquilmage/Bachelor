@@ -34,6 +34,18 @@ public class QuestManager : Case
         //then use this data to reload the set
         base.ReloadContents(resetScrollbar);
     }
+    public override void SpawnReplacement(Bubble bubble)
+    {
+        base.SpawnReplacement(bubble);
+        StartCoroutine(TurnOffQuestAdditions());
+    }
+    public override void ManuallyOpenCase()
+    {
+        if (caseObject.activeInHierarchy)
+            UpdateContentList();
+        base.ManuallyOpenCase();
+    }
+    #endregion
     /// <summary>
     /// save the "contents" array of each questCase into the fitting bubbleData that is located on the same quest
     /// </summary>
@@ -45,7 +57,15 @@ public class QuestManager : Case
             UpdateBubbleData(questCase.GetComponent<Quest>().data);
         }
     }
-    #endregion
+
+    public IEnumerator TurnOffQuestAdditions()
+    {
+        yield return new WaitForEndOfFrame();
+        QuestCase replacementCase = bubbleReplacement.GetComponent<QuestCase>();
+        replacementCase.EnableOrDisableDropDownObject(false);
+        replacementCase.EnableOrDisableQuestCountObject(false);
+    }
+
     public void Start()
     {
         Initialize();

@@ -1,0 +1,144 @@
+﻿title: Esther.Start
+tags:
+---
+<<showcharactername Managers Esther>>
+<<set $headingNorth to getinfo("headingNorth", 0)>>
+<<set $characterName to getinfo("nameEsther", 0)>>
+<<if not isvisited("Esther", "Start")>>
+    Oh Hello! 
+    Quite the occurrence to meet someone out here.
+    [[Esther.Question]]
+<<elseif $headingNorth>>
+    [[Esther.CompanionMenu]]
+<<else>>
+    [[Esther.Retry]]
+<<endif>>
+===
+
+title: Esther.Question
+tags: 
+---
+I am Esther. Your name is Karl.
+<<displaypromptmenu Managers NameAAA>>
+Might I ask your name, stranger?
+<<set $characterName to react("name", "nameEsther", "Esther")>>
+Nice to meet you, {$characterName}!
+Wait - by any chance... 
+<<displaypromptmenu Managers GenAAA>>
+Are you heading north to Mayfair? Yes or No?
+<<set $headingNorth to react("value", "headingNorth", "Esther")>>
+<<if $headingNorth eq true>>
+    Oh, great. I really wanted some company.
+    You coming along?
+<<else>>
+    Oh too bad.
+    But Mayfair is so close by...
+<<endif>>
+===
+
+title: Esther.CompanionMenu
+tags: 
+---
+<<if not isvisited("Esther", "Walking")>>
+    [[Esther.Walking]]
+<<endif>>
+...
+===
+
+title: Esther.Walking
+tags: 
+---
+I'm from Borealis, by the way.
+Yeah, I know, I could have just taken the train.
+You might find it boring, 
+but I love walking over long distances.
+<<displaypromptmenu Managers LocAAA>>
+Where are you from? If I may ask.
+<<set $playerOrigin to react("name", "originEsther", "Esther")>>
+Oh, really. {$playerOrigin}?
+<<if $playerOrigin eq "Borealis">>
+     A fellow Borealian, then?
+<<elseif $playerOrigin eq "Mayfair">>
+    [[Esther.AskFamilyMember]]
+<<else>>
+    I've never been.
+<<endif>>
+===
+
+title: Esther.AskFamilyMember
+tags: 
+---
+Are you returning home then?
+<<displaypromptmenu Managers GenAAA>>
+Any family you are visiting?
+<<set $visitingFamily to react("value", "", "Esther")>>
+<<displaypromptmenu Managers NameAAA>>
+Really? What's their name?
+<<set $familyMember to react("value", "familyMember", "Esther")>>
+[[Esther.CheckFamilyMember]]
+===
+
+title: Esther.CheckFamilyMember
+tags: 
+---
+<<if $familyMember eq "Esther">>
+    I feel like you are shitting me right now.
+    <<displaypromptmenu Managers GenAAA>>
+    Are you for real?
+    <<set $shitting to react("value", "", "Esther")>>
+    <<if $shitting eq true>>
+        Okay wow. What a coincidence.
+        [[Esther.HerFamily]]
+    <<else>>
+        I thought so.
+        But I guess, if you don't want to talk about your family,
+        it's fine. I mean we barely know each other, sorry.
+    <<endif>>
+<<elseif $familyMember eq $characterName>>
+    You have the same name as your relative?
+    I bet you're from some old weird family.
+    With like, a family tree and stuff.
+    Not that I want to rob you or anything,
+    <<displaypromptmenu Managers GenAAA>>
+    But are you from a wealthy family?
+    <<set $wealthy to react("value", "wealthy", "Esther")>>
+    <<if $wealthy eq true>>
+        Ha. Thought so.
+    <<else>>
+        Well, too bad.
+        I thought we might get the wealthy-
+        treatment when entering town.
+    <<endif>>
+    [[Esther.HerFamily]]
+<<endif>>
+===
+
+title: Esther.HerFamily
+tags: 
+---
+It's nice that you are visiting your family.
+Maybe I should go visit my family.
+Sometime, not right now.
+I havent contacted any of them in years.
+My dad is still in Borealis, i think.
+He owns a tourist shop down there.
+My mom is out in Grandrun, haven't heard from 
+her in seven years I think. 
+And my brother is a trader up in Neverre.
+We don't get along, maybe I shouldn't visit.
+===
+
+title: Esther.Retry
+tags: 
+---
+<<displaypromptmenu Managers GenAAA>>
+Oh, have you changed your mind?
+<<set $headingNorth to react("value", "headingNorth", "Esther")>>
+<<if $headingNorth eq true>>
+    Oh, great. I really wanted some company.
+    You coming along?
+<<else>>
+    Oh too bad.
+    But Mayfair is so close by...
+<<endif>>
+===

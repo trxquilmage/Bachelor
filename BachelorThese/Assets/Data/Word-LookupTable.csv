@@ -1,4 +1,4 @@
-;Location;West
+Mayfair;Location;West
 Grandrun;Location;East
 Neverre;Location;North
 Borealis;Location;South
@@ -11,3 +11,8 @@ Mukhosha;Item;
 Rebecca;Name;dead
 Oranges;Item;
 Melons;Item;
+Father;Name;
+Mother;Name;
+Brother;Name;
+Family;Name;
+Esther;Name;

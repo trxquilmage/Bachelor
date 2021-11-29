@@ -53,15 +53,16 @@ public class WordClickManager : MonoBehaviour
                 }
             }
             //was over quest case and now isnt anymore
-            else if (MouseOverUIObject == "questCase" && value != "questCase")
+            else if (MouseOverUIObject == "questCase" && value != "questCase" && lastSavedQuestCase != null)
             {
+                //Color the word back to normal
                 lastSavedQuestCase.EnableOrDisableQuestCountObject(false);
 
-                //Color the word back to normal
                 Color endColor = refM.wordTags[refM.questTagIndex].tagColor;
                 Color startColor = lastSavedQuestCase.wordParent.GetComponentInChildren<Image>().color;
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(lastSavedQuestCase.wordParent,
                     new Color[5] { startColor, new Color(), new Color(), new Color(), endColor }, 0.3f));
+
             }
             // wasn't over promptbubble and now is
             if (MouseOverUIObject != "playerInput" && value == "playerInput")
@@ -349,7 +350,15 @@ public class WordClickManager : MonoBehaviour
     /// <param name="eventData"></param>
     void FindWordsHoveredOver(TMP_Text text, PointerEventData eventData)
     {
-        int wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventData.position, Camera.main);// eventData.enterEventCamera);
+        int wordIndex;
+        bool overlayCanvas = text.gameObject.tag == "TextOnOverlayCanvas";
+
+        Camera cameraMain = Camera.main;
+        if (overlayCanvas)
+            cameraMain = eventData.enterEventCamera;
+
+        wordIndex = TMP_TextUtilities.FindIntersectingWord(text, eventData.position, cameraMain);
+
         if (wordIndex != -1) //the function above gives out -1 if they find nothing
         {
             TMP_WordInfo wordInfo = text.textInfo.wordInfo[wordIndex];
@@ -358,7 +367,6 @@ public class WordClickManager : MonoBehaviour
             //Get Color of the first character of the word
             //if its interactable OR inList, you can instantiate a word from it (not from interactedColor though)
             Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
-
             if (EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.interactableColor) ||
                 EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.inListColor))
             {

@@ -48,16 +48,16 @@ public class UIManager : MonoBehaviour
     /// Portray The E-Button Feedack On The Canvas
     /// </summary>
     /// <param name="target"></param>
-    public void PortrayEButton(GameObject target)
+    public void PortrayButton(GameObject target, Image sprite)
     {
         if (target == null) //target == null : hide e button
         {
-            refM.eButtonSprite.enabled = false;
+            sprite.enabled = false;
             return;
         }
         //place e button correctly
-        Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position);
-        refM.eButtonSprite.transform.position = targetInScreenSpace + Vector2.right * 40f;
+        Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position) / (refM.canvas.scaleFactor);
+        sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 80f;
 
         refM.eButtonSprite.enabled = true; //show e button
     }
@@ -200,6 +200,20 @@ public class UIManager : MonoBehaviour
         if (vfx != null)
             vfx.SendEvent("Start");
     }
+    public IEnumerator DestroyVFX(VisualEffect vfx)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        float timer = 0;
+
+        //we wait until the lifetime is over
+        while (vfx.GetFloat("lifetime") > timer)
+        {
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+
+        Destroy(vfx.gameObject);
+    }
 
     /// <summary>
     /// Create All Buttons in the WordCaseManager that are used to change the current tag
@@ -295,6 +309,9 @@ public class UIManager : MonoBehaviour
             //is from the word case
             if (data.origin == WordInfo.Origin.WordCase)
             {
+                //spawn delete-vfx
+                WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
+                
                 WordCaseManager.instance.DeleteOutOfCase();
                 WordClickManager.instance.DestroyCurrentWord();
                 WordCaseManager.instance.UpdateContentCount();
@@ -303,8 +320,11 @@ public class UIManager : MonoBehaviour
                 WordCaseManager.instance.DestroyReplacement();
             }
             //is from the quest log
-            else
+            else if (data.origin == WordInfo.Origin.QuestLog)
             {
+                //spawn delete-vfx
+                WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
+                
                 QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
                 currentParent.DeleteOutOfCase();
                 WordClickManager.instance.DestroyCurrentWord();
@@ -312,8 +332,11 @@ public class UIManager : MonoBehaviour
                 currentParent.DestroyReplacement();
             }
         }
-        else if (data is QuestData)
+        else if (data is QuestData && data.origin == WordInfo.Origin.QuestLog)
         {
+            //spawn delete-vfx
+            WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
+            
             QuestManager.instance.DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
             StartCoroutine(QuestManager.instance.RescaleScrollbar(true));

@@ -47,7 +47,7 @@ public class PromptBubble : MonoBehaviour
         RectTransform rT = GetComponent<RectTransform>();
         rT.localScale = new Vector3(1, 1, 1);
         PlayerInputManager.instance.SavePrompt(this);
-        parameters = new Vector2[2] {rT.localPosition, rT.sizeDelta};
+        parameters = new Vector2[2] { rT.localPosition, rT.sizeDelta };
     }
     /// <summary>
     /// Called, when the mouse is over the bubble. colors it darker for words of the correct tah
@@ -55,20 +55,23 @@ public class PromptBubble : MonoBehaviour
     /// <param name="isOnHover"></param>
     public void OnBubbleHover(bool isOnHover)
     {
+        bool hasCurrentWord = WordClickManager.instance.currentWord != null;
+        BubbleData currentBubbleData = null;
+        if (hasCurrentWord)
+            currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
         if (isOnHover && !isHover) //mouse starts hover
         {
-            bool hasCurrentWord = WordClickManager.instance.currentWord != null;
-            BubbleData currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
+
             //if there is a currentWord AND it has the same tag as this specific prompt
             if (hasCurrentWord && currentBubbleData.tag == data.tag.name ||
-                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name 
+                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
                 && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name)
             {
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
             // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
-            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name && 
+            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name &&
                 hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
@@ -83,7 +86,7 @@ public class PromptBubble : MonoBehaviour
                     StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
                                         new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                     StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                        new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                        new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 }
             }
         }
@@ -92,10 +95,15 @@ public class PromptBubble : MonoBehaviour
             acceptsCurrentWord = false;
             if (WordClickManager.instance.currentWord != null && bubble.color == Color.red)
             {
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] 
+                    { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
+
+                Color currentBubbleColor = WordClickManager.instance.currentWord.GetComponent<Word>().
+                    wordParent.GetComponentInChildren<Image>().color;
+
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                    new Color[] { WordClickManager.instance.currentWord.GetComponent<Image>().color, new Color(), new Color(), new Color(),
-                    WordUtilities.MatchColorToTag(WordClickManager.instance.currentWord.GetComponent<Bubble>().data.tag) }, 0.3f));
+                    new Color[] { currentBubbleColor, new Color(), new Color(), new Color(),
+                    WordUtilities.MatchColorToTag(currentBubbleData.tag) }, 0.3f));
             }
         }
         isHover = isOnHover;
@@ -122,7 +130,7 @@ public class PromptBubble : MonoBehaviour
         RectTransform childRT = child.GetComponent<RectTransform>();
         RectTransform rT = GetComponent<RectTransform>();
         Vector2 childPosition = (Vector2)(childRT.localPosition + rT.localPosition) - new Vector2(5, 3);
-        Vector2 childSize = childRT.sizeDelta + new Vector2(10, 6); 
+        Vector2 childSize = childRT.sizeDelta + new Vector2(10, 6);
         rT.localPosition = childPosition;
         rT.sizeDelta = childSize;
         childRT.localPosition = new Vector2(5, 3);

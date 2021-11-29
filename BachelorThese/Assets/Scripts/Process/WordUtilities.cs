@@ -98,19 +98,39 @@ public static class WordUtilities
         text.ForceMeshUpdate();
         Vector3 wordPosition;
         Vector3 lowerLeftCorner;
+        bool textOnOverlay = text.gameObject.tag == "TextOnOverlayCanvas";
 
-        // Get the StartPosition (lower left corner) of the button
-        TMP_CharacterInfo charInfo = text.textInfo.characterInfo[word.firstCharacterIndex];
-        TMP_Vertex vertexBL = charInfo.vertex_BL;
-        lowerLeftCorner = vertexBL.position;
+        //Text is on a canvas that has ScreenSpace - Camera
+        if (!textOnOverlay)
+        {
+            // Get the StartPosition (lower left corner) of the button
+            TMP_CharacterInfo charInfo = text.textInfo.characterInfo[word.firstCharacterIndex];
+            TMP_Vertex vertexBL = charInfo.vertex_BL;
+            lowerLeftCorner = vertexBL.position;
 
-        // Get the StartPosition of the bounds (lower left corner)
+            // Get the StartPosition of the bounds (lower left corner)
 
-        Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
-        lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
-        wordPosition = lowerLeftTextBox + lowerLeftCorner - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
+            Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
+            lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
+            wordPosition = lowerLeftTextBox + lowerLeftCorner - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
 
-        return wordPosition;
+            return wordPosition;
+        }
+        //Text is on a canvas that has ScreenSpace - Overlay
+        else
+        {
+            // Get the StartPosition (lower left corner) of the button
+            TMP_CharacterInfo charInfo = text.textInfo.characterInfo[word.firstCharacterIndex];
+            TMP_Vertex vertexBL = charInfo.vertex_BL;
+            lowerLeftCorner = vertexBL.position;
+
+            // Get the StartPosition of the bounds (lower left corner)
+            Vector3 lowerLeftTextBox = text.rectTransform.position;
+            float canvasScaler = (ReferenceManager.instance.canvas.scaleFactor * 2);
+            wordPosition = lowerLeftTextBox + lowerLeftCorner*canvasScaler - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
+
+            return wordPosition;
+        }
     }
     /// <summary>
     /// returns the parameters of a word as (lowerLeftcorner.x,lowerLeftcorner.y),(size.x, size.y). 

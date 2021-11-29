@@ -76,16 +76,19 @@ public class Case : MonoBehaviour
     public virtual void ReloadContents(bool resetScrollbar)
     {
         // Delete all possibly active bubbles
-        foreach (Bubble data in listingParent.GetComponentsInChildren<Bubble>())
+        if (listingParent != null)
         {
-            if (data.gameObject != listingParent)
+            foreach (Bubble data in listingParent.GetComponentsInChildren<Bubble>())
             {
-                Destroy(data.gameObject);
+                if (data.gameObject != listingParent)
+                {
+                    Destroy(data.gameObject);
+                }
             }
+            SpawnContents();
+            UpdateContentCount();
+            StartCoroutine(RescaleScrollbar(resetScrollbar));
         }
-        SpawnContents();
-        UpdateContentCount();
-        StartCoroutine(RescaleScrollbar(resetScrollbar));
     }
     /// <summary>
     /// Spawn all bubbles, that are in contents right now into the case
@@ -161,10 +164,24 @@ public class Case : MonoBehaviour
         else
             Debug.Log("The bubble to delete couldnt be found " + currentData.name);
         contents = currentContents;
-        
+
         ReloadContents(true);
         DestroyReplacement();
         UpdateContentCount();
+    }
+    /// <summary>
+    /// Create a less visible version of the bubble in the case to indicate its position
+    /// </summary>
+    /// <param name="word"></param>
+    public virtual void SpawnReplacement(Bubble bubble)
+    {
+        bubbleReplacement = SpawnBubbleInCase(bubble.data);
+        Color color = WordUtilities.MatchColorToTag(bubble.data.name);
+        color.a = 0.3f;
+        foreach (Image img in bubbleReplacement.GetComponentsInChildren<Image>())
+        {
+            img.color = color;
+        }
     }
     #region SCROLLBAR
     /// <summary>
@@ -247,7 +264,7 @@ public class Case : MonoBehaviour
     /// Checks if the given bubble data exists and Updates it from the given value
     /// </summary>
     /// <param name="data"></param>
-    public void UpdateBubbleData(BubbleData data)
+    public virtual void UpdateBubbleData(BubbleData data)
     {
         GetBubbleData(data, out int index);
         if (index != -1)
@@ -374,20 +391,7 @@ public class Case : MonoBehaviour
         }
         return inList;
     }
-    /// <summary>
-    /// Create a less visible version of the bubble in the case to indicate its position
-    /// </summary>
-    /// <param name="word"></param>
-    public void SpawnReplacement(Bubble bubble)
-    {
-        bubbleReplacement = SpawnBubbleInCase(bubble.data);
-        Color color = WordUtilities.MatchColorToTag(bubble.data.name);
-        color.a = 0.3f;
-        foreach (Image img in bubbleReplacement.GetComponentsInChildren<Image>())
-        {
-            img.color = color;
-        }
-    }
+
     /// <summary>
     /// Destroy the wordReplacement, if there is one
     /// </summary>

@@ -163,7 +163,6 @@ public class WordLookupReader : MonoBehaviour
     /// <returns></returns>
     public int CheckForSubtags(BubbleData data, string lookingFor)
     {
-        //MISSING: QUEST
         //check the dictionary for the tag
         int i = 0;
         foreach (string subtag in tagSubtag[data.tag])

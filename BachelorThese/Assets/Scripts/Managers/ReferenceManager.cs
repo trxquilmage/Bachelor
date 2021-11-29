@@ -93,6 +93,7 @@ public class ReferenceManager : MonoBehaviour
     [Header("Non-Dialogue UI")]
     public Canvas canvas;
     public Image eButtonSprite;
+    public Image fButtonSprite;
     public Image rightClickIcon;
     public Image rightClickAskIcon;
     public GameObject worldMap;

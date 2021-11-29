@@ -729,8 +729,8 @@ namespace Pinwheel.UIEffects
             Handles.DrawSolidDisc(r.center, Vector3.forward, Mathf.Min(r.width, r.height) * 0.3f);
             if (isOn)
             {
-                GUIContent checkmark = EditorGUIUtility.IconContent(CHECKMARK_ICON_PATH);
-                EditorGUI.LabelField(r, checkmark);
+                //GUIContent checkmark = EditorGUIUtility.IconContent(CHECKMARK_ICON_PATH);
+                //EditorGUI.LabelField(r, checkmark);
             }
             Handles.EndGUI();
         }

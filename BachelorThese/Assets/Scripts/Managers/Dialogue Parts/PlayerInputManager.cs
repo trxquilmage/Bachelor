@@ -48,24 +48,19 @@ public class PlayerInputManager : MonoBehaviour
             //go through all prompts and look for one that is filled
             foreach (PromptBubble prompt in promptBubbles)
             {
-
                 if (prompt != null && prompt.child != null)
                 {
-                    AnswerData answer;
+                    AnswerData answer = new AnswerData();
                     Bubble bubble = prompt.child.GetComponent<Bubble>();
                     if (bubble is Word)
-                        answer = new AnswerData() { wordData = ((WordData)bubble.data), bubbleData = bubble.data };
-                    else // bubble is Quest
-                        answer = new AnswerData() { questData = ((QuestData)bubble.data), bubbleData = bubble.data };
+                        answer = new AnswerData() { wordData = (WordData)bubble.data, bubbleData = bubble.data };
+                    else if (bubble is Quest)
+                        answer = new AnswerData() { questData = (QuestData)bubble.data, bubbleData = bubble.data };
 
                     if (promptBubbles == currentPromptBubbles)
-                    {
                         givenAnswer = answer;
-                    }
                     else if (promptBubbles == currentPromptAskBubbles)
-                    {
                         givenAnswerAsk = answer;
-                    }
                 }
             }
         }
@@ -195,25 +190,23 @@ public class PlayerInputManager : MonoBehaviour
         Yarn.Value val = null;
         AnswerData data;
         if (!inAsk)
-        {
             data = givenAnswer;
-        }
         else
-        {
             data = givenAnswerAsk;
-        }
 
-        //MISSING: QUEST
         if (data.questData != null) //is quest
         {
-
+            val = InfoManager.instance.FindValue(data.questData, lookingFor);
         }
         else
         {
             Bubble.TagObject tagObj = data.wordData.tagObj;
             val = InfoManager.instance.FindValue(data.wordData, lookingFor);
             //save the required Info
-            if (CheckIfShouldSave(saveIn)) { info.SaveInfo(saveIn, val, NPCname, tagObj); }
+            if (CheckIfShouldSave(saveIn))
+            {
+                info.SaveInfo(saveIn, val, NPCname, tagObj);
+            }
         }
 
         return val;

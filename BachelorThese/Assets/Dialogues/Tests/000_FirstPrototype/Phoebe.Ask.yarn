@@ -69,6 +69,9 @@ he intentionally lets out the market.
 title: Phoebe.GoShopping
 tags:
 ---
+<<set $questInfo to react("Fiona", "discountFiona", "Phoebe")>>
+<<set $oranges to react("Oranges", "", "Phoebe")>>
+<<set $melons to react("Melons", "", "Phoebe")>>
 <<if $questInfo eq "Fiona">>
     Oh Fiona sent you?
     If that's the case you'll get a discount.
@@ -77,10 +80,15 @@ tags:
 <<if $oranges eq true>>
     <<if $melons eq true>>
         Okay so you want melons and oranges?
+    <<else>>
+        Okay so you want oranges?
     <<endif>>
-    Okay so you want oranges?
-<<elseif $melons eq melons>>
-Okay so you want melons?
+<<elseif $melons eq true>>
+    Okay so you want melons?
+<<else>>
+    What do you want me to do with that info?
+    Like yeah, you can go shopping here.
+    We have melons and oranges today.
 <<endif>>
 [[Karl.Continue]]
 ===
@@ -131,7 +139,6 @@ tags:
 title: Phoebe.Catchall
 tags:
 ---
-Okay, sorry, that isnt an actual question. 
-You know that, right?
+Okay, that isnt an actual question, right?
 [[Phoebe.Continue]]
 ===

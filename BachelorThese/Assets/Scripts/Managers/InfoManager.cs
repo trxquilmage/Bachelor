@@ -52,17 +52,26 @@ public class InfoManager : MonoBehaviour
     /// <param name="data"></param>
     /// <param name="lookingFor"></param>
     /// <returns></returns>
-    public Yarn.Value FindValue(BubbleData data, string LookingFor)
+    public Yarn.Value FindValue(BubbleData data, string lookingFor)
     {
         if (data is WordData)
         {
             Bubble.TagObject tagObject = ((WordData)data).tagObj;
-            int i = WordLookupReader.instance.CheckForSubtags(((WordData)data), LookingFor);
+            int i = WordLookupReader.instance.CheckForSubtags((WordData)data, lookingFor);
             return tagObject.allGivenValues[i];
         }
         else if (data is QuestData)
         {
-            //MISSING: QUEST
+            //Get the names of all words parented to this object
+            foreach (BubbleData wordData in ((QuestData)data).contents)
+            {
+                if (wordData.name == lookingFor)
+                {
+                    Debug.Log("E");
+                    return new Yarn.Value(true);
+                }
+            }
+            return new Yarn.Value(false);
         }
         else
             Debug.Log("This shouldnt happen");
@@ -80,7 +89,7 @@ public class InfoManager : MonoBehaviour
             if (rumor.rumorName == variableName)
                 return rumor;
         }
-        //Debug.Log("the name " + variableName + "doesnt exist");
+        Debug.Log("the name " + variableName + "doesnt exist");
         return new Rumor() { rumorName = variableName, toldTo = new Yarn.Value(), value = new Yarn.Value(), tagObject = new Bubble.TagObject() };
     }
 }

@@ -5,27 +5,30 @@ using UnityEngine.UI;
 using TMPro;
 using Pinwheel.UIEffects;
 using UnityEngine.EventSystems;
+using UnityEngine.VFX;
 using Yarn.Unity;
 
 public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler
 {
-    public TMP_Text relatedText;
-    public BubbleData data;
-    public GameObject prefabReference;
-    public GameObject wordParent;
+    [HideInInspector] public TMP_Text relatedText;
+    [HideInInspector] public BubbleData data;
+    [HideInInspector] public GameObject prefabReference;
+    [HideInInspector] public GameObject wordParent;
+    public GameObject vfxParent;
+    [HideInInspector] public Case relatedCase;
 
-    public bool wasDragged; //checks if the object was actually dragged
-    public bool fadingOut;
+    [HideInInspector] public bool wasDragged; //checks if the object was actually dragged
+    [HideInInspector] public bool fadingOut;
 
-    public TMP_WordInfo originalWordInfo;
-    public TMP_Text originalText;
-    public Vector3 wordSize;
-    public RefBool movementDone;
-    public float floatTime = 0.4f;
-    public float shakeTime = 0.5f;
+    [HideInInspector] public TMP_WordInfo originalWordInfo;
+    [HideInInspector] public TMP_Text originalText;
+    [HideInInspector] public Vector3 wordSize;
+    [HideInInspector] public RefBool movementDone;
+    [HideInInspector] public float floatTime = 0.4f;
+    [HideInInspector] public float shakeTime = 0.5f;
 
-    public PlayerInputManager piManager;
-    public ReferenceManager refM;
+    [HideInInspector] public PlayerInputManager piManager;
+    [HideInInspector] public ReferenceManager refM;
     /// <summary>
     /// 0 = name, 1 = tags[0] (main tag), 2 = tags[1] (sub tag 1) ...
     /// </summary>
@@ -40,6 +43,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         movementDone = new RefBool() { refBool = false };
         piManager = PlayerInputManager.instance;
         refM = ReferenceManager.instance;
+        CallEffect(0);
     }
     /// <summary>
     /// Call this, when creating a Word. If you dont have a Word Info, create one and set "hasWordInfo" to false
@@ -52,6 +56,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData data)
     {
+        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         data = new BubbleData();
         //capitalize name
         data.name = WordUtilities.CapitalizeAllWordsInString(name);
@@ -168,12 +173,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             // if the word is being dragged out of the dialogue
             if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
-                if (data.tag != ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+                if (this is Word)
                 {
                     WordCaseManager.instance.AutomaticOpenCase(true);
                     WordCaseManager.instance.openTag = data.tag;
                 }
-                else if (data.tag == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name)
+                else if (this is Quest)
                 {
                     QuestManager.instance.AutomaticOpenCase(true);
                     UpdateToBubbleShape();
@@ -187,6 +192,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
             else if (data.origin == WordInfo.Origin.QuestLog)
             {
+                WordCaseManager.instance.AutomaticOpenCase(true);
                 Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
             }
         }
@@ -229,7 +235,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                 //if it was dragged into the case, save it
                 if (clickM.isActiveAndEnabled)
                 {
-                    if (clickM.mouseOverUIObject == "trashCan")
+                    if (clickM.mouseOverUIObject == "trashCan" && data.origin != WordInfo.Origin.Dialogue &&
+                        data.origin != WordInfo.Origin.Ask && data.origin != WordInfo.Origin.Environment)
                     {
                         UIManager.instance.TrashAWord();
                     }
@@ -437,13 +444,13 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// if the word doesnt fit the case, shake it
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ShakeNoWord(bool isQuest, bool inACase, bool isDuplicate)
+    public IEnumerator ShakeNoWord(bool inACase, bool isDuplicate)
     {
         GameObject duplicate = null;
         if (inACase)
         {
             duplicate = SpawnDuplicate();
-            StartCoroutine(duplicate.GetComponent<Bubble>().ShakeNoWord(isQuest, false, true));
+            StartCoroutine(duplicate.GetComponent<Bubble>().ShakeNoWord(false, true));
             MakeInvisible(true);
         }
         fadingOut = true;
@@ -452,9 +459,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         if (!inACase && !isDuplicate)
         {
-            if (isQuest)
+            if (this is Quest)
                 QuestManager.instance.AutomaticOpenCase(false);
-            else
+            else if (this is Word)
                 WordCaseManager.instance.AutomaticOpenCase(false);
         }
 
@@ -560,6 +567,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         lineStarts = lineStartsList.ToArray();
         return firstAndLast.ToArray();
     }
+    #region DOUBLE CLICK
     /// <summary>
     /// Makes a word visible or invisible
     /// </summary>
@@ -625,28 +633,28 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Called when the word is double clicked
     /// </summary>
-    public void OnDoubleClicked(bool isQuest)
+    public void OnDoubleClicked()
     {
         if (data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Environment)
         {
-            DoubleClickedOnDialogue(isQuest);
+            DoubleClickedOnDialogue();
         }
         else //is in word case or quest log
         {
             DoubleClickedOnCase();
         }
     }
-    public void DoubleClickedOnDialogue(bool isQuest)
+    public virtual void DoubleClickedOnDialogue()
     {
         WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
         //check, if the word fits in the case right now
-        if (isQuest)
+        if (this is Quest)
         {
             if (QuestManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
         }
-        else
+        else if (this is Word)
         {
             if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
@@ -654,12 +662,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //if yes slowly animate this to the correct case & save it in there
         if (fits)
         {
-            AnimateMovementIntoCase(isQuest);
+            AnimateMovementIntoCase();
         }
         //if not, shaking animation
         else
         {
-            StartCoroutine(ShakeNoWord(isQuest, false, false));
+            StartCoroutine(ShakeNoWord(false, false));
             Color color = GetComponentInChildren<Image>().color;
             StartCoroutine(EffectUtilities.ColorObjectInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
@@ -673,19 +681,20 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         }
         else
         {
-            StartCoroutine(ShakeNoWord(false, true, false)); //isQuest is irrelevant
+            StartCoroutine(ShakeNoWord(true, false)); //isQuest is irrelevant
         }
     }
     /// <summary>
     /// Animates a word from its current position into a fitting case and saves it
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementIntoCase(bool isQuest)
+    public void AnimateMovementIntoCase()
     {
         //get target position
-        Vector2 targetPos = GetCaseTargetPosition(isQuest);
+        Vector2 targetPos = GetCaseTargetPosition();
+        relatedCase.AutomaticOpenCase(true);
         StartCoroutine(AnimateMovement(movementDone, targetPos));
-        StartCoroutine(AfterMovement_ToCase(movementDone, isQuest));
+        StartCoroutine(AfterMovement_ToCase(movementDone));
     }
     /// <summary>
     /// Animates a word from its current position into a fitting prompt
@@ -702,28 +711,21 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animates a word from its current position back into the case where it came from
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementBackToCase(bool isQuest)
+    public void AnimateMovementBackToCase()
     {
         //get target position
-        Vector2 targetPos = GetCaseTargetPosition(isQuest);
+        Vector2 targetPos = GetCaseTargetPosition();
         StartCoroutine(AnimateMovement(movementDone, targetPos));
-        StartCoroutine(AfterMovement_BackToCase(movementDone, isQuest));
+        StartCoroutine(AfterMovement_BackToCase(movementDone));
     }
     /// <summary>
     /// Get the target position of the case we want to animate to 
     /// </summary>
     /// <param name="isQuest"></param>
     /// <returns></returns>
-    public Vector2 GetCaseTargetPosition(bool isQuest)
+    public virtual Vector2 GetCaseTargetPosition()
     {
-        if (isQuest)
-            return ReferenceManager.instance.questCase.GetComponent<RectTransform>().rect.center +
-                 (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
-                     ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
-        else
-            return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
-                            (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
-                                ReferenceManager.instance.wordCase.GetComponent<RectTransform>().position);
+        return Vector2.zero;
     }
     /// <summary>
     /// Animate this word from its position to a targetPosition
@@ -738,6 +740,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         RectTransform rT = GetComponent<RectTransform>();
         Vector2 startPos = rT.localPosition;
+
         float timer = 0;
         float t;
         while (timer < floatTime)
@@ -754,7 +757,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="isQuest"></param>
     /// <returns></returns>
-    public IEnumerator AfterMovement_ToCase(RefBool isDone, bool isQuest)
+    public virtual IEnumerator AfterMovement_ToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -763,16 +766,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         //treat the word as if it was dragged onto the Questlog/Wordcase
         movementDone.refBool = false;
-        if (isQuest)
-        {
+
+        if (this is Quest)
             IsOverQuestLog();
-            QuestManager.instance.AutomaticOpenCase(false);
-        }
         else
-        {
             IsOverWordCase();
-            WordCaseManager.instance.AutomaticOpenCase(false);
-        }
+        relatedCase.AutomaticOpenCase(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
@@ -793,7 +792,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordUtilities.ParentBubbleToPrompt(this.gameObject);
         WordClickManager.instance.promptBubble = null;
     }
-    public IEnumerator AfterMovement_BackToCase(RefBool isDone, bool isQuest)
+    public IEnumerator AfterMovement_BackToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -803,11 +802,38 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         //put the word back
         WordClickManager.instance.DestroyCurrentWord(this);
-        if (!isQuest)
+        if (data.origin == WordInfo.Origin.WordCase)
             WordCaseManager.instance.ReloadContents(false);
-        else
+        else if (data.origin == WordInfo.Origin.QuestLog)
             QuestManager.instance.ReloadContents(false);
         EffectUtilities.ReColorAllInteractableWords();
+    }
+    #endregion
+    /// <summary>
+    /// Call one of the VFX on the bubble: 0 -> spawn, 1 -> delete
+    /// </summary>
+    /// <param name="i"></param>
+    public void CallEffect(int i)
+    {
+        VisualEffect chosenVFX = vfxParent.GetComponentsInChildren<VisualEffect>()[i];
+        if (i != 0)
+        {
+            chosenVFX.gameObject.transform.SetParent(refM.dialogueCanvas.transform);
+            chosenVFX.gameObject.transform.SetAsLastSibling();
+        }
+
+        //set effect width to bubble width
+        chosenVFX.SetFloat("width", wordParent.GetComponentInChildren<Image>().rectTransform.sizeDelta.x);
+        if (i != 1)
+        {
+            //set effect color to bubble color
+            Color color = wordParent.GetComponentInChildren<Image>().color;
+            chosenVFX.SetVector3("color", new Vector3(color.r, color.g, color.b));
+        }
+
+        UIManager.instance.PlayVFX(chosenVFX);
+        if (i != 0)
+            StartCoroutine(UIManager.instance.DestroyVFX(chosenVFX));
     }
     #endregion
 }

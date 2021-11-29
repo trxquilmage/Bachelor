@@ -6,7 +6,7 @@ using TMPro;
 
 public class QuestCase : Case
 {
-    
+
     [HideInInspector] public OnClickFunctions dropDownScript;
     [HideInInspector] public GameObject wordParent;
     [HideInInspector] public bool isInCase = false;
@@ -49,6 +49,17 @@ public class QuestCase : Case
     {
         if (contents == null)
             base.FillArrayWithContents();
+        SaveContentsToQuest();
+    }
+    public override void ReloadContents(bool resetScrollbar)
+    {
+        SaveContentsToQuest();
+        base.ReloadContents(resetScrollbar);
+    }
+    public override void UpdateBubbleData(BubbleData data)
+    {
+        base.UpdateBubbleData(data);
+        SaveContentsToQuest();
     }
     //There is no scrollbar so these should be empty
     public override void ScrollThroughBubbles()
@@ -84,7 +95,7 @@ public class QuestCase : Case
     /// <returns></returns>
     public void SaveContentsToQuest()
     {
-        if (quest != null && ((QuestData)quest.data).contents != null && contents != null)
+        if (quest != null && contents != null)
         {
             ((QuestData)quest.data).contents = contents;
             quest.data.UpdateBubbleData();
@@ -176,8 +187,9 @@ public class QuestCase : Case
     }
     public void EnableOrDisableQuestCountObject(bool setActive)
     {
-        if (isInCase || !setActive)
-            contentCountObject.SetActive(setActive);
+        if (contentCountObject != null)
+            if (isInCase || !setActive)
+                contentCountObject.SetActive(setActive);
     }
     /// <summary>
     /// Takes the object that layouts the words added to this quest and fits its size to the bubble size
