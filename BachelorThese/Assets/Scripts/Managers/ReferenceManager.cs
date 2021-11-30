@@ -108,10 +108,10 @@ public class ReferenceManager : MonoBehaviour
     public int maxQuestCount = 5;
     public int maxQuestAdditions = 5;
     public int interactionRadius = 5;
+    public string sceneNumber = "001";
     [Header("Game Options")]
     public bool allWordsInteractable = false;
     public bool blockListOn = false;
-    public bool includeStopWords = false;
     public bool noGreyOut = false;
     public bool duplicateWords = false;
     public bool startWithStartWords = false;

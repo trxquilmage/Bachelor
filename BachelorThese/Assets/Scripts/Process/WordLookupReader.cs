@@ -7,8 +7,7 @@ using TMPro;
 public class WordLookupReader : MonoBehaviour
 {
     public static WordLookupReader instance;
-    string pathWord, pathLongWord, pathQuestion, pathTagLookup, pathFillers, pathBlocked;
-    string allWords, allLongWords, allQuestions, allTags, allFillers, allBlocked;
+    string dataPath, allWords, allLongWords, allQuestions, allTags, allFillers, allBlocked;
     [HideInInspector]
     public Dictionary<string, string[]> wordTag = new Dictionary<string, string[]>();
     public Dictionary<string[], string[]> longWordTagSingular = new Dictionary<string[], string[]>();
@@ -20,6 +19,7 @@ public class WordLookupReader : MonoBehaviour
     List<TMP_WordInfo> currentWordList;
     List<string[]> currentReferenceWords;
     int currentLongWordIndex;
+    ReferenceManager refM;
     private void Awake()
     {
         instance = this;
@@ -27,6 +27,8 @@ public class WordLookupReader : MonoBehaviour
     }
     private void Start()
     {
+        refM = ReferenceManager.instance;
+        dataPath = Application.dataPath + "/Data/" + refM.sceneNumber;
         LookUpWord();
         LookUpLongWord();
         LookUpQuestion();
@@ -41,7 +43,7 @@ public class WordLookupReader : MonoBehaviour
     /// </summary>
     void LookUpQuestion()
     {
-        pathQuestion = Application.dataPath + "/Data/Question-LookupTable.csv";
+        string pathQuestion = dataPath + "/Questions.csv";
         allQuestions = File.ReadAllText(pathQuestion);
         string[] linesQ = allQuestions.Split("\n"[0]);
         foreach (string s in linesQ)
@@ -58,7 +60,7 @@ public class WordLookupReader : MonoBehaviour
     }
     void LookUpLongWord()
     {
-        pathLongWord = Application.dataPath + "/Data/LongWord-LookupTable.csv";
+        string pathLongWord = dataPath + "/LongWords.csv";
         allLongWords = File.ReadAllText(pathLongWord);
         string[] lines = allLongWords.Split("\n"[0]);
         foreach (string s in lines)
@@ -81,7 +83,7 @@ public class WordLookupReader : MonoBehaviour
     }
     void LookUpWord()
     {
-        pathWord = Application.dataPath + "/Data/Word-LookupTable.csv";
+        string pathWord = dataPath + "/Words.csv";
         allWords = File.ReadAllText(pathWord);
         string[] lines = allWords.Split("\n"[0]);
         foreach (string s in lines)
@@ -101,7 +103,7 @@ public class WordLookupReader : MonoBehaviour
     }
     void LookUpFiller()
     {
-        pathFillers = Application.dataPath + "/Data/Filler-LookupTable.csv";
+        string pathFillers = dataPath + "/Fillers.csv";
         allFillers = File.ReadAllText(pathFillers);
         string[] lines = allFillers.Split("\n"[0]);
         foreach (string s in lines)
@@ -121,7 +123,7 @@ public class WordLookupReader : MonoBehaviour
     }
     void LookUpTag()
     {
-        pathTagLookup = Application.dataPath + "/Data/Tag-Subtag-Table.csv";
+        string pathTagLookup = dataPath + "/Tag-Subtag.csv";
         allTags = File.ReadAllText(pathTagLookup);
         string[] lines = allTags.Split("\n"[0]);
         foreach (string s in lines)
@@ -140,10 +142,7 @@ public class WordLookupReader : MonoBehaviour
     }
     void LookUpBlocked()
     {
-        if (ReferenceManager.instance.includeStopWords)
-            pathBlocked = Application.dataPath + "/Data/stop_words_english.txt";
-        else
-            pathBlocked = Application.dataPath + "/Data/Word-Blocklist.csv";
+        string pathBlocked = dataPath + "/StopWords.txt";
         allBlocked = File.ReadAllText(pathBlocked);
         string[] lines = allBlocked.Split("\n"[0]);
         foreach (string s in lines)

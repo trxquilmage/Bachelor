@@ -127,7 +127,7 @@ public static class WordUtilities
             // Get the StartPosition of the bounds (lower left corner)
             Vector3 lowerLeftTextBox = text.rectTransform.position;
             float canvasScaler = (ReferenceManager.instance.canvas.scaleFactor * 2);
-            wordPosition = lowerLeftTextBox + lowerLeftCorner*canvasScaler - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
+            wordPosition = lowerLeftTextBox + lowerLeftCorner * canvasScaler - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
 
             return wordPosition;
         }
@@ -454,9 +454,11 @@ public static class WordUtilities
         string s = "";
         foreach (string word in givenSentence.Trim().Split(@" "[0]))
         {
-            s += char.ToUpper(word[0]) + word.Substring(1) + " ";
+            if (word.Length > 0)
+                s += char.ToUpper(word[0]) + word.Substring(1) + " ";
         }
-        s = s.Substring(0, s.Length - 1); //removes last character
+        if (s.Length > 0)
+            s = s.Substring(0, s.Length - 1); //removes last character
         return s;
     }
     /// <summary>

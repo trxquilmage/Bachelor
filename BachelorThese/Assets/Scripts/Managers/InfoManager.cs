@@ -25,14 +25,16 @@ public class InfoManager : MonoBehaviour
     /// <param name="nameOfNPC"></param>
     public void SaveInfo(string variableName, Yarn.Value valueToSave, string nameOfNPC, Bubble.TagObject tagObj)
     {
-        Rumor rumor = new Rumor()
-        {
-            rumorName = variableName,
-            value = valueToSave,
-            toldTo = new Yarn.Value(nameOfNPC),
-            tagObject = tagObj
-        };
-        allRumors.Add(rumor);
+
+        Rumor rumor = FindCorrectRumor(variableName, out int foundIndex);
+        rumor.rumorName = variableName;
+        rumor.value = valueToSave;
+        rumor.toldTo = new Yarn.Value(nameOfNPC);
+        rumor.tagObject = tagObj;
+        if (foundIndex == -1)
+            allRumors.Add(rumor);
+        else
+            allRumors[foundIndex] = rumor;
     }
     /// <summary>
     /// returns info, int chosenValue => toldTo = 1; value = 0
@@ -42,9 +44,9 @@ public class InfoManager : MonoBehaviour
     public Yarn.Value GetInfo(string variableName, int chosenValue)
     {
         if (chosenValue == 0)
-            return FindCorrectRumor(variableName).value;
+            return FindCorrectRumor(variableName, out int foundIndex).value;
         else
-            return FindCorrectRumor(variableName).toldTo;
+            return FindCorrectRumor(variableName, out int foundIndex).toldTo;
     }
     /// <summary>
     /// returns a value Yarn.Value saved in data. Looking for the index of the vairable in their tag object
@@ -67,7 +69,6 @@ public class InfoManager : MonoBehaviour
             {
                 if (wordData.name == lookingFor)
                 {
-                    Debug.Log("E");
                     return new Yarn.Value(true);
                 }
             }
@@ -82,14 +83,19 @@ public class InfoManager : MonoBehaviour
     /// </summary>
     /// <param name="variableName"></param>
     /// <returns></returns>
-    Rumor FindCorrectRumor(string variableName)
+    Rumor FindCorrectRumor(string variableName, out int foundIndex)
     {
+        int i = 0;
         foreach (Rumor rumor in allRumors)
         {
             if (rumor.rumorName == variableName)
+            {
+                foundIndex = i;
                 return rumor;
+            }
+            i++;
         }
-        Debug.Log("the name " + variableName + "doesnt exist");
+        foundIndex = -1;
         return new Rumor() { rumorName = variableName, toldTo = new Yarn.Value(), value = new Yarn.Value(), tagObject = new Bubble.TagObject() };
     }
 }

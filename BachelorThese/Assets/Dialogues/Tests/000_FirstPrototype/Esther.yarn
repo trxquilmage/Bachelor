@@ -5,7 +5,7 @@ tags:
 <<set $headingNorth to getinfo("headingNorth", 0)>>
 <<set $characterName to getinfo("nameEsther", 0)>>
 <<if not isvisited("Esther", "Start")>>
-    Oh Hello! 
+    Oh Hello! I can't say.
     Quite the occurrence to meet someone out here.
     [[Esther.Question]]
 <<elseif $headingNorth>>
@@ -41,6 +41,8 @@ tags:
 ---
 <<if not isvisited("Esther", "Walking")>>
     [[Esther.Walking]]
+<<elseif not isvisited("Esther", "Origin")>>
+    [[Esther.Origin]]
 <<endif>>
 ...
 ===
@@ -62,6 +64,44 @@ Oh, really. {$playerOrigin}?
     [[Esther.AskFamilyMember]]
 <<else>>
     I've never been.
+<<endif>>
+===
+
+title: Esther.Origin
+tags: 
+---
+<<set $playerOrigin to getinfo("originEsther", 0)>>
+<<if $playerOrigin eq "Borealis">>
+    So, you're from Borealis too?
+    <<displaypromptmenu Managers LocAAB>>
+    Where did you grow up?
+    <<set $borealisOrigin to react("name", "borealisOrigin", "Esther")>>
+<<else>>
+    [[Esther.ReactToOrigin]]
+<<endif>>
+===
+
+title: Esther.ReactToOrigin
+tags: 
+---
+So {$playerOrigin}, huh?
+<<displaypromptmenu Managers AdjAAA>>
+What's it like?
+<<set $originFeelings to react("value", "", "Esther")>>
+<<set $originFeelingsWord to react("name", "", "Esther")>>
+<<if $originFeelings eq "positive">>
+    Really? I always thought it's kind of boring.
+    <<if $playerOrigin eq "Mayfair">>
+        But I guess I will be proved wrong in a few minutes.
+    <<else>>
+        But I should visit some time then.
+    <<endif>>
+<<elseif $originFeelings eq "negative">>
+    Kinda thought so. 
+    But I think most places are {$originFeelingsWord}.
+<<elseif $originFeelings eq "neutral">>
+    Cool. So like. Any place in this country.
+    Hahahaha.
 <<endif>>
 ===
 
@@ -121,7 +161,7 @@ Maybe I should go visit my family.
 Sometime, not right now.
 I havent contacted any of them in years.
 My dad is still in Borealis, i think.
-He owns a tourist shop down there.
+He owns a tourist trap down there.
 My mom is out in Grandrun, haven't heard from 
 her in seven years I think. 
 And my brother is a trader up in Neverre.

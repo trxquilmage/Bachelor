@@ -198,6 +198,7 @@ gotten
 greetings
 had
 hadn't
+Hahahaha
 half
 happens
 hardly
@@ -264,6 +265,8 @@ itself
 i've
 just
 k
+kind
+kinda
 keep
 keeps
 kept

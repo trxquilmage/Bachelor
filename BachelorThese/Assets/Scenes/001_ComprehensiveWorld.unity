@@ -7921,11 +7921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   yarnScripts:
-  - {fileID: 2480198943629176163, guid: bd1d6caa173f5624fbb4ff4877d9af6a, type: 3}
-  - {fileID: 2480198943629176163, guid: 97b49024513528349a907b57b9169a62, type: 3}
-  - {fileID: 2480198943629176163, guid: 2a716be7c5b7e47458bd46b1aaded81f, type: 3}
-  - {fileID: 2480198943629176163, guid: 42aa40e0f06dac0459969d9990778a42, type: 3}
-  - {fileID: 2480198943629176163, guid: 6fa307bc6c7470c40bf0bf9e649f4f69, type: 3}
+  - {fileID: 2480198943629176163, guid: 4a6ec2d1c5150754b9dd030500109318, type: 3}
   textLanguage: 
   variableStorage: {fileID: 844551301}
   dialogueUI: {fileID: 844551302}
@@ -8546,7 +8542,7 @@ GameObject:
   - component: {fileID: 934030659}
   - component: {fileID: 934030658}
   m_Layer: 0
-  m_Name: Esther
+  m_Name: Riley
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8579,9 +8575,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0624e4cd72a10c94788a6c42edcef065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: Esther
-  talkToNode: Esther.Start
-  askNode: Esther.Ask
+  characterName: Riley
+  talkToNode: Riley.Start
+  askNode: Riley.Ask
   scriptToLoad: {fileID: 0}
   askScript: {fileID: 0}
 --- !u!136 &934030659
@@ -11831,11 +11827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   yarnScripts:
-  - {fileID: 2480198943629176163, guid: d7834fc2670362a4c9e6dd3bcae52b62, type: 3}
-  - {fileID: 2480198943629176163, guid: ae704afb2206bde4ea3b7ca10e2e5986, type: 3}
-  - {fileID: 2480198943629176163, guid: 8dbc67887cc85f747816df4ce9e8588c, type: 3}
-  - {fileID: 2480198943629176163, guid: b690aa942c8d8aa48a0c0e094b52bab0, type: 3}
-  - {fileID: 2480198943629176163, guid: 6b66afcf54999114984be730e7264cdd, type: 3}
+  - {fileID: 2480198943629176163, guid: 273f3f0cf59bd464cbdfb734feeef9ae, type: 3}
   textLanguage: 
   variableStorage: {fileID: 1262876670}
   dialogueUI: {fileID: 1262876671}
@@ -17994,9 +17986,9 @@ MonoBehaviour:
   maxQuestCount: 5
   maxQuestAdditions: 5
   interactionRadius: 5
+  sceneNumber: 001
   allWordsInteractable: 1
   blockListOn: 1
-  includeStopWords: 1
   noGreyOut: 0
   duplicateWords: 0
   startWithStartWords: 0

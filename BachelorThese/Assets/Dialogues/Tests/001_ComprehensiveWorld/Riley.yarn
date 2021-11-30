@@ -1,0 +1,77 @@
+﻿title: Riley.CompanionMenu
+tags: 
+---
+<<if not isvisited("Riley", "Walking")>>
+    [[Esther.Walking]]
+<<elseif not isvisited("Riley", "Origin")>>
+    [[Esther.Origin]]
+<<endif>>
+...
+===
+
+title: Riley.Start
+tags:
+---
+<<showcharactername Managers Riley>>
+<<if not isvisited("Riley", "Start")>>
+    Your name is Finn, you are here to visit your mother.
+    Your mother's name is Evelyn Garland.
+    Hello, welcome to Bridgetown!
+    <<displaypromptmenu Managers NameAAA>>
+    Sorry, could I get your name?
+    <<set $characterName to react("name", "characterName", "Riley")>>
+    {$characterName}, I am sorry, but I can't let anyone in right now.
+    This town has recently become an active crime scene.
+    Wait a second. 
+    HQ said, they wanted to send a new inspector.
+    <<displaypromptmenu Managers GenAAA>>
+    Yes or No, are you the new inspector?
+    <<set $isInspector to react("value", "isInspector", "Riley")>>
+    [[Riley.StartQuestion]]
+<<else>>
+    [[Riley.CompanionMenu]]
+<<endif>>
+===
+
+title: Riley.StartQuestion
+tags:
+---
+<<if $isInspector eq true>>
+    Great. So glad to have you here, Inspector {$characterName}.
+    <<displaypromptmenu Managers GenAAA>>
+    Do you need a quick rundown of the case?
+    <<set $needsRundown to react("value", "", "Riley")>>
+    <<if $needsRundown>>
+        [[Riley.Rundown]]
+    <<else>>
+        Okay, great then.
+        I will just follow you for around, if you don't mind. 
+    <<endif>>
+<<else>>
+    Oh okay.
+    Sorry that was kind of a dumb question, I guess.
+    But I am not allowed to let visitors into town.
+    <<displaypromptmenu Managers QuestAAA>>
+    Is your buiness here important? What are you here for?
+    <<set $questInfo to react("name", "characterQuest", "Riley")>>
+    <<set $mother to react("Evelyn Garland", "mother", "Riley")>>
+    <<if $questInfo eq "VisitHome" and $mother eq "Evelyn Garland">>
+        Oh.
+        Oh--okay. Would you mind following me for a bit?
+    <<elseif $questInfo eq "VisitHome">>
+        Oh you are here to visit home? 
+        If you're a local I guess I can let you through.
+    <<endif>>
+<<endif>>
+===
+
+title: Riley.Rundown
+tags:
+---
+The victim is a woman named Evelyn Garland.
+She was stabbed in her house yesterday.
+The investigation has only stared today,
+so we don't know that much yet.
+I'd first recommend questioning the suspects,
+that were near her at the time. 
+===

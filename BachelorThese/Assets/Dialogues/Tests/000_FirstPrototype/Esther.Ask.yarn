@@ -2,8 +2,7 @@
 tags:
 ---
 <<if not isvisited("Esther", "Ask")>>
-    What did you want to ask of me? 
-    Maybe some question about the beautiful town of Mayfair?
+    Do you have a question?
 <<else>>
     Oh, do you have another question?
 <<endif>>
@@ -33,8 +32,9 @@ Eh. Don't know much about it.
 title: Esther.Borealis
 tags:
 ---
+Borealis...
 <<displaypromptmenuask Managers GenAAA>>
-Borealis. Have you ever been on vacation there?
+Have you ever been on vacation there?
 <<set $dirtyTourist to react("value", "dirtyTourist", "Esther")>>
 <<if $dirtyTourist eq false>>
     Good.
@@ -44,8 +44,7 @@ Borealis. Have you ever been on vacation there?
 Borealis is the kind of place only idiots visit.
 Year after year, the native population is asking
 for tourists to stop coming over.
-You know we can't sustain ourselves in our own 
-region anymore? 
+We can't sustain ourselves in our own region anymore.
 We've become dependent on tourism. It's killing
 the land and it's commercializing our traditions.
 Me and my family didn't chose to run the Nautilus

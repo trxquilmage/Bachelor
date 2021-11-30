@@ -1,0 +1,153 @@
+﻿title: Riley.Ask
+tags:
+---
+<<if not isvisited("Riley", "Ask")>>
+    What did you want to ask of me? 
+    Maybe some question about the beautiful town of Mayfair?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Karl.Riley
+tags:
+---
+<<if not checkonlyask()>>
+    But back to the topic...
+<<endif>>
+===
+
+title: Karl.Mayfair
+tags:
+---
+<<if not isvisited("Karl", "Mayfair")>>
+    Mayfair, of course, is this wonderful town we find ourselves in today!
+    We usually rank among the winners of the annual "best towns contest".
+    <<displaypromptmenuask Managers GenAAA>>
+    Do you like the town? Be straight, Yes or No?
+    <<set $likesMayfair to react("value", "likesMayfair", "Karl")>>
+    <<if $likesMayfair is true>>
+        Wonderful! Mayfair truly is a beautiful piece of land.
+    <<else>>
+        Okay. Wow, that kind of hurt my feelings.
+    <<endif>>
+<<else>>
+    <<set $likesMayfair to getinfo("likesMayfair", 0)>>
+    <<if $likesMayfair is true>>
+        Do you want to know more about this wonderful place?
+        I actually cant think of ANYTHING else about Mayfair.
+    <<else>>
+        Why? 
+        Did you change your mind about our beautiful Mayfair? 
+        I won't forgive you either way... 
+    <<endif>>
+<<endif>>
+[[Karl.Continue]]
+===
+
+title: Karl.Neverre
+tags:
+---
+Neverre is the worst place in the whole world. 
+Oh I hate just thinking of it for too long!
+Let's change the subject
+[[Karl.Continue]]
+===
+
+title: Karl.Borealis
+tags:
+---
+Oh, Borealis is a dream place for ANY vacation. 
+I go there every year.
+They have the most wonderful train station too! 
+Takes only a few hours to get there.
+[[Karl.Continue]]
+===
+
+title: Karl.Grandrun
+tags:
+---
+Oh, nothing but civil war and sand over there. 
+Fucking sucks.
+[[Karl.Continue]]
+===
+
+title: Karl.Mukhosha
+tags:
+---
+Mucko-what, now?
+Never heard of it.
+[[Karl.Continue]]
+===
+
+title: Karl.Karl
+tags:
+---
+Well who am *I*? 
+The most handsome bachelor in all of Mayfair. 
+Thank you very much for asking.
+<<displaypromptmenuask Managers GenAAA>>
+Are you, perhaps, single?
+<<set $isSingle to react("value", "isSingle", "Karl")>>
+<<if $isSingle is true>>
+    Oh really?
+    Would you mind going on a date?
+    Like any time soon?
+<<else>>
+    Oh too bad.
+    You are really attractive though.
+<<endif>>
+[[Karl.Continue]]
+===
+
+title: Karl.Fiona
+tags:
+---
+Oh Fiona? I don't like her a lot.
+She is... annoying?
+[[Karl.Continue]]
+===
+
+title: Karl.Schubert
+tags:
+---
+Schubert? He is such a nice guy!
+Always has an open ear for me ♥.
+[[Karl.Continue]]
+===
+
+title: Karl.Rebecca
+tags:
+---
+Sorry, who now?
+No one by that name in our wonderful Mayfair.
+[[Karl.Continue]]
+===
+
+title: Karl.LadyKatherine
+tags:
+---
+She's an icon. And she IS the moment.
+[[Karl.Continue]]
+===
+
+title: Karl.Me
+tags:
+---
+You? What am I supposed to tell you about that?
+[[Karl.Continue]]
+===
+
+title: Karl.You
+tags:
+---
+[[Karl.Karl]]
+===
+
+title: Karl.Catchall
+tags:
+---
+Okay, sorry, that isnt an actual question. 
+You know that, right?
+[[Karl.Continue]]
+===
