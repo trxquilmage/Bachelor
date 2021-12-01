@@ -28,6 +28,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "TalkCompanion",
+                    "type": "Button",
+                    "id": "b18da991-6a40-473d-b477-d473f171cc88",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -118,6 +126,28 @@
                     "action": "WalkLR",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a9714ca3-adc5-4155-9565-5d8690a22d96",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TalkCompanion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fbddf45f-ee60-41f8-9a9b-0803ed87a2ff",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TalkCompanion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

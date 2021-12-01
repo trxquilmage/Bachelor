@@ -52,6 +52,26 @@ public class DialogueManager : MonoBehaviour
         //else
         //Debug.Log("Found No One");
     }
+    public void CheckForNearbyCompanion()
+    {
+        var target = allParticipants.Find(delegate (NPC p)
+        {
+            return p is Companion && //is a companion
+            ((Companion)p).inParty && // is in Party
+            string.IsNullOrEmpty(p.talkToNode) == false && // has a conversation node?
+            (p.transform.position - this.transform.position)// is in range?
+            .magnitude <= refM.interactionRadius;
+        });
+        if (target != null)
+        {
+            // Kick off the dialogue at this node.
+            //Debug.Log("Found A Dialogue Partner: " + target.characterName);
+            currentTarget = target;
+            runner.StartDialogue(target.talkToNode);
+        }
+        //else
+        //Debug.Log("Found No One");
+    }
     /// <summary>
     /// called in Dialogue UI -> start Dialogue
     /// </summary>

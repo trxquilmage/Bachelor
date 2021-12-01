@@ -68,6 +68,17 @@ public class CommandManager : MonoBehaviour
     {
         refM.interactableTextList[refM.characterNameIndex].text = characterName;
     }
+    /// <summary>
+    /// Change speaking character's name
+    /// </summary>
+    /// <param name="characterName"></param>
+    [YarnCommand("settocompanion")]
+    public void SetToCompanion(string characterName)
+    {
+        foreach (Companion companion in refM.npcParent.GetComponentsInChildren<Companion>())
+            if (companion.characterName == characterName)
+                companion.inParty = true;
+    }
 
     /// <summary>
     /// Open Prompt Menu and related question

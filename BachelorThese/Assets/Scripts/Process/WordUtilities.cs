@@ -146,6 +146,7 @@ public static class WordUtilities
 
         int firstCharacter = word.firstCharacterIndex;
         int lastCharacter = word.lastCharacterIndex;
+        
         if (hasIgnoredChars)
         {
             firstCharacter--;
@@ -158,6 +159,9 @@ public static class WordUtilities
         TMP_CharacterInfo charInfoLast = text.textInfo.characterInfo[lastCharacter];
         TMP_Vertex vertexBL = charInfo.vertex_BL;
         TMP_Vertex vertexTR = charInfoLast.vertex_TR;
+        Debug.Log("------------");
+        Debug.Log(word.GetWord());
+        Debug.Log(vertexTR.position - vertexBL.position);
         parameters[0] = vertexBL.position;
 
         // Get the StartPosition of the bounds (lower left corner)
@@ -167,7 +171,7 @@ public static class WordUtilities
 
         // Get the length of the word
         parameters[1] = vertexTR.position - vertexBL.position;
-        parameters[1] += new Vector3(6, 6, 0); // Für die Verschiebung 3 Zeilen höher
+        //parameters[1] += new Vector3(6, 6, 0); // Für die Verschiebung 3 Zeilen höher
         return parameters;
     }
     /// <summary>

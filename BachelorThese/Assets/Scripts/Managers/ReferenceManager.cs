@@ -98,6 +98,7 @@ public class ReferenceManager : MonoBehaviour
     public Image rightClickAskIcon;
     public GameObject worldMap;
     [Header("Environment")]
+    public GameObject player;
     public Transform[] allInteractableObjects;
     [Header("Game Data")]
     public int maxWordsPerTag;

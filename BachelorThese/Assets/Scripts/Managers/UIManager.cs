@@ -50,16 +50,16 @@ public class UIManager : MonoBehaviour
     /// <param name="target"></param>
     public void PortrayButton(GameObject target, Image sprite)
     {
-        if (target == null) //target == null : hide e button
+        if (target == null) //target == null : hide button
         {
             sprite.enabled = false;
             return;
         }
         //place e button correctly
-        Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position) / (refM.canvas.scaleFactor);
+        Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position) / refM.canvas.scaleFactor;
         sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 80f;
 
-        refM.eButtonSprite.enabled = true; //show e button
+        sprite.enabled = true; //show e button
     }
     /// <summary>
     /// Changes the trashcan icon and makes sure that putting the word back is disabled while over the can
@@ -233,8 +233,8 @@ public class UIManager : MonoBehaviour
         //initialize the "Other" tag last
         InstantiateButton(ReferenceManager.instance.otherTagIndex, refM.wordTags[ReferenceManager.instance.otherTagIndex]);
 
-        //get button width
-        float padding = refM.tagButtonParent.GetComponent<HorizontalLayoutGroup>().spacing;
+        //get the width of all buttons combined
+        float padding = refM.tagButtonParent.GetComponent<VerticalLayoutGroup>().spacing;
         buttonWidth += padding;
         foreach (RectTransform rT in refM.tagButtonParent.GetComponentsInChildren<RectTransform>())
         {

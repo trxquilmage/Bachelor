@@ -25,6 +25,10 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         //apply text into the buttons
         if (tag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name) // if is "AllWords"
             text.text = "All";
+        else if (tag.name == "Adjective") // if is "AllWords"
+            text.text = "Adj.";
+        else if (tag.name == "Location") // if is "AllWords"
+            text.text = "Places";
         else
             text.text = tag.name;
 

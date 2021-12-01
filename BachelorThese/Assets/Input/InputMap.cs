@@ -41,6 +41,14 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""TalkCompanion"",
+                    ""type"": ""Button"",
+                    ""id"": ""b18da991-6a40-473d-b477-d473f171cc88"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -131,6 +139,28 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""WalkLR"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9714ca3-adc5-4155-9565-5d8690a22d96"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TalkCompanion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbddf45f-ee60-41f8-9a9b-0803ed87a2ff"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TalkCompanion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -218,6 +248,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         m_Player_WalkUD = m_Player.FindAction("WalkUD", throwIfNotFound: true);
         m_Player_WalkLR = m_Player.FindAction("WalkLR", throwIfNotFound: true);
         m_Player_Talk = m_Player.FindAction("Talk", throwIfNotFound: true);
+        m_Player_TalkCompanion = m_Player.FindAction("TalkCompanion", throwIfNotFound: true);
         // Dialogue
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_Click = m_Dialogue.FindAction("Click", throwIfNotFound: true);
@@ -275,6 +306,7 @@ public class @InputMap : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_WalkUD;
     private readonly InputAction m_Player_WalkLR;
     private readonly InputAction m_Player_Talk;
+    private readonly InputAction m_Player_TalkCompanion;
     public struct PlayerActions
     {
         private @InputMap m_Wrapper;
@@ -282,6 +314,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         public InputAction @WalkUD => m_Wrapper.m_Player_WalkUD;
         public InputAction @WalkLR => m_Wrapper.m_Player_WalkLR;
         public InputAction @Talk => m_Wrapper.m_Player_Talk;
+        public InputAction @TalkCompanion => m_Wrapper.m_Player_TalkCompanion;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -300,6 +333,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @Talk.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
                 @Talk.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
                 @Talk.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
+                @TalkCompanion.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
+                @TalkCompanion.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
+                @TalkCompanion.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -313,6 +349,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @Talk.started += instance.OnTalk;
                 @Talk.performed += instance.OnTalk;
                 @Talk.canceled += instance.OnTalk;
+                @TalkCompanion.started += instance.OnTalkCompanion;
+                @TalkCompanion.performed += instance.OnTalkCompanion;
+                @TalkCompanion.canceled += instance.OnTalkCompanion;
             }
         }
     }
@@ -371,6 +410,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         void OnWalkUD(InputAction.CallbackContext context);
         void OnWalkLR(InputAction.CallbackContext context);
         void OnTalk(InputAction.CallbackContext context);
+        void OnTalkCompanion(InputAction.CallbackContext context);
     }
     public interface IDialogueActions
     {

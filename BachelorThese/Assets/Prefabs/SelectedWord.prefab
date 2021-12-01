@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: AAAA
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d06699b093e244d4693604a071555d56, type: 2}
+  m_sharedMaterial: {fileID: -3585647003991721761, guid: d06699b093e244d4693604a071555d56, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -263,6 +263,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2402802058415899942, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2706478745727458538, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
       propertyPath: m_Name
       value: WordVFXParent
@@ -273,6 +277,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2868088476646428859, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
       propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868088476646428859, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
+      propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6243178760938889509, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}

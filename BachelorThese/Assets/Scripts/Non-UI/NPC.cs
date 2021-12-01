@@ -5,22 +5,13 @@ using Yarn.Unity;
 
 public class NPC : MonoBehaviour
 {
-    
     public string characterName = "";
     public string talkToNode = "";
     public string askNode = "";
 
-    [Header("Optional")]
-    public YarnProgram scriptToLoad;
-    public YarnProgram askScript;
-
-    void Start()
+    public virtual void EnterConversation()
     {
-        if (scriptToLoad != null)
-        {
-            DialogueRunner dialogueRunner = FindObjectOfType<DialogueRunner>();
-            dialogueRunner.Add(scriptToLoad);
-        }
+
     }
 }
 

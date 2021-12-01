@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] float speed = 1f;
     public InputMap controls;
     GameObject target;
+    GameObject companionTarget;
     Rigidbody rigid;
     ReferenceManager refM;
     private void Awake()
@@ -18,16 +19,16 @@ public class Player : MonoBehaviour
     {
         controls.Player.WalkUD.performed += context => Movement(-10, context.ReadValue<float>());
         controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
-        controls.Player.Talk.performed += context => Interact();
+        controls.Player.Talk.performed += context => InteractE();
+        controls.Player.TalkCompanion.performed += context => InteractF();
         rigid = this.GetComponent<Rigidbody>();
         refM = ReferenceManager.instance;
     }
     private void Update()
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
-            CheckForEButton();
+            CheckForButton();
     }
-
     public void Movement(float directionX, float directionY)
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
@@ -44,7 +45,7 @@ public class Player : MonoBehaviour
     {
         rigid.velocity = Vector3.zero;
     }
-    void Interact()
+    void InteractE()
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
@@ -58,6 +59,18 @@ public class Player : MonoBehaviour
             }
         }
     }
+    void InteractF()
+    {
+        if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
+        {
+            if (companionTarget != null)
+            {
+                StopWalking();
+                if (companionTarget.TryGetComponent<Companion>(out Companion npc))
+                    DialogueManager.instance.CheckForNearbyCompanion();
+            }
+        }
+    }
     private void OnEnable()
     {
         controls.Enable();
@@ -68,14 +81,34 @@ public class Player : MonoBehaviour
     }
     bool CheckForNPCRange()
     {
-        Transform[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<Transform>();
-        for (int i = 1; i < allNPCs.Length; i++)
+        NPC[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<NPC>();
+        for (int i = 0; i < allNPCs.Length; i++)
         {
-            if ((allNPCs[i].transform.position - this.transform.position)// is in range?
-                    .magnitude <= ReferenceManager.instance.interactionRadius)
+            if (!(allNPCs[i] is Companion) || !((Companion)allNPCs[i]).inParty)
             {
-                target = allNPCs[i].gameObject;
-                return true;
+                if ((allNPCs[i].transform.position - this.transform.position)// is in range?
+                        .magnitude <= ReferenceManager.instance.interactionRadius)
+                {
+                    target = allNPCs[i].gameObject;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    bool CheckForCompanionRange()
+    {
+        Companion[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<Companion>();
+        for (int i = 0; i < allNPCs.Length; i++)
+        {
+            if (allNPCs[i].inParty)
+            {
+                if ((allNPCs[i].transform.position - this.transform.position)// is in range?
+                        .magnitude <= ReferenceManager.instance.interactionRadius)
+                {
+                    companionTarget = allNPCs[i].gameObject;
+                    return true;
+                }
             }
         }
         return false;
@@ -94,10 +127,14 @@ public class Player : MonoBehaviour
         }
         return false;
     }
-    void CheckForEButton()
+    void CheckForButton()
     {
         if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
+            if (CheckForCompanionRange())
+            {
+                UIManager.instance.PortrayButton(companionTarget, refM.fButtonSprite);
+            }
             if (CheckForNPCRange())
             {
                 UIManager.instance.PortrayButton(target, refM.eButtonSprite);
@@ -109,7 +146,6 @@ public class Player : MonoBehaviour
             else if (ReferenceManager.instance.eButtonSprite.enabled)
                 UIManager.instance.PortrayButton(null, refM.eButtonSprite);
         }
-
     }
 }
 

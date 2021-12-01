@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: AAAA
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d06699b093e244d4693604a071555d56, type: 2}
+  m_sharedMaterial: {fileID: -3585647003991721761, guid: d06699b093e244d4693604a071555d56, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -508,6 +508,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2402802058415899942, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2706478745727458538, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
       propertyPath: m_Name
       value: WordVFXParent
@@ -518,6 +522,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2868088476646428859, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
       propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868088476646428859, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
+      propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6243178760938889509, guid: 0bb037f60880fcc479f1ad886dd9bf05, type: 3}
@@ -618,6 +626,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6215602687817933151}
     m_Modifications:
+    - target: {fileID: 60867793149984360, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d06699b093e244d4693604a071555d56, type: 2}
+    - target: {fileID: 60867793149984360, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3585647003991721761, guid: d06699b093e244d4693604a071555d56, type: 2}
     - target: {fileID: 7520584500212586685, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
       propertyPath: m_Name
       value: QuestCountObject
@@ -625,6 +641,10 @@ PrefabInstance:
     - target: {fileID: 7520584500212586685, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
       propertyPath: m_TagString
       value: IgnoreImageCast
+      objectReference: {fileID: 0}
+    - target: {fileID: 7677580710309134691, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -11.7
       objectReference: {fileID: 0}
     - target: {fileID: 8010391841857983496, guid: 6fa8c9ee86c7323448b9052f8e92d268, type: 3}
       propertyPath: m_Pivot.x
