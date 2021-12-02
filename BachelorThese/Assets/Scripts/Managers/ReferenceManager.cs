@@ -64,6 +64,8 @@ public class ReferenceManager : MonoBehaviour
     public GameObject barter;
     public GameObject askContinueButton;
     public GameObject continueButton;
+    public GameObject iCantSayButton;
+    public GameObject askICantSayButton;
     public GameObject askButton;
     public GameObject feedbackTextOtherTag;
     public Scrollbar buttonScrollbar;

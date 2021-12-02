@@ -9,11 +9,19 @@ public class CommandManager : MonoBehaviour
 {
     InfoManager info;
     ReferenceManager refM;
+    public bool iCantSay;
+    public string currentCharacterName;
+    public string currentNextNodeName;
+    bool inICantSay;
     private void Start()
     {
         info = InfoManager.instance;
         refM = ReferenceManager.instance;
         // runner
+        refM.runner.AddFunction("icantsay", 2, delegate (Yarn.Value[] parameters)
+        {
+            ICantSay(refM.runner, parameters[0].AsString, parameters[1].AsString);
+        });
         refM.runner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
             if (parameters.Length == 2)
@@ -35,6 +43,10 @@ public class CommandManager : MonoBehaviour
         });
 
         // askRunner
+        refM.askRunner.AddFunction("icantsay", 2, delegate (Yarn.Value[] parameters)
+        {
+            ICantSay(refM.askRunner, parameters[0].AsString, parameters[1].AsString);
+        });
         refM.askRunner.AddFunction("react", -1, delegate (Yarn.Value[] parameters)
         {
             if (parameters.Length == 2)
@@ -59,6 +71,7 @@ public class CommandManager : MonoBehaviour
             return CheckIfOnlyAsk();
         });
     }
+
     /// <summary>
     /// Change speaking character's name
     /// </summary>
@@ -69,7 +82,7 @@ public class CommandManager : MonoBehaviour
         refM.interactableTextList[refM.characterNameIndex].text = characterName;
     }
     /// <summary>
-    /// Change speaking character's name
+    /// Set a character as a companion, who follows you around
     /// </summary>
     /// <param name="characterName"></param>
     [YarnCommand("settocompanion")]
@@ -79,7 +92,6 @@ public class CommandManager : MonoBehaviour
             if (companion.characterName == characterName)
                 companion.inParty = true;
     }
-
     /// <summary>
     /// Open Prompt Menu and related question
     /// </summary>
@@ -98,7 +110,7 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenuask")]
     public void DisplayPromptMenuAsk(string promptQ)
     {
-        
+
         PlayerInputManager.instance.DisplayPrompt(promptQ, refM.askField,
             refM.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptAskBubbles);
@@ -165,5 +177,35 @@ public class CommandManager : MonoBehaviour
     public bool CheckIfOnlyAsk()
     {
         return DialogueManager.instance.isOnlyInAsk;
+    }
+    /// <summary>
+    /// Check if "I can't say" was pressed, if yes, jump to node "
+    /// </summary>
+    /// <returns></returns>
+    public void ICantSay(DialogueRunner runner, string characterName, string nextNode)
+    {
+        currentCharacterName = "";
+        currentNextNodeName = "";
+        //check if "I cant say" was pressed
+        if (iCantSay)
+        {
+            iCantSay = false;
+            inICantSay = true;
+            currentCharacterName = characterName;
+            currentNextNodeName = nextNode;
+            WordUtilities.JumpToNode(runner, characterName + "." + "ICantSay");
+            //Start coroutine, that waits until I can't say is completed
+        }
+    }
+    public void OnNodeComplete(DialogueRunner runner)
+    {
+        if (inICantSay && runner.CurrentNodeName.Trim().Split("."[0])[1] == "ICantSay")
+        {
+            //set next node
+            WordUtilities.JumpToNode(runner, currentCharacterName + "." + currentNextNodeName);
+            currentCharacterName = "";
+            currentNextNodeName = "";
+            inICantSay = false;
+        }
     }
 }

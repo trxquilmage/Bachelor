@@ -1,4 +1,17 @@
-﻿title: Riley.CompanionMenu
+﻿title: Riley.Start
+tags:
+---
+<<showcharactername Managers Riley>>
+<<if not isvisited("Riley", "Start")>>
+    [[Riley.AskName]]
+<<elseif $notAllowedIn>>
+    [[Riley.RetryReasonForComing]]
+<<else>>
+    [[Riley.CompanionMenu]]
+<<endif>>
+===
+
+title: Riley.CompanionMenu
 tags: 
 ---
 <<if not isvisited("Riley", "Walking")>>
@@ -9,65 +22,99 @@ tags:
 ...
 ===
 
-title: Riley.Start
+title: Riley.AskName
 tags:
 ---
-<<showcharactername Managers Riley>>
-<<if not isvisited("Riley", "Start")>>
-    Your name is Finn, you are here to visit your mother.
-    Your mother's name is Evelyn Garland.
-    Hello, welcome to Bridgetown!
-    <<displaypromptmenu Managers NameAAA>>
-    Sorry, could I get your name?
-    <<set $characterName to react("name", "characterName", "Riley")>>
-    {$characterName}, I am sorry, but I can't let anyone in right now.
-    This town has recently become an active crime scene.
-    Wait a second. 
-    HQ said, they wanted to send a new inspector.
-    <<displaypromptmenu Managers GenAAA>>
-    Yes or No, are you the new inspector?
-    <<set $isInspector to react("value", "isInspector", "Riley")>>
-    [[Riley.StartQuestion]]
+Yes, No, Finn, Mother, Evelyn Garland.
+Hello, welcome to Bridgetown!
+<<showicantsay Managers>>
+<<displaypromptmenu Managers NameAAA>>
+Sorry, could I get your name?
+<<icantsay("Riley", "CantEnter")>>
+<<set $characterName to react("name", "characterName", "Riley")>>
+{$characterName}, great. 
+===
+
+title: Riley.CantEnter
+tags:
+---
+I'm sorry, I can't let anyone in right now.
+This town has become an active crime scene
+as of yesterday. There's been a murder.
+Oh... ... Wait a second. 
+HQ said, they'll to send an inspector.
+<<displaypromptmenu Managers GenAAA>>
+es or No, are you the new inspector?
+<<set $isInspector to react("value", "isInspector", "Riley")>>
+<<if $isInspector eq true>>
+    [[Riley.IsInspector]]
 <<else>>
-    [[Riley.CompanionMenu]]
+    [[Riley.IsntInspector]]
 <<endif>>
 ===
 
-title: Riley.StartQuestion
+title: Riley.IsInspector
 tags:
 ---
-<<if $isInspector eq true>>
-    Great. So glad to have you here, Inspector {$characterName}.
-    <<displaypromptmenu Managers GenAAA>>
-    Do you need a quick rundown of the case?
-    <<set $needsRundown to react("value", "", "Riley")>>
-    <<if $needsRundown>>
-        [[Riley.Rundown]]
-    <<else>>
-        Okay, great then.
-        I will just follow you for around, if you don't mind.
-        <<settocompanion Managers Riley>>
-    <<endif>>
+ Great. So glad to have you here, Inspector {$characterName}.
+<<displaypromptmenu Managers GenAAA>>
+Do you need a quick rundown of the case?
+<<set $needsRundown to react("value", "", "Riley")>>
+<<if $needsRundown>>
+    [[Riley.Rundown]]
 <<else>>
-    Oh okay.
-    Sorry that was kind of a dumb question, I guess.
-    But I am not allowed to let visitors into town.
-    <<displaypromptmenu Managers QuestAAA>>
-    Is your buiness here important? What are you here for?
-    <<set $questInfo to react("name", "characterQuest", "Riley")>>
-    <<set $mother to react("Evelyn Garland", "mother", "Riley")>>
-    <<if $questInfo eq "VisitHome" and $mother eq "Evelyn Garland">>
-        Oh.
-        Oh--okay. 
-        Uh, would you mind going into town with me?
-        <<settocompanion Managers Riley>>
-    <<elseif $questInfo eq "VisitHome">>
-        Oh you are here to visit home? 
-        If you're a local I guess I can let you through,
-        but I will need to follow you around.
-        <<settocompanion Managers Riley>>
-    <<endif>>
+    Okay, great then.
+    I will just follow you for around, if you don't mind.
+    <<settocompanion Managers Riley>>
 <<endif>>
+===
+
+title: Riley.IsntInspectorSorry
+tags:
+---
+Oh okay.
+Sorry that was kind of a dumb question, I guess.
+But I am not allowed to let visitors into town.
+[[Riley.IsntInspector]]
+===
+
+title: Riley.IsntInspector
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers QuestAAA>>
+Is your buiness here important? What are you here for?
+<<icantsay("Riley", "CantGiveReasonForComing")>>
+<<set $questInfo to react("name", "characterQuest", "Riley")>>
+<<set $mother to react("Evelyn Garland", "mother", "Riley")>>
+<<if $questInfo eq "Visit Home" and $mother eq "Evelyn Garland">>
+    Oh.
+    Oh--okay.
+    Uh, would you mind going into town with me?
+    <<settocompanion Managers Riley>>
+<<elseif $questInfo eq "VisitHome">>
+    Oh you are here to visit home? 
+    If you're a local I guess I can let you through,
+    but I will need to follow you around.
+    <<settocompanion Managers Riley>>
+<<endif>>
+===
+
+title: Riley.CantGiveReasonForComing
+tags:
+---
+Okay, look I can't let you into town,
+if you are that secretive about what
+you are here for. Please understand that.
+<<set $notAllowedIn to true>>
+===
+
+title: Riley.RetryReasonForComing
+tags:
+---
+Okay, so can you now tell me what
+you are here for?
+<<set $notAllowedIn to false>>
 ===
 
 title: Riley.Rundown
@@ -82,4 +129,10 @@ that were near her at the time.
 I will follow you around, to aid in your 
 investigations, if you don't mind.
 <<settocompanion Managers Riley>>
+===
+
+title: Riley.ICantSay
+tags:
+---
+Oh, okay. No answer then.
 ===

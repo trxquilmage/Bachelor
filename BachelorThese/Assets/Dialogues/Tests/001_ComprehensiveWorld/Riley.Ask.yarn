@@ -2,152 +2,111 @@
 tags:
 ---
 <<if not isvisited("Riley", "Ask")>>
-    What did you want to ask of me? 
-    Maybe some question about the beautiful town of Mayfair?
+    Do you have a question?
 <<else>>
     Oh, do you have another question?
 <<endif>>
 ===
 
-title: Karl.Riley
+title: Riley.Brother
 tags:
 ---
-<<if not checkonlyask()>>
-    But back to the topic...
-<<endif>>
+AAA
+[[Riley.Continue]]
 ===
 
-title: Karl.Mayfair
+title: Riley.MarketTerraces
 tags:
 ---
-<<if not isvisited("Karl", "Mayfair")>>
-    Mayfair, of course, is this wonderful town we find ourselves in today!
-    We usually rank among the winners of the annual "best towns contest".
-    <<displaypromptmenuask Managers GenAAA>>
-    Do you like the town? Be straight, Yes or No?
-    <<set $likesMayfair to react("value", "likesMayfair", "Karl")>>
-    <<if $likesMayfair is true>>
-        Wonderful! Mayfair truly is a beautiful piece of land.
-    <<else>>
-        Okay. Wow, that kind of hurt my feelings.
-    <<endif>>
-<<else>>
-    <<set $likesMayfair to getinfo("likesMayfair", 0)>>
-    <<if $likesMayfair is true>>
-        Do you want to know more about this wonderful place?
-        I actually cant think of ANYTHING else about Mayfair.
-    <<else>>
-        Why? 
-        Did you change your mind about our beautiful Mayfair? 
-        I won't forgive you either way... 
-    <<endif>>
-<<endif>>
-[[Karl.Continue]]
+AAA
+[[Riley.Continue]]
 ===
 
-title: Karl.Neverre
+title: Riley.Greygate
 tags:
 ---
-Neverre is the worst place in the whole world. 
-Oh I hate just thinking of it for too long!
-Let's change the subject
-[[Karl.Continue]]
-===
-
-title: Karl.Borealis
-tags:
----
-Oh, Borealis is a dream place for ANY vacation. 
-I go there every year.
-They have the most wonderful train station too! 
-Takes only a few hours to get there.
-[[Karl.Continue]]
-===
-
-title: Karl.Grandrun
-tags:
----
-Oh, nothing but civil war and sand over there. 
-Fucking sucks.
-[[Karl.Continue]]
-===
-
-title: Karl.Mukhosha
-tags:
----
-Mucko-what, now?
-Never heard of it.
-[[Karl.Continue]]
-===
-
-title: Karl.Karl
-tags:
----
-Well who am *I*? 
-The most handsome bachelor in all of Mayfair. 
-Thank you very much for asking.
+Greygate, hm? 
 <<displaypromptmenuask Managers GenAAA>>
-Are you, perhaps, single?
-<<set $isSingle to react("value", "isSingle", "Karl")>>
-<<if $isSingle is true>>
-    Oh really?
-    Would you mind going on a date?
-    Like any time soon?
+Have you ever been there?
+<<set $beenToGreygate to react("value", "", "Riley")>>
+<<if $beenToGreygate is true>>
+    Oh, you have? It's quite the amazing city.
+    I go there at least once a year to visit
+    my younger brother. He lives near the 
+    market terraces, so it's usually a great
+    expierience. An expensive one, too, though.
+    If you go again you should ride in one of
+    the cable cars. They've been installed all
+    over town in the recent years.
 <<else>>
-    Oh too bad.
-    You are really attractive though.
+    You haven't, then? You should definetly go!
+    What I can recommend most is going to 
+    visit the market terrace. It's a multi-level
+    district filled with shops, restaurants,
+    auctions and stalls. Like they say you can
+    buy everything there - and it's very true.
 <<endif>>
-[[Karl.Continue]]
+[[Riley.Continue]]
 ===
 
-title: Karl.Fiona
+title: Riley.Capital
 tags:
 ---
-Oh Fiona? I don't like her a lot.
-She is... annoying?
-[[Karl.Continue]]
+[[Riley.Greygate]]
 ===
 
-title: Karl.Schubert
+title: Riley.Family
 tags:
 ---
-Schubert? He is such a nice guy!
-Always has an open ear for me ♥.
-[[Karl.Continue]]
+My family is from Glomure, but some moved to 
+different cities. My brother lives in the capital,
+my father still lives in Glomure, together with 
+my grandmother. And I have a lot of distant relatives
+all over the country. 
+We're like, not a very wealthy family.
+[[Riley.Continue]]
 ===
 
-title: Karl.Rebecca
+title: Riley.Riley
 tags:
 ---
-Sorry, who now?
-No one by that name in our wonderful Mayfair.
-[[Karl.Continue]]
+Me? I'm Riley, Detective from Glomure, 
+which is two towns over, if you don't know.
+Hm... also I'm 31 years old and I think
+this is my fifth year working here.
+It's my first murder case, too.
+Oh but you wanted to know about me,
+not about the case, right?
+I grew up in Glomure and still have
+family over there. 
+People usually expect that I'm married,
+but I'm not.
+Haven't found the right person yet.
+[[Riley.Continue]]
 ===
 
-title: Karl.LadyKatherine
+title: Riley.Me
 tags:
 ---
-She's an icon. And she IS the moment.
-[[Karl.Continue]]
+You? I don't know that much about you.
+[[Riley.Continue]]
 ===
 
-title: Karl.Me
+title: Riley.You
 tags:
 ---
-You? What am I supposed to tell you about that?
-[[Karl.Continue]]
+[[Riley.Riley]]
 ===
 
-title: Karl.You
+title: Riley.Catchall
 tags:
 ---
-[[Karl.Karl]]
+Sorry, I don't think I understand.
+[[Riley.Continue]]
 ===
 
-title: Karl.Catchall
+title: Riley.ICantSay
 tags:
 ---
-Okay, sorry, that isnt an actual question. 
-You know that, right?
-[[Karl.Continue]]
+Oh, okay. No answer then.
 ===
