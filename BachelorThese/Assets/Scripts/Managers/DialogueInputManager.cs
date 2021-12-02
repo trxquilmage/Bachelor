@@ -59,6 +59,21 @@ public class DialogueInputManager : MonoBehaviour
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
             refM.playerInputField.SetActive(false);
+            refM.iCantSayButton.SetActive(false);
+        }
+    }
+    public void AbortContinueButton()
+    {
+        if (!PlayerInputManager.instance.inAsk)
+        {
+            Continue(uiHandler);
+            continueEnabledPrompt = true;
+            closeAWindow = true;
+            PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
+            WordClickManager.instance.currentWord = null;
+            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
+            refM.playerInputField.SetActive(false);
+            refM.iCantSayButton.SetActive(false);
         }
     }
     /// <summary>

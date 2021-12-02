@@ -344,4 +344,8 @@ public class UIManager : MonoBehaviour
             QuestManager.instance.DestroyReplacement();
         }
     }
+    public void ClickedICantSay()
+    {
+        CommandManager.instance.iCantSay = true;
+    }
 }

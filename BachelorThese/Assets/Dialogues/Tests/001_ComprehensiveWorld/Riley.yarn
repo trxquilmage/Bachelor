@@ -30,7 +30,7 @@ Hello, welcome to Bridgetown!
 <<showicantsay Managers>>
 <<displaypromptmenu Managers NameAAA>>
 Sorry, could I get your name?
-<<icantsay("Riley", "CantEnter")>>
+<<set $cantsay to icantsay("Riley", "CantEnter")>>
 <<set $characterName to react("name", "characterName", "Riley")>>
 {$characterName}, great. 
 ===
@@ -84,7 +84,7 @@ tags:
 <<showicantsay Managers>>
 <<displaypromptmenu Managers QuestAAA>>
 Is your buiness here important? What are you here for?
-<<icantsay("Riley", "CantGiveReasonForComing")>>
+<<set $cantSay to icantsay("Riley", "CantGiveReasonForComing")>>
 <<set $questInfo to react("name", "characterQuest", "Riley")>>
 <<set $mother to react("Evelyn Garland", "mother", "Riley")>>
 <<if $questInfo eq "Visit Home" and $mother eq "Evelyn Garland">>
@@ -135,4 +135,7 @@ title: Riley.ICantSay
 tags:
 ---
 Oh, okay. No answer then.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end
 ===
+

@@ -146,7 +146,7 @@ public static class WordUtilities
 
         int firstCharacter = word.firstCharacterIndex;
         int lastCharacter = word.lastCharacterIndex;
-        
+
         if (hasIgnoredChars)
         {
             firstCharacter--;
@@ -159,9 +159,6 @@ public static class WordUtilities
         TMP_CharacterInfo charInfoLast = text.textInfo.characterInfo[lastCharacter];
         TMP_Vertex vertexBL = charInfo.vertex_BL;
         TMP_Vertex vertexTR = charInfoLast.vertex_TR;
-        Debug.Log("------------");
-        Debug.Log(word.GetWord());
-        Debug.Log(vertexTR.position - vertexBL.position);
         parameters[0] = vertexBL.position;
 
         // Get the StartPosition of the bounds (lower left corner)
@@ -279,10 +276,12 @@ public static class WordUtilities
     /// <returns></returns>
     public static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord, out bool cantBeSaved)
     {
+        cantBeSaved = true;
+        if (wordName == "")
+            return false;
         wordName = CapitalizeAllWordsInString(wordName);
         bool isUsed = false;
-        cantBeSaved = true;
-
+        
         //Get the list we should check for words (from the wordlookupreader)
         Dictionary<string, string[]> wordTagList;
         if (isFillerWord)
@@ -351,9 +350,19 @@ public static class WordUtilities
         if (runner.isActiveAndEnabled)
         {
             if (runner.NodeExists(node))
-                runner.StartDialogue(runner.startNode = node);
+            {
+                runner.startNode = node;
+                runner.StartDialogue();
+                DialogueUI ui;
+                ui.userRes
+                    )runner.dialogueUI).
+            }
             else
-                runner.StartDialogue(runner.startNode = DialogueManager.instance.currentTarget.characterName + ".Catchall");
+            {
+                runner.startNode = DialogueManager.instance.currentTarget.characterName + ".Catchall";
+                runner.StartDialogue();
+            }
+                
         }
     }
     /// <summary>

@@ -17,8 +17,6 @@ public class PlayerInputManager : MonoBehaviour
     WordLookupReader wlReader;
     ReferenceManager refM;
     InfoManager info;
-    DialogueUI uiHandler;
-    DialogueRunner runner;
     bool promptCurrentlyDisabled;
     private void Awake()
     {
@@ -32,8 +30,6 @@ public class PlayerInputManager : MonoBehaviour
         wlReader = WordLookupReader.instance;
         refM = ReferenceManager.instance;
         info = InfoManager.instance;
-        runner = ReferenceManager.instance.askRunner;
-        uiHandler = ReferenceManager.instance.askDialogueUI;
         //disable askrunner
         ReferenceManager.instance.askRunner.gameObject.SetActive(false);
     }
@@ -316,13 +312,14 @@ public class PlayerInputManager : MonoBehaviour
             //Reload, so that the missing word comes back
             WordCaseManager.instance.ReloadContents(false);
             //Jump to NPC.answer
-            WordUtilities.JumpToNode(ReferenceManager.instance.askRunner, givenAnswerAsk.bubbleData.name);
+            WordUtilities.JumpToNode(refM.askRunner, givenAnswerAsk.bubbleData.name);
             //Continue()
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
             //make new button "abort ask" unavailable
             AbortAskButton(false);
             // Close Prompt Field
-            ReferenceManager.instance.askField.SetActive(false);
+            refM.askField.SetActive(false);
+            refM.askICantSayButton.SetActive(false);
         }
     }
     /// <summary>
@@ -364,10 +361,46 @@ public class PlayerInputManager : MonoBehaviour
             //Reload, so that the missing word comes back
             WordCaseManager.instance.ReloadContents(false);
             // Close Prompt Field
-            ReferenceManager.instance.askField.SetActive(false);
+            refM.askField.SetActive(false);
+            refM.askICantSayButton.SetActive(false);
             //make new button "abort ask" unavailable
             AbortAskButton(false);
         }
+        inAsk = false;
+    }
+    public void CantSayAsk()
+    {
+        //enable continue
+        DialogueInputManager.instance.AskMenuOpen(false);
+        //set ask and barter buttons active again
+        AskAndBarterButton(true);
+        //disable 2nd runner again
+        refM.askRunner.gameObject.SetActive(false);
+        // if the prompt menu has been closed, reopen it
+        if (DialogueManager.instance.isInDialogue)
+        {
+            TemporarilyClosePromptMenu(false);
+            //enable the text below again
+            refM.interactableTextList[0].gameObject.SetActive(true);
+        }
+        if (DialogueManager.instance.isOnlyInAsk)
+        {
+            DialogueManager.instance.isOnlyInAsk = false;
+            DialogueManager.instance.currentTarget = null;
+            DialogueInputManager.instance.enabled = false;
+        }
+        DialogueManager.instance.isOnlyInAsk = false;
+        //enable click continue
+        DialogueInputManager.instance.continueEnabledPromptAsk = true;
+        //Delete existing prompts
+        DeleteAllPrompts(currentPromptAskBubbles);
+        //Delete current word gets deleted, so empty the currentWord var
+        WordClickManager.instance.currentWord = null;
+        //Reload, so that the missing word comes back
+        WordCaseManager.instance.ReloadContents(false);
+        // Close Prompt Field
+        refM.askField.SetActive(false);
+        refM.askICantSayButton.SetActive(false);
         inAsk = false;
     }
     /// <summary>
