@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PromptBubble : MonoBehaviour
 {
     public bool acceptsCurrentWord;
+    public bool doesntAcceptQuests; //means accepts every word, even "Other" words
     bool isHover = false;
     Image bubble;
     PromptBubbleData data;
@@ -36,6 +37,13 @@ public class PromptBubble : MonoBehaviour
     public void Initialize(string tag)
     {
         bubble = GetComponent<Image>();
+        //in the specific case of the Tag being "AllWordsA"
+        if (tag == "AllWordsA")
+        {
+            doesntAcceptQuests = true;
+            tag = "AllWords";
+        }
+
         WordInfo.WordTag tagInfo = WordUtilities.GetTag(tag);
         data = new PromptBubbleData()
         {
@@ -61,17 +69,24 @@ public class PromptBubble : MonoBehaviour
             currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
         if (isOnHover && !isHover) //mouse starts hover
         {
+                //prompt bubble: allwords, word: !quest, doesntacceptquests = true
+            if (doesntAcceptQuests && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name 
+                && currentBubbleData.tag != refM.wordTags[refM.questTagIndex].name ||
 
-            //if there is a currentWord AND it has the same tag as this specific prompt
-            if (hasCurrentWord && currentBubbleData.tag == data.tag.name ||
-                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
-                && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name)
+                //prompt bubble: allwords, word: !other, doesntacceptquests = false
+                !doesntAcceptQuests && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
+                && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name ||
+
+                //prompt bubble tag == word tag
+                hasCurrentWord && currentBubbleData.tag == data.tag.name)
             {
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
-            // in the specific situation, where a word tagged "Other" is dragged onto a prompt titled "All"
-            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name &&
+            // in the specific situation, where this is a bubble tagged "AllWords" and it is filled with unfitting contents
+            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name && doesntAcceptQuests && 
+                hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.questTagIndex].name ||
+                !doesntAcceptQuests && data.tag.name == refM.wordTags[refM.allTagIndex].name &&
                 hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;
@@ -98,7 +113,7 @@ public class PromptBubble : MonoBehaviour
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] 
                     { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
 
-                Color currentBubbleColor = WordClickManager.instance.currentWord.GetComponent<Word>().
+                Color currentBubbleColor = WordClickManager.instance.currentWord.GetComponent<Bubble>().
                     wordParent.GetComponentInChildren<Image>().color;
 
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,

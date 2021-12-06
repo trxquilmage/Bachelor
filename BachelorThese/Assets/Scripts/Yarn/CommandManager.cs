@@ -10,10 +10,10 @@ public class CommandManager : MonoBehaviour
     public static CommandManager instance;
     InfoManager info;
     ReferenceManager refM;
-    public bool iCantSay;
-    public string currentCharacterName;
-    public string lastNodeName;
-    public string currentNextNodeName;
+    [HideInInspector] public bool iCantSay;
+    [HideInInspector] public string currentCharacterName;
+    [HideInInspector] public string lastNodeName;
+    [HideInInspector] public string currentNextNodeName;
     bool inICantSay;
     void Awake()
     {
@@ -199,32 +199,58 @@ public class CommandManager : MonoBehaviour
         return DialogueManager.instance.isOnlyInAsk;
     }
     /// <summary>
-    /// Check if "I can't say" was pressed, if yes, jump to node "
+    /// Check if "I can't say" was pressed, if yes, jump to node "ICantSay"
     /// </summary>
     /// <returns></returns>
     public bool ICantSay(DialogueRunner runner, string characterName, string nextNode)
     {
+        if (iCantSay)
+            inICantSay = true;
+        StartCoroutine(ICantSayNextFrame(runner, characterName, nextNode));
+        return false;
+    }
+    /// <summary>
+    /// Continue is triggered twice when calling a new dialogue, whic essentially skips the first line of every new called dialogue
+    /// because of that we wait 1 frame
+    /// </summary>
+    /// <param name="runner"></param>
+    /// <param name="characterName"></param>
+    /// <param name="nextNode"></param>
+    /// <returns></returns>
+    IEnumerator ICantSayNextFrame(DialogueRunner runner, string characterName, string nextNode)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        yield return delay;
         currentCharacterName = "";
         currentNextNodeName = "";
         //check if "I cant say" was pressed
         if (iCantSay)
         {
             iCantSay = false;
-            inICantSay = true;
             currentCharacterName = characterName;
             currentNextNodeName = nextNode;
             WordUtilities.JumpToNode(runner, "ICantSay");
         }
-        return false;
     }
+    /// <summary>
+    /// is called when the node "icantsay" is done, then waits one frame (so there isnt any problem with the MarkLineComplete-Command)
+    /// the goes to "nextcurrentnode", which is set in the "ICantSay()" function
+    /// </summary>
     [YarnCommand("onnodecomplete")]
     public void OnNodeComplete()
+    {
+        StartCoroutine(OnNodeCompleteNextFrame());
+    }
+    IEnumerator OnNodeCompleteNextFrame()
     {
         DialogueRunner runner;
         if (PlayerInputManager.instance.inAsk)
             runner = refM.askRunner;
         else
             runner = refM.runner;
+
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        yield return delay;
 
         //set next node
         WordUtilities.JumpToNode(runner, currentNextNodeName);

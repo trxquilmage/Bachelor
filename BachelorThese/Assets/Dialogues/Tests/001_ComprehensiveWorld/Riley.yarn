@@ -2,10 +2,15 @@
 tags:
 ---
 <<showcharactername Managers Riley>>
+<<set $characterName to getinfo("characterName", 0)>>
+<<set $characterQuest to getinfo("characterQuest", 0)>>
+<<set $isInspector to getinfo("isInspector", 0)>>
 <<if not isvisited("Riley", "Start")>>
     [[Riley.AskName]]
-<<elseif $notAllowedIn>>
+<<elseif $characterQuest eq null and $isInspector eq null>>
     [[Riley.RetryReasonForComing]]
+<<elseif $characterName eq null>>
+    [[Riley.RetryName]]
 <<else>>
     [[Riley.CompanionMenu]]
 <<endif>>
@@ -25,7 +30,6 @@ tags:
 title: Riley.AskName
 tags:
 ---
-Yes, No, Finn, Mother, Evelyn Garland.
 Hello, welcome to Bridgetown!
 <<showicantsay Managers>>
 <<displaypromptmenu Managers NameAAA>>
@@ -33,6 +37,7 @@ Sorry, could I get your name?
 <<set $cantsay to icantsay("Riley", "CantEnter")>>
 <<set $characterName to react("name", "characterName", "Riley")>>
 {$characterName}, great. 
+[[Riley.CantEnter]]
 ===
 
 title: Riley.CantEnter
@@ -41,22 +46,32 @@ tags:
 I'm sorry, I can't let anyone in right now.
 This town has become an active crime scene
 as of yesterday. There's been a murder.
-Oh... ... Wait a second. 
+Oh... Wait a second. 
 HQ said, they'll to send an inspector.
 <<displaypromptmenu Managers GenAAA>>
-es or No, are you the new inspector?
+Yes or No, are you the new inspector?
 <<set $isInspector to react("value", "isInspector", "Riley")>>
 <<if $isInspector eq true>>
     [[Riley.IsInspector]]
 <<else>>
-    [[Riley.IsntInspector]]
+    [[Riley.IsntInspectorSorry]]
 <<endif>>
 ===
 
 title: Riley.IsInspector
 tags:
 ---
- Great. So glad to have you here, Inspector {$characterName}.
+<<if $characterName eq null>>
+    Great. Glad to have you here, Inspector.....
+    <<showicantsay Managers>>
+    <<displaypromptmenu Managers AllAAA>>
+    Really. What is your name?
+    <<set $cantsay to icantsay("Riley", "NotWithoutName")>>
+    <<set $characterName to react("name", "characterName", "Riley")>>
+    Great. Glad to have you here, Inspector {$characterName}.
+<<else>>
+    Great. Glad to have you here, Inspector {$characterName}.
+<<endif>>
 <<displaypromptmenu Managers GenAAA>>
 Do you need a quick rundown of the case?
 <<set $needsRundown to react("value", "", "Riley")>>
@@ -117,6 +132,26 @@ you are here for?
 <<set $notAllowedIn to false>>
 ===
 
+title: Riley.NotWithoutName
+tags:
+---
+Sorry, if you want to work with me,
+I will need your name for the papers.
+===
+
+title: Riley.RetryName
+tags:
+---
+Okay, let's try again. 
+<<showicantsay Managers>>
+<<displaypromptmenu Managers AllAAA>>
+What is your name?
+<<set $cantsay to icantsay("Riley", "NotWithoutName")>>
+<<set $characterName to react("name", "characterName", "Riley")>>
+Okay great. I don't see how this was an issue?
+[[Riley.IsInspector]]
+===
+
 title: Riley.Rundown
 tags:
 ---
@@ -137,5 +172,6 @@ tags:
 Oh, okay. No answer then.
 <<onnodecomplete Managers>>
 This has to be here so the dialogue doesnt end
+otherwise the dialogue will be over before the command is done
+and that causes problems.
 ===
-

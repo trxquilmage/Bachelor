@@ -168,7 +168,7 @@ public static class WordUtilities
 
         // Get the length of the word
         parameters[1] = vertexTR.position - vertexBL.position;
-        //parameters[1] += new Vector3(6, 6, 0); // Für die Verschiebung 3 Zeilen höher
+        parameters[1] += new Vector3(2, 6, 0); // um ein bisschen puffer zu haben
         return parameters;
     }
     /// <summary>
@@ -196,7 +196,7 @@ public static class WordUtilities
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
-    /// checks the given text for promt inputs in the type of "\Tag\"
+    /// checks the given text for promt inputs in the type of "|Tag|"
     /// </summary>
     public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent)
     {
@@ -256,6 +256,7 @@ public static class WordUtilities
         localX -= child.GetComponent<RectTransform>().sizeDelta.x / 2; // - half of word case
         child.transform.localPosition = new Vector3(localX, 0);
         bubble.child = child;
+        WordClickManager.instance.currentWord = null;
     }
     /// <summary>
     /// returns a given word into the text it was taken from
@@ -281,7 +282,7 @@ public static class WordUtilities
             return false;
         wordName = CapitalizeAllWordsInString(wordName);
         bool isUsed = false;
-        
+
         //Get the list we should check for words (from the wordlookupreader)
         Dictionary<string, string[]> wordTagList;
         if (isFillerWord)
@@ -300,6 +301,8 @@ public static class WordUtilities
         //if its a non existent filler word, tag it as "Other"
         else
             tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name; // Set tag name to "Other"
+        //if the tag word is something that isnt an officical tag change it to a real tag (like "otherA" to "other")
+        tagName = CorrectReplacementTags(tagName);
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {
@@ -353,16 +356,13 @@ public static class WordUtilities
             {
                 runner.startNode = node;
                 runner.StartDialogue();
-                DialogueUI ui;
-                ui.userRes
-                    )runner.dialogueUI).
             }
             else
             {
                 runner.startNode = DialogueManager.instance.currentTarget.characterName + ".Catchall";
                 runner.StartDialogue();
             }
-                
+
         }
     }
     /// <summary>
@@ -537,5 +537,23 @@ public static class WordUtilities
             }
         }
         return false;
+    }
+    /// <summary>
+    /// Takes tags that arent actually tags and "corrects" them
+    /// eg. makes "OtherA" into "Other"
+    /// </summary>
+    /// <returns></returns>
+    public static string CorrectReplacementTags(string tagToCorrect, Bubble referenceBubble = null)
+    {
+        bool noReference = referenceBubble == null;
+        if (tagToCorrect == "OtherA")
+        {
+            tagToCorrect = "Other";
+            if (!noReference)
+            {
+                referenceBubble.data.permanentWord = true;
+            }
+        }
+        return tagToCorrect;
     }
 }

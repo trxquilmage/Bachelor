@@ -54,10 +54,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData data);
     }
-    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData data)
+    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData outData)
     {
         vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
-        data = new BubbleData();
+        if (data == null)
+            data = new BubbleData();
+
         //capitalize name
         data.name = WordUtilities.CapitalizeAllWordsInString(name);
         data.tagInfo = tags;
@@ -70,7 +72,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             originalWordInfo = wordInfo;
             originalText = wordInfo.textComponent;
         }
-
+        
         // Set the bubble to the correct text
         relatedText = transform.GetComponentInChildren<TMP_Text>();
         relatedText.text = data.name;
@@ -87,10 +89,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         // is there more than one word?
         data.isLongWord = (data.name.Trim().Split(@" "[0]).Length > 1);
+        outData = data;
     }
     public virtual void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
-        data = new BubbleData();
+        if (data == null)
+            data = new BubbleData();
         //capitalize name
         data.name = bubbleData.name;
         data.tagInfo = bubbleData.tagInfo;
@@ -177,6 +181,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                 {
                     WordCaseManager.instance.AutomaticOpenCase(true);
                     WordCaseManager.instance.openTag = data.tag;
+                    if (data.isLongWord)
+                        UpdateToBubbleShape();
                 }
                 else if (this is Quest)
                 {
@@ -308,6 +314,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
+        string fullText = editableText.text;
         Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
@@ -354,7 +361,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         text.ForceMeshUpdate();
         // set variables
-        TMP_CharacterInfo[] fullText = text.textInfo.characterInfo;
+        string fullText = data.name;
+        if (this is Quest && data.tagInfo[1] != "")
+            fullText = data.tagInfo[1];
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
         GameObject child;
@@ -372,7 +381,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
             {
-                line = line + fullText[i].character;
+                if (i < fullText.Length) // this has a sigificant problem, being that if the full text isnt the same as the name (like "visit my mother" -> "visit esthers mother" the number of letters is wrong
+                    line = line + fullText[i];
             }
             line = WordUtilities.CapitalizeAllWordsInString(line);
             text.text = line;
@@ -406,7 +416,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //Set the main text to full text again
         mainText.text = data.name;
         mainText.ForceMeshUpdate();
-        TMP_CharacterInfo[] fullText = mainText.textInfo.characterInfo;
+
+        // set variables
+        string fullText = data.name;
+        if (this is Quest && data.tagInfo[1] != "")
+            fullText = data.tagInfo[1];
 
         //Delete the other Bubbles
         Image[] images = toUpdate.GetComponentsInChildren<Image>();
@@ -424,7 +438,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
             {
-                line = line + fullText[i].character;
+                if (i < fullText.Length) // this has a sigificant problem, being that if the full text isnt the same as the name (like "visit my mother" -> "visit esthers mother" the number of letters is wrong
+                    line = line + fullText[i];
             }
             line = WordUtilities.CapitalizeAllWordsInString(line);
             mainText.text = line;
@@ -893,6 +908,15 @@ public class BubbleData
             UpdateBubbleData();
         }
     }
+    public bool permanentWord
+    {
+        get { return PermanentWord; }
+        set
+        {
+            PermanentWord = value;
+            UpdateBubbleData();
+        }
+    }
 
     string Name;
     string[] TagInfo;
@@ -900,6 +924,7 @@ public class BubbleData
     WordInfo.Origin Origin;
     Vector2[] LineLengths;
     bool IsLongWord;
+    bool PermanentWord;
 
     public virtual void UpdateBubbleData()
     {

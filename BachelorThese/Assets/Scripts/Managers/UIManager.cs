@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     float scaleFactor = 0;
     float timer = 0;
     GameObject currentTrashCan;
-    
+
     private void Awake()
     {
         instance = this;
@@ -35,10 +35,10 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 1)
+        if (timer > 0.5f)
         {
             timer = 0;
-            if (refM.canvas.scaleFactor != scaleFactor)
+            if (refM.dialogueCanvas.scaleFactor != scaleFactor)
             {
                 OnScale();
             }
@@ -83,13 +83,12 @@ public class UIManager : MonoBehaviour
     /// </summary>
     void OnScale()
     {
-        scaleFactor = refM.canvas.scaleFactor;
-        if (DialogueInputManager.instance.isActiveAndEnabled)
+        scaleFactor = refM.dialogueCanvas.scaleFactor;
+        foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
         {
-            foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
-                EffectUtilities.ReColorAllInteractableWords();
+            EffectUtilities.ReColorAllInteractableWords();
+            Debug.Log(text.text);
         }
-
     }
     /// <summary>
     /// Gives the correct colors to all UI Elements
@@ -309,22 +308,31 @@ public class UIManager : MonoBehaviour
             //is from the word case
             if (data.origin == WordInfo.Origin.WordCase)
             {
-                //spawn delete-vfx
-                WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
-                
-                WordCaseManager.instance.DeleteOutOfCase();
-                WordClickManager.instance.DestroyCurrentWord();
-                WordCaseManager.instance.UpdateContentCount();
-                StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
-                WordCaseManager.instance.ResetScrollbar();
-                WordCaseManager.instance.DestroyReplacement();
+                Bubble bubble = WordClickManager.instance.currentWord.GetComponent<Bubble>();
+                if (!bubble.data.permanentWord)
+                {
+                    //spawn delete-vfx
+                    WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
+
+                    WordCaseManager.instance.DeleteOutOfCase();
+                    WordClickManager.instance.DestroyCurrentWord();
+                    WordCaseManager.instance.UpdateContentCount();
+                    StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
+                    WordCaseManager.instance.ResetScrollbar();
+                    WordCaseManager.instance.DestroyReplacement();
+                }
+                else
+                {
+                    bubble.IsOverNothing();
+                    BlendInUI(refM.feedbackTextTrashYesNo, 3);
+                }
             }
             //is from the quest log
             else if (data.origin == WordInfo.Origin.QuestLog)
             {
                 //spawn delete-vfx
                 WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
-                
+
                 QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
                 currentParent.DeleteOutOfCase();
                 WordClickManager.instance.DestroyCurrentWord();
@@ -336,7 +344,7 @@ public class UIManager : MonoBehaviour
         {
             //spawn delete-vfx
             WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
-            
+
             QuestManager.instance.DeleteOutOfCase();
             WordClickManager.instance.DestroyCurrentWord();
             StartCoroutine(QuestManager.instance.RescaleScrollbar(true));

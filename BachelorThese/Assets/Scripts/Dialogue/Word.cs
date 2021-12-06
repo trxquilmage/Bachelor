@@ -19,9 +19,17 @@ public class Word : Bubble
         vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         relatedCase = WordCaseManager.instance;
         wordParent = this.gameObject;
-        base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
-        data = new WordData(bubbleData);
 
+        data = new BubbleData();
+        //fix the tags that arent "real" tags like "OtherA" -> "Other"
+        //so that the strings arent reference types :)
+        string[] tagsCopy = new string[tags.Length];
+        System.Array.Copy(tags, tagsCopy, tags.Length);
+        tagsCopy[0] = WordUtilities.CorrectReplacementTags(tagsCopy[0], this);
+
+        base.Initialize(name, tagsCopy, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
+
+        data = new WordData(bubbleData);
         //initialize the tag Object
         ((WordData)data).tagObj = new TagObject();
         ((WordData)data).tagObj.allGivenValues = new List<Yarn.Value>();
@@ -44,8 +52,14 @@ public class Word : Bubble
     {
         vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         wordParent = this.gameObject;
-        base.Initialize(bubbleData, firstAndLastWordIndex);
-        data = new WordData(bubbleData);
+        data = bubbleData;
+
+        //fix the tags that arent "real" tags like "OtherA" -> "Other"
+        data.tag = WordUtilities.CorrectReplacementTags(data.tag, this);
+
+        base.Initialize(data, firstAndLastWordIndex);
+        Debug.Log(data.permanentWord);
+        data = new WordData(data);
         ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
         ((WordData)data).currentParent = ((WordData)bubbleData).currentParent;
@@ -176,7 +190,7 @@ public class Word : Bubble
             else
                 IsOverNothing();
         }
-        
+
     }
     public override void OnBeginDrag(PointerEventData eventData)
     {
@@ -261,6 +275,7 @@ public class WordData : BubbleData
         lineLengths = data.lineLengths;
         isLongWord = data.isLongWord;
         bubbleData = data;
+        permanentWord = data.permanentWord;
     }
     public override void UpdateBubbleData()
     {

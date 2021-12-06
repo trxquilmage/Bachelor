@@ -23,6 +23,11 @@ public class Quest : Bubble
         relatedCase = QuestManager.instance;
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
+
+        //if the quest uses another text than the one written down, change what the text says.
+        if (bubbleData.tagInfo[1] != "")
+            relatedText.text = bubbleData.tagInfo[1];
+
         data = new QuestData(bubbleData);
         if (bubbleData is QuestData)
         {
@@ -38,6 +43,11 @@ public class Quest : Bubble
         vfxParent = effects[effects.Length - 1].transform.parent.gameObject;
         wordParent = transform.GetChild(0).gameObject;
         base.Initialize(bubbleData, firstAndLastWordIndex);
+
+        //if the quest uses another text than the one written down, change what the text says.
+        if (data.tagInfo[1] != "")
+            relatedText.text = data.tagInfo[1];
+
         data.origin = QuestManager.instance.origin;
         data = new QuestData(data);
         ((QuestData)data).dropDownOpen = ((QuestData)bubbleData).dropDownOpen;
