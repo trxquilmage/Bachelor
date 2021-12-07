@@ -3,12 +3,8 @@ tags:
 ---
 <<showcharactername Managers Riley>>
 <<set $characterName to getinfo("characterName", 0)>>
-<<set $characterQuest to getinfo("characterQuest", 0)>>
-<<set $isInspector to getinfo("isInspector", 0)>>
 <<if not isvisited("Riley", "Start")>>
     [[Riley.AskName]]
-<<elseif $characterQuest eq null and $isInspector eq null>>
-    [[Riley.RetryReasonForComing]]
 <<elseif $characterName eq null>>
     [[Riley.RetryName]]
 <<else>>
@@ -30,6 +26,7 @@ tags:
 title: Riley.AskName
 tags:
 ---
+Visit Your Mother.
 Hello, welcome to Bridgetown!
 <<showicantsay Managers>>
 <<displaypromptmenu Managers NameAAA>>
@@ -44,34 +41,22 @@ title: Riley.CantEnter
 tags:
 ---
 I'm sorry, I can't let anyone in right now.
-This town has become an active crime scene
-as of yesterday. There's been a murder.
+As of yesterday, this town has become an 
+active crime scene. There's been a murder.
+........
 Oh... Wait a second. 
-HQ said, they'll to send an inspector.
-<<displaypromptmenu Managers GenAAA>>
-Yes or No, are you the new inspector?
-<<set $isInspector to react("value", "isInspector", "Riley")>>
-<<if $isInspector eq true>>
-    [[Riley.IsInspector]]
+Are you the inspector HQ sent?
+<<if $characterName is not null>>
+    Yes, Inspector {$characterName}, right?
+    Wonderful to have you here today!
 <<else>>
-    [[Riley.IsntInspectorSorry]]
+    [[Riley.RetryName]]
 <<endif>>
 ===
 
 title: Riley.IsInspector
 tags:
 ---
-<<if $characterName eq null>>
-    Great. Glad to have you here, Inspector.....
-    <<showicantsay Managers>>
-    <<displaypromptmenu Managers AllAAA>>
-    Really. What is your name?
-    <<set $cantsay to icantsay("Riley", "NotWithoutName")>>
-    <<set $characterName to react("name", "characterName", "Riley")>>
-    Great. Glad to have you here, Inspector {$characterName}.
-<<else>>
-    Great. Glad to have you here, Inspector {$characterName}.
-<<endif>>
 <<displaypromptmenu Managers GenAAA>>
 Do you need a quick rundown of the case?
 <<set $needsRundown to react("value", "", "Riley")>>
@@ -84,65 +69,20 @@ Do you need a quick rundown of the case?
 <<endif>>
 ===
 
-title: Riley.IsntInspectorSorry
-tags:
----
-Oh okay.
-Sorry that was kind of a dumb question, I guess.
-But I am not allowed to let visitors into town.
-[[Riley.IsntInspector]]
-===
-
-title: Riley.IsntInspector
-tags:
----
-<<showicantsay Managers>>
-<<displaypromptmenu Managers QuestAAA>>
-Is your buiness here important? What are you here for?
-<<set $cantSay to icantsay("Riley", "CantGiveReasonForComing")>>
-<<set $questInfo to react("name", "characterQuest", "Riley")>>
-<<set $mother to react("Evelyn Garland", "mother", "Riley")>>
-<<if $questInfo eq "Visit Home" and $mother eq "Evelyn Garland">>
-    Oh.
-    Oh--okay.
-    Uh, would you mind going into town with me?
-    <<settocompanion Managers Riley>>
-<<elseif $questInfo eq "VisitHome">>
-    Oh you are here to visit home? 
-    If you're a local I guess I can let you through,
-    but I will need to follow you around.
-    <<settocompanion Managers Riley>>
-<<endif>>
-===
-
-title: Riley.CantGiveReasonForComing
-tags:
----
-Okay, look I can't let you into town,
-if you are that secretive about what
-you are here for. Please understand that.
-<<set $notAllowedIn to true>>
-===
-
-title: Riley.RetryReasonForComing
-tags:
----
-Okay, so can you now tell me what
-you are here for?
-<<set $notAllowedIn to false>>
-===
-
 title: Riley.NotWithoutName
 tags:
 ---
 Sorry, if you want to work with me,
-I will need your name for the papers.
+I will need your name to check, 
+if you are the new inspector.
+Talk to me again, if you change your mind.
 ===
 
 title: Riley.RetryName
 tags:
 ---
-Okay, let's try again. 
+I would really need your name to check, 
+whether you are the new inspector.
 <<showicantsay Managers>>
 <<displaypromptmenu Managers AllAAA>>
 What is your name?

@@ -95,6 +95,7 @@ public class Case : MonoBehaviour
     /// </summary>
     public virtual void SpawnContents()
     {
+        RearrangeContents();
         // Spawn words again
         foreach (BubbleData data in contents)
         {
@@ -272,6 +273,22 @@ public class Case : MonoBehaviour
             contents[index] = data;
         }
     }
+
+    public virtual void RearrangeContents()
+    {
+        List<BubbleData> favorites = new List<BubbleData>();
+        List<BubbleData> nonFavorites = new List<BubbleData>();
+
+        foreach (BubbleData data in contents)
+        {
+            if (data.isFavorite)
+                favorites.Add(data);
+            else
+                nonFavorites.Add(data);
+        }
+        favorites.AddRange(nonFavorites);
+        contents = favorites.ToArray();
+    }
     /// <summary>
     /// Checks if the given bubble data exists and returns the value and it's index
     /// If there is no value, the return indey is -1
@@ -280,6 +297,7 @@ public class Case : MonoBehaviour
     public BubbleData GetBubbleData(BubbleData data, out int index)
     {
         BubbleData returnData = null;
+
         index = -1;
         int i = -1;
         foreach (BubbleData contentData in contents)
@@ -329,6 +347,10 @@ public class Case : MonoBehaviour
     {
         GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, new TMP_WordInfo(), Vector2.zero, origin, true);
         bubble.transform.SetParent(listingParent.transform);
+
+        //QuestCase doesnt have favorites
+        if (!(this is QuestCase))
+            bubble.GetComponent<Bubble>().star = Instantiate(refM.starPrefab, bubble.GetComponentInChildren<TMP_Text>().transform, false);
         return bubble;
     }
     /// <summary>

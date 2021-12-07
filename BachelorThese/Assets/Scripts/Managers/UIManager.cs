@@ -87,7 +87,6 @@ public class UIManager : MonoBehaviour
         foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
         {
             EffectUtilities.ReColorAllInteractableWords();
-            Debug.Log(text.text);
         }
     }
     /// <summary>

@@ -46,6 +46,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject buttonPrefab;
     public GameObject questCountPrefab;
     public GameObject dropDownPrefab;
+    public GameObject starPrefab;
     [Header("Fields")]
     public GameObject nPCDialogueField;
     public GameObject playerInputField;

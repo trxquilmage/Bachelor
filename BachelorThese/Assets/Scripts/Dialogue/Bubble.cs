@@ -14,6 +14,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     [HideInInspector] public BubbleData data;
     [HideInInspector] public GameObject prefabReference;
     [HideInInspector] public GameObject wordParent;
+    [HideInInspector] public GameObject star;
     public GameObject vfxParent;
     [HideInInspector] public Case relatedCase;
 
@@ -102,6 +103,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.origin = bubbleData.origin;
         data.lineLengths = bubbleData.lineLengths;
         data.isLongWord = bubbleData.isLongWord;
+        data.isFavorite = bubbleData.isFavorite;
 
         // Set the bubble to the correct text
         relatedText = transform.GetComponentInChildren<TMP_Text>();
@@ -168,6 +170,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
         {
+            if (star != null)
+                Destroy(star.gameObject);
             WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
 
             if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
@@ -314,7 +318,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
-        string fullText = editableText.text;
         Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
@@ -352,6 +355,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+
+        //star = Instantiate(refM.starPrefab, GetComponentInChildren<TMP_Text>().transform, false);
     }
     /// <summary>
     /// Takes a long word and fits it into a shape that is compact
@@ -917,6 +922,15 @@ public class BubbleData
             UpdateBubbleData();
         }
     }
+    public bool isFavorite
+    {
+        get { return IsFavorite; }
+        set
+        {
+            IsFavorite = value;
+            UpdateBubbleData();
+        }
+    }
 
     string Name;
     string[] TagInfo;
@@ -925,6 +939,7 @@ public class BubbleData
     Vector2[] LineLengths;
     bool IsLongWord;
     bool PermanentWord;
+    bool IsFavorite;
 
     public virtual void UpdateBubbleData()
     {

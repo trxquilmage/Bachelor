@@ -29,7 +29,16 @@ public class WordCaseManager : Case
     }
 
     string OpenTag;
-    [HideInInspector] public string overrideTag = null;
+    [HideInInspector]
+    public string overrideTag
+    {
+        get { return OverrideTag; }
+        set
+        {
+            OverrideTag = value;
+        }
+    }
+    string OverrideTag = null;
     [HideInInspector] public Dictionary<string, BubbleData[]> tagRelatedWords;
 
     public void Start()
@@ -48,20 +57,52 @@ public class WordCaseManager : Case
     }
     public override void SetContents(BubbleData[] value)
     {
-        tagRelatedWords[openTag] = (BubbleData[])value;
+        //tag is "AllWords"
+        if (overrideTag == refM.wordTags[refM.allTagIndex].name || overrideTag == null && openTag == refM.wordTags[refM.allTagIndex].name)
+        {
+            //i dont think anything needs to happen here rn?
+        }
+        //override tag && isnt quest
+        else if (overrideTag != null && overrideTag != refM.wordTags[refM.questTagIndex].name)
+        {
+            tagRelatedWords[overrideTag] = value;
+            overrideTag = null;
+        }
+        else
+            tagRelatedWords[openTag] = value;
     }
     public override BubbleData[] GetContents()
     {
-        if (overrideTag != null && overrideTag != refM.wordTags[refM.questTagIndex].name)
+        //get contents: all words
+        if (overrideTag == refM.wordTags[refM.allTagIndex].name || overrideTag == null && openTag == refM.wordTags[refM.allTagIndex].name)
+        {
+            List<BubbleData> allContents = new List<BubbleData>();
+            foreach (BubbleData[] dataSets in tagRelatedWords.Values)
+            {
+                foreach (BubbleData data in dataSets)
+                    allContents.Add(data);
+            }
+            return allContents.ToArray();
+        }
+        //override tag, but not a quest
+        else if (overrideTag != null && overrideTag != refM.wordTags[refM.questTagIndex].name)
         {
             BubbleData[] data = tagRelatedWords[overrideTag];
             overrideTag = null;
             return data;
         }
+        //override tag is quest or no override tag
         else if (overrideTag != null || tagRelatedWords.ContainsKey(openTag))
+        {
+            overrideTag = null;
             return tagRelatedWords[openTag];
+        }
         else
             return null;
+    }
+    public override void RearrangeContents()
+    {
+        base.RearrangeContents();
     }
     public override void InitializeValues()
     {
@@ -84,7 +125,7 @@ public class WordCaseManager : Case
         foreach (WordInfo.WordTag wordTags in refM.wordTags)
         {
             //if the tag isnt "all" or "quest"
-            if (wordTags.name != refM.wordTags[refM.allTagIndex].name || wordTags.name != refM.wordTags[refM.questTagIndex].name)
+            if (wordTags.name != refM.wordTags[refM.allTagIndex].name && wordTags.name != refM.wordTags[refM.questTagIndex].name)
             {
                 BubbleData[] dataList = new BubbleData[refM.maxWordsPerTag];
                 for (int i = 0; i < refM.maxWordsPerTag; i++)
@@ -113,6 +154,7 @@ public class WordCaseManager : Case
     }
     public override void SpawnContents()
     {
+        RearrangeContents();
         // Load words of current tag
         // if tag isnt "AllWords"
         if (openTag != refM.wordTags[refM.allTagIndex].name)

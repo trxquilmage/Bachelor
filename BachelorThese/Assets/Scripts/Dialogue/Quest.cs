@@ -200,6 +200,8 @@ public class QuestData : BubbleData
         lineLengths = data.lineLengths;
         isLongWord = data.isLongWord;
         bubbleData = data;
+        permanentWord = data.permanentWord;
+        isFavorite = data.isFavorite;
 
         if (name != null)
         {

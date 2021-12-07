@@ -58,7 +58,6 @@ public class Word : Bubble
         data.tag = WordUtilities.CorrectReplacementTags(data.tag, this);
 
         base.Initialize(data, firstAndLastWordIndex);
-        Debug.Log(data.permanentWord);
         data = new WordData(data);
         ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
@@ -276,6 +275,7 @@ public class WordData : BubbleData
         isLongWord = data.isLongWord;
         bubbleData = data;
         permanentWord = data.permanentWord;
+        isFavorite = data.isFavorite;
     }
     public override void UpdateBubbleData()
     {
