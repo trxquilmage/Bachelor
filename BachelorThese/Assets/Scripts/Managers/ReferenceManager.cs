@@ -34,6 +34,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject askPromptBubbleParent;
     public GameObject tagButtonParent;
     public GameObject npcParent;
+    public GameObject otherUIParent;
     [Header("Dialogue Runner")]
     public DialogueRunner standartRunner;
     public DialogueUI standartDialogueUI;
@@ -113,6 +114,7 @@ public class ReferenceManager : MonoBehaviour
     public int maxQuestCount = 5;
     public int maxQuestAdditions = 5;
     public int interactionRadius = 5;
+    public int startWordTraitAmount = 5;
     public string sceneNumber = "001";
     [Header("Game Options")]
     public bool allWordsInteractable = false;
@@ -125,7 +127,6 @@ public class ReferenceManager : MonoBehaviour
     public int allTagIndex = 0;
     public int questTagIndex = 2;
     public int otherTagIndex = 3;
-    [HideInInspector] public float currQuestScrollbarDistance = 0;
     void Awake()
     {
         instance = this;

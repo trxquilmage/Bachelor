@@ -73,7 +73,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             originalWordInfo = wordInfo;
             originalText = wordInfo.textComponent;
         }
-        
+
         // Set the bubble to the correct text
         relatedText = transform.GetComponentInChildren<TMP_Text>();
         relatedText.text = data.name;
@@ -355,8 +355,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
-
-        //star = Instantiate(refM.starPrefab, GetComponentInChildren<TMP_Text>().transform, false);
     }
     /// <summary>
     /// Takes a long word and fits it into a shape that is compact
@@ -407,6 +405,22 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Destroy(wordParent.transform.GetChild(0).gameObject);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+
+        StartCoroutine(InstantiateStar());
+    }
+    /// <summary>
+    /// Instantiate STar after one frame, because otherwise the 
+    /// search still finds texts that are deleted at the end of the old frame
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator InstantiateStar()
+    {
+        yield return new WaitForEndOfFrame();
+        if (data.origin == WordInfo.Origin.WordCase || this is Quest && data.origin == WordInfo.Origin.QuestLog)
+        {
+            refM = ReferenceManager.instance;
+            star = Instantiate(refM.starPrefab, GetComponentInChildren<TMP_Text>().transform, false);
+        }
     }
     /// <summary>
     /// Takes a long word from a dialogue and changes it into the compact shape
@@ -835,25 +849,28 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <param name="i"></param>
     public void CallEffect(int i)
     {
-        VisualEffect chosenVFX = vfxParent.GetComponentsInChildren<VisualEffect>()[i];
-        if (i != 0)
+        if (vfxParent != null)
         {
-            chosenVFX.gameObject.transform.SetParent(refM.dialogueCanvas.transform);
-            chosenVFX.gameObject.transform.SetAsLastSibling();
-        }
+            VisualEffect chosenVFX = vfxParent.GetComponentsInChildren<VisualEffect>()[i];
+            if (i != 0)
+            {
+                chosenVFX.gameObject.transform.SetParent(refM.dialogueCanvas.transform);
+                chosenVFX.gameObject.transform.SetAsLastSibling();
+            }
 
-        //set effect width to bubble width
-        chosenVFX.SetFloat("width", wordParent.GetComponentInChildren<Image>().rectTransform.sizeDelta.x);
-        if (i != 1)
-        {
-            //set effect color to bubble color
-            Color color = wordParent.GetComponentInChildren<Image>().color;
-            chosenVFX.SetVector3("color", new Vector3(color.r, color.g, color.b));
-        }
+            //set effect width to bubble width
+            chosenVFX.SetFloat("width", wordParent.GetComponentInChildren<Image>().rectTransform.sizeDelta.x);
+            if (i != 1)
+            {
+                //set effect color to bubble color
+                Color color = wordParent.GetComponentInChildren<Image>().color;
+                chosenVFX.SetVector3("color", new Vector3(color.r, color.g, color.b));
+            }
 
-        UIManager.instance.PlayVFX(chosenVFX);
-        if (i != 0)
-            StartCoroutine(UIManager.instance.DestroyVFX(chosenVFX));
+            UIManager.instance.PlayVFX(chosenVFX);
+            if (i != 0)
+                StartCoroutine(UIManager.instance.DestroyVFX(chosenVFX));
+        }
     }
     #endregion
 }

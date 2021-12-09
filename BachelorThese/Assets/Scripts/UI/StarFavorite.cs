@@ -10,9 +10,11 @@ public class StarFavorite : MonoBehaviour
     Image image;
     TMP_Text text;
     Word word;
-    void Start()
+    void Awake()
     {
         word = transform.parent.parent.GetComponent<Word>();
+        if (word == null)
+            word = transform.parent.parent.parent.GetComponent<Word>();
         text = transform.parent.GetComponent<TMP_Text>();
         float positionX = text.textInfo.characterInfo[text.textInfo.characterCount - 1].bottomRight.x;
         transform.localPosition = new Vector3(positionX + 16, transform.localPosition.y, transform.localPosition.z);
@@ -24,8 +26,10 @@ public class StarFavorite : MonoBehaviour
         word.data.isFavorite = !word.data.isFavorite;
         UpdateStar();
     }
-    public void UpdateStar()
+    void UpdateStar()
     {
+        Debug.Log(word);
         image.color = word.data.isFavorite ? clickedColor : normalColor;
     }
 }
+
