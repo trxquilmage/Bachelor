@@ -114,7 +114,7 @@ public class ReferenceManager : MonoBehaviour
     public int maxQuestCount = 5;
     public int maxQuestAdditions = 5;
     public int interactionRadius = 5;
-    public int startWordTraitAmount = 5;
+    public int maxStartWordTraitAmount = 5;
     public string sceneNumber = "001";
     [Header("Game Options")]
     public bool allWordsInteractable = false;

@@ -1,0 +1,118 @@
+﻿title: Riley.Ask
+tags:
+---
+<<if not isvisited("Riley", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Riley.Brother
+tags:
+---
+AAA
+[[Riley.Continue]]
+===
+
+title: Riley.MarketTerraces
+tags:
+---
+AAA
+[[Riley.Continue]]
+===
+
+title: Riley.Greygate
+tags:
+---
+Greygate, hm? 
+<<displaypromptmenuask Managers GenAAA>>
+Have you ever been there?
+<<set $beenToGreygate to react("value", "", "Riley")>>
+<<if $beenToGreygate is true>>
+    Oh, you have? It's quite the amazing city.
+    I go there at least once a year to visit
+    my younger brother. He lives near the 
+    market terraces, so it's usually a great
+    expierience. An expensive one, too, though.
+    If you go again you should ride in one of
+    the cable cars. They've been installed all
+    over town in the recent years.
+<<else>>
+    You haven't, then? You should definetly go!
+    What I can recommend most is going to 
+    visit the market terrace. It's a multi-level
+    district filled with shops, restaurants,
+    auctions and stalls. Like they say you can
+    buy everything there - and it's very true.
+<<endif>>
+[[Riley.Continue]]
+===
+
+title: Riley.Capital
+tags:
+---
+[[Riley.Greygate]]
+===
+
+title: Riley.Family
+tags:
+---
+My family is from Glomure, but some moved to 
+different cities. My brother lives in the capital,
+my father still lives in Glomure, together with 
+my grandmother. And I have a lot of distant relatives
+all over the country. 
+We're like, not a very wealthy family.
+[[Riley.Continue]]
+===
+
+title: Riley.Riley
+tags:
+---
+Me? I'm Riley, Detective from Glomure, 
+which is two towns over, if you don't know.
+Hm... also I'm 31 years old and I think
+this is my fifth year working here.
+It's my first murder case, too.
+Oh but you wanted to know about me,
+not about the case, right?
+I grew up in Glomure and still have
+family over there. 
+People usually expect that I'm married,
+but I'm not.
+Haven't found the right person yet.
+[[Riley.Continue]]
+===
+
+title: Riley.Me
+tags:
+---
+You? I don't know that much about you.
+[[Riley.Continue]]
+===
+
+title: Riley.You
+tags:
+---
+[[Riley.Riley]]
+===
+
+title: Riley.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[Riley.Continue]]
+===
+
+title: Riley.ICantSay
+tags:
+---
+Oh, okay. No answer then.
+===
+
+title: Riley.Continue
+tags:
+---
+But we were talking about...
+===

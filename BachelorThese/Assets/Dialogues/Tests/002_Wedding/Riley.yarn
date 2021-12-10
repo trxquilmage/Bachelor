@@ -1,0 +1,70 @@
+﻿title: Riley.Start
+tags:
+---
+<<showcharactername Managers Riley>>
+<<set $hasDate to getinfo("hasDate", 0)>>
+<<if not isvisited("Riley", "Start")>>
+    [[Riley.Introduction]]
+<<elseif $hasDate eq false>>
+    [[Riley.RetryName]]
+<<else>>
+    [[Riley.CompanionMenu]]
+<<endif>>
+===
+
+title: Riley.CompanionMenu
+tags: 
+---
+<<if not isvisited("Riley", "Walking")>>
+    [[Riley.Walking]]
+<<elseif not isvisited("Riley", "Origin")>>
+    [[Riley.Origin]]
+<<endif>>
+...
+===
+
+title: Riley.Introduction
+tags:
+---
+Hi! Uh... Sorry...
+You are the fifth person I am asking.
+Do you happen to have met somebody
+on a ... uh... online dating app...
+and did you invite said hypothetical person
+to... let's say... a wedding?
+[[Riley.AskDate]]
+===
+
+title: Riley.AskDate
+tags:
+---
+<<displaypromptmenu Managers GenAAA>>
+So... uh. Are we on a date?
+<<set $hasDate to react("value", "hasDate", "Riley")>>
+<<if $hasDate eq true>>
+    Oh, thank god.
+    People were starting to stare at me.
+    I don't want to keep you from going in,
+    so I will just follow you, okay?
+    <<settocompanion Managers Riley>>
+<<else>>
+    Oh, okay, then.
+    Like. I promise, I'm not like.
+    Some wedding crasher or like. loitering.
+<<endif>>
+===
+
+title: Riley.RetryDate
+tags:
+---
+Hi! Uh... did you change your mind?
+[[Riley.AskDate]]
+===
+
+title: Riley.ICantSay
+tags:
+---
+Oh, okay. No answer then.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

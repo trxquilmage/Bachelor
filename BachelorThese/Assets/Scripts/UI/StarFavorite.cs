@@ -28,7 +28,6 @@ public class StarFavorite : MonoBehaviour
     }
     void UpdateStar()
     {
-        Debug.Log(word);
         image.color = word.data.isFavorite ? clickedColor : normalColor;
     }
 }

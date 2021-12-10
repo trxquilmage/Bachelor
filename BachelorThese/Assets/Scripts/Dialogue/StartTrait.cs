@@ -6,15 +6,17 @@ using TMPro;
 
 public class StartTrait : MonoBehaviour
 {
-    public string description;
-    public string[] relatedWords;
-    public StartQuestion relatedQuestion;
+    [HideInInspector] public string description;
+    [HideInInspector] public string[] relatedWords;
+    [HideInInspector] public string[] relatedCommands;
+    [HideInInspector] public StartQuestion relatedQuestion;
     public Toggle toggle;
     public void Initialize(StartTraitData data)
     {
         toggle = GetComponent<Toggle>();
         description = data.description;
         relatedWords = data.relatedWords;
+        relatedCommands = data.relatedCommands;
 
         //fill the object with the correct text 
         GetComponentInChildren<TMP_Text>().text = description;
@@ -25,10 +27,18 @@ public class StartTrait : MonoBehaviour
     }
     public void OnCheck()
     {
-        if (toggle.isOn)
-            relatedQuestion.ChangeCurrentlySelected(this);
-        else
+        //is being turned off
+        if (!toggle.isOn)
             relatedQuestion.EraseCurrentlySelected(this);
+        //max count reached: uncheck again
+        else if (relatedQuestion.maxCountReached)
+        {
+            relatedQuestion.ChangeCurrentlySelected(this);
+            Uncheck();
+        }
+        //is being turned on (max count not reached)
+        else
+            relatedQuestion.ChangeCurrentlySelected(this);
     }
 }
 [System.Serializable]
@@ -36,5 +46,6 @@ public class StartTraitData
 {
     public string description;
     public string[] relatedWords;
+    public string[] relatedCommands;
 }
 
