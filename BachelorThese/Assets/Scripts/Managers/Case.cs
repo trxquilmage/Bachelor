@@ -8,6 +8,7 @@ public class Case : MonoBehaviour
 {
     //inheriting classes fill these values in on InitializeValues()
     [HideInInspector] public GameObject caseObject;
+    [HideInInspector] public Image journalImage;
     [HideInInspector] public GameObject listingParent;
     [HideInInspector] public TMP_Text contentCount;
     [HideInInspector] public WordInfo.Origin origin;

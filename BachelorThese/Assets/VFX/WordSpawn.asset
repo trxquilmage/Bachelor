@@ -28,7 +28,7 @@ MonoBehaviour:
     distance: {x: 2, y: -2}
     useGraphicAlpha: 1
   useOutline: 0
-  showOutlineSettings: 0
+  showOutlineSettings: 1
   outliner:
     outlineColor: {r: 1, g: 1, b: 1, a: 1}
     thickness: 2

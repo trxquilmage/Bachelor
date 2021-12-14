@@ -31,4 +31,4 @@ MonoBehaviour:
   textFieldColor: {r: 0.9333334, g: 0.73333335, b: 0.46274513, a: 1}
   inputFieldColor: {r: 0.72156864, g: 0.37254903, b: 0.38431376, a: 1}
   nameFieldColor: {r: 0.6156863, g: 0.7490196, b: 0.48627454, a: 1}
-  interactableButtonsColor: {r: 0.93333334, g: 0.73333335, b: 0.4627451, a: 1}
+  interactableButtonsColor: {r: 0.93333334, g: 0.73333335, b: 0.40392157, a: 1}

@@ -34,7 +34,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
 
         text.ForceMeshUpdate();
         Vector3[] parameters = WordUtilities.GetWordParameters(text, text.textInfo.wordInfo[0], false);
-        rT.sizeDelta = new Vector2(parameters[1].x + 10, rT.sizeDelta.y);
+        rT.sizeDelta = new Vector2(parameters[1].x + 25, rT.sizeDelta.y);
     }
 
     public void OnPointerClick(PointerEventData eventData)

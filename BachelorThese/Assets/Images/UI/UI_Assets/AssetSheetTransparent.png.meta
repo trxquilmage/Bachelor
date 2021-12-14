@@ -1,0 +1,936 @@
+fileFormatVersion: 2
+guid: 0249e0ad4935d014b90767eeb1ba8fc3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 632612869342685169
+    second: AssetSheetTransparent_0
+  - first:
+      213: 7922889637883623213
+    second: AssetSheetTransparent_2
+  - first:
+      213: -6638650059966807872
+    second: AssetSheetTransparent_3
+  - first:
+      213: -793062474494875646
+    second: AssetSheetTransparent_4
+  - first:
+      213: 2364356223143461522
+    second: AssetSheetTransparent_6
+  - first:
+      213: 5247786407321672523
+    second: AssetSheetTransparent_7
+  - first:
+      213: -6927005642166308498
+    second: AssetSheetTransparent_8
+  - first:
+      213: 4994718600964339207
+    second: AssetSheetTransparent_9
+  - first:
+      213: -452558897291933550
+    second: AssetSheetTransparent_10
+  - first:
+      213: 6738624928657326298
+    second: AssetSheetTransparent_12
+  - first:
+      213: 8308193358397374706
+    second: AssetSheetTransparent_13
+  - first:
+      213: -7051646734922678093
+    second: AssetSheetTransparent_14
+  - first:
+      213: 6602748327197878319
+    second: AssetSheetTransparent_15
+  - first:
+      213: 2936280008702603440
+    second: AssetSheetTransparent_16
+  - first:
+      213: -8850354831588076352
+    second: AssetSheetTransparent_17
+  - first:
+      213: -3719853835096376489
+    second: AssetSheetTransparent_18
+  - first:
+      213: 8921939057324285580
+    second: AssetSheetTransparent_20
+  - first:
+      213: -3255649902414167469
+    second: AssetSheetTransparent_21
+  - first:
+      213: -5582417540400317193
+    second: AssetSheetTransparent_28
+  - first:
+      213: -1608750415290023657
+    second: AssetSheetTransparent_30
+  - first:
+      213: -8259809838494616922
+    second: AssetSheetTransparent_31
+  - first:
+      213: 522645337720517003
+    second: AssetSheetTransparent_34
+  - first:
+      213: -3548673727607949968
+    second: AssetSheetTransparent_35
+  - first:
+      213: -7357239012623928537
+    second: AssetSheetTransparent_36
+  - first:
+      213: -1237716318152288458
+    second: AssetSheetTransparent_37
+  - first:
+      213: -1280967183131841543
+    second: AssetSheetTransparent_38
+  - first:
+      213: 4344105760104762932
+    second: AssetSheetTransparent_39
+  - first:
+      213: -8913733732880660133
+    second: AssetSheetTransparent_40
+  - first:
+      213: 6021303591277683573
+    second: AssetSheetTransparent_1
+  - first:
+      213: -8024141845051448467
+    second: AssetSheetTransparent_5
+  - first:
+      213: -4336586099211505358
+    second: AssetSheetTransparent_11
+  - first:
+      213: -6642375869069608028
+    second: AssetSheetTransparent_19
+  - first:
+      213: 3574711520438904683
+    second: AssetSheetTransparent_22
+  - first:
+      213: -6741888410944490764
+    second: AssetSheetTransparent_23
+  - first:
+      213: 7329086641859872607
+    second: AssetSheetTransparent_24
+  - first:
+      213: -8205506241594594130
+    second: AssetSheetTransparent_25
+  - first:
+      213: -8794429722530440488
+    second: AssetSheetTransparent_26
+  - first:
+      213: -7478990691059391196
+    second: AssetSheetTransparent_27
+  - first:
+      213: 5790193018822559157
+    second: AssetSheetTransparent_29
+  - first:
+      213: 7177564113438492420
+    second: AssetSheetTransparent_32
+  - first:
+      213: -3661727776977770729
+    second: AssetSheetTransparent_33
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: AssetSheetTransparent_0
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 2636
+        width: 252
+        height: 244
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f7e28d8d0e77c800800000000000000
+      internalID: 632612869342685169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_2
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 2683
+        width: 145
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d273dacf522c3fd60800000000000000
+      internalID: 7922889637883623213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_3
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 2693
+        width: 477
+        height: 117
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c08d8b81f6ced3a0800000000000000
+      internalID: -6638650059966807872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_4
+      rect:
+        serializedVersion: 2
+        x: 1570
+        y: 2682
+        width: 130
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2086a0b91e97ef4f0800000000000000
+      internalID: -793062474494875646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_6
+      rect:
+        serializedVersion: 2
+        x: 3003
+        y: 2696
+        width: 77
+        height: 103
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29243f24571efc020800000000000000
+      internalID: 2364356223143461522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_7
+      rect:
+        serializedVersion: 2
+        x: 3899
+        y: 1929
+        width: 1035
+        height: 882
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4b1889fee1e3d840800000000000000
+      internalID: 5247786407321672523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_8
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 2682
+        width: 142
+        height: 175
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e61fc8db1155edf90800000000000000
+      internalID: -6927005642166308498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_9
+      rect:
+        serializedVersion: 2
+        x: 2079
+        y: 2685
+        width: 147
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 706f38bba1ec05540800000000000000
+      internalID: 4994718600964339207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_10
+      rect:
+        serializedVersion: 2
+        x: 2362
+        y: 2679
+        width: 125
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 298c8f6a41038b9f0800000000000000
+      internalID: -452558897291933550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_12
+      rect:
+        serializedVersion: 2
+        x: 3270
+        y: 2627
+        width: 526
+        height: 162
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad0463b7ba7648d50800000000000000
+      internalID: 6738624928657326298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_13
+      rect:
+        serializedVersion: 2
+        x: 5066
+        y: 1684
+        width: 1584
+        height: 1114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f0098c37d1ac4370800000000000000
+      internalID: 8308193358397374706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_14
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 2356
+        width: 251
+        height: 132
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b00463e7a4832e90800000000000000
+      internalID: -7051646734922678093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_15
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 1657
+        width: 735
+        height: 879
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f282fe7ee9ca1ab50800000000000000
+      internalID: 6602748327197878319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_16
+      rect:
+        serializedVersion: 2
+        x: 1252
+        y: 2228
+        width: 454
+        height: 261
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b0bccf5c13cfb820800000000000000
+      internalID: 2936280008702603440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_17
+      rect:
+        serializedVersion: 2
+        x: 1838
+        y: 1586
+        width: 145
+        height: 885
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c4d70ffb293d2580800000000000000
+      internalID: -8850354831588076352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_18
+      rect:
+        serializedVersion: 2
+        x: 2158
+        y: 1643
+        width: 751
+        height: 834
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75bb4b645ac606cc0800000000000000
+      internalID: -3719853835096376489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_30
+      rect:
+        serializedVersion: 2
+        x: 3937
+        y: 1050
+        width: 909
+        height: 740
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 711406455029ca9e0800000000000000
+      internalID: -1608750415290023657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_34
+      rect:
+        serializedVersion: 2
+        x: 3026
+        y: 1110
+        width: 672
+        height: 279
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8178526a2fc04700800000000000000
+      internalID: 522645337720517003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_35
+      rect:
+        serializedVersion: 2
+        x: 429
+        y: 60
+        width: 699
+        height: 873
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 075ba22eb0490cec0800000000000000
+      internalID: -3548673727607949968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_36
+      rect:
+        serializedVersion: 2
+        x: 1299
+        y: 543
+        width: 297
+        height: 278
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 723b7ec2916d5e990800000000000000
+      internalID: -7357239012623928537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_37
+      rect:
+        serializedVersion: 2
+        x: 1642
+        y: 590
+        width: 271
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63714dbf09fb2dee0800000000000000
+      internalID: -1237716318152288458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_38
+      rect:
+        serializedVersion: 2
+        x: 2084
+        y: 568
+        width: 259
+        height: 268
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9fb6e704227193ee0800000000000000
+      internalID: -1280967183131841543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_1
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 2798
+        width: 133
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 573e3eac6b7ff8350800000000000000
+      internalID: 6021303591277683573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_5
+      rect:
+        serializedVersion: 2
+        x: 1811
+        y: 2681
+        width: 130
+        height: 125
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d636c52718584a090800000000000000
+      internalID: -8024141845051448467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_11
+      rect:
+        serializedVersion: 2
+        x: 2600
+        y: 2687
+        width: 304
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 231f9924be951d3c0800000000000000
+      internalID: -4336586099211505358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_19
+      rect:
+        serializedVersion: 2
+        x: 3136
+        y: 2268
+        width: 389
+        height: 189
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4abba73075a81d3a0800000000000000
+      internalID: -6642375869069608028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_22
+      rect:
+        serializedVersion: 2
+        x: 1333
+        y: 1969
+        width: 324
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b67e14e203deb9130800000000000000
+      internalID: 3574711520438904683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_24
+      rect:
+        serializedVersion: 2
+        x: 3056
+        y: 1939
+        width: 257
+        height: 203
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f574e18387526b560800000000000000
+      internalID: 7329086641859872607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_25
+      rect:
+        serializedVersion: 2
+        x: 3378
+        y: 1938
+        width: 210
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eace0834c8f202e80800000000000000
+      internalID: -8205506241594594130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_27
+      rect:
+        serializedVersion: 2
+        x: 1273
+        y: 1562
+        width: 411
+        height: 254
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 425a3f48799453890800000000000000
+      internalID: -7478990691059391196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_29
+      rect:
+        serializedVersion: 2
+        x: 3045
+        y: 1642
+        width: 390
+        height: 164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b58dd37fd5ea5050800000000000000
+      internalID: 5790193018822559157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_32
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 991
+        width: 1303
+        height: 383
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 407c7166884db9360800000000000000
+      internalID: 7177564113438492420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheetTransparent_33
+      rect:
+        serializedVersion: 2
+        x: 1690
+        y: 999
+        width: 1134
+        height: 381
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7172f0dccfdee2dc0800000000000000
+      internalID: -3661727776977770729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

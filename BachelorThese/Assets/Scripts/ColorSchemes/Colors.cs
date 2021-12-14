@@ -23,4 +23,8 @@ public class Colors : ScriptableObject
     public Color inputFieldColor;
     public Color nameFieldColor;
     public Color interactableButtonsColor;
+    public Color limitColor;
+    public Color headerColor;
+    public Color trashColor;
+    public Color highlightColor;
 }

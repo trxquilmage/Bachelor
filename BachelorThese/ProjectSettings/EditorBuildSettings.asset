@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MenuScene.unity
     guid: 58dfc10ffb85ebb48a40cc1134b28983
+  - enabled: 1
+    path: Assets/Scenes/002_ActualWeddingScene.unity
+    guid: 3535994fa1630b24dbfaf53158f50ec4
   m_configObjects: {}

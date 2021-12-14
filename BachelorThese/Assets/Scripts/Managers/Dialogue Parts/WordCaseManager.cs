@@ -109,6 +109,7 @@ public class WordCaseManager : Case
         base.InitializeValues();
         tagRelatedWords = new Dictionary<string, BubbleData[]>();
         caseObject = refM.wordCase;
+        journalImage = refM.wordJournal;
         listingParent = refM.listingParent;
         contentCount = refM.wordLimit;
         maxContentAmount = refM.maxWordsPerTag;
@@ -224,16 +225,15 @@ public class WordCaseManager : Case
     {
         // Set Background Color to Tag Color + a bit grey
         Color color = WordUtilities.MatchColorToTag(openTag);
-        color = Color.Lerp(color, Color.grey, 0.35f);
-        Color colorStandart = Color.Lerp(color, Color.white, 0.3f);
-        caseObject.GetComponent<Image>().color = color;
+        Color highlightColor = Color.Lerp(color, refM.highlightColor, 0.35f);
+        journalImage.GetComponent<Image>().color = highlightColor;
         if (refM.wordLimit.isActiveAndEnabled)
         {
-            refM.wordLimit.GetComponentInParent<Image>().color = color;
+            //refM.wordLimit.GetComponentInParent<Image>().color = color;
             refM.bubbleScrollbar.GetComponent<Image>().color = color;
-            refM.bubbleScrollbar.GetComponentsInChildren<Image>()[1].color = colorStandart;
+            refM.bubbleScrollbar.GetComponentsInChildren<Image>()[1].color = color;
             refM.buttonScrollbar.GetComponent<Image>().color = color;
-            refM.buttonScrollbar.GetComponentsInChildren<Image>()[1].color = colorStandart;
+            refM.buttonScrollbar.GetComponentsInChildren<Image>()[1].color = color;
         }
     }
 

@@ -8,15 +8,6 @@ public class StartWordManager : MonoBehaviour
     public static StartWordManager instance;
     ReferenceManager refM;
 
-    [Header("For Start Words")]
-    [SerializeField] GameObject mainParent;
-    [SerializeField] GameObject questionParent;
-    [SerializeField] GameObject traitParent;
-    [SerializeField] GameObject wordParent;
-    [SerializeField] TMP_Text showWordsText;
-    [SerializeField] List<string> startWords;
-    [SerializeField] List<string> startCommands;
-
     void Awake()
     {
         instance = this;
@@ -31,7 +22,7 @@ public class StartWordManager : MonoBehaviour
     }
     public void CallStartWordScreen()
     {
-        mainParent.SetActive(true);
+        refM.mainStartWordParent.SetActive(true);
         refM.otherUIParent.SetActive(false);
         DialogueInputManager.instance.enabled = true;
         DialogueManager.instance.isInDialogue = true;
@@ -43,15 +34,15 @@ public class StartWordManager : MonoBehaviour
             case 0:
                 if (CheckForAllQuestionsAnswered())
                 {
-                    questionParent.SetActive(false);
-                    traitParent.SetActive(true);
-                    SaveStartWords(questionParent, false);
+                    refM.questionParent.SetActive(false);
+                    refM.traitParent.SetActive(true);
+                    SaveStartWords(refM.questionParent, false);
                 }
                 break;
             case 1:
-                traitParent.SetActive(false);
-                wordParent.SetActive(true);
-                SaveStartWords(traitParent, true);
+                refM.traitParent.SetActive(false);
+                refM.generatorParent.SetActive(true);
+                SaveStartWords(refM.traitParent, true);
                 ShowSelectedWords();
                 refM.otherUIParent.SetActive(true);
                 refM.otherUIParent.transform.GetChild(1).gameObject.SetActive(false);
@@ -68,7 +59,7 @@ public class StartWordManager : MonoBehaviour
     /// <returns></returns>
     bool CheckForAllQuestionsAnswered()
     {
-        foreach (StartQuestion question in questionParent.GetComponentsInChildren<StartQuestion>())
+        foreach (StartQuestion question in refM.questionParent.GetComponentsInChildren<StartQuestion>())
         {
             if (!question.questionAnswered)
                 return false;
@@ -85,16 +76,16 @@ public class StartWordManager : MonoBehaviour
             //if there is only one possible answer to the question
             if (!moreThanOneAnswer)
             {
-                startWords.AddRange(question.currentlySelected.relatedWords);
-                startCommands.AddRange(question.currentlySelected.relatedCommands);
+                refM.startWords.AddRange(question.currentlySelected.relatedWords);
+                refM.startCommands.AddRange(question.currentlySelected.relatedCommands);
             }
             else
                 foreach (StartTrait trait in question.allCurrentlySelected)
                 {
                     if (trait != null)
                     {
-                        startWords.AddRange(trait.relatedWords);
-                        startCommands.AddRange(trait.relatedCommands);
+                        refM.startWords.AddRange(trait.relatedWords);
+                        refM.startCommands.AddRange(trait.relatedCommands);
                     }
                 }
         }
@@ -106,10 +97,10 @@ public class StartWordManager : MonoBehaviour
     {
         string text = "";
         string spacing = "    ";
-        startWords = GoThroughGivenCommands(startWords);
-        foreach (string word in startWords)
+        refM.startWords = GoThroughGivenCommands(refM.startWords);
+        foreach (string word in refM.startWords)
             text += word + spacing;
-        showWordsText.text = text;
+        refM.showWordsText.text = text;
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
@@ -118,7 +109,7 @@ public class StartWordManager : MonoBehaviour
     /// <returns></returns>
     List<string> GoThroughGivenCommands(List<string> startWords)
     {
-        foreach (string command in startCommands)
+        foreach (string command in refM.startCommands)
         {
             switch (command)
             {
@@ -164,8 +155,8 @@ public class StartWordManager : MonoBehaviour
     /// </summary>
     public void EndStartWordScreen()
     {
-        mainParent.SetActive(false);
-        wordParent.SetActive(false);
+        refM.mainStartWordParent.SetActive(false);
+        refM.generatorParent.SetActive(false);
         refM.otherUIParent.SetActive(true);
         DialogueInputManager.instance.enabled = false;
         DialogueManager.instance.isInDialogue = false;

@@ -25,6 +25,10 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color inputFieldColor;
     [HideInInspector] public Color nameFieldColor;
     [HideInInspector] public Color interactableButtonColor;
+    [HideInInspector] public Color limitColor;
+    [HideInInspector] public Color headerColor;
+    [HideInInspector] public Color trashColor;
+    [HideInInspector] public Color highlightColor;
     [Header("Parents")]
     public GameObject selectedWordParent;
     public GameObject selectedWordParentAsk;
@@ -61,6 +65,8 @@ public class ReferenceManager : MonoBehaviour
     public GameObject questTrashCan;
     public TMP_Text wordLimit;
     public TMP_Text questLimit;
+    public Image questJournal;
+    public Image wordJournal;
     public GameObject ask;
     public GameObject abortAsk;
     public GameObject barter;
@@ -77,6 +83,20 @@ public class ReferenceManager : MonoBehaviour
     public GameObject nameField;
     public GameObject npcDialogueTextBox;
     public GameObject npcDialogueTextBoxAsk;
+    [Header("StartWords")]
+    public GameObject mainStartWordParent;
+    public GameObject questionParent;
+    public GameObject traitParent;
+    public GameObject generatorParent;
+    public Image questionBackground;
+    public Image traitBackground;
+    public Image generatorBackground;
+    public Image questionContinueButton;
+    public Image traitContinueButton;
+    public Image generatorContinueButton;
+    public TMP_Text showWordsText;
+    public List<string> startWords;
+    public List<string> startCommands;
     [Header("TEXTS")]
     public TMP_Text[] interactableTextList;
     public int npcTextIndex = 0;
@@ -155,5 +175,9 @@ public class ReferenceManager : MonoBehaviour
         inputFieldColor = colors.inputFieldColor;
         nameFieldColor = colors.nameFieldColor;
         interactableButtonColor = colors.interactableButtonsColor;
+        limitColor = colors.limitColor;
+        headerColor = colors.headerColor;
+        trashColor = colors.trashColor;
+        highlightColor = colors.highlightColor;
     }
 }

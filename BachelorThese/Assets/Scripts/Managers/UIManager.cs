@@ -15,7 +15,6 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public RefBool clickFeedbackIsRunning = new RefBool() { refBool = false };
     [HideInInspector] public float buttonWidth = 0;
     ReferenceManager refM;
-    WordCaseManager wcM;
     float scaleFactor = 0;
     float timer = 0;
     GameObject currentTrashCan;
@@ -27,7 +26,6 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         refM = ReferenceManager.instance;
-        wcM = WordCaseManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
         ColorUI();
         FillActiveEffects();
@@ -109,9 +107,9 @@ public class UIManager : MonoBehaviour
 
         refM.ask.GetComponent<Image>().color = refM.askColor;
         refM.barter.GetComponent<Image>().color = refM.askColor;
-        refM.trashCan.GetComponent<Image>().color = refM.askColor;
-        refM.wButton.GetComponent<Image>().color = refM.askColor;
-        refM.qButton.GetComponent<Image>().color = refM.askColor;
+        refM.trashCan.GetComponent<Image>().color = refM.trashColor;
+        refM.wButton.GetComponent<Image>().color = refM.headerColor;
+        refM.qButton.GetComponent<Image>().color = refM.headerColor;
 
         refM.playerInputField.GetComponent<Image>().color = refM.inputFieldColor;
         refM.npcDialogueTextBox.GetComponent<Image>().color = refM.textFieldColor;
@@ -120,14 +118,23 @@ public class UIManager : MonoBehaviour
 
         //color quest case (word case is colored on OpenOnTag())
         Color color = refM.wordTags[ReferenceManager.instance.questTagIndex].tagColor;
-        Color greyColor = Color.Lerp(color, Color.grey, 0.35f);
-        Color colorHighlight = Color.Lerp(color, Color.white, 0.3f);
-        refM.questCase.GetComponent<Image>().color = greyColor;
-        refM.questLimit.GetComponentInParent<Image>().color = greyColor;
-        refM.questScrollbar.GetComponent<Image>().color = greyColor;
-        refM.questScrollbar.transform.GetChild(0).GetComponentInChildren<Image>().color = greyColor;
-        refM.questTrashCan.GetComponent<Image>().color = refM.askColor;
+        Color highlightedColor = Color.Lerp(color, refM.highlightColor, 0.35f);
+        refM.questJournal.GetComponent<Image>().color = highlightedColor;
+        refM.questLimit.GetComponentInParent<Image>().color = refM.limitColor;
+        refM.wordLimit.GetComponentInParent<Image>().color = refM.limitColor;
+        refM.questScrollbar.GetComponent<Image>().color = color;
+        refM.questScrollbar.transform.GetChild(0).GetComponentInChildren<Image>().color = color;
+        refM.questTrashCan.GetComponent<Image>().color = refM.trashColor;
 
+        //startwords
+        refM.questionBackground.color = refM.textFieldColor;
+        refM.traitBackground.color = refM.textFieldColor;
+        refM.generatorBackground.color = refM.textFieldColor;
+        refM.questionContinueButton.color = refM.interactableButtonColor;
+        refM.traitContinueButton.color = refM.interactableButtonColor;
+        refM.generatorContinueButton.color = refM.interactableButtonColor;
+
+        //buttons
         refM.continueButton.GetComponent<Image>().color = refM.interactableButtonColor;
         refM.askButton.GetComponent<Image>().color = refM.interactableButtonColor;
         refM.askContinueButton.GetComponent<Image>().color = refM.interactableButtonColor;
