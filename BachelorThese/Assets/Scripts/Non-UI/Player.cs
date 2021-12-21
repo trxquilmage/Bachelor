@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
         controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
         controls.Player.Talk.performed += context => InteractE();
         controls.Player.TalkCompanion.performed += context => InteractF();
+        controls.Player.Escape.performed += context => EnterMenu();
         rigid = this.GetComponent<Rigidbody>();
         refM = ReferenceManager.instance;
     }
@@ -40,6 +41,14 @@ public class Player : MonoBehaviour
             rigid.velocity = rigid.velocity.normalized;
             rigid.velocity *= speed;
         }
+    }
+    void EnterMenu()
+    {
+        MenuManager menu = MenuManager.instance;
+        if (!menu.inMenu)
+            menu.EnterMenu();
+        else
+            menu.ExitMenu();
     }
     void StopWalking()
     {

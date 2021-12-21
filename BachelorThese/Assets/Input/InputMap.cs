@@ -49,6 +49,14 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""a2bdcde0-3633-426d-ba99-7f41ca49eb65"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -161,6 +169,17 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""TalkCompanion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1704b675-3ff6-4827-9ac4-bd69b15a5cf8"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -249,6 +268,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         m_Player_WalkLR = m_Player.FindAction("WalkLR", throwIfNotFound: true);
         m_Player_Talk = m_Player.FindAction("Talk", throwIfNotFound: true);
         m_Player_TalkCompanion = m_Player.FindAction("TalkCompanion", throwIfNotFound: true);
+        m_Player_Escape = m_Player.FindAction("Escape", throwIfNotFound: true);
         // Dialogue
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_Click = m_Dialogue.FindAction("Click", throwIfNotFound: true);
@@ -307,6 +327,7 @@ public class @InputMap : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_WalkLR;
     private readonly InputAction m_Player_Talk;
     private readonly InputAction m_Player_TalkCompanion;
+    private readonly InputAction m_Player_Escape;
     public struct PlayerActions
     {
         private @InputMap m_Wrapper;
@@ -315,6 +336,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         public InputAction @WalkLR => m_Wrapper.m_Player_WalkLR;
         public InputAction @Talk => m_Wrapper.m_Player_Talk;
         public InputAction @TalkCompanion => m_Wrapper.m_Player_TalkCompanion;
+        public InputAction @Escape => m_Wrapper.m_Player_Escape;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -336,6 +358,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @TalkCompanion.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
                 @TalkCompanion.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
                 @TalkCompanion.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalkCompanion;
+                @Escape.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -352,6 +377,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @TalkCompanion.started += instance.OnTalkCompanion;
                 @TalkCompanion.performed += instance.OnTalkCompanion;
                 @TalkCompanion.canceled += instance.OnTalkCompanion;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -411,6 +439,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         void OnWalkLR(InputAction.CallbackContext context);
         void OnTalk(InputAction.CallbackContext context);
         void OnTalkCompanion(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
     public interface IDialogueActions
     {
