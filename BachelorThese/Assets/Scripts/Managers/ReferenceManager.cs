@@ -60,6 +60,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject askField;
     public GameObject askNPCField;
     public GameObject menuField;
+    public GameObject tutorialField;
     public Canvas dialogueCanvas;
     [Header("UI Elements")]
     public GameObject trashCan;

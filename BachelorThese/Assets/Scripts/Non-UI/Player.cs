@@ -44,11 +44,7 @@ public class Player : MonoBehaviour
     }
     void EnterMenu()
     {
-        MenuManager menu = MenuManager.instance;
-        if (!menu.inMenu)
-            menu.EnterMenu();
-        else
-            menu.ExitMenu();
+        MenuManager.instance.PressedEsc();
     }
     void StopWalking()
     {

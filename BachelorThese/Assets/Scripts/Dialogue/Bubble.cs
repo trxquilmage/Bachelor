@@ -240,39 +240,45 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             // if mouse was dragging the object and now releases it
             if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
             {
-                WordClickManager clickM = WordClickManager.instance;
-                // check where it is released
-                //if it was dragged into the case, save it
-                if (clickM.isActiveAndEnabled)
-                {
-                    if (clickM.mouseOverUIObject == "trashCan" && data.origin != WordInfo.Origin.Dialogue &&
-                        data.origin != WordInfo.Origin.Ask && data.origin != WordInfo.Origin.Environment)
-                    {
-                        UIManager.instance.TrashAWord();
-                    }
-                    else if (clickM.mouseOverUIObject == "wordCase")
-                    {
-                        IsOverWordCase();
-                    }
-                    else if (clickM.mouseOverUIObject == "questLog")
-                    {
-                        IsOverQuestLog();
-                    }
-                    else if (clickM.mouseOverUIObject == "questCase")
-                    {
-                        IsOverQuestCase();
-                    }
-                    // if it was dragged onto a prompt, react
-                    else if (clickM.mouseOverUIObject == "playerInput")
-                    {
-                        IsOverPlayerInput();
-                    }
-                    else
-                    {
-                        IsOverNothing();
-                    }
-                }
-
+                ReactToIsOver();
+            }
+        }
+    }
+    /// <summary>
+    /// React to the item the bubble has been dragged over
+    /// </summary>
+    public void ReactToIsOver()
+    {
+        WordClickManager clickM = WordClickManager.instance;
+        // check where it is released
+        //if it was dragged into the case, save it
+        if (clickM.isActiveAndEnabled)
+        {
+            if (clickM.mouseOverUIObject == "trashCan" && data.origin != WordInfo.Origin.Dialogue &&
+                data.origin != WordInfo.Origin.Ask && data.origin != WordInfo.Origin.Environment)
+            {
+                UIManager.instance.TrashAWord();
+            }
+            else if (clickM.mouseOverUIObject == "wordCase")
+            {
+                IsOverWordCase();
+            }
+            else if (clickM.mouseOverUIObject == "questLog")
+            {
+                IsOverQuestLog();
+            }
+            else if (clickM.mouseOverUIObject == "questCase")
+            {
+                IsOverQuestCase();
+            }
+            // if it was dragged onto a prompt, react
+            else if (clickM.mouseOverUIObject == "playerInput")
+            {
+                IsOverPlayerInput();
+            }
+            else
+            {
+                IsOverNothing();
             }
         }
     }
