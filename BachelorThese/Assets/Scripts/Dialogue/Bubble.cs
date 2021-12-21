@@ -699,7 +699,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
         }
-        Debug.Log(fits);
         //if yes slowly animate this to the correct case & save it in there
         if (fits)
         {

@@ -6124,42 +6124,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 441386, guid: ab5e0beb1c36778479983f28b65d97dd, type: 3}
   m_PrefabInstance: {fileID: 578410560}
   m_PrefabAsset: {fileID: 0}
---- !u!84 &579387032
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 3
-  m_Width: 1098
-  m_Height: 618
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthFormat: 2
-  m_ColorFormat: 48
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &581933227
 GameObject:
   m_ObjectHideFlags: 0
@@ -6212,7 +6176,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 32
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 579387032}
+  m_TargetTexture: {fileID: 2004438086}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -6348,8 +6312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae910c312a6a6c419b4ff762c33fd95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearColorTexture: {fileID: 579387032}
-  clearDepthTexture: {fileID: 579387032}
+  clearColorTexture: {fileID: 2004438086}
+  clearDepthTexture: {fileID: 2004438086}
   clearAlpha: 0
   imageFitMode: 0
   layerFilters: []
@@ -10021,9 +9985,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The words in the beginning of the game are meant to help you in finding
-    a story for the character you want to play. They also offer in-dividual words
-    for you to start with!
+  m_text: The questions in the beginning are meant to help you in finding a story
+    for the character you want to play. They also offer individual words for you
+    to start with!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d06699b093e244d4693604a071555d56, type: 2}
   m_sharedMaterial: {fileID: -3585647003991721761, guid: d06699b093e244d4693604a071555d56, type: 2}
@@ -21643,7 +21607,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - BaseLayer:
-        m_Texture: {fileID: 579387032}
+        m_Texture: {fileID: 2004438086}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -21951,7 +21915,7 @@ MonoBehaviour:
     m_InputFilters: []
     m_AOVBitmask: 0
     m_AOVRenderTargets: []
-    m_RenderTarget: {fileID: 579387032}
+    m_RenderTarget: {fileID: 2004438086}
     m_ClearsBackGround: 0
     m_Show: 1
     m_LayerCamera: {fileID: 0}
@@ -22469,6 +22433,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2001449580}
   m_CullTransparentMesh: 1
+--- !u!84 &2004438086
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 3
+  m_Width: 1153
+  m_Height: 649
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthFormat: 2
+  m_ColorFormat: 48
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1001 &2016626528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23821,9 +23821,9 @@ MonoBehaviour:
     getting your companion better by asking questions about them!
   - Sometimes information can also be collected outside of dialogues, so keep an
     eye out for texts that can be found in the environment!
-  - The words in the beginning of the game are meant to help you in finding a story
-    for the character you want to play. They also offer in-dividual words for you
-    to start with!
+  - The questions in the beginning are meant to help you in finding a story for the
+    character you want to play. They also offer individual words for you to start
+    with!
   trashCan: {fileID: 1344620554}
   questTrashCan: {fileID: 1456445730}
   wordLimit: {fileID: 1093626932}
