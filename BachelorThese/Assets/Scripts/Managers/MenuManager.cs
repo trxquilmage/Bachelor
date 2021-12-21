@@ -8,6 +8,16 @@ public class MenuManager : MonoBehaviour
     public static MenuManager instance;
     [HideInInspector] public bool inMenu;
     [HideInInspector] public bool inTutorial;
+    int tutorialTextIndex
+    {
+        get { return TutorialTextIndex; }
+        set
+        {
+            TutorialTextIndex = value;
+            PortrayText();
+        }
+    }
+    int TutorialTextIndex = 0;
     ReferenceManager refM;
     private void Awake()
     {
@@ -66,6 +76,8 @@ public class MenuManager : MonoBehaviour
         refM.menuField.SetActive(false);
         //open tutorial
         refM.tutorialField.SetActive(true);
+        //set tutorial text to int 0 and portray the correct text
+        tutorialTextIndex = 0;
     }
     /// <summary>
     /// called when the tutorial is closed. re-opens the menu & closes the tutorial
@@ -73,7 +85,6 @@ public class MenuManager : MonoBehaviour
     public void ExitTutorial()
     {
         //close tutorial
-        Debug.Log("a");
         refM.tutorialField.SetActive(false);
         //open menu
         refM.menuField.SetActive(true);
@@ -91,5 +102,33 @@ public class MenuManager : MonoBehaviour
             ExitTutorial();
         else
             ExitMenu();
+    }
+    /// <summary>
+    /// Take the tutorial text at tutorialTextIndex and portray it in the tutorial text field
+    /// </summary>
+    /// <param name="i"></param>
+    void PortrayText()
+    {
+        refM.tutorialText.text = refM.tutorialTexts[tutorialTextIndex];
+    }
+    /// <summary>
+    /// pressed to change the tutorial text to the next one
+    /// </summary>
+    public void ButtonForward()
+    {
+        if (tutorialTextIndex < refM.tutorialTexts.Length - 1)
+            tutorialTextIndex++;
+        else
+            tutorialTextIndex = 0;
+    }
+    /// <summary>
+    /// pressed to change the tutorial text to the previous one
+    /// </summary>
+    public void ButtonBack()
+    {
+        if (tutorialTextIndex != 0)
+            tutorialTextIndex--;
+        else
+            tutorialTextIndex = refM.tutorialTexts.Length - 1;
     }
 }

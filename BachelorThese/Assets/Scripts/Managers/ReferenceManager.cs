@@ -59,9 +59,12 @@ public class ReferenceManager : MonoBehaviour
     public GameObject questCase;
     public GameObject askField;
     public GameObject askNPCField;
+    public Canvas dialogueCanvas;
+    [Header("Menu")]
     public GameObject menuField;
     public GameObject tutorialField;
-    public Canvas dialogueCanvas;
+    public TMP_Text tutorialText;
+    public string[] tutorialTexts;
     [Header("UI Elements")]
     public GameObject trashCan;
     public GameObject questTrashCan;
