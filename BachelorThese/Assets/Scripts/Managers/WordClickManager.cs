@@ -82,6 +82,7 @@ public class WordClickManager : MonoBehaviour
     {
         wlReader = WordLookupReader.instance;
         refM = ReferenceManager.instance;
+        controls.Dialogue.Scroll.performed += context => WordCaseManager.instance.ChangeScrollbarValue(context.ReadValue<float>());
     }
     private void Update()
     {

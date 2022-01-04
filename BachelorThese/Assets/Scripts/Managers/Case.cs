@@ -186,6 +186,10 @@ public class Case : MonoBehaviour
         }
     }
     #region SCROLLBAR
+    public virtual void ChangeScrollbarValue(float scrollValue)
+    {
+        scrollbar.value -= (scrollValue * 0.001f);
+    }
     /// <summary>
     /// Call when the scrollbar is scrolled. moves the words up & down. resets on reload
     /// </summary>
@@ -195,7 +199,7 @@ public class Case : MonoBehaviour
         {
             float value = scrollbar.value;
             float posY = Mathf.Lerp(0, bubbleScreenHeight, value);
-            listingParent.transform.localPosition = new Vector2(0, posY);
+            listingParent.transform.localPosition = new Vector2(listingParent.transform.localPosition.x, posY);
         }
     }
     /// <summary>
@@ -290,6 +294,22 @@ public class Case : MonoBehaviour
         favorites.AddRange(nonFavorites);
         contents = favorites.ToArray();
     }
+
+    public virtual void RearrangeContents(ref List<BubbleData> bubbleDataList)
+    {
+        List<BubbleData> favorites = new List<BubbleData>();
+        List<BubbleData> nonFavorites = new List<BubbleData>();
+
+        foreach (BubbleData data in bubbleDataList)
+        {
+            if (data.isFavorite)
+                favorites.Add(data);
+            else
+                nonFavorites.Add(data);
+        }
+        favorites.AddRange(nonFavorites);
+        bubbleDataList = favorites;
+    }
     /// <summary>
     /// Checks if the given bubble data exists and returns the value and it's index
     /// If there is no value, the return indey is -1
@@ -351,10 +371,6 @@ public class Case : MonoBehaviour
 
         return bubble;
     }
-    /// <summary>
-    /// Saves bubbleData into the content list
-    /// </summary>
-    /// <param name="wordItem"></param>
 
     /// <summary>
     /// takes the name of a bubble and checks if it fits into the contents array

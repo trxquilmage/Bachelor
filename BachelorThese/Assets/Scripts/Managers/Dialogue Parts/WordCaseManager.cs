@@ -172,17 +172,20 @@ public class WordCaseManager : Case
         // go through ALL tags
         else
         {
+            List<BubbleData> allWordsTemp = new List<BubbleData>();
             foreach (WordInfo.WordTag tag in ReferenceManager.instance.wordTags)
             {
                 if (tagRelatedWords.ContainsKey(tag.name))
                 {
-                    foreach (BubbleData data in tagRelatedWords[tag.name])
-                    {
-                        if (data.name != null)
-                        {
-                            SpawnBubbleInCase((WordData)data);
-                        }
-                    }
+                    allWordsTemp.AddRange(tagRelatedWords[tag.name]);
+                }
+            }
+            RearrangeContents(ref allWordsTemp);
+            foreach (BubbleData data in allWordsTemp)
+            {
+                if (data.name != null)
+                {
+                    SpawnBubbleInCase((WordData)data);
                 }
             }
         }
@@ -226,27 +229,8 @@ public class WordCaseManager : Case
         Color color = WordUtilities.MatchColorToTag(openTag);
         Color highlightColor = Color.Lerp(color, refM.highlightColor, 0.35f);
         journalImage.GetComponent<Image>().color = highlightColor;
-        if (refM.wordLimit.isActiveAndEnabled)
-        {
-            //refM.wordLimit.GetComponentInParent<Image>().color = color;
-            refM.bubbleScrollbar.GetComponent<Image>().color = color;
-            refM.bubbleScrollbar.GetComponentsInChildren<Image>()[1].color = color;
-            refM.buttonScrollbar.GetComponent<Image>().color = color;
-            refM.buttonScrollbar.GetComponentsInChildren<Image>()[1].color = color;
-        }
     }
 
-    #region Scrollbars
-    /// <summary>
-    /// Called, when tag-scrollbar is scrolled. move all buttons from left-right
-    /// </summary>
-    public void ScrollThroughButtons()
-    {
-        float value = ReferenceManager.instance.buttonScrollbar.GetComponent<Scrollbar>().value;
-        float posX = Mathf.Lerp(0, -UIManager.instance.buttonWidth, value);
-        ReferenceManager.instance.tagButtonParent.transform.localPosition = new Vector2(posX, ReferenceManager.instance.tagButtonParent.transform.localPosition.y);
-    }
-    #endregion
     /// <summary>
     /// Count the number of words that are in the current tag
     /// </summary>
@@ -274,5 +258,11 @@ public class WordCaseManager : Case
             }
         }
         return wordCount;
+    }
+
+    public override void ChangeScrollbarValue(float scrollValue)
+    {
+        if (WordClickManager.instance.mouseOverUIObject == "wordCase")
+            base.ChangeScrollbarValue(scrollValue);
     }
 }

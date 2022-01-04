@@ -210,6 +210,14 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Button"",
+                    ""id"": ""6cffd136-ce5e-4baa-874f-2323d26ea4c5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -256,6 +264,39 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""DoubleClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""7278f5aa-e09d-49ac-b918-44db85e20446"",
+                    ""path"": ""1DAxis(minValue=-0.1,maxValue=0.1,whichSideWins=1)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""97cdfef3-58cc-46a6-a5a3-85be50707d27"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""624e1972-360c-496e-82f4-439e74beaf3b"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -274,6 +315,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         m_Dialogue_Click = m_Dialogue.FindAction("Click", throwIfNotFound: true);
         m_Dialogue_MousePosition = m_Dialogue.FindAction("MousePosition", throwIfNotFound: true);
         m_Dialogue_DoubleClick = m_Dialogue.FindAction("DoubleClick", throwIfNotFound: true);
+        m_Dialogue_Scroll = m_Dialogue.FindAction("Scroll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -391,6 +433,7 @@ public class @InputMap : IInputActionCollection, IDisposable
     private readonly InputAction m_Dialogue_Click;
     private readonly InputAction m_Dialogue_MousePosition;
     private readonly InputAction m_Dialogue_DoubleClick;
+    private readonly InputAction m_Dialogue_Scroll;
     public struct DialogueActions
     {
         private @InputMap m_Wrapper;
@@ -398,6 +441,7 @@ public class @InputMap : IInputActionCollection, IDisposable
         public InputAction @Click => m_Wrapper.m_Dialogue_Click;
         public InputAction @MousePosition => m_Wrapper.m_Dialogue_MousePosition;
         public InputAction @DoubleClick => m_Wrapper.m_Dialogue_DoubleClick;
+        public InputAction @Scroll => m_Wrapper.m_Dialogue_Scroll;
         public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -416,6 +460,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @DoubleClick.started -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.performed -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.canceled -= m_Wrapper.m_DialogueActionsCallbackInterface.OnDoubleClick;
+                @Scroll.started -= m_Wrapper.m_DialogueActionsCallbackInterface.OnScroll;
+                @Scroll.performed -= m_Wrapper.m_DialogueActionsCallbackInterface.OnScroll;
+                @Scroll.canceled -= m_Wrapper.m_DialogueActionsCallbackInterface.OnScroll;
             }
             m_Wrapper.m_DialogueActionsCallbackInterface = instance;
             if (instance != null)
@@ -429,6 +476,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @DoubleClick.started += instance.OnDoubleClick;
                 @DoubleClick.performed += instance.OnDoubleClick;
                 @DoubleClick.canceled += instance.OnDoubleClick;
+                @Scroll.started += instance.OnScroll;
+                @Scroll.performed += instance.OnScroll;
+                @Scroll.canceled += instance.OnScroll;
             }
         }
     }
@@ -446,5 +496,6 @@ public class @InputMap : IInputActionCollection, IDisposable
         void OnClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnDoubleClick(InputAction.CallbackContext context);
+        void OnScroll(InputAction.CallbackContext context);
     }
 }
