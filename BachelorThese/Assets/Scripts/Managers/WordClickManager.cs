@@ -311,7 +311,7 @@ public class WordClickManager : MonoBehaviour
                 }
             }
             //over the questlog
-            else if (uIObject.gameObject == ReferenceManager.instance.questCase && currentlyOver == "none")
+            else if (uIObject.gameObject == ReferenceManager.instance.questJournal.gameObject && currentlyOver == "none")
                 currentlyOver = "questLog";
             //over a promptbubble
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
