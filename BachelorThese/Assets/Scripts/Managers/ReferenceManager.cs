@@ -46,10 +46,8 @@ public class ReferenceManager : MonoBehaviour
     public DialogueUI askDialogueUI;
     [Header("Prefabs")]
     public GameObject selectedWordPrefab;
-    public GameObject questBubblePrefab;
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
-    public GameObject questCountPrefab;
     public GameObject dropDownPrefab;
     public GameObject starPrefab;
     [Header("Fields")]
@@ -67,10 +65,7 @@ public class ReferenceManager : MonoBehaviour
     public string[] tutorialTexts;
     [Header("UI Elements")]
     public GameObject trashCan;
-    public GameObject questTrashCan;
     public TMP_Text wordLimit;
-    public TMP_Text questLimit;
-    public Image questJournal;
     public Image wordJournal;
     public GameObject ask;
     public GameObject abortAsk;
@@ -84,7 +79,6 @@ public class ReferenceManager : MonoBehaviour
     public GameObject feedbackTextTrashYesNo;
     public Scrollbar buttonScrollbar;
     public Scrollbar bubbleScrollbar;
-    public Scrollbar questScrollbar;
     public GameObject nameField;
     public GameObject npcDialogueTextBox;
     public GameObject npcDialogueTextBoxAsk;
@@ -132,12 +126,8 @@ public class ReferenceManager : MonoBehaviour
     public Transform[] allInteractableObjects;
     [Header("Game Data")]
     public int maxWordsPerTag;
-    public int questScrollbarDistance = 10;
-    public int spaceForQuestsOnCanvas = 7;
     public int bubbleScreenHeightMaxSize = 60;
     public int maxLongWordLength = 3;
-    public int maxQuestCount = 5;
-    public int maxQuestAdditions = 5;
     public int interactionRadius = 5;
     public int maxStartWordTraitAmount = 5;
     public string sceneNumber = "001";
@@ -150,8 +140,7 @@ public class ReferenceManager : MonoBehaviour
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;
-    public int questTagIndex = 2;
-    public int otherTagIndex = 3;
+    public int otherTagIndex = 1;
     void Awake()
     {
         instance = this;

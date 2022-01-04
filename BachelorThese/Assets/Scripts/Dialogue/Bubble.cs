@@ -124,12 +124,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
     }
     /// <summary>
-    /// The bubble was dragged onto the questLog and dropped
-    /// </summary>
-    public virtual void IsOverQuestLog()
-    {
-    }
-    /// <summary>
     /// The bubble was dragged onto a prompt case and dropped
     /// </summary>
     public virtual void IsOverPlayerInput()
@@ -147,12 +141,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             WordCaseManager.instance.AutomaticOpenCase(false);
             WordClickManager.instance.DestroyCurrentWord();
         }
-    }
-    /// <summary>
-    /// The bubble was dragged onto a quest in the quest case and dropped
-    /// </summary>
-    public virtual void IsOverQuestCase()
-    {
     }
     /// <summary>
     /// Takes a word and unparents it from its current parent, to the new parent & Spawns a word replacement
@@ -187,11 +175,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                     WordCaseManager.instance.openTag = data.tag;
                     if (data.isLongWord)
                         UpdateToBubbleShape();
-                }
-                else if (this is Quest)
-                {
-                    QuestManager.instance.AutomaticOpenCase(true);
-                    UpdateToBubbleShape();
                 }
                 WordClickManager.instance.SwitchFromHighlightedToCurrent();
 
@@ -262,14 +245,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             else if (clickM.mouseOverUIObject == "wordCase")
             {
                 IsOverWordCase();
-            }
-            else if (clickM.mouseOverUIObject == "questLog")
-            {
-                IsOverQuestLog();
-            }
-            else if (clickM.mouseOverUIObject == "questCase")
-            {
-                IsOverQuestCase();
             }
             // if it was dragged onto a prompt, react
             else if (clickM.mouseOverUIObject == "playerInput")
@@ -353,8 +328,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
-        if (this is Quest)
-            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //remove the iamge and text from the original bubble
         Destroy(wordParent.GetComponent<UIEffectStack>());
         Destroy(wordParent.GetComponent<Image>());
@@ -371,8 +344,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         text.ForceMeshUpdate();
         // set variables
         string fullText = data.name;
-        if (this is Quest && data.tagInfo[1] != "")
-            fullText = data.tagInfo[1];
 
         //Create a child of the Word, that is also a bubble and fill the text with the correlating text
         GameObject child;
@@ -402,8 +373,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
-        if (this is Quest)
-            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //remove the iamge and text from the original bubble
         Destroy(wordParent.GetComponent<UIEffectStack>());
         Destroy(wordParent.GetComponent<Image>());
@@ -415,14 +384,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         StartCoroutine(InstantiateStar());
     }
     /// <summary>
-    /// Instantiate STar after one frame, because otherwise the 
-    /// search still finds texts that are deleted at the end of the old frame
+    /// Instantiate star after one frame, because otherwise the 
+    /// search still finds texts that are deleted at the end of the old frame and places it wrong
     /// </summary>
     /// <returns></returns>
     IEnumerator InstantiateStar()
     {
         yield return new WaitForEndOfFrame();
-        if (data.origin == WordInfo.Origin.WordCase || this is Quest && data.origin == WordInfo.Origin.QuestLog)
+        if (data.origin == WordInfo.Origin.WordCase)
         {
             refM = ReferenceManager.instance;
             star = Instantiate(refM.starPrefab, GetComponentInChildren<TMP_Text>().transform, false);
@@ -444,8 +413,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         // set variables
         string fullText = data.name;
-        if (this is Quest && data.tagInfo[1] != "")
-            fullText = data.tagInfo[1];
 
         //Delete the other Bubbles
         Image[] images = toUpdate.GetComponentsInChildren<Image>();
@@ -475,8 +442,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child.GetComponent<Image>().color = tagColor;
             j++;
         }
-        if (this is Quest)
-            GetComponent<QuestCase>().ChangeAddedParentScale(true);
         //scale the parent so that the layout group gets the distances right
         GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
@@ -499,9 +464,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         if (!inACase && !isDuplicate)
         {
-            if (this is Quest)
-                QuestManager.instance.AutomaticOpenCase(false);
-            else if (this is Word)
+            if (this is Word)
                 WordCaseManager.instance.AutomaticOpenCase(false);
         }
 
@@ -669,6 +632,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             else
                 FitToBubbleShape(relatedText);
         }
+        else
+            StartCoroutine(InstantiateStar());
     }
     /// <summary>
     /// Called when the word is double clicked
@@ -689,12 +654,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
         //check, if the word fits in the case right now
-        if (this is Quest)
-        {
-            if (QuestManager.instance.CheckIfCanSaveBubble(data.name, out int index))
-                fits = true;
-        }
-        else if (this is Word)
+        if (this is Word)
         {
             if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index))
                 fits = true;
@@ -807,10 +767,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //treat the word as if it was dragged onto the Questlog/Wordcase
         movementDone.refBool = false;
 
-        if (this is Quest)
-            IsOverQuestLog();
-        else
-            IsOverWordCase();
+        IsOverWordCase();
         relatedCase.AutomaticOpenCase(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
@@ -844,8 +801,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordClickManager.instance.DestroyCurrentWord(this);
         if (data.origin == WordInfo.Origin.WordCase)
             WordCaseManager.instance.ReloadContents(false);
-        else if (data.origin == WordInfo.Origin.QuestLog)
-            QuestManager.instance.ReloadContents(false);
         EffectUtilities.ReColorAllInteractableWords();
     }
     #endregion

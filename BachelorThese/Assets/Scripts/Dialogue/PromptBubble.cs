@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PromptBubble : MonoBehaviour
 {
     public bool acceptsCurrentWord;
-    public bool doesntAcceptQuests; //means accepts every word, even "Other" words
+    public bool acceptsEveryWord; //means accepts every word, even "Other" words
     bool isHover = false;
     Image bubble;
     PromptBubbleData data;
@@ -40,7 +40,7 @@ public class PromptBubble : MonoBehaviour
         //in the specific case of the Tag being "AllWordsA"
         if (tag == "AllWordsA")
         {
-            doesntAcceptQuests = true;
+            acceptsEveryWord = true;
             tag = "AllWords";
         }
 
@@ -69,12 +69,11 @@ public class PromptBubble : MonoBehaviour
             currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
         if (isOnHover && !isHover) //mouse starts hover
         {
-                //prompt bubble: allwords, word: !quest, doesntacceptquests = true
-            if (doesntAcceptQuests && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name 
-                && currentBubbleData.tag != refM.wordTags[refM.questTagIndex].name ||
+            //prompt bubble: allwords, acceptsEveryWord = true
+            if (acceptsEveryWord && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name ||
 
-                //prompt bubble: allwords, word: !other, doesntacceptquests = false
-                !doesntAcceptQuests && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
+                //prompt bubble: allwords, word: !other 
+                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
                 && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name ||
 
                 //prompt bubble tag == word tag
@@ -84,9 +83,7 @@ public class PromptBubble : MonoBehaviour
                 acceptsCurrentWord = true;
             }
             // in the specific situation, where this is a bubble tagged "AllWords" and it is filled with unfitting contents
-            else if (data.tag.name == refM.wordTags[refM.allTagIndex].name && doesntAcceptQuests && 
-                hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.questTagIndex].name ||
-                !doesntAcceptQuests && data.tag.name == refM.wordTags[refM.allTagIndex].name &&
+            else if (!acceptsEveryWord && data.tag.name == refM.wordTags[refM.allTagIndex].name &&
                 hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.otherTagIndex].name)
             {
                 acceptsCurrentWord = false;

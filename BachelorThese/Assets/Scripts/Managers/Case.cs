@@ -349,9 +349,6 @@ public class Case : MonoBehaviour
         GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, new TMP_WordInfo(), Vector2.zero, origin, true);
         bubble.transform.SetParent(listingParent.transform);
 
-        //QuestCase doesnt have favorites
-        if (!(this is QuestCase))
-            bubble.GetComponent<Bubble>().star = Instantiate(refM.starPrefab, bubble.GetComponentInChildren<TMP_Text>().transform, false);
         return bubble;
     }
     /// <summary>

@@ -34,40 +34,16 @@ public static class WordUtilities
             parent = refM.selectedWordParentAsk.transform;
 
         //Instantiate Word
-        if (data is WordData || refM.wordTags[refM.questTagIndex].name != data.tag)
-        {
-            word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
-            word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
-            word.GetComponent<RectTransform>().localPosition = wordMousePos;
-            Word wordScript = word.AddComponent<Word>();
+        word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
+        word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
+        word.GetComponent<RectTransform>().localPosition = wordMousePos;
+        Word wordScript = word.AddComponent<Word>();
 
-            if (!createBubbleFromBubble)
-                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-            else
-                wordScript.Initialize(data, firstAndLastWordIndex);
-        }
-        //Instantiate Quest
-        else if (data is QuestData || refM.wordTags[refM.questTagIndex].name == data.tag)
-        {
-            word = GameObject.Instantiate(refM.questBubblePrefab, wordMousePos, Quaternion.identity);
-            word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
-            word.GetComponent<RectTransform>().localPosition = wordMousePos;
-            QuestCase caseScript = word.AddComponent<QuestCase>();
-            if (data is QuestData && ((QuestData)data).contents != null)
-                caseScript.contents = ((QuestData)data).contents;
-            caseScript.Initialize();
-            Quest wordScript = word.AddComponent<Quest>();
+        if (!createBubbleFromBubble)
             wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-
-            if (!createBubbleFromBubble)
-                wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-            else
-                wordScript.Initialize(data, firstAndLastWordIndex);
-        }
         else
-        {
-            Debug.Log("This word seems to be empty");
-        }
+            wordScript.Initialize(data, firstAndLastWordIndex);
+
         return word;
     }
     /// <summary>
@@ -306,23 +282,11 @@ public static class WordUtilities
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {
-            if (tagName == ReferenceManager.instance.wordTags[ReferenceManager.instance.questTagIndex].name) // is a quest
+            //if it's in the word case or the word case is full
+            if (!WordCaseManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
             {
-                //if it's in the quest case or the quest case is full
-                if (!QuestManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
-                {
-                    isUsed = true;
-                    cantBeSaved = true;
-                }
-            }
-            else // is not a quest
-            {
-                //if it's in the word case or the word case is full
-                if (!WordCaseManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
-                {
-                    isUsed = true;
-                    cantBeSaved = true;
-                }
+                isUsed = true;
+                cantBeSaved = true;
             }
 
             // if it is the currently highlighted word OR is the current word 

@@ -150,11 +150,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         if (wcManager.wordLastHighlighted != null)
         {
-            bool isQuest = wcManager.wordLastHighlighted.GetComponent<Bubble>() is Quest;
-            if (isQuest)
-                QuestManager.instance.AutomaticOpenCase(true);
-            else
-                WordCaseManager.instance.AutomaticOpenCase(true);
+            WordCaseManager.instance.AutomaticOpenCase(true);
             wcManager.SwitchFromHighlightedToCurrent();
             wcManager.currentWord.GetComponent<Bubble>().OnDoubleClicked();
         }

@@ -62,18 +62,6 @@ public class InfoManager : MonoBehaviour
             int i = WordLookupReader.instance.CheckForSubtags((WordData)data, lookingFor);
             return tagObject.allGivenValues[i];
         }
-        else if (data is QuestData)
-        {
-            //Get the names of all words parented to this object
-            foreach (BubbleData wordData in ((QuestData)data).contents)
-            {
-                if (wordData.name == lookingFor)
-                {
-                    return new Yarn.Value(true);
-                }
-            }
-            return new Yarn.Value(false);
-        }
         else
             Debug.Log("This shouldnt happen");
         return new Yarn.Value();

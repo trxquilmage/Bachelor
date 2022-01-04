@@ -116,15 +116,8 @@ public class UIManager : MonoBehaviour
         refM.npcDialogueTextBoxAsk.GetComponent<Image>().color = refM.textFieldColor;
         refM.askField.GetComponent<Image>().color = refM.inputFieldColor;
 
-        //color quest case (word case is colored on OpenOnTag())
-        Color color = refM.wordTags[ReferenceManager.instance.questTagIndex].tagColor;
-        Color highlightedColor = Color.Lerp(color, refM.highlightColor, 0.35f);
-        refM.questJournal.GetComponent<Image>().color = highlightedColor;
-        refM.questLimit.GetComponentInParent<Image>().color = refM.limitColor;
+        //word case is colored on OpenOnTag()
         refM.wordLimit.GetComponentInParent<Image>().color = refM.limitColor;
-        refM.questScrollbar.GetComponent<Image>().color = color;
-        refM.questScrollbar.transform.GetChild(0).GetComponentInChildren<Image>().color = color;
-        refM.questTrashCan.GetComponent<Image>().color = refM.trashColor;
 
         //startwords
         refM.questionBackground.color = refM.textFieldColor;
@@ -228,15 +221,15 @@ public class UIManager : MonoBehaviour
         int i = 0;
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
-            //dont initialize a quest tag and initialize the "other" tag last
-            if (tag.name != refM.wordTags[ReferenceManager.instance.questTagIndex].name && tag.name != refM.wordTags[ReferenceManager.instance.otherTagIndex].name)
+            //initialize the "other" tag last
+            if (tag.name != refM.wordTags[ReferenceManager.instance.otherTagIndex].name)
             {
                 InstantiateButton(i, tag);
             }
             i++;
         }
         //initialize the "Other" tag last
-        InstantiateButton(ReferenceManager.instance.otherTagIndex, refM.wordTags[ReferenceManager.instance.otherTagIndex]);
+        InstantiateButton(refM.otherTagIndex, refM.wordTags[refM.otherTagIndex]);
 
         //get the width of all buttons combined
         float padding = refM.tagButtonParent.GetComponent<VerticalLayoutGroup>().spacing;
@@ -309,53 +302,26 @@ public class UIManager : MonoBehaviour
     public void TrashAWord()
     {
         BubbleData data = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
-        if (data is WordData) // isnt quest
+        if (data is WordData && data.origin == WordInfo.Origin.WordCase)
         {
-            //is from the word case
-            if (data.origin == WordInfo.Origin.WordCase)
-            {
-                Bubble bubble = WordClickManager.instance.currentWord.GetComponent<Bubble>();
-                if (!bubble.data.permanentWord)
-                {
-                    //spawn delete-vfx
-                    WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
-
-                    WordCaseManager.instance.DeleteOutOfCase();
-                    WordClickManager.instance.DestroyCurrentWord();
-                    WordCaseManager.instance.UpdateContentCount();
-                    StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
-                    WordCaseManager.instance.ResetScrollbar();
-                    WordCaseManager.instance.DestroyReplacement();
-                }
-                else
-                {
-                    bubble.IsOverNothing();
-                    BlendInUI(refM.feedbackTextTrashYesNo, 3);
-                }
-            }
-            //is from the quest log
-            else if (data.origin == WordInfo.Origin.QuestLog)
+            Bubble bubble = WordClickManager.instance.currentWord.GetComponent<Bubble>();
+            if (!bubble.data.permanentWord)
             {
                 //spawn delete-vfx
                 WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
 
-                QuestCase currentParent = ((WordData)WordClickManager.instance.currentWord.GetComponent<Word>().data).currentParent;
-                currentParent.DeleteOutOfCase();
+                WordCaseManager.instance.DeleteOutOfCase();
                 WordClickManager.instance.DestroyCurrentWord();
-                currentParent.UpdateContentCount();
-                currentParent.DestroyReplacement();
+                WordCaseManager.instance.UpdateContentCount();
+                StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
+                WordCaseManager.instance.ResetScrollbar();
+                WordCaseManager.instance.DestroyReplacement();
             }
-        }
-        else if (data is QuestData && data.origin == WordInfo.Origin.QuestLog)
-        {
-            //spawn delete-vfx
-            WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
-
-            QuestManager.instance.DeleteOutOfCase();
-            WordClickManager.instance.DestroyCurrentWord();
-            StartCoroutine(QuestManager.instance.RescaleScrollbar(true));
-            QuestManager.instance.ResetScrollbar();
-            QuestManager.instance.DestroyReplacement();
+            else
+            {
+                bubble.IsOverNothing();
+                BlendInUI(refM.feedbackTextTrashYesNo, 3);
+            }
         }
     }
     public void ClickedICantSay()

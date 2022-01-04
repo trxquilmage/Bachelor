@@ -62,8 +62,8 @@ public class WordCaseManager : Case
         {
             //i dont think anything needs to happen here rn?
         }
-        //override tag && isnt quest
-        else if (overrideTag != null && overrideTag != refM.wordTags[refM.questTagIndex].name)
+        //override tag
+        else if (overrideTag != null)
         {
             tagRelatedWords[overrideTag] = value;
             overrideTag = null;
@@ -84,15 +84,15 @@ public class WordCaseManager : Case
             }
             return allContents.ToArray();
         }
-        //override tag, but not a quest
-        else if (overrideTag != null && overrideTag != refM.wordTags[refM.questTagIndex].name)
+        //override tag
+        else if (overrideTag != null)
         {
             BubbleData[] data = tagRelatedWords[overrideTag];
             overrideTag = null;
             return data;
         }
-        //override tag is quest or no override tag
-        else if (overrideTag != null || tagRelatedWords.ContainsKey(openTag))
+        //no override tag
+        else if (tagRelatedWords.ContainsKey(openTag))
         {
             overrideTag = null;
             return tagRelatedWords[openTag];
@@ -125,8 +125,8 @@ public class WordCaseManager : Case
         //initialize the dictionary of selcted words
         foreach (WordInfo.WordTag wordTags in refM.wordTags)
         {
-            //if the tag isnt "all" or "quest"
-            if (wordTags.name != refM.wordTags[refM.allTagIndex].name && wordTags.name != refM.wordTags[refM.questTagIndex].name)
+            //if the tag isnt "all"
+            if (wordTags.name != refM.wordTags[refM.allTagIndex].name)
             {
                 BubbleData[] dataList = new BubbleData[refM.maxWordsPerTag];
                 for (int i = 0; i < refM.maxWordsPerTag; i++)
@@ -193,18 +193,17 @@ public class WordCaseManager : Case
     public override void UpdateContentCount()
     {
         int wordCount = GetTagWordCount(openTag);
-        if (openTag != ReferenceManager.instance.wordTags[0].name)
+        if (openTag != refM.wordTags[refM.allTagIndex].name)
         {
-            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b>/" + ReferenceManager.instance.maxWordsPerTag + "</b>";
+            refM.wordLimit.text = wordCount.ToString() + "<b>/" + refM.maxWordsPerTag + "</b>";
         }
         else
         {
-            ReferenceManager.instance.wordLimit.text = wordCount.ToString() + "<b> Words</b>";
+            refM.wordLimit.text = wordCount.ToString() + "<b> Words</b>";
         }
     }
     public override void SaveBubble(Bubble bubble)
     {
-        ((WordData)bubble.data).currentParent = null;
         ((WordData)bubble.data).origin = origin;
         base.SaveBubble(bubble);
     }
@@ -255,7 +254,7 @@ public class WordCaseManager : Case
     int GetTagWordCount(string tag)
     {
         int wordCount = 0;
-        if (tag != ReferenceManager.instance.wordTags[0].name)
+        if (tag != refM.wordTags[refM.allTagIndex].name)
         {
             foreach (BubbleData data in tagRelatedWords[tag])
             {
@@ -267,9 +266,8 @@ public class WordCaseManager : Case
         {
             foreach (string allTags in tagRelatedWords.Keys)
             {
-                if (allTags != ReferenceManager.instance.wordTags[0].name &&
-                    allTags != ReferenceManager.instance.wordTags[1].name &&
-                    allTags != ReferenceManager.instance.wordTags[2].name)
+                if (allTags != ReferenceManager.instance.wordTags[refM.allTagIndex].name &&
+                    allTags != ReferenceManager.instance.wordTags[refM.otherTagIndex].name)
                 {
                     wordCount += GetTagWordCount(allTags);
                 }

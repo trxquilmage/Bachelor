@@ -37,33 +37,6 @@ public class WordClickManager : MonoBehaviour
         get { return MouseOverUIObject; }
         set
         {
-            //wasn't over quest case and now is
-
-            if (MouseOverUIObject != "questCase" && value == "questCase")
-            {
-                lastSavedQuestCase.EnableOrDisableQuestCountObject(true);
-
-                //Color the word if hovered on with a current word
-                if (currentWord != null && currentWord.TryGetComponent<Word>(out Word word))
-                {
-                    Color startColor = refM.wordTags[refM.questTagIndex].tagColor;
-                    Color endColor = EffectUtilities.ColorTintWhite(WordUtilities.MatchColorToTag(currentWord.GetComponent<Word>().data.tag));
-                    StartCoroutine(EffectUtilities.ColorObjectInGradient(lastSavedQuestCase.wordParent,
-                        new Color[5] { startColor, new Color(), new Color(), new Color(), endColor }, 0.3f));
-                }
-            }
-            //was over quest case and now isnt anymore
-            else if (MouseOverUIObject == "questCase" && value != "questCase" && lastSavedQuestCase != null)
-            {
-                //Color the word back to normal
-                lastSavedQuestCase.EnableOrDisableQuestCountObject(false);
-
-                Color endColor = refM.wordTags[refM.questTagIndex].tagColor;
-                Color startColor = lastSavedQuestCase.wordParent.GetComponentInChildren<Image>().color;
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(lastSavedQuestCase.wordParent,
-                    new Color[5] { startColor, new Color(), new Color(), new Color(), endColor }, 0.3f));
-
-            }
             // wasn't over promptbubble and now is
             if (MouseOverUIObject != "playerInput" && value == "playerInput")
             {
@@ -94,7 +67,6 @@ public class WordClickManager : MonoBehaviour
     string MouseOverUIObject;
     InputMap controls;
     [HideInInspector] public PromptBubble promptBubble;
-    [HideInInspector] public QuestCase lastSavedQuestCase;
     [HideInInspector] public PromptBubble lastSavedPromptBubble;
     [HideInInspector] public GameObject lastSavedTrashCan;
     bool stillOnWord;
@@ -174,7 +146,7 @@ public class WordClickManager : MonoBehaviour
             BubbleData data = new BubbleData()
             {
                 name = sentWord,
-                tag = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name,
+                tag = refM.wordTags[refM.otherTagIndex].name,
                 tagInfo = new string[] { ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();
@@ -289,8 +261,7 @@ public class WordClickManager : MonoBehaviour
         foreach (RaycastResult uIObject in results)
         {
             //over the trashcan
-            if (uIObject.gameObject == ReferenceManager.instance.trashCan
-                || uIObject.gameObject == ReferenceManager.instance.questTrashCan)
+            if (uIObject.gameObject == ReferenceManager.instance.trashCan)
             {
                 lastSavedTrashCan = uIObject.gameObject;
                 currentlyOver = "trashCan";
@@ -300,19 +271,6 @@ public class WordClickManager : MonoBehaviour
             {
                 currentlyOver = "wordCase";
             }
-            //over a quest in the quest log
-            else if (uIObject.gameObject.transform.parent.transform.parent != null &&
-                uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
-            {
-                if (qCase.isInCase)
-                {
-                    lastSavedQuestCase = qCase;
-                    currentlyOver = "questCase";
-                }
-            }
-            //over the questlog
-            else if (uIObject.gameObject == ReferenceManager.instance.questJournal.gameObject && currentlyOver == "none")
-                currentlyOver = "questLog";
             //over a promptbubble
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {

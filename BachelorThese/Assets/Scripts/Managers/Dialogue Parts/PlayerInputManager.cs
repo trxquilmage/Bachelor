@@ -50,9 +50,7 @@ public class PlayerInputManager : MonoBehaviour
                     Bubble bubble = prompt.child.GetComponent<Bubble>();
                     if (bubble is Word)
                         answer = new AnswerData() { wordData = (WordData)bubble.data, bubbleData = bubble.data };
-                    else if (bubble is Quest)
-                        answer = new AnswerData() { questData = (QuestData)bubble.data, bubbleData = bubble.data };
-
+                    
                     if (promptBubbles == currentPromptBubbles)
                         givenAnswer = answer;
                     else if (promptBubbles == currentPromptAskBubbles)
@@ -190,11 +188,7 @@ public class PlayerInputManager : MonoBehaviour
         else
             data = givenAnswerAsk;
 
-        if (data.questData != null) //is quest
-        {
-            val = InfoManager.instance.FindValue(data.questData, lookingFor);
-        }
-        else
+        if (data.wordData != null) //is word
         {
             Bubble.TagObject tagObj = data.wordData.tagObj;
             val = InfoManager.instance.FindValue(data.wordData, lookingFor);
@@ -470,6 +464,5 @@ public class PlayerInputManager : MonoBehaviour
 public class AnswerData
 {
     public WordData wordData;
-    public QuestData questData;
     public BubbleData bubbleData;
 }
