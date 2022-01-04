@@ -296,8 +296,10 @@ public class WordClickManager : MonoBehaviour
                 currentlyOver = "trashCan";
             }
             //over the wordcase
-            else if (uIObject.gameObject == ReferenceManager.instance.wordCase && currentlyOver == "none")
+            else if (uIObject.gameObject == ReferenceManager.instance.wordJournal.gameObject && currentlyOver == "none")
+            {
                 currentlyOver = "wordCase";
+            }
             //over a quest in the quest log
             else if (uIObject.gameObject.transform.parent.transform.parent != null &&
                 uIObject.gameObject.transform.parent.transform.parent.TryGetComponent<QuestCase>(out QuestCase qCase))
