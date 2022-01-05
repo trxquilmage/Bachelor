@@ -1,0 +1,76 @@
+﻿title: AuntHeleen.Start
+tags:
+---
+<<showcharactername Managers Aunt Heleen>>
+<<if isvisited("AuntHeleen","Start")>>
+    [[AuntHeleen.HaveYouFoundMatheo]]
+<<else>>
+    [[AuntHeleen.WhereIsMatheo]]
+<<endif>>
+===
+
+title: AuntHeleen.WhereIsMatheo
+tags:
+---
+Presents.
+Where is he, again...
+... Oh, you're here!
+I'm so sorry to bother you with this, but 
+if you see Matheo running around somewhere,
+<<setquest Managers QuestAAA>>
+could you please tell me where he is?
+===
+
+title: AuntHeleen.HaveYouFoundMatheo
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers LocAAB>>
+Have you found him?
+<<set $cantsay to icantsay("AuntHeleen", "HasntFoundMatheo")>>
+<<set $location to react("name", "", "AuntHeleen")>>
+<<set $isCity to react("type", "", "AuntHeleen")>>
+<<if $location eq "Presents">>
+    [[AuntHeleen.FoundMatheo]]
+<<elseif not $isCity eq "Local">>
+    [[AuntHeleen.WrongFoundMatheoCity]]
+<<else>>
+    [[AuntHeleen.WrongFoundMatheo]]
+<<endif>>
+===
+
+title: AuntHeleen.HasntFoundMatheo
+tags:
+---
+Please tell me, if you see him.
+===
+
+title: AuntHeleen.WrongFoundMatheo
+tags:
+---
+Are you sure? I already checked there,
+he didn't seem to be there.
+===
+
+title: AuntHeleen.WrongFoundMatheoCity
+tags:
+---
+Ha-ha. Very funny.
+But really, if you see him, please tell me.
+===
+
+title: AuntHeleen.FoundMatheo
+tags:
+---
+Thank you so much, I will go looking for him.
+<<completequest Managers QuestAAA>>
+Children are sure something, huh. 
+===
+
+title: AuntHeleen.ICantSay
+tags:
+---
+Ah. Too bad.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

@@ -147,6 +147,8 @@ end
 ending
 enough
 entirely
+er
+err
 especially
 et
 etc
@@ -198,6 +200,8 @@ gotten
 greetings
 had
 hadn't
+ha
+ha-ha
 Hahahaha
 half
 happens
@@ -232,6 +236,7 @@ hopefully
 how
 howbeit
 however
+huh
 hundred
 i'd
 ie
@@ -538,6 +543,10 @@ trying
 t's
 twice
 two
+uh
+uh-huh
+uhh
+uhhh
 un
 under
 underneath

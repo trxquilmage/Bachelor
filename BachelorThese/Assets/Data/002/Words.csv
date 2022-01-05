@@ -1,17 +1,17 @@
 Yes;OtherA;true;
 No;OtherA;false;
-Renna;Name;;
-James;Name;;
-Minnie;Name;;
-Jordan;Name;;
-Bride;Name;;
-Groom;Name;;
-Family;Name;;
-You;Name;;
-Me;Name;;
-Sibling;Name;;
-Parent;Name;;
-Friend;Name;;
+Renna;Name;Name;
+James;Name;Name;
+Minnie;Name;Name;
+Jordan;Name;Name;
+Bride;Name;Title;
+Groom;Name;Title;
+Family;Name;Relation;
+You;Name;Name;
+Me;Name;Name;
+Sibling;Name;Relation;
+Parent;Name;Relation;
+Friend;Name;Relation;
 Bridgetown;Location;City;Nocturne
 Greybell;Location;City;Nocturne
 House;Item;expensive;
@@ -36,5 +36,11 @@ Mediocre;Adjective;neutral;
 Interesting;Adjective;positive;
 Wonderful;Adjective;positive;
 Reason;Action;;
-Riley;Name;;
+Riley;Name;Name;
 Nocturne;Location;Country;XXX
+Buffet;Location;Local;Ashley River
+Presents;Location;Local;Ashley River
+Tables;Location;Local;Ashley River
+Matheo;Name;Name;
+Father;Name;Relation;
+Dad;Name;Relation;

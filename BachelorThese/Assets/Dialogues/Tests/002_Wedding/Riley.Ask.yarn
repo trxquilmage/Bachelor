@@ -8,80 +8,66 @@ tags:
 <<endif>>
 ===
 
-title: Riley.Brother
+title: Riley.RensgateCarServices
 tags:
 ---
-AAA
+Ha ha ha, yeah. My car workshop.
+My dad founded the place. Now I run it.
+Not the most interesting job in the world,
+but whatever pays the bills, right?
 [[Riley.Continue]]
 ===
 
-title: Riley.MarketTerraces
+title: Riley.Greybell
 tags:
 ---
-AAA
-[[Riley.Continue]]
-===
-
-title: Riley.Greygate
-tags:
----
-Greygate, hm? 
+Greybell, hm? 
 <<displaypromptmenuask Managers GenAAA>>
 Have you ever been there?
-<<set $beenToGreygate to react("value", "", "Riley")>>
-<<if $beenToGreygate is true>>
-    Oh, you have? It's quite the amazing city.
-    I go there at least once a year to visit
-    my younger brother. He lives near the 
-    market terraces, so it's usually a great
-    expierience. An expensive one, too, though.
-    If you go again you should ride in one of
-    the cable cars. They've been installed all
-    over town in the recent years.
+<<set $beenToGreybell to react("value", "", "Riley")>>
+<<if $beenToGreybell is true>>
+    Oh, you have? Not much there, hm?
+    If your car ever gets stuck nearby,
+    you can always call Rensgate Car Services.
+    Given that this date goes well,
+    otherwise that will be akward.
 <<else>>
-    You haven't, then? You should definetly go!
-    What I can recommend most is going to 
-    visit the market terrace. It's a multi-level
-    district filled with shops, restaurants,
-    auctions and stalls. Like they say you can
-    buy everything there - and it's very true.
+    You haven't, then? Not much to see.
+    I like to call it the "world's most
+    average place".
+    But hey, if your car ever breaks down,
+    be sure to call Rensgate Car Services.
+    Given that this date goes well,
+    otherwise that will be akward.
 <<endif>>
 [[Riley.Continue]]
 ===
 
-title: Riley.Capital
+title: Riley.Father
 tags:
 ---
-[[Riley.Greygate]]
+My father? We're from Greybell,
+my dad ran a small workshop for cars there.
+It wasn't super successful or anything.
+But I liked hanging out there as a kid.
+[[Riley.Continue]]
 ===
 
-title: Riley.Family
+title: Riley.Dad
 tags:
 ---
-My family is from Glomure, but some moved to 
-different cities. My brother lives in the capital,
-my father still lives in Glomure, together with 
-my grandmother. And I have a lot of distant relatives
-all over the country. 
-We're like, not a very wealthy family.
-[[Riley.Continue]]
+[[Riley.Father]]
 ===
 
 title: Riley.Riley
 tags:
 ---
-Me? I'm Riley, Detective from Glomure, 
-which is two towns over, if you don't know.
-Hm... also I'm 31 years old and I think
-this is my fifth year working here.
-It's my first murder case, too.
-Oh but you wanted to know about me,
-not about the case, right?
-I grew up in Glomure and still have
-family over there. 
-People usually expect that I'm married,
-but I'm not.
-Haven't found the right person yet.
+Oh, talking about myself?
+I'm not so good at that.
+I'm an engineer from Greybell.
+My father also was an engineer,
+so I thought, "Hey, why not do that too?".
+Yeah, I'm not the risk-taking type, I think.
 [[Riley.Continue]]
 ===
 

@@ -33,7 +33,6 @@ public class ReferenceManager : MonoBehaviour
     public GameObject selectedWordParent;
     public GameObject selectedWordParentAsk;
     public GameObject listingParent;
-    public GameObject questListingParent;
     public GameObject promptBubbleParent;
     public GameObject askPromptBubbleParent;
     public GameObject tagButtonParent;
@@ -48,7 +47,6 @@ public class ReferenceManager : MonoBehaviour
     public GameObject selectedWordPrefab;
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
-    public GameObject dropDownPrefab;
     public GameObject starPrefab;
     [Header("Fields")]
     public GameObject nPCDialogueField;
@@ -66,6 +64,7 @@ public class ReferenceManager : MonoBehaviour
     [Header("UI Elements")]
     public GameObject trashCan;
     public TMP_Text wordLimit;
+    public TMP_Text questText;
     public Image wordJournal;
     public GameObject ask;
     public GameObject abortAsk;
@@ -128,6 +127,7 @@ public class ReferenceManager : MonoBehaviour
     public int maxWordsPerTag;
     public int bubbleScreenHeightMaxSize = 60;
     public int maxLongWordLength = 3;
+    public int maxQuests = 5;
     public int interactionRadius = 5;
     public int maxStartWordTraitAmount = 5;
     public string sceneNumber = "001";

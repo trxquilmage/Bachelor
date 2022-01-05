@@ -77,6 +77,22 @@ public class CommandManager : MonoBehaviour
             return CheckIfOnlyAsk();
         });
     }
+    /// <summary>
+    /// Set a quest in the questlog
+    /// </summary>
+    [YarnCommand("setquest")]
+    public void SetQuest(string questName)
+    {
+        QuestManager.instance.SetQuest(questName);
+    }
+    /// <summary>
+    /// Set a quest that is in the questlog to completed
+    /// </summary>
+    [YarnCommand("completequest")]
+    public void CompleteQuest(string questName)
+    {
+        QuestManager.instance.CompleteQuest(questName);
+    }
 
     /// <summary>
     /// show the i cant say button
@@ -95,9 +111,14 @@ public class CommandManager : MonoBehaviour
     /// </summary>
     /// <param name="characterName"></param>
     [YarnCommand("showcharactername")]
-    public void ShowCharacterName(string characterName)
+    public void ShowCharacterName(string[] characterName)
     {
-        refM.interactableTextList[refM.characterNameIndex].text = characterName;
+        string name = "";
+        foreach (string namePart in characterName)
+        {
+            name += namePart + " ";
+        }
+        refM.interactableTextList[refM.characterNameIndex].text = name;
     }
     /// <summary>
     /// Set a character as a companion, who follows you around

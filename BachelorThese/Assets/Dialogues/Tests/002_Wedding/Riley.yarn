@@ -6,7 +6,7 @@ tags:
 <<if not isvisited("Riley", "Start")>>
     [[Riley.Introduction]]
 <<elseif $hasDate eq false>>
-    [[Riley.RetryName]]
+    [[Riley.RetryDate]]
 <<else>>
     [[Riley.CompanionMenu]]
 <<endif>>
@@ -15,23 +15,75 @@ tags:
 title: Riley.CompanionMenu
 tags: 
 ---
-<<if not isvisited("Riley", "Walking")>>
-    [[Riley.Walking]]
-<<elseif not isvisited("Riley", "Origin")>>
-    [[Riley.Origin]]
+<<if not isvisited("Riley", "Casual")>>
+    [[Riley.Casual]]
+<<elseif not isvisited("Riley", "AboutYou1")>>
+    [[Riley.AboutYou1]]
+<<else>>
+    Im really enjoying myself!
 <<endif>>
-...
+===
+
+title: Riley.Casual
+tags: 
+---
+A wedding in the woods is a bit unusal, no?
+But I really like it.
+The Buffet looks really great too!
+We should definetly check that out later.
+===
+
+title: Riley.AboutYou1
+tags: 
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers NameAAB>>
+So, which part of the family are we here for?
+<<set $cantsay to icantsay("Riley", "Secretive")>>
+<<set $familySide to react("name", "", "Riley")>>
+<<if $familySide eq "Bride" or $familySide eq "Groom">>
+    Ah, that's cool.
+    [[Riley.RelatedToCouple]]
+<<elseif $familySide eq "Riley">>
+    ... That's my name.
+    [[Riley.Secretive]]
+<<else>>
+    Ah, guessing that's one of the people marrying.
+    [[Riley.RelatedToCouple]]
+<<endif>>
+===
+
+title: Riley.RelatedToCouple
+tags: 
+---
+<<displaypromptmenu Managers GenAAA>>
+So, are you guys related?
+<<set $related to react("value", "", "Riley")>>
+<<if $related>>
+    Okay, no pressure.
+    Meeting all your relatives on our first date,
+    that's a brutal way to start a relationship.
+<<else>>
+    Phew, I was scared there for a second.
+    Meeting all your relatives on our first date, would
+    have been a brutal way to start a relationship.
+<<endif>>
+===
+
+title: Riley.Secretive
+tags: 
+---
+Ah, I see, you're the secretive type.
+Cool, I guess. Works with me... I think.
 ===
 
 title: Riley.Introduction
 tags:
 ---
 Hi! Uh... Sorry...
-You are the fifth person I am asking.
-Do you happen to have met somebody
-on a ... uh... online dating app...
-and did you invite said hypothetical person
-to... let's say... a wedding?
+You're the fifth person I'm asking.
+Did you invite me to this wedding?
+Via err... an online dating app?
 [[Riley.AskDate]]
 ===
 
@@ -39,18 +91,19 @@ title: Riley.AskDate
 tags:
 ---
 <<displaypromptmenu Managers GenAAA>>
-So... uh. Are we on a date?
+Are we on a date?
 <<set $hasDate to react("value", "hasDate", "Riley")>>
 <<if $hasDate eq true>>
     Oh, thank god.
-    People were starting to stare at me.
+    People were starting to stare.
     I don't want to keep you from going in,
     so I will just follow you, okay?
+    Talk to me whenever you want.
     <<settocompanion Managers Riley>>
 <<else>>
-    Oh, okay, then.
-    Like. I promise, I'm not like.
-    Some wedding crasher or like. loitering.
+    Oh, okay, then...
+    I promise, I'm not like. A wedding crasher.
+    Or like. Loitering.
 <<endif>>
 ===
 

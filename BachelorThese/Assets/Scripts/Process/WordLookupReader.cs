@@ -7,13 +7,14 @@ using TMPro;
 public class WordLookupReader : MonoBehaviour
 {
     public static WordLookupReader instance;
-    string dataPath, allWords, allLongWords, allQuestions, allTags, allFillers, allBlocked;
+    string dataPath, allWords, allLongWords, allQuestions, allTags, allFillers, allBlocked, allQuests;
     [HideInInspector]
     public Dictionary<string, string[]> wordTag = new Dictionary<string, string[]>();
     public Dictionary<string[], string[]> longWordTagSingular = new Dictionary<string[], string[]>();
     public Dictionary<string, string[]> longWordTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> questionTag = new Dictionary<string, string[]>();
     public Dictionary<string, string[]> fillerTag = new Dictionary<string, string[]>();
+    public Dictionary<string, string> questDescriptions = new Dictionary<string, string>();
     public List<string> blocked = new List<string>();
     public Dictionary<string, string[]> tagSubtag = new Dictionary<string, string[]>();
     List<TMP_WordInfo> currentWordList;
@@ -35,6 +36,7 @@ public class WordLookupReader : MonoBehaviour
         LookUpTag();
         LookUpFiller();
         LookUpBlocked();
+        LookUpQuests();
         currentWordList = new List<TMP_WordInfo>();
         currentReferenceWords = new List<string[]>();
     }
@@ -155,6 +157,22 @@ public class WordLookupReader : MonoBehaviour
             }
         }
     }
+
+    void LookUpQuests()
+    {
+        string pathTagLookup = dataPath + "/Quests.csv";
+        allQuests = File.ReadAllText(pathTagLookup);
+        string[] lines = allQuests.Split("\n"[0]);
+        foreach (string s in lines)
+        {
+            if (s != "")
+            {
+                string[] lineData = s.Trim().Split(";"[0]);
+                questDescriptions.Add(lineData[0], lineData[1]);
+            }
+        }
+    }
+
     /// <summary>
     /// Returns the index of the word that is being looked for
     /// </summary>

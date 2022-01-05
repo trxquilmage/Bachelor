@@ -1,0 +1,41 @@
+﻿title: AuntHeleen.Ask
+tags:
+---
+<<if not isvisited("AuntHeleen", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: AuntHeleen.Matheo
+tags:
+---
+You haven't seen Matheo in a while, haven't you?
+He grew up quite a bit. 
+Goes on a lot of unsolicited adventures.
+Usually I'd assume, he's at the Buffet,
+but I already checked and it seems he isn't.
+[[AuntHeleen.Continue]]
+===
+
+title: AuntHeleen.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[AuntHeleen.Continue]]
+===
+
+title: AuntHeleen.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: AuntHeleen.Continue
+tags:
+---
+But we were talking about...
+===
