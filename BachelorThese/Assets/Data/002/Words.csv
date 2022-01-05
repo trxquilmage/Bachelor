@@ -12,16 +12,24 @@ Me;Name;Name;
 Sibling;Name;Relation;
 Parent;Name;Relation;
 Friend;Name;Relation;
+Riley;Name;Name;
+Matheo;Name;Name;
+Father;Name;Relation;
+Dad;Name;Relation;
 Bridgetown;Location;City;Nocturne
 Greybell;Location;City;Nocturne
+Nocturne;Location;Country;XXX
+Buffet;Location;Local;Ashley River
+Presents;Location;Local;Ashley River
+Tables;Location;Local;Ashley River
 House;Item;expensive;
 Car;Item;expensive;
 Yacht;Item;expensive;
 Soup;Item;cheap;
-Meal;Item;okay;
-Wine;Item;okay;
+Pizza;Item;cheap;
+Wine;Item;moderate;
 Fish;Item;cheap;
-Bread;Item;cheap;
+Salad;Item;cheap;
 Good;Adjective;positive;
 Nice;Adjective;positive;
 Beautiful;Adjective;positive;
@@ -35,12 +43,9 @@ Fine;Adjective;neutral;
 Mediocre;Adjective;neutral;
 Interesting;Adjective;positive;
 Wonderful;Adjective;positive;
+Otherworldly;Adjective;positive;
 Reason;Action;;
-Riley;Name;Name;
-Nocturne;Location;Country;XXX
-Buffet;Location;Local;Ashley River
-Presents;Location;Local;Ashley River
-Tables;Location;Local;Ashley River
-Matheo;Name;Name;
-Father;Name;Relation;
-Dad;Name;Relation;
+Vegan;Adjective;neutral;
+Riesling;Item;moderate;
+Dessert;Item;cheap;
+Food;Item;cheap;

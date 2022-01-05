@@ -1,0 +1,143 @@
+﻿title: UncleMickey.Ask
+tags:
+---
+<<if not isvisited("UncleMickey", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: UncleMickey.Food
+tags:
+---
+Oh, everything here is great.
+There is a carrot cream soup over there,
+here we have the salad. There's pizza.
+If you want to live more classy, we have 
+fish and wine right over there.
+And of course, the greatest one of all:
+the dessert is right over here.
+===
+
+title: UncleMickey.Buffet
+tags:
+---
+[[UncleMickey.Food]]
+===
+
+title: UncleMickey.Salad
+tags:
+---
+The salad is otherworldly.
+But be careful, there's almonds in there.
+===
+
+title: UncleMickey.Vegan
+tags:
+---
+<<if not isvisited("UncleMickey","Vegan")>>
+    Oh, vegan options, huh?
+    You should try the salad then.
+    Let's see... what else.
+    The wine, obviously.
+    And don't forget to try the...
+    Never mind, the soup isn't vegan.
+    Oh, that must suck for you, 
+    I'll ask the caterer, if I see them.
+<<else>>
+    Great news, I talked to the caterer.
+    The soup is vegan, too!
+    And so is the pizza apparently.
+    It's vegan salami, that's so thoughtful!
+<<endif>>
+===
+
+title: UncleMickey.Dessert
+tags:
+---
+The Creme Brulee? A true classic.
+I actually convinced James to order this.
+It's the thing the catering does best!
+===
+
+title: UncleMickey.CremeBrulee
+tags:
+---
+[[UncleMickey.Dessert]]
+===
+
+title: UncleMickey.Pizza
+tags:
+---
+Ohh, the pizza is so very good.
+I just had another slice. 
+But be careful, it's really spicy!
+===
+
+title: UncleMickey.Fish
+tags:
+---
+Don't try the fish without the wine!
+I think it's monkfish, but I'll have 
+to ask the caterer again, if I see them.
+===
+
+title: UncleMickey.Monkfish
+tags:
+---
+[[UncleMickey.Fish]]
+===
+
+title: UncleMickey.Wine
+tags:
+---
+Oh, the wine pairs amazing with the fish!
+It's an Austrian Riesling!
+===
+
+title: UncleMickey.AustrianRiesling
+tags:
+---
+[[UncleMickey.Wine]]
+===
+
+title: UncleMickey.Riesling
+tags:
+---
+[[UncleMickey.Wine]]
+===
+
+title: UncleMickey.Soup
+tags:
+---
+The best carrot cream soup I've ever had.
+I can't get enough, this is my fifth refill.
+===
+
+title: UncleMickey.CarrotCreamSoup
+tags:
+---
+[[UncleMickey.Soup]]
+===
+
+title: UncleMickey.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[AuntHeleen.Continue]]
+===
+
+title: UncleMickey.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: UncleMickey.Continue
+tags:
+---
+But we were talking about...
+===

@@ -1,0 +1,58 @@
+﻿title: UncleMickey.Start
+tags:
+---
+<<showcharactername Managers Uncle Mickey>>
+<<if not isvisited("UncleMickey","Start")>>
+    [[UncleMickey.Introduction]]
+<<else>>
+    [[UncleMickey.FoodFacts]]
+<<endif>>
+===
+
+title: UncleMickey.Introduction
+tags:
+---
+Oh hey! Haven't seen you in a while!
+<<showicantsay Managers>>
+<<displaypromptmenu Managers AdjAAA>>
+How's it going?
+<<set $cantsay to icantsay("UncleMickey", "AskMeAnything")>>
+<<set $feeling to react("value", "", "UncleMickey")>>
+<<if $feeling eq "positive">>
+    Oh, that's great to hear.
+<<elseif $feeling eq "neutral">>
+    Ah, it is what it is, huh?
+<<else>>
+    Ugh, yeah we've all been there.
+    But hey, cheer up!
+    It's James' and Renna's big day!
+<<endif>>
+[[UncleMickey.AskMeAnything]]
+===
+
+title: UncleMickey.FoodFacts
+tags:
+---
+The food is so good.
+===
+
+title: UncleMickey.AskMeAnything
+tags:
+---
+I've been anticipating the wedding
+for weeks now. You see, the food 
+at the Buffet was catered by 
+my favorite caterer of all time. 
+If you want to try some of the food,
+I've tried everything at least once.
+So if you need an opinion or anything,
+just ask away!
+===
+
+title: UncleMickey.ICantSay
+tags:
+---
+Ah, anyways. 
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
