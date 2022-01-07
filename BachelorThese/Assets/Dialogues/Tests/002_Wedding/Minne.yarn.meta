@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 41eb30ed2659b994cbe7f47e258c2ebd
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: 
+  stringIDs:
+  - Minne-Minnie.Introduction-0
+  - Minne-Minnie.XXX-1
+  - Minne-Minnie.ICantSay-2
+  - Minne-Minnie.ICantSay-3
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {instanceID: 0}
+  localizations: []

@@ -1,0 +1,40 @@
+﻿title: James.Ask
+tags:
+---
+<<if not isvisited("James", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: James.Matheo
+tags:
+---
+Matheo? 
+I've seen him half an hour ago.
+He was runing around the benches...
+Sorry, I don't know anything else.
+[[James.Continue]]
+===
+
+title: James.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[James.Continue]]
+===
+
+title: James.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: James.Continue
+tags:
+---
+But we were talking about...
+===

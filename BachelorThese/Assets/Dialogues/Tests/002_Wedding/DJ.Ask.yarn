@@ -1,0 +1,41 @@
+﻿title: DJ.Ask
+tags:
+---
+<<if not isvisited("DJ", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: DJ.Matheo
+tags:
+---
+Matheo? Who's that?
+Oh, a small kid? Yeah...
+He was here... 
+Wanted to do my job for me.
+Told him to check out the presents.
+[[DJ.Continue]]
+===
+
+title: DJ.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[DJ.Continue]]
+===
+
+title: DJ.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: DJ.Continue
+tags:
+---
+But we were talking about...
+===

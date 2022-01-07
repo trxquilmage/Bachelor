@@ -1,0 +1,240 @@
+﻿title: Renna.Start
+tags:
+---
+<<set $willHoldSpeech to getinfo("willHoldSpeech", 0)>>
+<<set $firstSpeechDone to getinfo("firstSpeechDone", 0)>>
+<<set $secondSpeechDone to getinfo("secondSpeechDone", 0)>>
+<<set $thirdSpeechDone to getinfo("thirdSpeechDone", 0)>>
+<<set $fourthSpeechDone to getinfo("fourthSpeechDone", 0)>>
+<<showcharactername Managers Renna>>
+<<if not isvisited("Renna","Start")>>
+    [[Renna.Introduction]]
+<<elseif $willHoldSpeech eq false>>
+    [[Renna.RetrySpeech]]
+<<elseif $firstSpeechDone eq "">>
+    [[Renna.RetrySpeech1]]
+<<elseif $secondSpeechDone eq "">>
+    [[Renna.RetrySpeech2]]
+<<elseif $thirdSpeechDone eq "">>
+    [[Renna.RetrySpeech3]]
+<<elseif $fourthSpeechDone eq "">>
+    [[Renna.RetrySpeech4]]
+<<else>>
+    [[Renna.Idle]]
+<<endif>>
+===
+
+title: Renna.Introduction
+tags:
+---
+Wow, so glad you could make it!
+<<showicantsay Managers>>
+<<displaypromptmenu Managers AdjAAA>>
+How have you been?
+<<set $cantsay to icantsay("Renna", "WellTalkLater")>>
+<<set $hasBeen to react("value", "", "Renna")>>
+<<if $hasBeen eq "positive">>
+    That sounds great.
+    I feel the same today, hahaha.
+<<elseif $hasBeen eq "neutral">>
+    Ah, okay then.
+    I hope it gets better for you, though.
+<<elseif $hasBeen eq "negative">>
+    Oh, that doesn't sound good. 
+    Hey, made help yourself to some wine,
+    and have a good night.
+<<endif>>
+[[Renna.AskForFavorIntro]]
+===
+
+title: Renna.WellTalkLater
+tags:
+---
+Hm. Okay, let's talk later.
+===
+
+title: Renna.AskForFavorIntro
+tags:
+---
+But while I'm speaking to you...
+Minnie had a few too much already.
+And I need to replace her speech.
+Because I'm scared she's gonna say
+something bad or really embarrassing.
+[[Renna.AskForFavor]]
+===
+
+title: Renna.AskForFavor
+tags:
+---
+<<displaypromptmenu Managers GenAAA>>
+You think you could hold a speech?
+<<set $willHoldSpeech to react("value", "willHoldSpeech", "Renna")>>
+<<if $willHoldSpeech eq true>>
+Great!
+[[Renna.Speech1]]
+<<else>>
+Ah, too bad. I'll find someone...
+<<endif>>
+
+===
+
+title: Renna.Speech1
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers SpeechAAA>>
+So just tell me what you'll say!
+<<set $cantsay to icantsay("Renna", "CantSaySpeech")>>
+<<set $firstSpeechDone to react("value", "firstSpeechDone", "Renna")>>
+<<if $firstSpeechDone eq "positive">>
+    Uh-huh. Solid start, I like it.
+<<elseif $firstSpeechDone eq "neutral">>
+    An okay start. Not very strong.
+<<elseif $firstSpeechDone eq "negative">>
+    Huh?
+<<endif>>
+[[Renna.Speech2]]
+===
+
+title: Renna.Speech2
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers SpeechAAB>>
+Okay, continue the speech...
+<<set $cantsay to icantsay("Renna", "CantSaySpeech")>>
+<<set $secondSpeechDone to react("name", "secondSpeechDone", "Renna")>>
+<<if $secondSpeechDone eq "James">>
+    Yes, good Intro.
+<<else>>
+    That is... not correct...
+<<endif>>
+[[Renna.Speech3]]
+===
+
+title: Renna.Speech3
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers SpeechAAC>>
+Okay, continue the speech...
+<<set $cantsay to icantsay("Renna", "CantSaySpeech")>>
+<<set $thirdSpeechDone to react("name", "thirdSpeechDone", "Renna")>>
+    <<if $thirdSpeechDone eq "Present">>
+        Oh, I like that!
+    <<else>>
+        Oh, {$thirdSpeechDone}, interesting choice.
+    <<endif>>
+[[Renna.Speech4]]
+===
+
+title: Renna.Speech4
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers SpeechAAD>>
+Okay, continue the speech...
+<<set $cantsay to icantsay("Renna", "CantSaySpeech")>>
+<<set $fourthSpeechDone to react("value", "fourthSpeechDone", "Renna")>>
+<<if $fourthSpeechDone eq "positive">>
+    Good end, yeah.
+<<elseif $fourthSpeechDone eq "neutral">>
+    An okay start. Not very strong.
+<<elseif $fourthSpeechDone eq "negative">>
+    Huh?
+<<endif>>
+[[Renna.Evaluation]]
+===
+
+title: Renna.Evaluation
+tags:
+---
+For my evaluation:
+<<set $firstSpeechDone to getinfo("firstSpeechDone", 0)>>
+<<set $secondSpeechDone to getinfo("secondSpeechDone", 0)>>
+<<set $thirdSpeechDone to getinfo("thirdSpeechDone", 0)>>
+<<set $fourthSpeechDone to getinfo("fourthSpeechDone", 0)>>
+<<if $firstSpeechDone eq "negative">>
+    Why was the intro so negative?
+    I kinda thought there'd be a 'but'
+    somewhere, but there wasn't?
+<<elseif  $firstSpeechDone eq "neutral">>
+    The intro wasn't very strong,
+    but hey, you can work on that.
+<<else>>
+    The intro was really good.
+<<endif>>
+<<if not $secondSpeechDone eq "James">>
+    Why'd you say I'm marrying {$secondSpeechDone}?
+    That was really weird.
+<<else>>
+    After that you had a strong middle.
+    I liked the {$thirdSpeechDone} - part a lot.
+<<endif>>
+<<if $firstSpeechDone eq "negative">>
+    And I don't really get why everyone
+    should have a bad night?
+<<elseif  $firstSpeechDone eq "neutral">>
+    The ending wasn't that strong,
+    maybe think about that some more.
+<<else>>
+    The ending was really great!
+<<endif>>
+So yeah, maybe work that feedback in!
+===
+
+title: Renna.CantSaySpeech
+tags:
+---
+Ah, too bad, we'll try again later.
+===
+
+title: Renna.RetrySpeech
+tags:
+---
+Hey, have you changed your mind?
+[[Renna.AskForFavor]]
+===
+
+title: Renna.RetrySpeech1
+tags:
+---
+You're here to try again?
+[[Renna.Speech1]]
+===
+
+title: Renna.RetrySpeech2
+tags:
+---
+You're here to try again?
+[[Renna.Speech2]]
+===
+
+title: Renna.RetrySpeech3
+tags:
+---
+You're here to try again?
+[[Renna.Speech3]]
+===
+
+title: Renna.RetrySpeech4
+tags:
+---
+You're here to try again?
+[[Renna.Speech4]]
+===
+
+title: Renna.Idle
+tags:
+---
+Today is such a great day!
+===
+
+title: Renna.ICantSay
+tags:
+---
+Hm.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

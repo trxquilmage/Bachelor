@@ -9,3 +9,7 @@ LocAAA;I'm from<br><alpha=#00>|Location|
 LocAAB;He's at the<br><alpha=#00>|Location|
 NameAAA;<alpha=#00>|Name|
 QuestAAA;I am here to <br><alpha=#00>|Quest|
+SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adjective|<alpha=#FF>  party.
+SpeechAAB;For Renna's and <br><alpha=#00>|Name|<alpha=#FF>'s wedding.
+SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item|<alpha=#FF>!
+SpeechAAD;This is gonna be a <br><alpha=#00>|Adjective|<alpha=#FF> night!

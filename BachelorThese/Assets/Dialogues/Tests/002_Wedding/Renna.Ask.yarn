@@ -1,0 +1,45 @@
+﻿title: Renna.Ask
+tags:
+---
+<<if not isvisited("Renna", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Renna.Matheo
+tags:
+---
+<<if not isvisited("Renna", "Matheo")>>
+    Matheo? Hm...
+    I think I saw him when we came here.
+    Maybe ask his mother?
+    Oh, she's looking for him...
+    I'll tell you, when I see him.
+<<else>>
+    Sorry, still haven't seen him.
+<<endif>>
+[[Renna.Continue]]
+===
+
+title: Renna.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[Renna.Continue]]
+===
+
+title: Renna.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: Renna.Continue
+tags:
+---
+But we were talking about...
+===

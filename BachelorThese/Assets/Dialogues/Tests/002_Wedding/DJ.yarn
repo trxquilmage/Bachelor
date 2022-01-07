@@ -1,0 +1,51 @@
+﻿title: DJ.Start
+tags:
+---
+<<showcharactername Managers DJ>>
+<<if not isvisited("DJ","Start")>>
+    [[DJ.Introduction]]
+<<else>>
+    [[DJ.Forgot]]
+<<endif>>
+===
+
+title: DJ.Introduction
+tags:
+---
+I'm the DJ for the evening.
+Say... what is your name?
+<<showicantsay Managers>>
+<<displaypromptmenu Managers NameAAA>>
+<<setquest Managers QuestAAB>>
+I'm looking for someone here...
+<<set $cantsay to icantsay("DJ", "Nevermind")>>
+<<set $name to react("value", "", "DJ")>>
+<<if $name eq "Jordan">>
+    <<completequest Managers QuestAAB>>
+    Great! I was looking for you!
+<<else>>
+    Oh, too bad, 
+    you're not who I'm looking for.
+<<endif>>
+===
+
+title: DJ.Forgot
+tags:
+---
+Oh? Have we met already?
+[[DJ.Introduction]]
+===
+
+title: DJ.Nevermind
+tags:
+---
+Okay nevermind, then...
+===
+
+title: DJ.ICantSay
+tags:
+---
+Hm.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

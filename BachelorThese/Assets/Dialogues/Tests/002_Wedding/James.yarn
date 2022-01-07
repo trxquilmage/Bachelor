@@ -1,0 +1,62 @@
+﻿title: James.Start
+tags:
+---
+<<showcharactername Managers James>>
+<<if not isvisited("James","Start")>>
+    [[James.Introduction]]
+<<else>>
+    [[James.Tour]]
+<<endif>>
+===
+
+title: James.Introduction
+tags:
+---
+Hey! I'm so glad you could make it!
+<<set $hasDate to getinfo("hasDate", 0)>>
+<<if $hasDate>>
+    And I see you've brought someone along!
+    <<showicantsay Managers>>
+    <<displaypromptmenu Managers AdjAAA>>
+    How is your date going?
+    <<set $cantsay to icantsay("James", "Tour")>>
+    <<set $dateIsGoing to react("value", "dateIsGoing", "James")>>
+    <<if $dateIsGoing eq "positive">>
+        Great! I hope you two have a good night!
+    <<elseif $dateIsGoing eq "neutral">>
+        Ah, okay then. I hope it gets better.
+    <<elseif $dateIsGoing eq "negative">>
+        Oh, that doesn't sound good. 
+        If you want to get rid of your date,
+        I bet Jordan could distract them.
+    <<endif>>
+<<else>>
+    I hope the venue wasn't too hard to find.
+    We thought about placing markers, 
+    but there were too many possibilites
+    from where guests could be coming.
+<<endif>>
+Anyways, I hope you enjoy the evening!
+[[James.Tour]]
+===
+
+title: James.Tour
+tags:
+---
+Help yourself at the Buffet, and have 
+a sit at one of the tables.
+There should be enough space for everyone.
+And if you haven't yet, you can add your 
+present to the presents near the entrance!
+Since the ceremony is already over,
+you can sit on the benches too, 
+we don't need them.
+===
+
+title: James.ICantSay
+tags:
+---
+Oh, nevermind, then. Anyways,
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
