@@ -37,7 +37,7 @@ title: Riley.AboutYou1
 tags: 
 ---
 <<showicantsay Managers>>
-<<displaypromptmenu Managers NameAAB>>
+<<displaypromptmenu Managers NameAAA>>
 So, which part of the family are we here for?
 <<set $cantsay to icantsay("Riley", "Secretive")>>
 <<set $familySide to react("name", "", "Riley")>>
