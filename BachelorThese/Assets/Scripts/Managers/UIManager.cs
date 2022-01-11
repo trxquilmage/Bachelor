@@ -255,7 +255,7 @@ public class UIManager : MonoBehaviour
         GameObject button = GameObject.Instantiate(refM.buttonPrefab, Vector2.zero, Quaternion.identity);
         button.transform.SetParent(refM.tagButtonParent.transform, false);
         TagButtonInfo info = button.GetComponent<TagButtonInfo>();
-        info.Initizalize(i, tag);
+        info.Initialize(i, tag);
     }
     public void StartClickFeedback()
     {

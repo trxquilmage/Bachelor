@@ -36,7 +36,7 @@ public class QuestManager : MonoBehaviour
 
     public void CompleteQuest(string questName)
     {
-        GetQuest(questName).isCompleted = true;
+        GetQuestReference(questName).isCompleted = true;
         UpdateText();
         AutomaticallyOpenLog();
     }
@@ -53,14 +53,28 @@ public class QuestManager : MonoBehaviour
         UpdateText();
     }
 
-    ref Quest GetQuest(string questName)
+    ref Quest GetQuestReference(string questName)
     {
         for (int i = 0; i < quests.Length; i++)
             if (quests[i].questName == questName)
                 return ref quests[i];
-        Debug.Log("Quest " + questName + 
-            " was never active, but is currently being seached for. Is there an error somewhere?");
+        Debug.Log("no reference found to quest " + questName);
         return ref quests[0];
+    }
+
+    Quest GetQuest(string questName)
+    {
+        for (int i = 0; i < quests.Length; i++)
+            if (quests[i].questName == questName)
+                return quests[i];
+        Quest emptyQuest = new Quest("");
+        return emptyQuest;
+    }
+
+    public bool CheckIfQuestIsActive(string questName)
+    {
+        Quest quest = GetQuest(questName);
+        return quest.questName != "" ? !quest.isCompleted : false;
     }
 
     Quest[] GetAllQuests()
@@ -126,6 +140,8 @@ public struct Quest
         string description = "";
         if (WordLookupReader.instance.questDescriptions.ContainsKey(questName))
             description = WordLookupReader.instance.questDescriptions[questName];
+        else if (questName == "")
+            description = "";
         else
             Debug.Log("No Quest in WordLookUpReader named " + questName);
         return description;

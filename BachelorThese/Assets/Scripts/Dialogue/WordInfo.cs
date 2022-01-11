@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WordInfo
 {
@@ -13,6 +14,8 @@ public class WordInfo
     {
         public string name;
         public Color tagColor;
+        public Button tagButton;
+        public bool buttonIsActive;
     }
 }
 

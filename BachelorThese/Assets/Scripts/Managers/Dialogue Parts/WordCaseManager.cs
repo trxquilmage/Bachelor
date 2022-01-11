@@ -15,6 +15,7 @@ public class WordCaseManager : Case
         get { return OpenTag; }
         set
         {
+
             if (OpenTag == value)
             {
                 OpenTag = value;
@@ -22,6 +23,7 @@ public class WordCaseManager : Case
             }
             else
             {
+                MakeOtherTagProminent(OpenTag, value);
                 OpenTag = value;
                 ReloadContents(true);
             }
@@ -99,6 +101,53 @@ public class WordCaseManager : Case
         }
         else
             return null;
+    }
+
+
+    protected override void CheckIfANewTagIsIncludedAndAddButton(string tagName)
+    {
+        if (CheckIfTagIsNew(tagName))
+            ShowTagButton(tagName);
+    }
+    protected override void CheckIfATagIsEmptyDueToDelete(string tagName)
+    {
+        if (CheckIfTagIsEmpty(tagName))
+        {
+            HideTagButton(tagName);
+            IfHiddenTagIsOpenJumpToAll(tagName);
+        }
+    }
+    protected bool CheckIfTagIsNew(string tagName)
+    {
+        if (!WordUtilities.GetTag(tagName).buttonIsActive)
+            return true;
+        return false;
+    }
+
+    protected void ShowTagButton(string tagName)
+    {
+        WordUtilities.GetTag(tagName).tagButton.GetComponent<TagButtonInfo>().SetActive();
+    }
+    public bool CheckIfTagIsEmpty(string tagName)
+    {
+        bool isEmpty = true;
+        for (int i = 0; i < tagRelatedWords[tagName].Length; i++)
+        {
+            if (tagRelatedWords[tagName][i].name != null)
+                isEmpty = false;
+        }
+        if (isEmpty)
+            return true;
+        return false;
+    }
+    public void HideTagButton(string tagName)
+    {
+        WordUtilities.GetTag(tagName).tagButton.GetComponent<TagButtonInfo>().SetInactive();
+    }
+    void IfHiddenTagIsOpenJumpToAll(string tagName)
+    {
+        if (tagName == openTag)
+            ChangeToTag(refM.wordTags[refM.allTagIndex].tagButton.GetComponent<TagButtonInfo>());
     }
     public override void RearrangeContents()
     {
@@ -227,8 +276,8 @@ public class WordCaseManager : Case
     {
         // Set Background Color to Tag Color + a bit grey
         Color color = WordUtilities.MatchColorToTag(openTag);
-        Color highlightColor = Color.Lerp(color, refM.highlightColor, 0.35f);
-        journalImage.GetComponent<Image>().color = highlightColor;
+        Color highlightColor = Color.Lerp(color, ReferenceManager.instance.highlightColor, 0.35f);
+        ReferenceManager.instance.wordJournal.GetComponent<Image>().color = highlightColor;
     }
 
     /// <summary>
@@ -258,6 +307,18 @@ public class WordCaseManager : Case
             }
         }
         return wordCount;
+    }
+
+    void MakeOtherTagProminent(string oldTag, string newTag)
+    {
+        if (oldTag != "" && oldTag != null)
+        {
+            WordUtilities.GetTag(oldTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonSmaller();
+        }
+        if (newTag != "" && newTag != null)
+        {
+            WordUtilities.GetTag(newTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonProminent();
+        }
     }
 
     public override void ChangeScrollbarValue(float scrollValue)

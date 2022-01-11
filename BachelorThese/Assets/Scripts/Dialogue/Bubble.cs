@@ -156,16 +156,32 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
-        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnBeginDragFunction();
+        }
+    }
+
+
+
+    #endregion
+
+    #region NOT VIRTUAL
+
+    void OnBeginDragFunction()
+    {
+        if (!fadingOut)
         {
             if (star != null)
                 Destroy(star.gameObject);
             WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
 
-            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB)) //if currently attached to a prompt bubble
+            //if currently attached to a prompt bubble, remove
+            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {
-                pB.child = null;
+                OnRemoveFromPromptBubble(pB);
             }
+
             // if the word is being dragged out of the dialogue
             if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
             {
@@ -176,23 +192,15 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
                     if (data.isLongWord)
                         UpdateToBubbleShape();
                 }
-                WordClickManager.instance.SwitchFromHighlightedToCurrent();
-
+                if (WordClickManager.instance.wordLastHighlighted != null && this == WordClickManager.instance.wordLastHighlighted.GetComponent<Bubble>())
+                    WordClickManager.instance.SwitchFromHighlightedToCurrent();
             }
             else if (data.origin == WordInfo.Origin.WordCase)
             {
                 Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
             }
-            else if (data.origin == WordInfo.Origin.QuestLog)
-            {
-                WordCaseManager.instance.AutomaticOpenCase(true);
-                Unparent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
-            }
         }
     }
-    #endregion
-
-    #region NOT VIRTUAL
 
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
@@ -292,6 +300,16 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
+
+    void OnRemoveFromPromptBubble(PromptBubble pB)
+    {
+        pB.child = null;
+    }
+    protected void OnEnterPromptBubble()
+    {
+        WordCaseManager.instance.DestroyReplacement();
+    }
+
     /// <summary>
     /// Takes a long word and fits it above the text it is portraying
     /// </summary>
@@ -718,10 +736,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         StartCoroutine(AnimateMovement(movementDone, targetPos));
         StartCoroutine(AfterMovement_BackToCase(movementDone));
     }
+
     /// <summary>
     /// Get the target position of the case we want to animate to 
     /// </summary>
-    /// <param name="isQuest"></param>
     /// <returns></returns>
     public virtual Vector2 GetCaseTargetPosition()
     {
@@ -733,14 +751,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <returns></returns>
     public IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
     {
-        if (data.isLongWord)
-            UpdateToBubbleShape();
-
+        OnBeginDragFunction();
         fadingOut = true;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         RectTransform rT = GetComponent<RectTransform>();
         Vector2 startPos = rT.localPosition;
-
         float timer = 0;
         float t;
         while (timer < floatTime)
@@ -788,6 +803,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordClickManager.instance.promptBubble = pB;
         WordUtilities.ParentBubbleToPrompt(this.gameObject);
         WordClickManager.instance.promptBubble = null;
+        OnEnterPromptBubble();
     }
     public IEnumerator AfterMovement_BackToCase(RefBool isDone)
     {

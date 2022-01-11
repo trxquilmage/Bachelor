@@ -47,6 +47,10 @@ public class CommandManager : MonoBehaviour
         {
             return GetVisited(parameters[0].AsString, parameters[1].AsString);
         });
+        refM.runner.AddFunction("isquestactive", 1, delegate (Yarn.Value[] parameters)
+        {
+            return CheckIfIsQuestActive(parameters[0].AsString);
+        });
 
         // askRunner
         refM.askRunner.AddFunction("icantsay", 2, delegate (Yarn.Value[] parameters)
@@ -76,6 +80,10 @@ public class CommandManager : MonoBehaviour
         {
             return CheckIfOnlyAsk();
         });
+        refM.askRunner.AddFunction("isquestactive", 1, delegate (Yarn.Value[] parameters)
+        {
+            return CheckIfIsQuestActive(parameters[0].AsString);
+        });
     }
     /// <summary>
     /// Set a quest in the questlog
@@ -92,6 +100,11 @@ public class CommandManager : MonoBehaviour
     public void CompleteQuest(string questName)
     {
         QuestManager.instance.CompleteQuest(questName);
+    }
+
+    public bool CheckIfIsQuestActive(string questName)
+    {
+        return QuestManager.instance.CheckIfQuestIsActive(questName);
     }
 
     /// <summary>

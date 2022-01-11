@@ -128,7 +128,8 @@ public class Case : MonoBehaviour
         bubble.data.origin = origin;
         if (CheckIfCanSaveBubble(data.name, out int index))
         {
-            contents[index] = data;
+            SaveBubbleDataInContents(index, data);
+            CheckIfANewTagIsIncludedAndAddButton(data.tag);
         }
         else
         {
@@ -161,7 +162,9 @@ public class Case : MonoBehaviour
         }
         if (deleteInt > -1)
         {
+            string tagToDelete = currentContents[deleteInt].tag;
             currentContents[deleteInt] = new BubbleData();
+            CheckIfATagIsEmptyDueToDelete(tagToDelete);
         }
         else
             Debug.Log("The bubble to delete couldnt be found " + currentData.name);
@@ -184,6 +187,12 @@ public class Case : MonoBehaviour
         {
             img.color = color;
         }
+    }
+    protected virtual void CheckIfANewTagIsIncludedAndAddButton(string tagName)
+    {
+    }
+    protected virtual void CheckIfATagIsEmptyDueToDelete(string tagName)
+    {
     }
     #region SCROLLBAR
     public virtual void ChangeScrollbarValue(float scrollValue)
@@ -253,6 +262,11 @@ public class Case : MonoBehaviour
     #endregion
     #endregion
     #region NOT VIRTUAL
+    protected void SaveBubbleDataInContents(int index, BubbleData data)
+    {
+        contents[index] = data;
+    }
+
     /// <summary>
     /// counts how many contents there are in the list right now
     /// </summary>
@@ -278,7 +292,6 @@ public class Case : MonoBehaviour
             contents[index] = data;
         }
     }
-
     public virtual void RearrangeContents()
     {
         List<BubbleData> favorites = new List<BubbleData>();
@@ -294,7 +307,6 @@ public class Case : MonoBehaviour
         favorites.AddRange(nonFavorites);
         contents = favorites.ToArray();
     }
-
     public virtual void RearrangeContents(ref List<BubbleData> bubbleDataList)
     {
         List<BubbleData> favorites = new List<BubbleData>();

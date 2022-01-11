@@ -108,6 +108,8 @@ public class ReferenceManager : MonoBehaviour
     [Header("Images")]
     public Sprite trashCanImage01;
     public Sprite trashCanImage02;
+    public Sprite buttonNotSelected;
+    public Sprite buttonSelected;
     [Header("Prompt Related")]
     public TextMeshProUGUI promptAnswer;
     public GameObject promptMenu;
@@ -119,6 +121,7 @@ public class ReferenceManager : MonoBehaviour
     public Image fButtonSprite;
     public Image rightClickIcon;
     public Image rightClickAskIcon;
+    
     public GameObject worldMap;
     [Header("Environment")]
     public GameObject player;

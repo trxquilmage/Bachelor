@@ -94,6 +94,7 @@ public class Word : Bubble
             {
                 // parent to word
                 WordUtilities.ParentBubbleToPrompt(this.gameObject);
+                OnEnterPromptBubble();
             }
         }
         else

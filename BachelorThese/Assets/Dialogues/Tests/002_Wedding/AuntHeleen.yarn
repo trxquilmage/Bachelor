@@ -2,19 +2,28 @@
 tags:
 ---
 <<showcharactername Managers Aunt Heleen>>
-<<if isvisited("AuntHeleen","Start")>>
+<<set $questIsActive to isquestactive("QuestAAA")>>
+<<if not isvisited("AuntHeleen","Start")>>
+    [[AuntHeleen.WhereIsMatheo]]
+<<elseif $questIsActive>>
     [[AuntHeleen.HaveYouFoundMatheo]]
 <<else>>
-    [[AuntHeleen.WhereIsMatheo]]
+    [[AuntHeleen.Idle]]  
 <<endif>>
+===
+
+title: AuntHeleen.Idle
+tags:
+---
+Thank you so much!
+I hope you have fun at the party!
 ===
 
 title: AuntHeleen.WhereIsMatheo
 tags:
 ---
-Presents.
 Where is he, again...
-... Oh, you're here!
+.... Oh, you're here!
 I'm so sorry to bother you with this, but 
 if you see Matheo running around somewhere,
 <<setquest Managers QuestAAA>>
