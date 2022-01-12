@@ -1,7 +1,7 @@
-Location;name;type;location
-Item;name;value;
-Other;name;value;
-Name;name;;
-Adjective;name;value;
-Quest;name;;
-Action;name;;
+Location;name;subtag;location
+Item;name;subtag;value
+Other;name;subtag;value
+Name;name;subtag;
+Adjective;name;subtag;value
+Quest;name;subtag;
+Action;name;subtag;

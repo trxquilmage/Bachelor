@@ -1,9 +1,9 @@
-Ashley River;Location;City;Nocturne
-Northland Woods;Location;District;Bridgetown
-Aunt Heleen;Name;Name;
-Cousin Hartley;Name;Name;
-Uncle Mickey;Name;Name;
-Rensgate Car Services;Location;House;Greybell
-Carrot Cream Soup;Item;cheap;
-Austrian Riesling;Item;moderate;
-Creme Brulee;Item;cheap;
+Ashley River;Location;City;Nocturne;
+Northland Woods;Location;District;Bridgetown;
+Aunt Heleen;Name;NameA;;
+Cousin Hartley;Name;NameA;;
+Uncle Mickey;Name;NameA;;
+Rensgate Car Services;Location;House;House;Greybell
+Carrot Cream Soup;Item;Item;cheap;
+Austrian Riesling;Item;Item;moderate;
+Creme Brulee;Item;Item;cheap;
