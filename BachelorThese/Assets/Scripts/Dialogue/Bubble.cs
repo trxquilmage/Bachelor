@@ -65,6 +65,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.name = WordUtilities.CapitalizeAllWordsInString(name);
         data.tagInfo = tags;
         data.tag = tags[0];
+        data.subtag = tags[1];
         data.origin = origin;
 
         //save the location in the text this word came from (if this word came from the Text)
@@ -100,6 +101,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.name = bubbleData.name;
         data.tagInfo = bubbleData.tagInfo;
         data.tag = bubbleData.tag;
+        data.subtag = bubbleData.subtag;
         data.origin = bubbleData.origin;
         data.lineLengths = bubbleData.lineLengths;
         data.isLongWord = bubbleData.isLongWord;
@@ -880,6 +882,15 @@ public class BubbleData
             UpdateBubbleData();
         }
     }
+    public string subtag
+    {
+        get { return Subtag; }
+        set
+        {
+            Subtag = value;
+            UpdateBubbleData();
+        }
+    }
     public WordInfo.Origin origin
     {
         get { return Origin; }
@@ -929,6 +940,7 @@ public class BubbleData
     string Name;
     string[] TagInfo;
     string Tag;
+    string Subtag;
     WordInfo.Origin Origin;
     Vector2[] LineLengths;
     bool IsLongWord;

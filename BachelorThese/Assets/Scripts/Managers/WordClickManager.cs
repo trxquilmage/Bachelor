@@ -103,6 +103,7 @@ public class WordClickManager : MonoBehaviour
             {
                 name = sentWord,
                 tag = wlReader.wordTag[sentWord][0],
+                subtag = wlReader.wordTag[sentWord][1],
                 tagInfo = wlReader.wordTag[sentWord]
             };
 
@@ -119,6 +120,7 @@ public class WordClickManager : MonoBehaviour
             {
                 name = sentWord,
                 tag = wlReader.longWordTag[sentWord][0],
+                subtag = wlReader.longWordTag[sentWord][1],
                 tagInfo = wlReader.longWordTag[sentWord]
             };
             if (wordLastHighlighted != null)
@@ -134,6 +136,7 @@ public class WordClickManager : MonoBehaviour
             {
                 name = sentWord,
                 tag = wlReader.fillerTag[sentWord][0],
+                subtag = wlReader.fillerTag[sentWord][1],
                 tagInfo = wlReader.fillerTag[sentWord]
             };
             DestroyLastHighlighted();
@@ -148,6 +151,7 @@ public class WordClickManager : MonoBehaviour
             {
                 name = sentWord,
                 tag = refM.wordTags[refM.otherTagIndex].name,
+                subtag = "OtherA",
                 tagInfo = new string[] { ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name, "wrongInfo" }
             };
             DestroyLastHighlighted();

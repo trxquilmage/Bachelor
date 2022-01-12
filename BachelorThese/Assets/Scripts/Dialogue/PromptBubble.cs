@@ -6,10 +6,14 @@ using UnityEngine.UI;
 public class PromptBubble : MonoBehaviour
 {
     public bool acceptsCurrentWord;
-    public bool acceptsEveryWord; //means accepts every word, even "Other" words
     bool isHover = false;
-    Image bubble;
+
+    Vector2[] parameters;
     PromptBubbleData data;
+    Image bubble;
+    ReferenceManager refM;
+    RectTransform rT;
+
     public GameObject child
     {
         get { return Child; }
@@ -23,11 +27,11 @@ public class PromptBubble : MonoBehaviour
         }
     }
     GameObject Child;
-    Vector2[] parameters;
-    ReferenceManager refM;
+
     public struct PromptBubbleData
     {
         public WordInfo.WordTag tag;
+        public string subtag;
         public Color imageColor;
     }
     private void Start()
@@ -36,25 +40,61 @@ public class PromptBubble : MonoBehaviour
     }
     public void Initialize(string tag)
     {
-        bubble = GetComponent<Image>();
-        //in the specific case of the Tag being "AllWordsA"
-        if (tag == "AllWordsA")
-        {
-            acceptsEveryWord = true;
-            tag = "AllWords";
-        }
+        InitializeValues();
 
-        WordInfo.WordTag tagInfo = WordUtilities.GetTag(tag);
-        data = new PromptBubbleData()
+        string[] tagAndSubtag = SplitTagIntoTagAndSubtag(tag);
+        SaveTagAndSubtag(tagAndSubtag[0], tagAndSubtag[1]);
+
+        ColorPromptBubbleToTagColor();
+
+        PlayerInputManager.instance.SavePrompt(this);
+        SaveStartScaleParameters();
+    }
+    void InitializeValues()
+    {
+        bubble = GetComponent<Image>();
+        data = new PromptBubbleData();
+        rT = GetComponent<RectTransform>();
+    }
+    void SaveTagAndSubtag(string tag, string subtag)
+    {
+        data.tag = GetTagFromAbbreviation(tag);
+        data.subtag = subtag;
+    }
+    string[] SplitTagIntoTagAndSubtag(string tagAndSubtag)
+    {
+        return tagAndSubtag.Trim().Split("-"[0]);
+    }
+    WordInfo.WordTag GetTagFromAbbreviation(string abbreviation)
+    {
+        switch (abbreviation)
         {
-            tag = tagInfo
-        };
+            case "All":
+                return WordUtilities.GetTag("AllWords");
+            case "Adj":
+                return WordUtilities.GetTag("Location");
+            case "Item":
+                return WordUtilities.GetTag("Item");
+            case "Name":
+                return WordUtilities.GetTag("Name");
+            case "Loc":
+                return WordUtilities.GetTag("Location");
+            case "Oth":
+                return WordUtilities.GetTag("Other");
+            default:
+                Debug.Log("Tag abbreviation " + abbreviation + " unknown!");
+                return new WordInfo.WordTag();
+        }
+    }
+    void ColorPromptBubbleToTagColor()
+    {
         data.imageColor = WordUtilities.MatchColorToTag(data.tag.name);
         data.imageColor.a = 1;
         bubble.color = data.imageColor;
-        RectTransform rT = GetComponent<RectTransform>();
+    }
+    void SaveStartScaleParameters()
+    {
         rT.localScale = new Vector3(1, 1, 1);
-        PlayerInputManager.instance.SavePrompt(this);
         parameters = new Vector2[2] { rT.localPosition, rT.sizeDelta };
     }
     /// <summary>
@@ -65,41 +105,56 @@ public class PromptBubble : MonoBehaviour
     {
         bool hasCurrentWord = WordClickManager.instance.currentWord != null;
         BubbleData currentBubbleData = null;
+        string allTagName = refM.wordTags[refM.allTagIndex].name;
         if (hasCurrentWord)
             currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
-        if (isOnHover && !isHover) //mouse starts hover
+
+        if (isOnHover && !isHover && hasCurrentWord) //mouse starts hover
         {
-            //prompt bubble: allwords, acceptsEveryWord = true
-            if (acceptsEveryWord && hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name ||
+            //correct input to bubble
+            if (
+                //prompt bubble: all:all
+                data.tag.name == allTagName && data.subtag == "All" ||
 
-                //prompt bubble: allwords, word: !other 
-                hasCurrentWord && data.tag.name == refM.wordTags[refM.allTagIndex].name
-                && currentBubbleData.tag != refM.wordTags[refM.otherTagIndex].name ||
+                //prompt bubble: all:"TagName" is excluding said tagname
+                data.tag.name == allTagName && currentBubbleData.tag != data.subtag ||
 
-                //prompt bubble tag == word tag
-                hasCurrentWord && currentBubbleData.tag == data.tag.name)
+                //prompt bubble: "Tag":All (tag != all)
+                data.tag.name != allTagName && data.subtag == "All"
+                && currentBubbleData.tag == data.tag.name ||
+
+                //prompt bubble: "Tag":"Subtag" (Neither of these is all)
+                data.tag.name != allTagName && data.subtag != "All" &&
+                data.tag.name == currentBubbleData.tag && data.subtag == currentBubbleData.subtag
+                )
             {
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
-            // in the specific situation, where this is a bubble tagged "AllWords" and it is filled with unfitting contents
-            else if (!acceptsEveryWord && data.tag.name == refM.wordTags[refM.allTagIndex].name &&
-                hasCurrentWord && currentBubbleData.tag == refM.wordTags[refM.otherTagIndex].name)
+            //wrong Input to bubble, show message
+            
+            else if (
+                // All:"Tag"
+                data.tag.name == allTagName && currentBubbleData.tag == data.subtag ||
+
+                // "Tag":"Subtag"
+                data.tag.name != allTagName && data.subtag != "All" &&
+                data.tag.name == currentBubbleData.tag && data.subtag != currentBubbleData.subtag
+                )
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 UIManager.instance.BlendInUI(refM.feedbackTextOtherTag, 3);
             }
+            //wrong Input to bubble, no message
             else
             {
                 acceptsCurrentWord = false;
-                if (hasCurrentWord)
-                {
-                    StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
-                                        new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                    StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                        new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                }
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
+                                    new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
+                    new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
+
             }
         }
         else if (!isOnHover && isHover) //mouse stops hover
@@ -107,7 +162,7 @@ public class PromptBubble : MonoBehaviour
             acceptsCurrentWord = false;
             if (WordClickManager.instance.currentWord != null && bubble.color == Color.red)
             {
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] 
+                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[]
                     { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
 
                 Color currentBubbleColor = WordClickManager.instance.currentWord.GetComponent<Bubble>().

@@ -21,15 +21,19 @@ public class Word : Bubble
         wordParent = this.gameObject;
 
         data = new BubbleData();
-        //fix the tags that arent "real" tags like "OtherA" -> "Other"
+
         //so that the strings arent reference types :)
         string[] tagsCopy = new string[tags.Length];
         System.Array.Copy(tags, tagsCopy, tags.Length);
-        tagsCopy[0] = WordUtilities.CorrectReplacementTags(tagsCopy[0], this);
 
         base.Initialize(name, tagsCopy, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
-
+        
         data = new WordData(bubbleData);
+        
+        if (data.subtag == "Boolean")
+        {
+            data.permanentWord = true;
+        }
         //initialize the tag Object
         ((WordData)data).tagObj = new TagObject();
         ((WordData)data).tagObj.allGivenValues = new List<Yarn.Value>();
@@ -54,11 +58,14 @@ public class Word : Bubble
         wordParent = this.gameObject;
         data = bubbleData;
 
-        //fix the tags that arent "real" tags like "OtherA" -> "Other"
-        data.tag = WordUtilities.CorrectReplacementTags(data.tag, this);
-
         base.Initialize(data, firstAndLastWordIndex);
         data = new WordData(data);
+
+        if (data.subtag == "Boolean")
+        {
+            data.permanentWord = true;
+        }
+
         ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
         InitializeBubbleShaping(firstAndLastWordIndex);
@@ -171,6 +178,7 @@ public class WordData : BubbleData
     {
         name = data.name;
         tag = data.tag;
+        subtag = data.subtag;
         tagInfo = data.tagInfo;
         origin = data.origin;
         lineLengths = data.lineLengths;

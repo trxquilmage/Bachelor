@@ -276,9 +276,7 @@ public static class WordUtilities
             tagName = wordTagList[wordName][0];
         //if its a non existent filler word, tag it as "Other"
         else
-            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name; // Set tag name to "Other"
-        //if the tag word is something that isnt an officical tag change it to a real tag (like "otherA" to "other")
-        tagName = CorrectReplacementTags(tagName);
+            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name; 
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {
@@ -501,23 +499,5 @@ public static class WordUtilities
             }
         }
         return false;
-    }
-    /// <summary>
-    /// Takes tags that arent actually tags and "corrects" them
-    /// eg. makes "OtherA" into "Other"
-    /// </summary>
-    /// <returns></returns>
-    public static string CorrectReplacementTags(string tagToCorrect, Bubble referenceBubble = null)
-    {
-        bool noReference = referenceBubble == null;
-        if (tagToCorrect == "OtherA")
-        {
-            tagToCorrect = "Other";
-            if (!noReference)
-            {
-                referenceBubble.data.permanentWord = true;
-            }
-        }
-        return tagToCorrect;
     }
 }
