@@ -1,28 +1,14 @@
-AdjAAA;<alpha=#00>|Adjective|
-AdjAAB;I think it's <br><alpha=#00>|Adjective|
+AdjAAA;<alpha=#00>|Adj:All|
+AdjAAB;I think it's <br><alpha=#00>|Adj:All|
 AllAAA;<alpha=#00>|AllWordsA|
 AllAAB;My name is<br><alpha=#00>|AllWordsA|
 AskAAA;Can you tell me about<br><alpha=#00>|AllWords|
-GenAAA;<alpha=#00>|Other|
-ItemAAA;<br><alpha=#00>|Item|
-LocAAA;I'm from<br><alpha=#00>|Location|
-LocAAB;He's at the<br><alpha=#00>|Location|
-NameAAA;<alpha=#00>|Name:Name|
-SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adjective|<alpha=#FF>  party.
-SpeechAAB;For Renna's and <br><alpha=#00>|Name:Name|<alpha=#FF>'s wedding.
-SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item|<alpha=#FF>!
-SpeechAAD;This is gonna be a <br><alpha=#00>|Adjective|<alpha=#FF> night!
-AAAA;<alpha=#00>|Adj:All|
-AAAAA;I think it's <br><alpha=#00>|Adj:All|
-AAAAAA;<alpha=#00>|AllWordsA|
-B;My name is<br><alpha=#00>|AllWordsA|
-BBB;Can you tell me about<br><alpha=#00>|AllWords|
-BBBB;<alpha=#00>|Oth:Boolean|
-BBBBB;<br><alpha=#00>|Item:All|
-BBBBBB;I'm from<br><alpha=#00>|Loc:City|
-CCC;He's at the<br><alpha=#00>|Loc:Local|
-CCCC;<alpha=#00>|Name:NameA|
-CC;Thanks for coming to this <br><alpha=#00>|Adj:Rating|<alpha=#FF>  party.
-C;For Renna's and <br><alpha=#00>|Name:NameA|<alpha=#FF>'s wedding.
-CCCCC;I hope y'all brought your <br><alpha=#00>|Item:All|<alpha=#FF>!
-CCCCCC;This is gonna be a <br><alpha=#00>|Adj:Rating|<alpha=#FF> night!
+GenAAA;<alpha=#00>|Oth:Boolean|
+ItemAAA;<br><alpha=#00>|Item:All|
+LocAAA;I'm from<br><alpha=#00>|Loc:City|
+LocAAB;He's at the<br><alpha=#00>|Loc:Local|
+NameAAA;<alpha=#00>|Name:NameA|
+SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adj:Rating|<alpha=#FF>  party.
+SpeechAAB;For Renna's and <br><alpha=#00>|Name:NameA|<alpha=#FF>'s wedding.
+SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item:All|<alpha=#FF>!
+SpeechAAD;This is gonna be a <br><alpha=#00>|Adj:Rating|<alpha=#FF> night!
