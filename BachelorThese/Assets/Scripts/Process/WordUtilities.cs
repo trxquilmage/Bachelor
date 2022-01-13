@@ -28,7 +28,7 @@ public static class WordUtilities
         ReferenceManager refM = ReferenceManager.instance;
         Transform parent = (PlayerInputManager.instance.inAsk) ? refM.selectedWordParentAsk.transform : refM.selectedWordParent.transform;
 
-        GameObject word = GameObject.Instantiate(refM.wordHighlightedPrefab, wordMousePos, Quaternion.identity);
+        GameObject word = GameObject.Instantiate(refM.wordParentPrefab, wordMousePos, Quaternion.identity);
         word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
         word.GetComponent<RectTransform>().localPosition = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
@@ -493,5 +493,10 @@ public static class WordUtilities
             }
         }
         return false;
+    }
+
+    public static bool IsNotFromACase(BubbleData data)
+    {
+        return (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Environment || data.origin == WordInfo.Origin.Ask);
     }
 }
