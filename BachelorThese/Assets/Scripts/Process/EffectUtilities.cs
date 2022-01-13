@@ -9,23 +9,18 @@ using System.Text.RegularExpressions;
 
 public static class EffectUtilities
 {
-    /// <summary>
-    /// color a singular tag in it's tag color or any other color
-    /// </summary>
-    /// <param name="word"></param>
-    /// <param name="tag"></param>
-    public static void ColorObject(GameObject word, string tagName)
+    public static void ColorAllChildrenOfAnObject(GameObject parent, string tagName)
     {
         Color tagColor = WordUtilities.MatchColorToTag(tagName);
-        foreach (Image image in word.GetComponentsInChildren<Image>())
+        foreach (Image image in parent.GetComponentsInChildren<Image>())
         {
             image.color = tagColor;
         }
     }
-    public static void ColorObject(GameObject word, Color color)
+    public static void ColorAllChildrenOfAnObject(GameObject parent, Color color)
     {
-        if (word != null)
-            foreach (Image image in word.GetComponentsInChildren<Image>())
+        if (parent != null)
+            foreach (Image image in parent.GetComponentsInChildren<Image>())
                 image.color = color;
     }
     /// <summary>
@@ -54,12 +49,12 @@ public static class EffectUtilities
                 {
                     t = WordUtilities.Remap(timer, index * (time / 5), (index + 1) * (time / 5), 0, 1);
                     currentColor = Color.Lerp(calculatedColorGradient[index], calculatedColorGradient[index + 1], t);
-                    ColorObject(word, currentColor);
+                    ColorAllChildrenOfAnObject(word, currentColor);
                 }
             }
             yield return delay;
         }
-        ColorObject(word, calculatedColorGradient[4]);
+        ColorAllChildrenOfAnObject(word, calculatedColorGradient[4]);
     }
     /// <summary>
     /// color the given word in the text in the given color

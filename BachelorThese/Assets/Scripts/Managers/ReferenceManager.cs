@@ -44,7 +44,9 @@ public class ReferenceManager : MonoBehaviour
     public DialogueRunner askRunner;
     public DialogueUI askDialogueUI;
     [Header("Prefabs")]
-    public GameObject selectedWordPrefab;
+    public GameObject wordSelectedPrefab;
+    public GameObject wordHighlightedPrefab;
+    public GameObject wordParentPrefab;
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
     public GameObject starPrefab;

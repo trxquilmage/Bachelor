@@ -14,65 +14,44 @@ public class Word : Bubble
     {
         base.Start();
     }
-    public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
+    public override void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
-        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
-        relatedCase = WordCaseManager.instance;
-        wordParent = this.gameObject;
+        SetInitialValues();
 
         data = new BubbleData();
-
-        //so that the strings arent reference types :)
-        string[] tagsCopy = new string[tags.Length];
-        System.Array.Copy(tags, tagsCopy, tags.Length);
-
-        base.Initialize(name, tagsCopy, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
-        
+        base.Initialize(inputData, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         data = new WordData(bubbleData);
-        
-        if (data.subtag == "Boolean")
-        {
-            data.permanentWord = true;
-        }
+
+        CheckIfShouldSetAsPermanentWord();
+
         //initialize the tag Object
         ((WordData)data).tagObj = new TagObject();
         ((WordData)data).tagObj.allGivenValues = new List<Yarn.Value>();
         ((WordData)data).tagObj.allGivenValues.Add(new Yarn.Value(data.name));
 
-        int i = 0;
-        foreach (string tag in tags)
-        {
-            if (i != 0)
-            {
-                Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
-                ((WordData)data).tagObj.allGivenValues.Add(val);
-            }
-            i++; //we dont want the location to be in this
-        }
-
-        InitializeBubbleShaping(firstAndLastWordIndex);
+        SaveTagInfoAsYarnValuesInTagObject();
+        NameAndPlaceTextCorrectlyHighlighted();
+        ShapeBubbleAccordingToSize(firstAndLastWordIndex);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
-        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
-        wordParent = this.gameObject;
-        data = bubbleData;
+        SetInitialValues();
 
+        data = bubbleData;
         base.Initialize(data, firstAndLastWordIndex);
         data = new WordData(data);
 
-        if (data.subtag == "Boolean")
-        {
-            data.permanentWord = true;
-        }
+        CheckIfShouldSetAsPermanentWord();
 
         ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
-        InitializeBubbleShaping(firstAndLastWordIndex);
+        ShapeBubbleAccordingToSize(firstAndLastWordIndex);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
-    public override void IsOverWordCase()
+    protected override void IsOverWordCase()
     {
-        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+        if (WordUtilities.IsNotFromACase(data))
         {
             //save it
             WordCaseManager.instance.SaveBubble(this);
@@ -86,11 +65,11 @@ public class Word : Bubble
             IsOverNothing();
         }
     }
-    public override void IsOverPlayerInput()
+    protected override void IsOverPlayerInput()
     {
         if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
-            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+            if (WordUtilities.IsNotFromACase(data))
             {
                 //parent to word
                 WordUtilities.ParentBubbleToPrompt(this.gameObject);
@@ -123,7 +102,7 @@ public class Word : Bubble
     {
         base.OnBeginDrag(eventData);
     }
-    public override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
+    protected override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
@@ -132,7 +111,7 @@ public class Word : Bubble
                 WordCaseManager.instance.SpawnReplacement(this);
         }
     }
-    public override Vector2 GetCaseTargetPosition()
+    protected override Vector2 GetCaseTargetPosition()
     {
         if (data.origin != WordInfo.Origin.QuestLog)
             return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
@@ -143,7 +122,34 @@ public class Word : Bubble
                  (Vector2)WordUtilities.GlobalScreenToCanvasPosition(
                      ReferenceManager.instance.questCase.GetComponent<RectTransform>().position);
     }
-
+    void SetInitialValues()
+    {
+        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
+        relatedCase = WordCaseManager.instance;
+        wordParent = this.gameObject;
+        relatedText = transform.GetComponentInChildren<TMP_Text>();
+    }
+    void CheckIfShouldSetAsPermanentWord()
+    {
+        if (data.subtag == "Boolean")
+        {
+            data.permanentWord = true;
+        }
+    }
+    void SaveTagInfoAsYarnValuesInTagObject()
+    {
+        int i = 0;
+        foreach (string tag in data.tagInfo)
+        {
+            if (i != 0)
+            {
+                Yarn.Value val = WordUtilities.TransformIntoYarnVal(tag);
+                ((WordData)data).tagObj.allGivenValues.Add(val);
+            }
+            i++; //we dont want the location to be in this
+        }
+    }
+    
 }
 public class WordData : BubbleData
 {

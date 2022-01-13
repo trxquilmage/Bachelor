@@ -51,46 +51,27 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="name"></param>
     /// <param name="tags"></param>
-    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
+    public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
-        Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData data);
+        Initialize(inputData, origin, wordInfo, firstAndLastWordIndex, out BubbleData data);
     }
-    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData outData)
+    public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData outData)
     {
-        vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
-        if (data == null)
-            data = new BubbleData();
-
-        //capitalize name
-        data.name = WordUtilities.CapitalizeAllWordsInString(name);
-        data.tagInfo = tags;
-        data.tag = tags[0];
-        data.subtag = tags[1];
+        data.name = WordUtilities.CapitalizeAllWordsInString(inputData.name);
+        data.tagInfo = inputData.tagInfo;
+        data.tag = inputData.tagInfo[0];
+        data.subtag = inputData.tagInfo[1];
         data.origin = origin;
 
         //save the location in the text this word came from (if this word came from the Text)
-        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+        if (WordUtilities.IsNotFromACase(data))
         {
             originalWordInfo = wordInfo;
             originalText = wordInfo.textComponent;
         }
 
-        // Set the bubble to the correct text
-        relatedText = transform.GetComponentInChildren<TMP_Text>();
-        relatedText.text = data.name;
+        CheckIfLongWord();
 
-        //Scale the bubble correctly
-        ScaleRect(relatedText, GetComponent<RectTransform>());
-        wordSize = this.GetComponent<RectTransform>().sizeDelta;
-
-        //Color the bubble correctly
-        EffectUtilities.ColorObject(wordParent, data.tag);
-
-        //Get how many lines the word would use
-        data.lineLengths = GetLineLengths();
-
-        // is there more than one word?
-        data.isLongWord = (data.name.Trim().Split(@" "[0]).Length > 1);
         outData = data;
     }
     public virtual void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
@@ -112,23 +93,23 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         relatedText.text = data.name;
 
         //Scale the bubble correctly
-        ScaleRect(relatedText, GetComponent<RectTransform>());
+        ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
         //Color the bubble correctly
-        EffectUtilities.ColorObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
     /// <summary>
     /// The bubble was dragged onto the word case and dropped
     /// </summary>
-    public virtual void IsOverWordCase()
+    protected virtual void IsOverWordCase()
     {
 
     }
     /// <summary>
     /// The bubble was dragged onto a prompt case and dropped
     /// </summary>
-    public virtual void IsOverPlayerInput()
+    protected virtual void IsOverPlayerInput()
     {
     }
     /// <summary>
@@ -137,7 +118,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     public virtual void IsOverNothing()
     {
         CheckIfOverCharacter();
-        if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+        if (WordUtilities.IsNotFromACase(data))
         {
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
@@ -149,7 +130,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="newParent"></param>
     /// <param name="isWordCase"></param>
-    public virtual void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
+    protected virtual void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         transform.SetParent(newParent);
 
@@ -163,13 +144,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             OnBeginDragFunction();
         }
     }
-
-
-
     #endregion
 
     #region NOT VIRTUAL
-
     void OnBeginDragFunction()
     {
         if (!fadingOut)
@@ -185,7 +162,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
 
             // if the word is being dragged out of the dialogue
-            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
+            if (WordUtilities.IsNotFromACase(data))
             {
                 if (this is Word)
                 {
@@ -203,17 +180,34 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
-
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
     /// </summary>
-    public void ScaleRect(TMP_Text text, RectTransform rTransform)
+    protected void ScaleRectHighlighted(TMP_Text text, RectTransform rTransform)
     {
         text.ForceMeshUpdate();
+        Bounds bounds = text.textBounds; //we want the actual text size, not the size of the frame
+        float width = bounds.size.x + 4;
+        float height = bounds.size.y + 4;
+        rTransform.sizeDelta = new Vector2(width, height);
+    }
+    protected void ScaleRectSelected(TMP_Text text, RectTransform rTransform)
+    {
+        //UNUPDATED
+        text.ForceMeshUpdate();
         Bounds bounds = text.textBounds;
-        float width = bounds.size.x;
-        width = width + 4;
-        rTransform.sizeDelta = new Vector2(width, rTransform.sizeDelta.y);
+        float width = bounds.size.x + 15;
+        float height = bounds.size.y + 10;
+        rTransform.sizeDelta = new Vector2(width, height);
+    }
+    protected void NameAndPlaceTextCorrectlyHighlighted()
+    {
+        relatedText.text = data.name;
+    }
+
+    protected void NameAndPlaceTextCorrectlySelected()
+    {
+        relatedText.text = data.name;
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -274,7 +268,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// If the word was over nothing, check, if it was above a character and open the ask menu to the according page
     /// </summary>
-    public void CheckIfOverCharacter()
+    protected void CheckIfOverCharacter()
     {
         //Check, if the word is above a character
         Vector2 mousePos = WordClickManager.instance.GetMousePos();
@@ -302,7 +296,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
-
     void OnRemoveFromPromptBubble(PromptBubble pB)
     {
         pB.child = null;
@@ -311,97 +304,88 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         WordCaseManager.instance.DestroyReplacement();
     }
-
     /// <summary>
     /// Takes a long word and fits it above the text it is portraying
     /// </summary>
-    public void FitToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
+    protected void FitBubbleShapeToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
     {
-        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
         Vector2[] sourceLineLengths = GetLineLengths(sourceText, firstWordInfoIndex, lastWordInfoIndex, out TMP_WordInfo[] lineStarts);
 
-        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
-        GameObject child;
         wordParent.GetComponent<VerticalLayoutGroup>().enabled = false;
+        GameObject child = null;
 
         int j = 0;
         foreach (Vector2 startEnd in sourceLineLengths)
         {
             Vector3 position = WordUtilities.GetWordPosition(sourceText, lineStarts[j]);
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
-            child.transform.localPosition = position - GetComponent<RectTransform>().localPosition; //- parent transform, because of the new canvas scaling
-            editableText = child.GetComponentInChildren<TMP_Text>();
+            InstantiateWordHighlighted(ref child, position);
 
-            string line = "";
-            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
-            {
-                line = line + sourceText.textInfo.characterInfo[i].character;
-            }
-            line = WordUtilities.CapitalizeAllWordsInString(line);
-            editableText.text = line;
+            editableText = child.GetComponentInChildren<TMP_Text>();
+            FillLineWithText(editableText, sourceText, startEnd);
 
             // Scale the text boxes
             child.GetComponentsInChildren<RectTransform>()[1].sizeDelta = new Vector2(1000, child.GetComponentsInChildren<RectTransform>()[1].sizeDelta.y);
-            ScaleRect(editableText, child.GetComponent<RectTransform>());
-            // color the boxes
-            child.GetComponent<Image>().color = tagColor;
+            ScaleRectHighlighted(editableText, child.GetComponent<RectTransform>());
+
             j++;
         }
-        //remove the iamge and text from the original bubble
-        Destroy(wordParent.GetComponent<UIEffectStack>());
-        Destroy(wordParent.GetComponent<Image>());
-        Destroy(wordParent.transform.GetChild(0).gameObject);
-        //scale the parent so that the layout group gets the distances right
-        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
+        ScaleWordParentToSizeOfWholeObject();
     }
     /// <summary>
     /// Takes a long word and fits it into a shape that is compact
     /// </summary>
-    public void FitToBubbleShape(TMP_Text text)
+    protected void ShapeBubbleIntoCompactForm(TMP_Text editableText)
     {
-        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
-        text.ForceMeshUpdate();
-        // set variables
-        string fullText = data.name;
+        editableText.ForceMeshUpdate();
 
-        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
-        GameObject child;
+        string sourceText = data.name;
+        GameObject child = null;
 
-        //if this isnt empty for some reason, delete the contents
-        for (int i = wordParent.transform.childCount - 1; i >= 0; i--)
-            Destroy(wordParent.transform.GetChild(i).gameObject);
-
+        DestroyEverythingUnderWordParent();
         wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
+
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
-            text = child.GetComponentInChildren<TMP_Text>();
-            string line = "";
-            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
-            {
-                if (i < fullText.Length) // this has a sigificant problem, being that if the full text isnt the same as the name (like "visit my mother" -> "visit esthers mother" the number of letters is wrong
-                    line = line + fullText[i];
-            }
-            line = WordUtilities.CapitalizeAllWordsInString(line);
-            text.text = line;
+            InstantiateWordSelected(ref child);
 
-            // Scale the text boxes
-            ScaleRect(text, child.GetComponent<RectTransform>());
-            // color the boxes
-            child.GetComponent<Image>().color = tagColor;
+            editableText = child.GetComponentInChildren<TMP_Text>();
+            FillLineWithText(editableText, sourceText, startEnd);
+
+            ScaleRectHighlighted(editableText, child.GetComponent<RectTransform>());
             j++;
         }
-        //remove the iamge and text from the original bubble
-        Destroy(wordParent.GetComponent<UIEffectStack>());
-        Destroy(wordParent.GetComponent<Image>());
-
-        Destroy(wordParent.transform.GetChild(0).gameObject);
-        //scale the parent so that the layout group gets the distances right
-        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
-
+        ScaleWordParentToSizeOfWholeObject();
         StartCoroutine(InstantiateStar());
+    }
+    /// <summary>
+    /// Takes a long word from a dialogue and changes it into the compact shape
+    /// </summary>
+    protected void UpdateToBubbleShape()
+    {
+        TMP_Text editableText = wordParent.GetComponentInChildren<TMP_Text>();
+        editableText.text = data.name; //Set the main text to full text again
+        editableText.ForceMeshUpdate();
+        string sourceText = data.name;
+
+        DestroyEverythingUnderWordParent();
+
+        GameObject child = null;
+        wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
+
+        int j = 0;
+        foreach (Vector2 startEnd in data.lineLengths)
+        {
+            InstantiateWordSelected(ref child);
+            editableText = child.GetComponentInChildren<TMP_Text>();
+            FillLineWithText(editableText, sourceText, startEnd);
+
+            ScaleRectHighlighted(editableText, child.GetComponent<RectTransform>());
+            j++;
+        }
+        ScaleWordParentToSizeOfWholeObject();
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
     /// <summary>
     /// Instantiate star after one frame, because otherwise the 
@@ -418,58 +402,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         }
     }
     /// <summary>
-    /// Takes a long word from a dialogue and changes it into the compact shape
-    /// </summary>
-    public void UpdateToBubbleShape()
-    {
-        Color tagColor = WordUtilities.MatchColorToTag(data.tag);
-
-        GameObject toUpdate = wordParent;
-
-        TMP_Text mainText = toUpdate.GetComponentInChildren<TMP_Text>();
-        //Set the main text to full text again
-        mainText.text = data.name;
-        mainText.ForceMeshUpdate();
-
-        // set variables
-        string fullText = data.name;
-
-        //Delete the other Bubbles
-        Image[] images = toUpdate.GetComponentsInChildren<Image>();
-        for (int i = 0; i < images.Length; i++)
-            Destroy(images[i].gameObject);
-
-        //Create a child of the Word, that is also a bubble and fill the text with the correlating text
-        GameObject child;
-        wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
-        int j = 0;
-        foreach (Vector2 startEnd in data.lineLengths)
-        {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false); // false fixes a scaling issue
-            mainText = child.GetComponentInChildren<TMP_Text>();
-            string line = "";
-            for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
-            {
-                if (i < fullText.Length) // this has a sigificant problem, being that if the full text isnt the same as the name (like "visit my mother" -> "visit esthers mother" the number of letters is wrong
-                    line = line + fullText[i];
-            }
-            line = WordUtilities.CapitalizeAllWordsInString(line);
-            mainText.text = line;
-
-            // Scale the text boxes
-            ScaleRect(mainText, child.GetComponent<RectTransform>());
-            // color the boxes
-            child.GetComponent<Image>().color = tagColor;
-            j++;
-        }
-        //scale the parent so that the layout group gets the distances right
-        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
-    }
-    /// <summary>
     /// if the word doesnt fit the case, shake it
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ShakeNoWord(bool inACase, bool isDuplicate)
+    protected IEnumerator ShakeNoWord(bool inACase, bool isDuplicate)
     {
         GameObject duplicate = null;
         if (inACase)
@@ -524,7 +460,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public Vector2[] GetLineLengths()
+    protected Vector2[] GetLineLengths()
     {
         relatedText.ForceMeshUpdate();
         //Set these for the first round just in case they create problems otherwise
@@ -555,7 +491,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         firstAndLast[firstAndLast.Count - 1] = new Vector2(firstAndLast[firstAndLast.Count - 1].x, relatedText.textInfo.characterCount - 1);
         return firstAndLast.ToArray();
     }
-    public Vector2[] GetLineLengths(TMP_Text text, int firstWord, int lastWord, out TMP_WordInfo[] lineStarts)
+    protected Vector2[] GetLineLengths(TMP_Text text, int firstWord, int lastWord, out TMP_WordInfo[] lineStarts)
     {
         text.ForceMeshUpdate();
         List<TMP_WordInfo> lineStartsList = new List<TMP_WordInfo>();
@@ -594,7 +530,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Makes a word visible or invisible
     /// </summary>
-    public void MakeInvisible(bool makeInvisible)
+    protected void MakeInvisible(bool makeInvisible)
     {
         Color color;
 
@@ -631,7 +567,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// takes this word and spawns an exact duplicate, parented to selectedWordAskParent 
     /// </summary>
     /// <param name="spawn"></param>
-    public GameObject SpawnDuplicate()
+    protected GameObject SpawnDuplicate()
     {
         GameObject duplicate = GameObject.Instantiate(this.gameObject, this.transform.position, this.transform.rotation);
         duplicate.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform, false);
@@ -642,25 +578,28 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// as the function needs the data object to be initilized, this can only happen after Inizialize()
     /// </summary>
-    public void InitializeBubbleShaping(Vector2 firstAndLastWordIndex)
+    protected void ShapeBubbleAccordingToSize(Vector2 firstAndLastWordIndex)
     {
-        //Shape the bubble correctly
         if (data.isLongWord)
         {
-            if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
-                FitToText(relatedText, originalText, (int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
+            if (WordUtilities.IsNotFromACase(data))
+                FitBubbleShapeToText(relatedText, originalText, (int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
             else
-                FitToBubbleShape(relatedText);
+                ShapeBubbleIntoCompactForm(relatedText);
         }
         else
+        {
+            ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
+            wordSize = this.GetComponent<RectTransform>().sizeDelta;
             StartCoroutine(InstantiateStar());
+        }
     }
     /// <summary>
     /// Called when the word is double clicked
     /// </summary>
     public void OnDoubleClicked()
     {
-        if (data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Environment)
+        if (WordUtilities.IsNotFromACase(data))
         {
             DoubleClickedOnDialogue();
         }
@@ -669,7 +608,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             DoubleClickedOnCase();
         }
     }
-    public virtual void DoubleClickedOnDialogue()
+    protected virtual void DoubleClickedOnDialogue()
     {
         WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
@@ -692,7 +631,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             StartCoroutine(EffectUtilities.ColorObjectInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
     }
-    public void DoubleClickedOnCase()
+    protected void DoubleClickedOnCase()
     {
         //figure out, if there is a promptbubble nearby()
         if (piManager.CheckForPromptsWithTag(data.tag, out PromptBubble pB))
@@ -708,7 +647,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animates a word from its current position into a fitting case and saves it
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementIntoCase()
+    protected void AnimateMovementIntoCase()
     {
         //get target position
         Vector2 targetPos = GetCaseTargetPosition();
@@ -719,7 +658,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Animates a word from its current position into a fitting prompt
     /// </summary>
-    public void AnimateMovementIntoPrompt(PromptBubble pB)
+    protected void AnimateMovementIntoPrompt(PromptBubble pB)
     {
         //get target position
         transform.SetParent(refM.selectedWordParentAsk.transform);
@@ -731,19 +670,18 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animates a word from its current position back into the case where it came from
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementBackToCase()
+    protected void AnimateMovementBackToCase()
     {
         //get target position
         Vector2 targetPos = GetCaseTargetPosition();
         StartCoroutine(AnimateMovement(movementDone, targetPos));
         StartCoroutine(AfterMovement_BackToCase(movementDone));
     }
-
     /// <summary>
     /// Get the target position of the case we want to animate to 
     /// </summary>
     /// <returns></returns>
-    public virtual Vector2 GetCaseTargetPosition()
+    protected virtual Vector2 GetCaseTargetPosition()
     {
         return Vector2.zero;
     }
@@ -751,7 +689,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animate this word from its position to a targetPosition
     /// </summary>
     /// <returns></returns>
-    public IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
+    protected IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
     {
         OnBeginDragFunction();
         fadingOut = true;
@@ -774,7 +712,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="isQuest"></param>
     /// <returns></returns>
-    public virtual IEnumerator AfterMovement_ToCase(RefBool isDone)
+    protected virtual IEnumerator AfterMovement_ToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -794,7 +732,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <param name="isDone"></param>
     /// <param name="pB"></param>
     /// <returns></returns>
-    public IEnumerator AfterMovement_ToPromptBubble(RefBool isDone, PromptBubble pB)
+    protected IEnumerator AfterMovement_ToPromptBubble(RefBool isDone, PromptBubble pB)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -807,7 +745,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordClickManager.instance.promptBubble = null;
         OnEnterPromptBubble();
     }
-    public IEnumerator AfterMovement_BackToCase(RefBool isDone)
+    protected IEnumerator AfterMovement_BackToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -850,6 +788,50 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             if (i != 0)
                 StartCoroutine(UIManager.instance.DestroyVFX(chosenVFX));
         }
+    }
+    protected void CheckIfLongWord()
+    {
+        data.lineLengths = GetLineLengths();
+        data.isLongWord = (data.name.Trim().Split(@" "[0]).Length > 1);
+    }
+    protected void DestroyEverythingUnderWordParent()
+    {
+        for (int i = wordParent.transform.childCount - 1; i >= 0; i--)
+            Destroy(wordParent.transform.GetChild(i).gameObject);
+    }
+    protected void InstantiateWordHighlighted(ref GameObject child, Vector3 atPosition)
+    {
+        child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);
+        child.transform.localPosition = atPosition - GetComponent<RectTransform>().localPosition;
+    }
+    protected void InstantiateWordSelected(ref GameObject child)
+    {
+        child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);
+    }
+    protected void FillLineWithText(TMP_Text editableText, TMP_Text sourceText, Vector2 startEnd)
+    {
+        string line = "";
+        for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
+        {
+            line = line + sourceText.textInfo.characterInfo[i].character;
+        }
+        line = WordUtilities.CapitalizeAllWordsInString(line);
+        editableText.text = line;
+    }
+    protected void FillLineWithText(TMP_Text editableText, string sourceText, Vector2 startEnd)
+    {
+        string line = "";
+        for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
+        {
+            if (i < sourceText.Length) // this has a sigificant problem, being that if the full text isnt the same as the name (like "visit my mother" -> "visit esthers mother" the number of letters is wrong
+                line = line + sourceText[i];
+        }
+        line = WordUtilities.CapitalizeAllWordsInString(line);
+        editableText.text = line;
+    }
+    protected void ScaleWordParentToSizeOfWholeObject()
+    {
+        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, data.lineLengths.Length * 20);
     }
     #endregion
 }
