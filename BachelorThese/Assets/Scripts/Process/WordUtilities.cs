@@ -26,23 +26,17 @@ public static class WordUtilities
     public static GameObject CreateWord(BubbleData data, Vector3 wordMousePos, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, WordInfo.Origin origin, bool createBubbleFromBubble)
     {
         ReferenceManager refM = ReferenceManager.instance;
-        GameObject word = null;
-        Transform parent;
-        if (!PlayerInputManager.instance.inAsk) // not in an ask
-            parent = refM.selectedWordParent.transform;
-        else
-            parent = refM.selectedWordParentAsk.transform;
+        Transform parent = (PlayerInputManager.instance.inAsk) ? refM.selectedWordParentAsk.transform : refM.selectedWordParent.transform;
 
-        //Instantiate Word
-        word = GameObject.Instantiate(refM.selectedWordPrefab, wordMousePos, Quaternion.identity);
+        GameObject word = GameObject.Instantiate(refM.wordHighlightedPrefab, wordMousePos, Quaternion.identity);
         word.transform.SetParent(parent, false); // the false makes sure it isnt some random size
         word.GetComponent<RectTransform>().localPosition = wordMousePos;
         Word wordScript = word.AddComponent<Word>();
 
-        if (!createBubbleFromBubble)
-            wordScript.Initialize(data.name, data.tagInfo, origin, wordInfo, firstAndLastWordIndex);
-        else
+        if (createBubbleFromBubble)
             wordScript.Initialize(data, firstAndLastWordIndex);
+        else
+            wordScript.Initialize(data, origin, wordInfo, firstAndLastWordIndex);
 
         return word;
     }

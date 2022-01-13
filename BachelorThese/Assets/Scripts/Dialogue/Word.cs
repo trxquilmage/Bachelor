@@ -14,7 +14,7 @@ public class Word : Bubble
     {
         base.Start();
     }
-    public override void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
+    public override void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
         vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         relatedCase = WordCaseManager.instance;
@@ -23,10 +23,10 @@ public class Word : Bubble
         data = new BubbleData();
 
         //so that the strings arent reference types :)
-        string[] tagsCopy = new string[tags.Length];
-        System.Array.Copy(tags, tagsCopy, tags.Length);
+        string[] tagsCopy = new string[inputData.tagInfo.Length];
+        System.Array.Copy(inputData.tagInfo, tagsCopy, inputData.tagInfo.Length);
 
-        base.Initialize(name, tagsCopy, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
+        base.Initialize(inputData, origin, wordInfo, firstAndLastWordIndex, out BubbleData bubbleData);
         
         data = new WordData(bubbleData);
         
@@ -40,7 +40,7 @@ public class Word : Bubble
         ((WordData)data).tagObj.allGivenValues.Add(new Yarn.Value(data.name));
 
         int i = 0;
-        foreach (string tag in tags)
+        foreach (string tag in inputData.tagInfo)
         {
             if (i != 0)
             {
@@ -70,7 +70,7 @@ public class Word : Bubble
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
         InitializeBubbleShaping(firstAndLastWordIndex);
     }
-    public override void IsOverWordCase()
+    protected override void IsOverWordCase()
     {
         if (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Ask || data.origin == WordInfo.Origin.Environment)
         {
@@ -86,7 +86,7 @@ public class Word : Bubble
             IsOverNothing();
         }
     }
-    public override void IsOverPlayerInput()
+    protected override void IsOverPlayerInput()
     {
         if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
@@ -123,7 +123,7 @@ public class Word : Bubble
     {
         base.OnBeginDrag(eventData);
     }
-    public override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
+    protected override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
@@ -132,7 +132,7 @@ public class Word : Bubble
                 WordCaseManager.instance.SpawnReplacement(this);
         }
     }
-    public override Vector2 GetCaseTargetPosition()
+    protected override Vector2 GetCaseTargetPosition()
     {
         if (data.origin != WordInfo.Origin.QuestLog)
             return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +

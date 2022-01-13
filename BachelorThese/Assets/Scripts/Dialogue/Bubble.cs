@@ -51,21 +51,21 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="name"></param>
     /// <param name="tags"></param>
-    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
+    public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
-        Initialize(name, tags, origin, wordInfo, firstAndLastWordIndex, out BubbleData data);
+        Initialize(inputData, origin, wordInfo, firstAndLastWordIndex, out BubbleData data);
     }
-    public virtual void Initialize(string name, string[] tags, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData outData)
+    public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex, out BubbleData outData)
     {
         vfxParent = GetComponentInChildren<VisualEffect>().transform.parent.gameObject;
         if (data == null)
             data = new BubbleData();
 
         //capitalize name
-        data.name = WordUtilities.CapitalizeAllWordsInString(name);
-        data.tagInfo = tags;
-        data.tag = tags[0];
-        data.subtag = tags[1];
+        data.name = WordUtilities.CapitalizeAllWordsInString(inputData.name);
+        data.tagInfo = inputData.tagInfo;
+        data.tag = inputData.tagInfo[0];
+        data.subtag = inputData.tagInfo[1];
         data.origin = origin;
 
         //save the location in the text this word came from (if this word came from the Text)
@@ -121,14 +121,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// The bubble was dragged onto the word case and dropped
     /// </summary>
-    public virtual void IsOverWordCase()
+    protected virtual void IsOverWordCase()
     {
 
     }
     /// <summary>
     /// The bubble was dragged onto a prompt case and dropped
     /// </summary>
-    public virtual void IsOverPlayerInput()
+    protected virtual void IsOverPlayerInput()
     {
     }
     /// <summary>
@@ -149,7 +149,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="newParent"></param>
     /// <param name="isWordCase"></param>
-    public virtual void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
+    protected virtual void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         transform.SetParent(newParent);
 
@@ -163,13 +163,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             OnBeginDragFunction();
         }
     }
-
-
-
     #endregion
 
     #region NOT VIRTUAL
-
     void OnBeginDragFunction()
     {
         if (!fadingOut)
@@ -203,11 +199,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
-
     /// <summary>
     /// Scale the picked up word, so that the rect of the background fits the word in the center
     /// </summary>
-    public void ScaleRect(TMP_Text text, RectTransform rTransform)
+    protected void ScaleRect(TMP_Text text, RectTransform rTransform)
     {
         text.ForceMeshUpdate();
         Bounds bounds = text.textBounds;
@@ -274,7 +269,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// If the word was over nothing, check, if it was above a character and open the ask menu to the according page
     /// </summary>
-    public void CheckIfOverCharacter()
+    protected void CheckIfOverCharacter()
     {
         //Check, if the word is above a character
         Vector2 mousePos = WordClickManager.instance.GetMousePos();
@@ -302,7 +297,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
-
     void OnRemoveFromPromptBubble(PromptBubble pB)
     {
         pB.child = null;
@@ -315,7 +309,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Takes a long word and fits it above the text it is portraying
     /// </summary>
-    public void FitToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
+    protected void FitToText(TMP_Text editableText, TMP_Text sourceText, int firstWordInfoIndex, int lastWordInfoIndex)
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         editableText.ForceMeshUpdate();
@@ -329,7 +323,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         foreach (Vector2 startEnd in sourceLineLengths)
         {
             Vector3 position = WordUtilities.GetWordPosition(sourceText, lineStarts[j]);
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);// false fixes a scaling issue
             child.transform.localPosition = position - GetComponent<RectTransform>().localPosition; //- parent transform, because of the new canvas scaling
             editableText = child.GetComponentInChildren<TMP_Text>();
 
@@ -358,7 +352,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Takes a long word and fits it into a shape that is compact
     /// </summary>
-    public void FitToBubbleShape(TMP_Text text)
+    protected void FitToBubbleShape(TMP_Text text)
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
         text.ForceMeshUpdate();
@@ -376,7 +370,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false);// false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);// false fixes a scaling issue
             text = child.GetComponentInChildren<TMP_Text>();
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
@@ -420,7 +414,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Takes a long word from a dialogue and changes it into the compact shape
     /// </summary>
-    public void UpdateToBubbleShape()
+    protected void UpdateToBubbleShape()
     {
         Color tagColor = WordUtilities.MatchColorToTag(data.tag);
 
@@ -445,7 +439,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            child = GameObject.Instantiate(ReferenceManager.instance.selectedWordPrefab, wordParent.transform, false); // false fixes a scaling issue
+            child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false); // false fixes a scaling issue
             mainText = child.GetComponentInChildren<TMP_Text>();
             string line = "";
             for (int i = (int)startEnd.x; i <= (int)startEnd.y; i++)
@@ -469,7 +463,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// if the word doesnt fit the case, shake it
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ShakeNoWord(bool inACase, bool isDuplicate)
+    protected IEnumerator ShakeNoWord(bool inACase, bool isDuplicate)
     {
         GameObject duplicate = null;
         if (inACase)
@@ -524,7 +518,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public Vector2[] GetLineLengths()
+    protected Vector2[] GetLineLengths()
     {
         relatedText.ForceMeshUpdate();
         //Set these for the first round just in case they create problems otherwise
@@ -555,7 +549,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         firstAndLast[firstAndLast.Count - 1] = new Vector2(firstAndLast[firstAndLast.Count - 1].x, relatedText.textInfo.characterCount - 1);
         return firstAndLast.ToArray();
     }
-    public Vector2[] GetLineLengths(TMP_Text text, int firstWord, int lastWord, out TMP_WordInfo[] lineStarts)
+    protected Vector2[] GetLineLengths(TMP_Text text, int firstWord, int lastWord, out TMP_WordInfo[] lineStarts)
     {
         text.ForceMeshUpdate();
         List<TMP_WordInfo> lineStartsList = new List<TMP_WordInfo>();
@@ -594,7 +588,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Makes a word visible or invisible
     /// </summary>
-    public void MakeInvisible(bool makeInvisible)
+    protected void MakeInvisible(bool makeInvisible)
     {
         Color color;
 
@@ -631,7 +625,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// takes this word and spawns an exact duplicate, parented to selectedWordAskParent 
     /// </summary>
     /// <param name="spawn"></param>
-    public GameObject SpawnDuplicate()
+    protected GameObject SpawnDuplicate()
     {
         GameObject duplicate = GameObject.Instantiate(this.gameObject, this.transform.position, this.transform.rotation);
         duplicate.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform, false);
@@ -642,7 +636,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// as the function needs the data object to be initilized, this can only happen after Inizialize()
     /// </summary>
-    public void InitializeBubbleShaping(Vector2 firstAndLastWordIndex)
+    protected void InitializeBubbleShaping(Vector2 firstAndLastWordIndex)
     {
         //Shape the bubble correctly
         if (data.isLongWord)
@@ -669,7 +663,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             DoubleClickedOnCase();
         }
     }
-    public virtual void DoubleClickedOnDialogue()
+    protected virtual void DoubleClickedOnDialogue()
     {
         WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
@@ -692,7 +686,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             StartCoroutine(EffectUtilities.ColorObjectInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
     }
-    public void DoubleClickedOnCase()
+    protected void DoubleClickedOnCase()
     {
         //figure out, if there is a promptbubble nearby()
         if (piManager.CheckForPromptsWithTag(data.tag, out PromptBubble pB))
@@ -708,7 +702,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animates a word from its current position into a fitting case and saves it
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementIntoCase()
+    protected void AnimateMovementIntoCase()
     {
         //get target position
         Vector2 targetPos = GetCaseTargetPosition();
@@ -719,7 +713,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <summary>
     /// Animates a word from its current position into a fitting prompt
     /// </summary>
-    public void AnimateMovementIntoPrompt(PromptBubble pB)
+    protected void AnimateMovementIntoPrompt(PromptBubble pB)
     {
         //get target position
         transform.SetParent(refM.selectedWordParentAsk.transform);
@@ -731,7 +725,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animates a word from its current position back into the case where it came from
     /// </summary>
     /// <param name="isQuest"></param>
-    public void AnimateMovementBackToCase()
+    protected void AnimateMovementBackToCase()
     {
         //get target position
         Vector2 targetPos = GetCaseTargetPosition();
@@ -743,7 +737,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Get the target position of the case we want to animate to 
     /// </summary>
     /// <returns></returns>
-    public virtual Vector2 GetCaseTargetPosition()
+    protected virtual Vector2 GetCaseTargetPosition()
     {
         return Vector2.zero;
     }
@@ -751,7 +745,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// Animate this word from its position to a targetPosition
     /// </summary>
     /// <returns></returns>
-    public IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
+    protected IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
     {
         OnBeginDragFunction();
         fadingOut = true;
@@ -774,7 +768,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// </summary>
     /// <param name="isQuest"></param>
     /// <returns></returns>
-    public virtual IEnumerator AfterMovement_ToCase(RefBool isDone)
+    protected virtual IEnumerator AfterMovement_ToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -794,7 +788,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     /// <param name="isDone"></param>
     /// <param name="pB"></param>
     /// <returns></returns>
-    public IEnumerator AfterMovement_ToPromptBubble(RefBool isDone, PromptBubble pB)
+    protected IEnumerator AfterMovement_ToPromptBubble(RefBool isDone, PromptBubble pB)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -807,7 +801,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         WordClickManager.instance.promptBubble = null;
         OnEnterPromptBubble();
     }
-    public IEnumerator AfterMovement_BackToCase(RefBool isDone)
+    protected IEnumerator AfterMovement_BackToCase(RefBool isDone)
     {
         //wait until movement is done
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
