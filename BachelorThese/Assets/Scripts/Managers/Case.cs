@@ -378,7 +378,7 @@ public class Case : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnBubbleInCase(BubbleData data)
     {
-        GameObject bubble = WordUtilities.CreateWord(data, Vector2.zero, new TMP_WordInfo(), Vector2.zero, origin, true);
+        GameObject bubble = WordUtilities.CreateWord(data, Vector3.zero, new TMP_WordInfo(), Vector2.zero, origin, true);
         bubble.transform.SetParent(listingParent.transform);
 
         return bubble;

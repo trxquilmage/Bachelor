@@ -221,14 +221,13 @@ public class UIManager : MonoBehaviour
         int i = 0;
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
-            //initialize the "other" tag last
+            
             if (tag.name != refM.wordTags[ReferenceManager.instance.otherTagIndex].name)
             {
                 InstantiateButton(i, tag);
             }
             i++;
-        }
-        //initialize the "Other" tag last
+        } //initialize the "other" tag last
         InstantiateButton(refM.otherTagIndex, refM.wordTags[refM.otherTagIndex]);
 
         //get the width of all buttons combined
@@ -319,7 +318,7 @@ public class UIManager : MonoBehaviour
             }
             else
             {
-                bubble.IsOverNothing();
+                bubble.DroppedOverNothing();
                 BlendInUI(refM.feedbackTextTrashYesNo, 3);
             }
         }

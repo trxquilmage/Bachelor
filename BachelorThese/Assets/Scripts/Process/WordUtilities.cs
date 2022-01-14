@@ -79,11 +79,10 @@ public static class WordUtilities
             lowerLeftCorner = vertexBL.position;
 
             // Get the StartPosition of the bounds (lower left corner)
-
             Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
             lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
-            wordPosition = lowerLeftTextBox + lowerLeftCorner - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
-
+            wordPosition = lowerLeftTextBox + lowerLeftCorner;
+            wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
             return wordPosition;
         }
         //Text is on a canvas that has ScreenSpace - Overlay
@@ -97,8 +96,8 @@ public static class WordUtilities
             // Get the StartPosition of the bounds (lower left corner)
             Vector3 lowerLeftTextBox = text.rectTransform.position;
             float canvasScaler = (ReferenceManager.instance.canvas.scaleFactor * 2);
-            wordPosition = lowerLeftTextBox + lowerLeftCorner * canvasScaler - new Vector3(3, 3, 0);//Der Vector Am Ende macht die kleine Verschiebung weg
-
+            wordPosition = lowerLeftTextBox + lowerLeftCorner * canvasScaler;
+            wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
             return wordPosition;
         }
     }
@@ -134,11 +133,10 @@ public static class WordUtilities
         // Get the StartPosition of the bounds (lower left corner)
         Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
         lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
-        parameters[0] = lowerLeftTextBox + parameters[0] - new Vector3(3, 3, 0); //Der Vector Am Ende macht die kleine Verschiebung weg
+        parameters[0] = lowerLeftTextBox + parameters[0];
 
         // Get the length of the word
         parameters[1] = vertexTR.position - vertexBL.position;
-        parameters[1] += new Vector3(2, 6, 0); // um ein bisschen puffer zu haben
         return parameters;
     }
     /// <summary>
@@ -218,7 +216,7 @@ public static class WordUtilities
         {
             // remove the word
             bubble.child.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
-            bubble.child.GetComponent<Bubble>().IsOverNothing(); // put the OG word back where it came from
+            bubble.child.GetComponent<Bubble>().DroppedOverNothing(); // put the OG word back where it came from
             bubble.child = null;
         }
         child.transform.SetParent(promptBubble.transform);

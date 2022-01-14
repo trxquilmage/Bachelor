@@ -112,6 +112,7 @@ public class ReferenceManager : MonoBehaviour
     public Sprite trashCanImage02;
     public Sprite buttonNotSelected;
     public Sprite buttonSelected;
+    public Sprite wordSelectedSprite;
     [Header("Prompt Related")]
     public TextMeshProUGUI promptAnswer;
     public GameObject promptMenu;

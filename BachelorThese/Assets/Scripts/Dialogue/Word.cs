@@ -30,8 +30,11 @@ public class Word : Bubble
         ((WordData)data).tagObj.allGivenValues.Add(new Yarn.Value(data.name));
 
         SaveTagInfoAsYarnValuesInTagObject();
-        NameAndPlaceTextCorrectlyHighlighted();
-        ShapeBubbleAccordingToSize(firstAndLastWordIndex);
+
+        ShapeBubbleAccordingToSize(firstAndLastWordIndex, true);
+        ScaleAllParentsToTheirCorrectSizes();
+        MoveLinesAccordingToOffset(true);
+
         EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
@@ -46,10 +49,14 @@ public class Word : Bubble
 
         ((WordData)data).tagObj = ((WordData)bubbleData).tagObj;
         ((WordData)data).bubbleData = ((WordData)bubbleData).bubbleData;
-        ShapeBubbleAccordingToSize(firstAndLastWordIndex);
+
+        ShapeBubbleAccordingToSize(firstAndLastWordIndex, false);
+        ScaleAllParentsToTheirCorrectSizes();
+        MoveLinesAccordingToOffset(false);
+
         EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
     }
-    protected override void IsOverWordCase()
+    protected override void DroppedOverWordCase()
     {
         if (WordUtilities.IsNotFromACase(data))
         {
@@ -62,10 +69,10 @@ public class Word : Bubble
         }
         else if (data.origin == WordInfo.Origin.WordCase)
         {
-            IsOverNothing();
+            DroppedOverNothing();
         }
     }
-    protected override void IsOverPlayerInput()
+    protected override void DroppedOverPlayerInput()
     {
         if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
@@ -84,12 +91,12 @@ public class Word : Bubble
             }
         }
         else
-            IsOverNothing();
+            DroppedOverNothing();
     }
-    public override void IsOverNothing()
+    public override void DroppedOverNothing()
     {
         //check if the mouse is above an NPC
-        base.IsOverNothing();
+        base.DroppedOverNothing();
 
         //this happens, regardless wheter a character was hit or not
         if (data.origin == WordInfo.Origin.WordCase)
@@ -102,9 +109,9 @@ public class Word : Bubble
     {
         base.OnBeginDrag(eventData);
     }
-    protected override void Unparent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
+    protected override void ParentToNewParent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
-        base.Unparent(newParent, spawnWordReplacement, toCurrentWord);
+        base.ParentToNewParent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
         {
             if (data.origin == WordInfo.Origin.WordCase)
@@ -128,6 +135,7 @@ public class Word : Bubble
         relatedCase = WordCaseManager.instance;
         wordParent = this.gameObject;
         relatedText = transform.GetComponentInChildren<TMP_Text>();
+        bubbleOffset = GetComponent<BubbleOffset>();
     }
     void CheckIfShouldSetAsPermanentWord()
     {
@@ -149,7 +157,6 @@ public class Word : Bubble
             i++; //we dont want the location to be in this
         }
     }
-    
 }
 public class WordData : BubbleData
 {

@@ -7,17 +7,19 @@ using TMPro;
 public class StarFavorite : MonoBehaviour
 {
     [SerializeField] Color normalColor, clickedColor;
+    [SerializeField] int offsetToText = 16;
     Image image;
     TMP_Text text;
     Word word;
+
     void Awake()
     {
-        word = transform.parent.parent.GetComponent<Word>();
-        if (word == null)
-            word = transform.parent.parent.parent.GetComponent<Word>();
         text = transform.parent.GetComponent<TMP_Text>();
-        float positionX = text.textInfo.characterInfo[text.textInfo.characterCount - 1].bottomRight.x;
-        transform.localPosition = new Vector3(positionX + 16, transform.localPosition.y, transform.localPosition.z);
+        image = text.transform.parent.GetComponent<Image>();
+        word = image.transform.parent.parent.GetComponent<Word>();
+
+        float endOfRightmostCharacter = text.textInfo.characterInfo[text.textInfo.characterCount - 1].bottomRight.x;
+        transform.localPosition = new Vector3(endOfRightmostCharacter + offsetToText, transform.localPosition.y, transform.localPosition.z);
         image = GetComponent<Image>();
         UpdateStar();
     }

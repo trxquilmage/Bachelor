@@ -45,7 +45,7 @@ public class MenuManager : MonoBehaviour
         //if currentWord -> act as if the word was let go of
         if (WordClickManager.instance.currentWord != null)
         {
-            WordClickManager.instance.currentWord.GetComponent<Word>().ReactToIsOver();
+            WordClickManager.instance.currentWord.GetComponent<Word>().OnDroppedReactToPosition();
         }
         //stop unity time
         Time.timeScale = 0;

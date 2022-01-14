@@ -30,6 +30,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4895377478494962517}
   - component: {fileID: 5826593999560772777}
+  - component: {fileID: -3294724446938318745}
   m_Layer: 0
   m_Name: Word_Parent
   m_TagString: Untagged
@@ -83,6 +84,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &-3294724446938318745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6514119133594698671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21770706ca92fce41a9ff0630e3d9b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetHighlighted: {x: 40, y: 6}
+  offsetSelected: {x: 65, y: 20}
 --- !u!1001 &6437647085327351411
 PrefabInstance:
   m_ObjectHideFlags: 0
