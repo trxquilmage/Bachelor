@@ -19,22 +19,6 @@ public class @InputMap : IInputActionCollection, IDisposable
             ""id"": ""81d39cb8-5eb3-4d82-a25d-d1e703109ab8"",
             ""actions"": [
                 {
-                    ""name"": ""WalkUD"",
-                    ""type"": ""Button"",
-                    ""id"": ""0a94053d-4f1a-42f7-afc5-7a19bc3d49aa"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""WalkLR"",
-                    ""type"": ""Button"",
-                    ""id"": ""7596f41f-fb45-4419-ac09-af27cd937f18"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Talk"",
                     ""type"": ""Button"",
                     ""id"": ""5fb3d4c9-6d9e-43c7-9289-465c269e5a40"",
@@ -57,42 +41,17 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Walk"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""2ea9f88a-63f0-4a94-ba86-de0ed423fd05"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": ""WalkUD"",
-                    ""id"": ""13135840-5f90-4e22-b298-c81bbc1ab2e4"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": ""Press(behavior=2)"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkUD"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""00293f1a-1224-4f9b-b3d1-9ba75d6c9657"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkUD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""2399a7e5-fb82-4531-93ac-f629a02ad764"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkUD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
                 {
                     ""name"": """",
                     ""id"": ""31562889-e4ef-4055-8c66-76458ee96ab2"",
@@ -114,39 +73,6 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""Talk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""WalkLR"",
-                    ""id"": ""01909831-ecb7-49aa-bace-9f66096d890c"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": ""Press(behavior=2)"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkLR"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""8d6bc6bf-e4b4-43d1-b884-1690f6af0071"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkLR"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""a218eabe-9c30-4e35-aa35-7aeccc4a9427"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkLR"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -180,6 +106,61 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""3a805f1e-6f86-42fc-97ee-b7090062ec0a"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""c7a81163-8f0c-4cd3-8168-5c6db47b8dee"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""f9b4f121-ba0c-46cb-a33b-11fa32211ba8"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""b0fb8a69-a6fc-4264-b5df-b1731945bb6f"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""8fdcccc4-ac33-444b-89b9-bcc7389d5753"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -305,11 +286,10 @@ public class @InputMap : IInputActionCollection, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_WalkUD = m_Player.FindAction("WalkUD", throwIfNotFound: true);
-        m_Player_WalkLR = m_Player.FindAction("WalkLR", throwIfNotFound: true);
         m_Player_Talk = m_Player.FindAction("Talk", throwIfNotFound: true);
         m_Player_TalkCompanion = m_Player.FindAction("TalkCompanion", throwIfNotFound: true);
         m_Player_Escape = m_Player.FindAction("Escape", throwIfNotFound: true);
+        m_Player_Walk = m_Player.FindAction("Walk", throwIfNotFound: true);
         // Dialogue
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_Click = m_Dialogue.FindAction("Click", throwIfNotFound: true);
@@ -365,20 +345,18 @@ public class @InputMap : IInputActionCollection, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_WalkUD;
-    private readonly InputAction m_Player_WalkLR;
     private readonly InputAction m_Player_Talk;
     private readonly InputAction m_Player_TalkCompanion;
     private readonly InputAction m_Player_Escape;
+    private readonly InputAction m_Player_Walk;
     public struct PlayerActions
     {
         private @InputMap m_Wrapper;
         public PlayerActions(@InputMap wrapper) { m_Wrapper = wrapper; }
-        public InputAction @WalkUD => m_Wrapper.m_Player_WalkUD;
-        public InputAction @WalkLR => m_Wrapper.m_Player_WalkLR;
         public InputAction @Talk => m_Wrapper.m_Player_Talk;
         public InputAction @TalkCompanion => m_Wrapper.m_Player_TalkCompanion;
         public InputAction @Escape => m_Wrapper.m_Player_Escape;
+        public InputAction @Walk => m_Wrapper.m_Player_Walk;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -388,12 +366,6 @@ public class @InputMap : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @WalkUD.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkUD;
-                @WalkUD.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkUD;
-                @WalkUD.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkUD;
-                @WalkLR.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkLR;
-                @WalkLR.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkLR;
-                @WalkLR.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalkLR;
                 @Talk.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
                 @Talk.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
                 @Talk.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTalk;
@@ -403,16 +375,13 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @Escape.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
                 @Escape.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
                 @Escape.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Walk.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
+                @Walk.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
+                @Walk.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @WalkUD.started += instance.OnWalkUD;
-                @WalkUD.performed += instance.OnWalkUD;
-                @WalkUD.canceled += instance.OnWalkUD;
-                @WalkLR.started += instance.OnWalkLR;
-                @WalkLR.performed += instance.OnWalkLR;
-                @WalkLR.canceled += instance.OnWalkLR;
                 @Talk.started += instance.OnTalk;
                 @Talk.performed += instance.OnTalk;
                 @Talk.canceled += instance.OnTalk;
@@ -422,6 +391,9 @@ public class @InputMap : IInputActionCollection, IDisposable
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
+                @Walk.started += instance.OnWalk;
+                @Walk.performed += instance.OnWalk;
+                @Walk.canceled += instance.OnWalk;
             }
         }
     }
@@ -485,11 +457,10 @@ public class @InputMap : IInputActionCollection, IDisposable
     public DialogueActions @Dialogue => new DialogueActions(this);
     public interface IPlayerActions
     {
-        void OnWalkUD(InputAction.CallbackContext context);
-        void OnWalkLR(InputAction.CallbackContext context);
         void OnTalk(InputAction.CallbackContext context);
         void OnTalkCompanion(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+        void OnWalk(InputAction.CallbackContext context);
     }
     public interface IDialogueActions
     {

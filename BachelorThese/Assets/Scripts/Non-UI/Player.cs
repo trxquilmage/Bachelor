@@ -7,39 +7,72 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float speed = 1f;
     public InputMap controls;
+    [SerializeField] GameObject characterMesh;
+
+    Vector3 MovementDir;
+    Vector3 movementDir
+    {
+        get { return MovementDir; }
+        set
+        {
+            MovementDir = value;
+        }
+    }
+
     GameObject target;
     GameObject companionTarget;
     Rigidbody rigid;
     ReferenceManager refM;
+    Animator animator;
+
     private void Awake()
     {
         controls = new InputMap();
+        animator = GetComponentInChildren<Animator>();
+        rigid = this.GetComponent<Rigidbody>();
     }
     private void Start()
     {
-        controls.Player.WalkUD.performed += context => Movement(-10, context.ReadValue<float>());
-        controls.Player.WalkLR.performed += context => Movement(context.ReadValue<float>(), -10);
+        refM = ReferenceManager.instance;
+
+        controls.Player.Walk.performed += context => Movement(context.ReadValue<Vector2>());
         controls.Player.Talk.performed += context => InteractE();
         controls.Player.TalkCompanion.performed += context => InteractF();
         controls.Player.Escape.performed += context => EnterMenu();
-        rigid = this.GetComponent<Rigidbody>();
-        refM = ReferenceManager.instance;
     }
     private void Update()
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
             CheckForButton();
+        TurnCharacterTowardMovementDirection();
     }
-    public void Movement(float directionX, float directionY)
+    public void Movement(Vector2 direction)
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
-            if (directionX == -10)
-                rigid.velocity = new Vector3(rigid.velocity.normalized.x, 0, directionY);
-            else if (directionY == -10)
-                rigid.velocity = new Vector3(directionX, 0, rigid.velocity.normalized.z);
-            rigid.velocity = rigid.velocity.normalized;
-            rigid.velocity *= speed;
+            movementDir = new Vector3(direction.x, 0, direction.y);
+
+            rigid.velocity = movementDir * speed;
+
+            if (rigid.velocity == Vector3.zero)
+                StopWalkingAnimation();
+            else
+                StartWalkingAnimation();
+        }
+    }
+    void StartWalkingAnimation()
+    {
+        animator.SetBool("Moving", true);
+    }
+    void StopWalkingAnimation()
+    {
+        animator.SetBool("Moving", false);
+    }
+    void TurnCharacterTowardMovementDirection()
+    {
+        if (movementDir != Vector3.zero)
+        {
+            characterMesh.transform.forward = Vector3.Lerp(characterMesh.transform.forward.normalized, movementDir, 0.25f);
         }
     }
     void EnterMenu()
@@ -49,6 +82,7 @@ public class Player : MonoBehaviour
     void StopWalking()
     {
         rigid.velocity = Vector3.zero;
+        StopWalkingAnimation();
     }
     void InteractE()
     {
