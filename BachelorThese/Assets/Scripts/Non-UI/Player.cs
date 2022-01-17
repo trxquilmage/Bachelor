@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
             {
                 StopWalking();
                 if (target.TryGetComponent<NPC>(out NPC npc))
-                    DialogueManager.instance.CheckForNearbyNPC();
+                    DialogueManager.instance.StartConversationWithNPC(npc);
                 else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
                     iO.Interact(true);
             }
@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
             {
                 StopWalking();
                 if (companionTarget.TryGetComponent<Companion>(out Companion npc))
-                    DialogueManager.instance.CheckForNearbyCompanion();
+                    DialogueManager.instance.StartConversationWithNPC(npc);
             }
         }
     }
@@ -101,6 +101,7 @@ public class Player : MonoBehaviour
         }
         return false;
     }
+
     bool CheckForCompanionRange()
     {
         Companion[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<Companion>();

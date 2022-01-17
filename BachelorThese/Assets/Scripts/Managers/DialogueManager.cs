@@ -34,43 +34,13 @@ public class DialogueManager : MonoBehaviour
     /** Filter them to those that have a Yarn start node and are in range; 
      * then start a conversation with the first one
      */
-    public void CheckForNearbyNPC()
+    public void StartConversationWithNPC(NPC npc)
     {
-        var target = allParticipants.Find(delegate (NPC p)
+        if (npc != null && (npc.transform.position - this.transform.position).magnitude <= refM.interactionRadius)
         {
-            return string.IsNullOrEmpty(p.talkToNode) == false && // has a conversation node?
-            (p.transform.position - this.transform.position)// is in range?
-            .magnitude <= refM.interactionRadius;
-        });
-        if (target != null)
-        {
-            // Kick off the dialogue at this node.
-            //Debug.Log("Found A Dialogue Partner: " + target.characterName);
-            currentTarget = target;
-            runner.StartDialogue(target.talkToNode);
+            currentTarget = npc;
+            runner.StartDialogue(npc.talkToNode);
         }
-        //else
-        //Debug.Log("Found No One");
-    }
-    public void CheckForNearbyCompanion()
-    {
-        var target = allParticipants.Find(delegate (NPC p)
-        {
-            return p is Companion && //is a companion
-            ((Companion)p).inParty && // is in Party
-            string.IsNullOrEmpty(p.talkToNode) == false && // has a conversation node?
-            (p.transform.position - this.transform.position)// is in range?
-            .magnitude <= refM.interactionRadius;
-        });
-        if (target != null)
-        {
-            // Kick off the dialogue at this node.
-            //Debug.Log("Found A Dialogue Partner: " + target.characterName);
-            currentTarget = target;
-            runner.StartDialogue(target.talkToNode);
-        }
-        //else
-        //Debug.Log("Found No One");
     }
     /// <summary>
     /// called in Dialogue UI -> start Dialogue

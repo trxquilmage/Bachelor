@@ -8,10 +8,5 @@ public class NPC : MonoBehaviour
     public string characterName = "";
     public string talkToNode = "";
     public string askNode = "";
-
-    public virtual void EnterConversation()
-    {
-
-    }
 }
 
