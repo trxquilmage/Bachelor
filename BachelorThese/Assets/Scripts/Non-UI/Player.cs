@@ -44,6 +44,9 @@ public class Player : MonoBehaviour
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
             CheckForButton();
+    }
+    private void FixedUpdate()
+    {
         TurnCharacterTowardMovementDirection();
     }
     public void Movement(Vector2 direction)
@@ -55,24 +58,20 @@ public class Player : MonoBehaviour
             rigid.velocity = movementDir * speed;
 
             if (rigid.velocity == Vector3.zero)
-                StopWalkingAnimation();
+                TriggerWalkingAnimation(false);
             else
-                StartWalkingAnimation();
+                TriggerWalkingAnimation(true);
         }
     }
-    void StartWalkingAnimation()
+    void TriggerWalkingAnimation(bool changeTo)
     {
-        animator.SetBool("Moving", true);
-    }
-    void StopWalkingAnimation()
-    {
-        animator.SetBool("Moving", false);
+        animator.SetBool("Moving", changeTo);
     }
     void TurnCharacterTowardMovementDirection()
     {
         if (movementDir != Vector3.zero)
         {
-            characterMesh.transform.forward = Vector3.Lerp(characterMesh.transform.forward.normalized, movementDir, 0.25f);
+            characterMesh.transform.forward = Vector3.Lerp(characterMesh.transform.forward, movementDir, 0.4f);
         }
     }
     void EnterMenu()
@@ -82,7 +81,7 @@ public class Player : MonoBehaviour
     void StopWalking()
     {
         rigid.velocity = Vector3.zero;
-        StopWalkingAnimation();
+        TriggerWalkingAnimation(false);
     }
     void InteractE()
     {

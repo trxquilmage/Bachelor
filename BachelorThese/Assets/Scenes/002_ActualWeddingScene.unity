@@ -2129,6 +2129,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 161819921}
   m_CullTransparentMesh: 1
+--- !u!1 &174911314 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
+  m_PrefabInstance: {fileID: 1097044111}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &176787869 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 451560, guid: 5578b82f17c954843901e8b68ca21dcc, type: 3}
@@ -4128,6 +4133,7 @@ MonoBehaviour:
   characterName: DJ
   talkToNode: DJ.Start
   askNode: DJ.Ask
+  npcMesh: {fileID: 400519594}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -4144,6 +4150,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 3.24, z: 1}
   m_Center: {x: 0, y: 1.12, z: 0}
+--- !u!1 &400519594 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
+  m_PrefabInstance: {fileID: 495436856}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &401640148
 GameObject:
   m_ObjectHideFlags: 0
@@ -6161,6 +6172,7 @@ MonoBehaviour:
   characterName: Minnie
   talkToNode: Minnie.Start
   askNode: Minnie.Ask
+  npcMesh: {fileID: 2109669454}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -7438,6 +7450,7 @@ MonoBehaviour:
   characterName: Matheo
   talkToNode: Matheo.Start
   askNode: Matheo.Ask
+  npcMesh: {fileID: 0}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -13266,6 +13279,7 @@ MonoBehaviour:
   characterName: Renna
   talkToNode: Renna.Start
   askNode: Renna.Ask
+  npcMesh: {fileID: 1271566851}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -13862,7 +13876,7 @@ GameObject:
   - component: {fileID: 934030657}
   - component: {fileID: 934030658}
   - component: {fileID: 934030659}
-  - component: {fileID: 934030660}
+  - component: {fileID: 934030661}
   m_Layer: 0
   m_Name: Riley
   m_TagString: Untagged
@@ -13877,7 +13891,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934030656}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.99144495, z: -0, w: 0.13052608}
   m_LocalPosition: {x: 5.07, y: 0.75, z: -33.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -13885,7 +13899,7 @@ Transform:
   - {fileID: 1233387631}
   m_Father: {fileID: 1368837988}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 165, z: 0}
 --- !u!114 &934030658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13901,9 +13915,10 @@ MonoBehaviour:
   characterName: Riley
   talkToNode: Riley.Start
   askNode: Riley.Ask
+  npcMesh: {fileID: 1952186479}
   inParty: 0
-  minDistanceToPlayer: 2
-  speed: 0.25
+  minDistanceToPlayer: 2.5
+  speed: 4.5
 --- !u!65 &934030659
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13917,25 +13932,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 3.24, z: 1}
   m_Center: {x: 0, y: 1.12, z: 0}
---- !u!95 &934030660
-Animator:
-  serializedVersion: 3
+--- !u!54 &934030661
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934030656}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0cf4a110dee00984da9dd6011769d6dc, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 84
+  m_CollisionDetection: 0
 --- !u!1001 &943957050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15540,6 +15552,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046921596}
   m_CullTransparentMesh: 1
+--- !u!1 &1058748155 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42067d982774f864c96198cb6c490fa7, type: 3}
+  m_PrefabInstance: {fileID: 1880447000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1061197316
 GameObject:
   m_ObjectHideFlags: 0
@@ -17511,7 +17528,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalScale.x
@@ -17539,19 +17556,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.0345496
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.999403
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17559,7 +17576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 176.04
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -18522,6 +18539,16 @@ MonoBehaviour:
   onDialogueComplete:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1271566851 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42067d982774f864c96198cb6c490fa7, type: 3}
+  m_PrefabInstance: {fileID: 1587677221}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1274372742 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
+  m_PrefabInstance: {fileID: 1893398876}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1282623669
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27222,6 +27249,7 @@ MonoBehaviour:
   characterName: UncleMickey
   talkToNode: UncleMickey.Start
   askNode: UncleMickey.Ask
+  npcMesh: {fileID: 1274372742}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -27522,6 +27550,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950782998}
   m_CullTransparentMesh: 1
+--- !u!1 &1952186479 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 46680f9d3db58df4f8883937bbc250c1, type: 3}
+  m_PrefabInstance: {fileID: 1233387630}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1956357121
 GameObject:
   m_ObjectHideFlags: 1
@@ -28190,6 +28223,7 @@ MonoBehaviour:
   characterName: James
   talkToNode: James.Start
   askNode: James.Ask
+  npcMesh: {fileID: 174911314}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2
@@ -29809,7 +29843,7 @@ MonoBehaviour:
   blockListOn: 1
   noGreyOut: 0
   duplicateWords: 0
-  startWithStartWords: 0
+  startWithStartWords: 1
   wordTags:
   - name: AllWords
     tagColor: {r: 0, g: 0, b: 0, a: 0}
@@ -30265,6 +30299,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108189978}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2109669454 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42067d982774f864c96198cb6c490fa7, type: 3}
+  m_PrefabInstance: {fileID: 1085606594}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2111384102
 GameObject:
   m_ObjectHideFlags: 0
@@ -30930,6 +30969,7 @@ MonoBehaviour:
   characterName: AuntHeleen
   talkToNode: AuntHeleen.Start
   askNode: AuntHeleen.Ask
+  npcMesh: {fileID: 1058748155}
   inParty: 0
   minDistanceToPlayer: 2
   speed: 2

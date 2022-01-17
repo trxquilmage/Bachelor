@@ -39,6 +39,7 @@ public class DialogueManager : MonoBehaviour
         if (npc != null && (npc.transform.position - this.transform.position).magnitude <= refM.interactionRadius)
         {
             currentTarget = npc;
+            currentTarget.TurnTowardsPlayer((transform.position - npc.transform.position).normalized);
             runner.StartDialogue(npc.talkToNode);
         }
     }
@@ -55,6 +56,7 @@ public class DialogueManager : MonoBehaviour
     /// </summary>
     public void EndDialogue()
     {
+        currentTarget.TurnAwayFromPlayer();
         isInDialogue = false;
         currentTarget = null;
     }
