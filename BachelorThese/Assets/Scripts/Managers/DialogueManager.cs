@@ -15,7 +15,7 @@ public class DialogueManager : MonoBehaviour
     List<NPC> allParticipants;
     DialogueRunner runner;
     ReferenceManager refM;
-
+    CameraBehavior cam;
 
     void Awake()
     {
@@ -27,6 +27,7 @@ public class DialogueManager : MonoBehaviour
         runner = ReferenceManager.instance.standartRunner;
         refM = ReferenceManager.instance;
         allParticipants = new List<NPC>(FindObjectsOfType<NPC>());
+        cam = Camera.main.GetComponent<CameraBehavior>(); ;
     }
 
 
@@ -40,6 +41,7 @@ public class DialogueManager : MonoBehaviour
         {
             currentTarget = npc;
             currentTarget.TurnTowardsPlayer((transform.position - npc.transform.position).normalized);
+            cam.TurnToNPC(currentTarget.transform);
             runner.StartDialogue(npc.talkToNode);
         }
     }
@@ -50,6 +52,7 @@ public class DialogueManager : MonoBehaviour
     {
         isInDialogue = true;
         UIManager.instance.PortrayButton(null, refM.eButtonSprite);
+        UIManager.instance.PortrayButton(null, refM.fButtonSprite);
     }
     /// <summary>
     /// called in Dialogue UI -> end Dialogue
@@ -57,6 +60,7 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         currentTarget.TurnAwayFromPlayer();
+        cam.BackToStandart();
         isInDialogue = false;
         currentTarget = null;
     }
