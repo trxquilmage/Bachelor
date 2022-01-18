@@ -48,14 +48,15 @@ public class UIManager : MonoBehaviour
     /// <param name="target"></param>
     public void PortrayButton(GameObject target, Image sprite)
     {
-        if (target == null) //target == null : hide button
+        if (target == null) //if null hide button
         {
             sprite.enabled = false;
             return;
         }
+
         //place e button correctly
         Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position) / refM.canvas.scaleFactor;
-        sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 80f;
+        sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 100f + Vector2.up * 100;
 
         sprite.enabled = true; //show e button
     }

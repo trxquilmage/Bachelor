@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
     }
     IEnumerator Turn(Vector3 targetDirection)
     {
-        targetDirection = Vector3.Scale(targetDirection, new Vector3(1,0,1));
+        targetDirection = Vector3.Scale(targetDirection, new Vector3(1, 0, 1));
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (Vector3.Dot(targetDirection, animator.transform.forward) < 0.99f)
         {
@@ -187,12 +187,16 @@ public class Player : MonoBehaviour
     }
     void CheckForButton()
     {
+
         if (DialogueManager.instance.isActiveAndEnabled && !DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
             if (CheckForCompanionRange())
             {
                 UIManager.instance.PortrayButton(companionTarget, refM.fButtonSprite);
             }
+            else if (ReferenceManager.instance.fButtonSprite.enabled)
+                UIManager.instance.PortrayButton(null, refM.fButtonSprite);
+
             if (CheckForNPCRange())
             {
                 UIManager.instance.PortrayButton(target, refM.eButtonSprite);
