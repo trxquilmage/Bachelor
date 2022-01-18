@@ -74,6 +74,20 @@ public class Player : MonoBehaviour
             characterMesh.transform.forward = Vector3.Lerp(characterMesh.transform.forward, movementDir, 0.4f);
         }
     }
+    public void TurnTowardsNPC(GameObject npc)
+    {
+        StartCoroutine(Turn((npc.transform.position - transform.position).normalized));
+    }
+    IEnumerator Turn(Vector3 targetDirection)
+    {
+        targetDirection = Vector3.Scale(targetDirection, new Vector3(1,0,1));
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (Vector3.Dot(targetDirection, animator.transform.forward) < 0.99f)
+        {
+            animator.transform.forward = Vector3.Lerp(animator.transform.forward, targetDirection, 0.4f);
+            yield return delay;
+        }
+    }
     void EnterMenu()
     {
         MenuManager.instance.PressedEsc();
@@ -91,7 +105,10 @@ public class Player : MonoBehaviour
             {
                 StopWalking();
                 if (target.TryGetComponent<NPC>(out NPC npc))
+                {
+                    TurnTowardsNPC(npc.gameObject);
                     DialogueManager.instance.StartConversationWithNPC(npc);
+                }
                 else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
                     iO.Interact(true);
             }
@@ -105,7 +122,10 @@ public class Player : MonoBehaviour
             {
                 StopWalking();
                 if (companionTarget.TryGetComponent<Companion>(out Companion npc))
+                {
+                    TurnTowardsNPC(npc.gameObject);
                     DialogueManager.instance.StartConversationWithNPC(npc);
+                }
             }
         }
     }
@@ -134,7 +154,6 @@ public class Player : MonoBehaviour
         }
         return false;
     }
-
     bool CheckForCompanionRange()
     {
         Companion[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<Companion>();
