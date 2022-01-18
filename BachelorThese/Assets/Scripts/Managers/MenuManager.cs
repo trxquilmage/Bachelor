@@ -2,30 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
     public static MenuManager instance;
+    SubMenu currentSubMenu;
+    SubMenu[] allSubMenus;
     [HideInInspector] public bool inMenu;
-    [HideInInspector] public bool inTutorial;
-    int tutorialTextIndex
-    {
-        get { return TutorialTextIndex; }
-        set
-        {
-            TutorialTextIndex = value;
-            PortrayText();
-        }
-    }
-    int TutorialTextIndex = 0;
+
     ReferenceManager refM;
     private void Awake()
     {
         instance = this;
+
     }
     private void Start()
     {
         refM = ReferenceManager.instance;
+        allSubMenus = new SubMenu[2] {
+            new SubMenu("credits", false, refM.creditsField, refM.creditsText, refM.creditsTexts, 0),
+            new SubMenu("tutorial", false, refM.tutorialField, refM.tutorialText, refM.tutorialTexts, 0)
+            };
     }
     public void LoadScene(int i)
     {
@@ -35,100 +33,132 @@ public class MenuManager : MonoBehaviour
     {
         Application.Quit();
     }
-    /// <summary>
-    /// Called when pressing "Esc" while in the game
-    /// stops the time and opens the menu
-    /// </summary>
+
     public void EnterMenu()
     {
         inMenu = true;
-        //if currentWord -> act as if the word was let go of
+
         if (WordClickManager.instance.currentWord != null)
         {
             WordClickManager.instance.currentWord.GetComponent<Word>().OnDroppedReactToPosition();
         }
-        //stop unity time
+       
         Time.timeScale = 0;
 
-        //open menu
         refM.menuField.SetActive(true);
     }
-    /// <summary>
-    /// Called on clicking "Continue" in the menu or pressing "Esc" a second time
-    /// closes the menu and resumes time
-    /// </summary>
+
     public void ExitMenu()
     {
-        //resume time
         Time.timeScale = 1;
-
-        //close menu
         refM.menuField.SetActive(false);
         inMenu = false;
     }
-    /// <summary>
-    /// called, when the tutorial button is pressed, opens the tutorial
-    /// </summary>
-    public void EnterTutorial()
+
+    public void EnterSubMenu(int i)
     {
-        inTutorial = true;
-        //close menu
-        refM.menuField.SetActive(false);
-        //open tutorial
-        refM.tutorialField.SetActive(true);
-        //set tutorial text to int 0 and portray the correct text
-        tutorialTextIndex = 0;
+        currentSubMenu = allSubMenus[i];
+        currentSubMenu.Enter();
     }
-    /// <summary>
-    /// called when the tutorial is closed. re-opens the menu & closes the tutorial
-    /// </summary>
-    public void ExitTutorial()
+
+    public void ExitSubMenu()
     {
-        //close tutorial
-        refM.tutorialField.SetActive(false);
-        //open menu
-        refM.menuField.SetActive(true);
-        inTutorial = false;
+        currentSubMenu.Exit();
+        currentSubMenu = new SubMenu();
     }
-    /// <summary>
-    /// Checks whether the menu should be opened or closed.
-    /// if the tutorial is open, it closes the tutorial instead
-    /// </summary>
+
     public void PressedEsc()
     {
         if (!inMenu)
             EnterMenu();
-        else if (inTutorial)
-            ExitTutorial();
+        else if (currentSubMenu.name != null)
+            currentSubMenu.Exit();
         else
             ExitMenu();
     }
-    /// <summary>
-    /// Take the tutorial text at tutorialTextIndex and portray it in the tutorial text field
-    /// </summary>
-    /// <param name="i"></param>
-    void PortrayText()
-    {
-        refM.tutorialText.text = refM.tutorialTexts[tutorialTextIndex];
-    }
-    /// <summary>
-    /// pressed to change the tutorial text to the next one
-    /// </summary>
+
     public void ButtonForward()
     {
-        if (tutorialTextIndex < refM.tutorialTexts.Length - 1)
-            tutorialTextIndex++;
-        else
-            tutorialTextIndex = 0;
+        if (currentSubMenu.name != null)
+            currentSubMenu.SwitchForward();
     }
-    /// <summary>
-    /// pressed to change the tutorial text to the previous one
-    /// </summary>
+
     public void ButtonBack()
     {
-        if (tutorialTextIndex != 0)
-            tutorialTextIndex--;
+        if (currentSubMenu.name != null)
+            currentSubMenu.SwitchBack();
+    }
+}
+public struct SubMenu
+{
+    public string name;
+    public bool inSubMenu;
+    public GameObject relatedField;
+    public TMP_Text relatedText;
+    public string[] relatedTexts;
+    int textIndex
+    {
+        get { return TextIndex; }
+        set
+        {
+            TextIndex = value;
+            PortrayText();
+        }
+    }
+    int TextIndex;
+
+    public SubMenu(string s_name, bool s_inSubMenu, GameObject s_relatedField, TMP_Text s_relatedText, string[] s_relatedTexts, int s_textIndex)
+    {
+        name = s_name;
+        inSubMenu = s_inSubMenu;
+        relatedField = s_relatedField;
+        relatedText = s_relatedText;
+        relatedTexts = s_relatedTexts;
+        TextIndex = s_textIndex;
+        textIndex = s_textIndex;
+    }
+
+    public SubMenu(SubMenu subM)
+    {
+        name = subM.name;
+        inSubMenu = subM.inSubMenu;
+        relatedField = subM.relatedField;
+        relatedText = subM.relatedText;
+        relatedTexts = subM.relatedTexts;
+        TextIndex = subM.TextIndex;
+        textIndex = subM.textIndex;
+    }
+
+    void PortrayText()
+    {
+        relatedText.text = relatedTexts[textIndex];
+    }
+    public void SwitchBack()
+    {
+        if (textIndex != 0)
+            textIndex--;
         else
-            tutorialTextIndex = refM.tutorialTexts.Length - 1;
+            textIndex = relatedTexts.Length - 1;
+    }
+    public void SwitchForward()
+    {
+        if (textIndex < relatedTexts.Length - 1)
+            textIndex++;
+        else
+            textIndex = 0;
+    }
+    public void Enter()
+    {
+        inSubMenu = true;
+        ReferenceManager.instance.menuField.SetActive(false);
+        relatedField.SetActive(true);
+        textIndex = 0;
+    }
+
+    public void Exit()
+    {
+        relatedField.SetActive(false);
+        ReferenceManager.instance.menuField.SetActive(true);
+        inSubMenu = false;
     }
 }

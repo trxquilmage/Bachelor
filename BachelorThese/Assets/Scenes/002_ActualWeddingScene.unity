@@ -1622,7 +1622,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &126577821
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1642,7 +1642,7 @@ RectTransform:
   - {fileID: 193219811}
   - {fileID: 1942649998}
   m_Father: {fileID: 1027848587}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -11173,12 +11173,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2098945808}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: EnterTutorial
-        m_Mode: 1
+        m_MethodName: EnterSubMenu
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -13813,7 +13813,7 @@ RectTransform:
   - {fileID: 660107918}
   - {fileID: 988674932}
   m_Father: {fileID: 1027848587}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -16254,8 +16254,8 @@ RectTransform:
   - {fileID: 808857301}
   - {fileID: 1750114334}
   - {fileID: 1293463838}
-  - {fileID: 845873701}
   - {fileID: 126577821}
+  - {fileID: 845873701}
   m_Father: {fileID: 614195079}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -19218,7 +19218,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2098945808}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: LoadScene
+        m_MethodName: EnterSubMenu
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19850,7 +19850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1293463838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28717,19 +28717,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1895340623}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2098945808}
-        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: EnterTutorial
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1895340623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29683,12 +29671,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2098945808}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: ExitTutorial
+        m_MethodName: ExitSubMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -31807,7 +31795,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inMenu: 0
-  inTutorial: 0
 --- !u!1001 &2099225568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32573,7 +32560,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 118, y: 72}
-  m_SizeDelta: {x: 132.2, y: 53.3}
+  m_SizeDelta: {x: 132.2, y: 58.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2134947772
 MonoBehaviour:
@@ -32621,7 +32608,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2098945808}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: ExitTutorial
+        m_MethodName: ExitSubMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
