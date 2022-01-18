@@ -61,8 +61,11 @@ public class ReferenceManager : MonoBehaviour
     [Header("Menu")]
     public GameObject menuField;
     public GameObject tutorialField;
+    public GameObject creditsField;
     public TMP_Text tutorialText;
+    public TMP_Text creditsText;
     public string[] tutorialTexts;
+    public string[] creditsTexts;
     [Header("UI Elements")]
     public GameObject trashCan;
     public TMP_Text wordLimit;

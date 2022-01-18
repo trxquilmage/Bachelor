@@ -76,7 +76,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -0.57
+  m_Spacing: -3.3
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetHighlighted: {x: 40, y: 6}
-  offsetSelected: {x: 65, y: 20}
+  offsetSelected: {x: 60, y: 10}
 --- !u!1001 &6437647085327351411
 PrefabInstance:
   m_ObjectHideFlags: 0

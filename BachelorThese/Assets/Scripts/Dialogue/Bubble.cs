@@ -297,7 +297,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         foreach (Vector2 startEnd in sourceLineLengths)
         {
             Vector3 position = WordUtilities.GetWordPosition(originalText, lineStarts[j]);
-            InstantiateNewLineHighlighted(ref child, position);
+            child = InstantiateNewLineHighlighted(position);
             relatedText = child.GetComponentInChildren<TMP_Text>();
             FillLineWithText(startEnd);
 
@@ -322,15 +322,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            InstantiateNewLineSelected(ref child);
+            child = InstantiateNewLineSelected();
 
             relatedText = child.GetComponentInChildren<TMP_Text>();
             FillLineWithText(sourceText, startEnd);
 
-            ScaleRectSelected(relatedText, child.GetComponent<RectTransform>());
+            ScaleRectSelected(relatedText, child.GetComponentInChildren<Image>().rectTransform); 
             j++;
         }
-        // ??? DestroyFirstChild();
         StartCoroutine(InstantiateStar());
     }
     protected void UpdateBubbleIntoCompactForm()
@@ -347,11 +346,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         int j = 0;
         foreach (Vector2 startEnd in data.lineLengths)
         {
-            InstantiateNewLineSelected(ref child);
+            child = InstantiateNewLineSelected();
             relatedText = child.GetComponentInChildren<TMP_Text>();
 
             FillLineWithText(sourceText, startEnd);
-            ScaleRectSelected(relatedText, child.GetComponent<RectTransform>());
+            ScaleRectSelected(relatedText, child.GetComponentInChildren<Image>().rectTransform); 
             j++;
         }
         DestroyFirstChild();
@@ -371,10 +370,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         Image wordCard = GetComponentInChildren<Image>();
         RectTransform firstChild = wordCard.GetComponent<RectTransform>();
-        TMP_Text editableText = wordCard.GetComponentInChildren<TMP_Text>();
 
         wordCard.sprite = ReferenceManager.instance.wordSelectedSprite;
-        ScaleRectSelected(editableText, firstChild);
+        ScaleRectSelected(relatedText, firstChild);
     }
     IEnumerator InstantiateStar()
     {
@@ -730,7 +728,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         EffectUtilities.ReColorAllInteractableWords();
     }
     #endregion
-
     /// <summary>
     /// Call one of the VFX on the bubble: 0 -> spawn, 1 -> delete
     /// </summary>
@@ -771,14 +768,16 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         for (int i = wordParent.transform.childCount - 1; i >= limit; i--)
             Destroy(wordParent.transform.GetChild(i).gameObject);
     }
-    protected void InstantiateNewLineHighlighted(ref GameObject child, Vector3 atPosition)
+    protected GameObject InstantiateNewLineHighlighted(Vector3 atPosition)
     {
+        GameObject child;
         child = GameObject.Instantiate(ReferenceManager.instance.wordHighlightedPrefab, wordParent.transform, false);
         child.transform.localPosition = atPosition - GetComponent<RectTransform>().localPosition;
+        return child;
     }
-    protected void InstantiateNewLineSelected(ref GameObject child)
+    protected GameObject InstantiateNewLineSelected()
     {
-        child = GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);
+        return GameObject.Instantiate(ReferenceManager.instance.wordSelectedPrefab, wordParent.transform, false);
     }
     protected void FillLineWithText(Vector2 startEnd)
     {
@@ -801,32 +800,43 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         line = WordUtilities.CapitalizeAllWordsInString(line);
         relatedText.text = line;
     }
-    protected void ScaleWordParentToSizeOfWholeObject()
+    protected void ScaleAllParentsToTheirCorrectSizes()
     {
-        RectTransform rT = GetComponent<RectTransform>();
-        rT.sizeDelta = new Vector2(rT.sizeDelta.x, data.lineLengths.Length * 20);
+        StartCoroutine(ScaleAllParents());
     }
-    protected void ScaleLineParentsToSizeOfTheirLines()
+    protected IEnumerator ScaleAllParents()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        yield return delay;
+
         Image currentImage;
         RectTransform currentParent;
+        RectTransform mainParent = GetComponent<RectTransform>();
+        Vector2 sizeDelta = new Vector2(0, 0);
+
         foreach (TMP_Text line in GetComponentsInChildren<TMP_Text>())
         {
             currentImage = line.transform.parent.GetComponent<Image>();
             currentParent = currentImage.transform.parent.GetComponent<RectTransform>();
             currentParent.sizeDelta = currentImage.rectTransform.sizeDelta;
+
+            sizeDelta += currentImage.rectTransform.sizeDelta;
+            sizeDelta.x = currentImage.rectTransform.sizeDelta.x;
         }
-    }
-    protected void ScaleAllParentsToTheirCorrectSizes()
-    {
-        ScaleLineParentsToSizeOfTheirLines();
-        ScaleWordParentToSizeOfWholeObject();
+        mainParent.sizeDelta = sizeDelta;
+
+        foreach (VerticalLayoutGroup lG in wordParent.GetComponentsInChildren<VerticalLayoutGroup>())
+            lG.SetLayoutVertical();
+
+        if (wordParent.transform.parent.TryGetComponent<VerticalLayoutGroup>(out VerticalLayoutGroup vLG))
+            vLG.SetLayoutVertical();
+
     }
     protected void MoveLinesAccordingToOffset(bool isHighlighted)
     {
-        float yOffset = (data.isLongWord) ? 0.72f : 0; //for some reason short words just scale differently
-        Vector3 highlighted = Vector3.Scale((Vector3)bubbleOffset.offsetHighlighted, new Vector3(0.52f, yOffset, 0));
-        Vector3 selected = Vector3.Scale((Vector3)bubbleOffset.offsetSelected, new Vector3(0.52f, yOffset, 0));
+        float yOffset = (data.isLongWord) ? 0.5f : 0.5f; //for some reason short words just scale differently
+        Vector3 highlighted = Vector3.Scale((Vector3)bubbleOffset.offsetHighlighted, new Vector3(0.5f, yOffset, 0));
+        Vector3 selected = Vector3.Scale((Vector3)bubbleOffset.offsetSelected, new Vector3(0.5f, yOffset, 0));
         transform.localPosition -= (isHighlighted) ? highlighted : selected;
     }
     protected void DestroyFirstChild()
