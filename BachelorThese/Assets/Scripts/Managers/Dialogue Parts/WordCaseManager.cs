@@ -102,8 +102,6 @@ public class WordCaseManager : Case
         else
             return null;
     }
-
-
     protected override void CheckIfANewTagIsIncludedAndAddButton(string tagName)
     {
         if (CheckIfTagIsNew(tagName))
@@ -123,7 +121,6 @@ public class WordCaseManager : Case
             return true;
         return false;
     }
-
     protected void ShowTagButton(string tagName)
     {
         WordUtilities.GetTag(tagName).tagButton.GetComponent<TagButtonInfo>().SetActive();
@@ -260,18 +257,10 @@ public class WordCaseManager : Case
         base.SaveBubble(bubble);
     }
     #endregion
-
-    /// <summary>
-    /// For button Inputs: Changes the open tag
-    /// </summary>
-    /// <param name="info"></param>
     public void ChangeToTag(TagButtonInfo info)
     {
         openTag = info.wordTag.name;
     }
-    /// <summary>
-    /// Change the color of the background, scrollbar & WordCounter according to the tag
-    /// </summary>
     public void ChangeCaseColor()
     {
         // Set Background Color to Tag Color + a bit grey
@@ -279,11 +268,6 @@ public class WordCaseManager : Case
         Color highlightColor = Color.Lerp(color, ReferenceManager.instance.highlightColor, 0.35f);
         ReferenceManager.instance.wordJournal.GetComponent<Image>().color = highlightColor;
     }
-
-    /// <summary>
-    /// Count the number of words that are in the current tag
-    /// </summary>
-    /// <param name="tag"></param>
     int GetTagWordCount(string tag)
     {
         int wordCount = 0;
@@ -308,7 +292,6 @@ public class WordCaseManager : Case
         }
         return wordCount;
     }
-
     void MakeOtherTagProminent(string oldTag, string newTag)
     {
         if (oldTag != "" && oldTag != null)
@@ -320,7 +303,6 @@ public class WordCaseManager : Case
             WordUtilities.GetTag(newTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonProminent();
         }
     }
-
     public override void ChangeScrollbarValue(float scrollValue)
     {
         if (WordClickManager.instance.mouseOverUIObject == "wordCase")

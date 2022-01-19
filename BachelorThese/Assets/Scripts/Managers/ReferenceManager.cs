@@ -69,6 +69,7 @@ public class ReferenceManager : MonoBehaviour
     public string[] creditsTexts;
     [Header("UI Elements")]
     public GameObject trashCan;
+    public GameObject favoritesButton;
     public TMP_Text wordLimit;
     public TMP_Text questText;
     public Image wordJournal;

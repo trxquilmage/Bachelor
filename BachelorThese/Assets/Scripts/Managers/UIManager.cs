@@ -223,7 +223,7 @@ public class UIManager : MonoBehaviour
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
             
-            if (tag.name != refM.wordTags[ReferenceManager.instance.otherTagIndex].name)
+            if (tag.name != refM.wordTags[refM.otherTagIndex].name)
             {
                 InstantiateButton(i, tag);
             }
