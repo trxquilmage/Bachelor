@@ -40,11 +40,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
 
     #region VIRTUAL
+    public virtual void Awake()
+    {
+        refM = ReferenceManager.instance;
+    }
     public virtual void Start()
     {
         movementDone = new RefBool() { refBool = false };
         piManager = PlayerInputManager.instance;
-        refM = ReferenceManager.instance;
         CallEffect(0);
     }
     public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
@@ -299,8 +302,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             Vector3 position = WordUtilities.GetWordPosition(originalText, lineStarts[j]);
             child = InstantiateNewLineHighlighted(position);
             relatedText = child.GetComponentInChildren<TMP_Text>();
-            FillLineWithText(startEnd);
 
+            FillLineWithText(startEnd);
             relatedText.rectTransform.sizeDelta = new Vector2(1000, relatedText.rectTransform.sizeDelta.y);
             ScaleRectHighlighted(relatedText, relatedText.transform.parent.GetComponent<RectTransform>());
 
@@ -325,9 +328,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child = InstantiateNewLineSelected();
 
             relatedText = child.GetComponentInChildren<TMP_Text>();
-            FillLineWithText(sourceText, startEnd);
+            Image relatedImage = child.GetComponentInChildren<Image>();
 
-            ScaleRectSelected(relatedText, child.GetComponentInChildren<Image>().rectTransform); 
+            FillLineWithText(sourceText, startEnd);
+            ScaleRectSelected(relatedText, relatedImage.rectTransform);
+            AddDuctTapeToLowerChildren(relatedImage, j);
             j++;
         }
         StartCoroutine(InstantiateStar());
@@ -344,13 +349,16 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordParent.GetComponent<VerticalLayoutGroup>().enabled = true;
 
         int j = 0;
+
         foreach (Vector2 startEnd in data.lineLengths)
         {
             child = InstantiateNewLineSelected();
             relatedText = child.GetComponentInChildren<TMP_Text>();
+            Image relatedImage = child.GetComponentInChildren<Image>();
 
             FillLineWithText(sourceText, startEnd);
-            ScaleRectSelected(relatedText, child.GetComponentInChildren<Image>().rectTransform); 
+            ScaleRectSelected(relatedText, relatedImage.rectTransform);
+            AddDuctTapeToLowerChildren(relatedImage, j);
             j++;
         }
         DestroyFirstChild();
@@ -842,6 +850,17 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     protected void DestroyFirstChild()
     {
         Destroy(wordParent.transform.GetChild(0).gameObject);
+    }
+    protected void AddDuctTapeToLowerChildren(Image image, int round)
+    {
+        if (round > 0)
+        {
+            GameObject tape = Instantiate(refM.tapePrefab, image.transform, false);
+            tape.transform.localPosition += new Vector3(40, 20, 0);
+            tape = Instantiate(refM.tapePrefab, image.transform, false);
+            tape.transform.localPosition += new Vector3(90, 18, 0);
+            tape.transform.localScale = Vector3.Scale(tape.transform.localScale, new Vector3(1, -1, 1));
+        }
     }
     #endregion
 }

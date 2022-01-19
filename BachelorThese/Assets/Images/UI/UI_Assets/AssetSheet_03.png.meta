@@ -11,6 +11,9 @@ TextureImporter:
   - first:
       213: -88120699312701502
     second: AssetSheet_03_2
+  - first:
+      213: 3181541956920717916
+    second: AssetSheet_03_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -158,6 +161,27 @@ TextureImporter:
       bones: []
       spriteID: 2cf7b1cd0bee6cef0800000000000000
       internalID: -88120699312701502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AssetSheet_03_3
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 1917
+        width: 310
+        height: 274
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c52b244ad8b172c20800000000000000
+      internalID: 3181541956920717916
       vertices: []
       indices: 
       edges: []

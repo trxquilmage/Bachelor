@@ -50,6 +50,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject promptBoxPrefab;
     public GameObject buttonPrefab;
     public GameObject starPrefab;
+    public GameObject tapePrefab;
     [Header("Fields")]
     public GameObject nPCDialogueField;
     public GameObject playerInputField;
@@ -127,7 +128,6 @@ public class ReferenceManager : MonoBehaviour
     public Image fButtonSprite;
     public Image rightClickIcon;
     public Image rightClickAskIcon;
-    
     public GameObject worldMap;
     [Header("Environment")]
     public GameObject player;
