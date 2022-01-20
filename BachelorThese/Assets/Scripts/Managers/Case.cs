@@ -350,6 +350,7 @@ public class Case : MonoBehaviour
         data = GetBubbleData(data, out index);
         return data;
     }
+    
     /// <summary>
     /// Opens case and memorizes, if it was open before. If not, it will close on false.
     /// </summary>

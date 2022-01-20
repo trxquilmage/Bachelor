@@ -17,16 +17,27 @@ public class StarFavorite : MonoBehaviour
         text = transform.parent.GetComponent<TMP_Text>();
         image = text.transform.parent.GetComponent<Image>();
         word = image.transform.parent.parent.GetComponent<Word>();
+        text.ForceMeshUpdate();
+        TMP_TextInfo textInfo = text.textInfo;
 
-        float endOfRightmostCharacter = text.textInfo.characterInfo[text.textInfo.characterCount - 1].bottomRight.x;
-        transform.localPosition = new Vector3(endOfRightmostCharacter + offsetToText, transform.localPosition.y, transform.localPosition.z);
-        image = GetComponent<Image>();
-        UpdateStar();
+        if (textInfo.characterCount > 0)
+        {
+            float endOfRightmostCharacter = textInfo.characterInfo[textInfo.characterCount - 1].bottomRight.x;
+            transform.localPosition = new Vector3(endOfRightmostCharacter + offsetToText, transform.localPosition.y, transform.localPosition.z);
+            image = GetComponent<Image>();
+            UpdateStar();
+        }
     }
     public void ClickedFavorite()
     {
         word.data.isFavorite = !word.data.isFavorite;
         UpdateStar();
+        FavoriteButtonInfo favoriteButton = ReferenceManager.instance.favoritesButton.GetComponent<FavoriteButtonInfo>();
+        Debug.Log(WordCaseManager.instance.GetFavoritesCount());
+        if (WordCaseManager.instance.GetFavoritesCount() > 0)
+            favoriteButton.SetActive();
+        else
+            favoriteButton.SetInactive();
     }
     void UpdateStar()
     {

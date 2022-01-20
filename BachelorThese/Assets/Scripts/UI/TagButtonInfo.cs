@@ -9,11 +9,15 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
 {
     public int tagIndex;
     public WordInfo.WordTag wordTag;
-    TMP_Text relatedText;
-    Image relatedImage;
-    RectTransform relatedTransform;
-    ReferenceManager refM;
+    protected TMP_Text relatedText;
+    protected Image relatedImage;
+    protected RectTransform relatedTransform;
+    protected ReferenceManager refM;
 
+    public virtual void Awake()
+    {
+
+    }
     public void Initialize(int index, WordInfo.WordTag tag)
     {
         SetAllClassVariablesVariables(index, tag);
@@ -24,7 +28,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         SetInactive();
         StartWithProminentAllButton();
     }
-    void SetAllClassVariablesVariables(int i, WordInfo.WordTag tag)
+    protected void SetAllClassVariablesVariables(int i, WordInfo.WordTag tag)
     {
         refM = ReferenceManager.instance;
         tagIndex = i;
@@ -33,16 +37,16 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         relatedText = GetComponentInChildren<TMP_Text>();
         relatedTransform = GetComponent<RectTransform>();
     }
-    void ColorButtonToTagColor()
+    protected void ColorButtonToTagColor()
     {
         relatedImage.color = wordTag.tagColor;
     }
-    void ScaleButtonToAlignWithTextLength()
+    protected void ScaleButtonToAlignWithTextLength()
     {
         Vector3[] parameters = WordUtilities.GetWordParameters(relatedText, relatedText.textInfo.wordInfo[0], false);
         relatedTransform.sizeDelta = new Vector2(parameters[1].x + 25, relatedTransform.sizeDelta.y);
     }
-    void ReplaceWordsForBrevity()
+    protected void ReplaceWordsForBrevity()
     {
         //apply text into the buttons
         if (wordTag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name) // if is "AllWords"
@@ -56,11 +60,11 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
 
         relatedText.ForceMeshUpdate();
     }
-    void SaveButtonAsReferenceInTagList()
+    protected void SaveButtonAsReferenceInTagList()
     {
         ReferenceManager.instance.wordTags[tagIndex].tagButton = GetComponent<Button>();
     }
-    public void SetInactive()
+    public virtual void SetInactive()
     {
         if (tagIndex != refM.allTagIndex) // if is "AllWords"
         {
@@ -70,12 +74,12 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         else
             refM.wordTags[tagIndex].buttonIsActive = true;
     }
-    public void SetActive()
+    public virtual void SetActive()
     {
         this.gameObject.SetActive(true);
         refM.wordTags[tagIndex].buttonIsActive = true;
     }
-    void StartWithProminentAllButton()
+    protected void StartWithProminentAllButton()
     {
         if (wordTag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name)
         {
@@ -83,7 +87,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
             MakeTagButtonProminent();
         }
     }
-    public void OnPointerClick(PointerEventData eventData)
+    public virtual void OnPointerClick(PointerEventData eventData)
     {
         WordCaseManager.instance.ChangeToTag(this);
     }
@@ -92,7 +96,8 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         if (relatedImage != null)
         {
             relatedImage.sprite = ReferenceManager.instance.buttonNotSelected;
-            relatedText.fontStyle = FontStyles.Normal;
+            if (relatedText != null)
+                relatedText.fontStyle = FontStyles.Normal;
         }
     }
     public void MakeTagButtonProminent()
@@ -100,7 +105,8 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         if (relatedImage != null)
         {
             relatedImage.sprite = ReferenceManager.instance.buttonSelected;
-            relatedText.fontStyle = FontStyles.Bold;
+            if (relatedText != null)
+                relatedText.fontStyle = FontStyles.Bold;
         }
     }
 }

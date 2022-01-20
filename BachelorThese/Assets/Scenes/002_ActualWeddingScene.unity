@@ -4177,16 +4177,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361047090}
   m_LocalRotation: {x: 0, y: 0, z: -0.021640321, w: 0.9997658}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.7, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 105714625}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.48}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -36, y: 4}
-  m_SizeDelta: {x: -5.9999995, y: -2.7700007}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -60.9, y: 2.3}
+  m_SizeDelta: {x: 51, y: 55.23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &361047092
 MonoBehaviour:
@@ -4271,7 +4271,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 41.74163, y: 0, z: -2.3082619, w: 1.7402438}
+  m_margin: {x: 0.05369757, y: 0, z: -2.3082619, w: 1.7402438}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4373,7 +4373,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &401640149
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4457,7 +4457,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 401640148}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -18648,6 +18648,7 @@ GameObject:
   - component: {fileID: 1229298985}
   - component: {fileID: 1229298984}
   - component: {fileID: 1229298986}
+  - component: {fileID: 1229298987}
   m_Layer: 5
   m_Name: Favoriues
   m_TagString: Untagged
@@ -18756,7 +18757,37 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1229298984}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2098945803}
+        m_TargetAssemblyTypeName: WordCaseManager, Assembly-CSharp
+        m_MethodName: ChangeToFavorites
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1229298987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229298982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac67c189e0009da468652f3eaee31f8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagIndex: 0
+  wordTag:
+    name: 
+    tagColor: {r: 0, g: 0, b: 0, a: 0}
+    tagButton: {fileID: 0}
+    buttonIsActive: 0
 --- !u!1 &1230793858 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 174854, guid: 3fd9507fb16d56044bcf520c1d14427c, type: 3}
@@ -32261,7 +32292,7 @@ MonoBehaviour:
   - Using <b>Yarn Spinner<br></b>by <b>Secret Lab</b><br><br><size=80%>https://yarnspinner.dev/
   - Using <b>Hats<br></b>by <b>crazymanc</b><br><br><size=80%>https://www.turbosquid.com/de/3d-models/free-obj-mode-hats/561379#
   trashCan: {fileID: 1344620554}
-  favoritesButton: {fileID: 0}
+  favoritesButton: {fileID: 1229298982}
   wordLimit: {fileID: 1093626932}
   questText: {fileID: 1577350436}
   wordJournal: {fileID: 329470547}
@@ -32342,7 +32373,7 @@ MonoBehaviour:
   blockListOn: 1
   noGreyOut: 0
   duplicateWords: 0
-  startWithStartWords: 0
+  startWithStartWords: 1
   wordTags:
   - name: AllWords
     tagColor: {r: 0, g: 0, b: 0, a: 0}

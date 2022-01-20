@@ -15,7 +15,6 @@ public class WordCaseManager : Case
         get { return OpenTag; }
         set
         {
-
             if (OpenTag == value)
             {
                 OpenTag = value;
@@ -42,6 +41,7 @@ public class WordCaseManager : Case
     }
     string OverrideTag = null;
     [HideInInspector] public Dictionary<string, BubbleData[]> tagRelatedWords;
+    bool onlyShowFavorites;
 
     public void Start()
     {
@@ -120,6 +120,28 @@ public class WordCaseManager : Case
         if (!WordUtilities.GetTag(tagName).buttonIsActive)
             return true;
         return false;
+    }
+    public override void UpdateBubbleData(BubbleData data)
+    {
+        int index = FindIndexOfBubbleDataInRelatedTagList(data);
+        if (index != -1)
+        {
+            tagRelatedWords[data.tag][index] = data;
+        }
+    }
+    public int FindIndexOfBubbleDataInRelatedTagList(BubbleData data)
+    {
+        int index = -1;
+        int i = -1;
+        foreach (BubbleData contentData in tagRelatedWords[data.tag])
+        {
+            i++;
+            if (contentData.name == data.name)
+            {
+                index = i;
+            }
+        }
+        return index;
     }
     protected void ShowTagButton(string tagName)
     {
@@ -230,9 +252,8 @@ public class WordCaseManager : Case
             foreach (BubbleData data in allWordsTemp)
             {
                 if (data.name != null)
-                {
-                    SpawnBubbleInCase((WordData)data);
-                }
+                    if (onlyShowFavorites && data.isFavorite || !onlyShowFavorites)
+                        SpawnBubbleInCase((WordData)data);
             }
         }
     }
@@ -259,7 +280,27 @@ public class WordCaseManager : Case
     #endregion
     public void ChangeToTag(TagButtonInfo info)
     {
+        onlyShowFavorites = false;
         openTag = info.wordTag.name;
+    }
+    public void ChangeToFavorites()
+    {
+        onlyShowFavorites = true;
+        openTag = refM.wordTags[refM.allTagIndex].name;
+    }
+    public int GetFavoritesCount()
+    {
+        int count = 0;
+        foreach (WordInfo.WordTag tag in ReferenceManager.instance.wordTags)
+        {
+            if (tagRelatedWords.ContainsKey(tag.name))
+            {
+                foreach (BubbleData data in tagRelatedWords[tag.name])
+                    if (data.isFavorite)
+                        count ++;
+            }
+        }
+        return count;
     }
     public void ChangeCaseColor()
     {
@@ -296,11 +337,23 @@ public class WordCaseManager : Case
     {
         if (oldTag != "" && oldTag != null)
         {
-            WordUtilities.GetTag(oldTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonSmaller();
+            if (!onlyShowFavorites)
+                WordUtilities.GetTag(oldTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonSmaller();
+            else if (oldTag == refM.wordTags[refM.allTagIndex].name)
+            {
+                refM.favoritesButton.GetComponent<TagButtonInfo>().MakeTagButtonSmaller();
+                if (oldTag != newTag)
+                    onlyShowFavorites = false;
+            }
         }
         if (newTag != "" && newTag != null)
         {
-            WordUtilities.GetTag(newTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonProminent();
+            if (!onlyShowFavorites)
+                WordUtilities.GetTag(newTag).tagButton.GetComponent<TagButtonInfo>().MakeTagButtonProminent();
+            else if (newTag == refM.wordTags[refM.allTagIndex].name)
+            {
+                refM.favoritesButton.GetComponent<TagButtonInfo>().MakeTagButtonProminent();
+            }
         }
     }
     public override void ChangeScrollbarValue(float scrollValue)
