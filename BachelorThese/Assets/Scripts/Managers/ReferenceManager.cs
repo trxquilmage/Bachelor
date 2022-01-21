@@ -83,7 +83,6 @@ public class ReferenceManager : MonoBehaviour
     public GameObject askButton;
     public GameObject feedbackTextOtherTag;
     public GameObject feedbackTextTrashYesNo;
-    public Scrollbar buttonScrollbar;
     public Scrollbar bubbleScrollbar;
     public GameObject nameField;
     public GameObject npcDialogueTextBox;

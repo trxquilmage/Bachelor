@@ -249,13 +249,13 @@ public class Case : MonoBehaviour
     {
         float spacing = listingParent.GetComponent<HorizontalOrVerticalLayoutGroup>().spacing;
         bubbleScreenHeight = spacing;
-        foreach (RectTransform rT in listingParent.GetComponentsInChildren<RectTransform>())
+
+        RectTransform currentRectTransform;
+        for (int i = 0; i < listingParent.transform.childCount; i++)
         {
-            if (rT.gameObject.TryGetComponent<Image>(out Image image) && rT.gameObject.tag != "IgnoreImageCast")
-            {
-                bubbleScreenHeight += rT.sizeDelta.y;
-                bubbleScreenHeight += spacing;
-            }
+            currentRectTransform = listingParent.transform.GetChild(i).GetComponent<RectTransform>();
+            bubbleScreenHeight += currentRectTransform.sizeDelta.y;
+            bubbleScreenHeight += spacing;
         }
         bubbleScreenHeight -= caseScreenHeight;
     }
@@ -350,7 +350,7 @@ public class Case : MonoBehaviour
         data = GetBubbleData(data, out index);
         return data;
     }
-    
+
     /// <summary>
     /// Opens case and memorizes, if it was open before. If not, it will close on false.
     /// </summary>
