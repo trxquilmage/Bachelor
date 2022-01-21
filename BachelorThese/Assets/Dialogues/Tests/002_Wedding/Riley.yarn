@@ -91,7 +91,7 @@ title: Riley.AskDate
 tags:
 ---
 <<displaypromptmenu Managers GenAAA>>
-Are we on a date?
+Yes or no - Are we on a date?
 <<set $hasDate to react("value", "hasDate", "Riley")>>
 <<if $hasDate eq true>>
     Oh, thank god.

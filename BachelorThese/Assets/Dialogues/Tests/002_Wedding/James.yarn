@@ -4,6 +4,8 @@ tags:
 <<showcharactername Managers James>>
 <<if not isvisited("James","Start")>>
     [[James.Introduction]]
+<<elseif not isvisited("James","Jordan")>>
+    [[James.Jordan]]
 <<else>>
     [[James.Tour]]
 <<endif>>
@@ -38,6 +40,13 @@ Hey! I'm so glad you could make it!
 <<endif>>
 Anyways, I hope you enjoy the evening!
 [[James.Tour]]
+===
+
+title: James.Jordan
+tags:
+---
+You haven't seen Jordan yet, have you?
+I guess he's always late, huh?
 ===
 
 title: James.Tour

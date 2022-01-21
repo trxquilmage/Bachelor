@@ -74,7 +74,7 @@ public class PromptBubble : MonoBehaviour
             case "All":
                 return WordUtilities.GetTag("AllWords");
             case "Adj":
-                return WordUtilities.GetTag("Location");
+                return WordUtilities.GetTag("Adjective");
             case "Item":
                 return WordUtilities.GetTag("Item");
             case "Name":

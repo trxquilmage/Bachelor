@@ -29,7 +29,7 @@ tags:
 ---
 Wow, so glad you could make it!
 <<showicantsay Managers>>
-<<displaypromptmenu Managers AdjAAA>>
+<<displaypromptmenu Managers AdjAAC>>
 How have you been?
 <<set $cantsay to icantsay("Renna", "WellTalkLater")>>
 <<set $hasBeen to react("value", "", "Renna")>>

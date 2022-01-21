@@ -1,5 +1,5 @@
 AdjAAA;<alpha=#00>|Adj-All|
-AdjAAB;I think it's <br><alpha=#00>|Adj:-ll|
+AdjAAB;I think it's <br><alpha=#00>|Adj-Rating|
 AllAAA;<alpha=#00>|All-All|
 AllAAB;My name is<br><alpha=#00>|All-All|
 AskAAA;Can you tell me about<br><alpha=#00>|All-Other|
@@ -12,3 +12,4 @@ SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adj-Rating|<alpha=#FF>  part
 SpeechAAB;For Renna's and <br><alpha=#00>|Name-NameA|<alpha=#FF>'s wedding.
 SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item-All|<alpha=#FF>!
 SpeechAAD;This is gonna be a <br><alpha=#00>|Adj-Rating|<alpha=#FF> night!
+AdjAAC;I'm <br><alpha=#00>|Adj-Rating|

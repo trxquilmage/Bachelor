@@ -17,11 +17,11 @@ tags:
 ---
 Hahaha the wedding is amazing.
 Hahaha....
-Oh... hey...
-We don't know each other, I think.
+Jordan hasn't even shown up yet,
+and I'm already drunk... hahaha
 Such a great party, huh?
 <<displaypromptmenu Managers GenAAA>>
-Did you know that I paid for all of this?
+I paid for all of this... Did you know?
 <<set $didKnow to react("value", "", "Minnie")>>
 <<if $didKnow>>
     Good! Hahaha...
@@ -29,8 +29,8 @@ Did you know that I paid for all of this?
     You should, though... Hahaha
 <<endif>>
 But don't worry!
-Since I'm Renna's richest friend,
-it's really not a problem.
+Since I'm Renna's richest friend...
+...it's really not a problem.
 [[Minnie.WhatPresent]]
 ===
 
@@ -40,7 +40,7 @@ tags:
 Tell me...
 <<showicantsay Managers>>
 <<displaypromptmenu Managers ItemAAA>>
-What present did *you* get them?
+What... *hic* present did *you* get them?
 <<set $cantsay to icantsay("Minnie", "WontTell")>>
 <<set $gotPresentName to react("name", "gotPresentName", "Minnie")>>
 <<set $gotPresentValue to react("value", "gotPresentValue", "Minnie")>>
@@ -54,7 +54,7 @@ What present did *you* get them?
     I mean that's a cool thing,
     but really, was it *that* expensive?
 <<elseif $gotPresentValue eq "expensive">>
-    ... wow. Okay now *that* is a cool present.
+    ... Wow. Okay now *that* is a cool present.
     ...
     ... anyways...
 <<endif>>
@@ -77,6 +77,9 @@ title: Minnie.Idle
 tags:
 ---
 Hahaha ha ha hahaha. 
+It's amazing....
+Jordan hasn't even shown up yet,
+and I'm already drunk... hahaha
 ===
 
 title: Minnie.ICantSay
