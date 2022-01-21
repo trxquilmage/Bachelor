@@ -1,0 +1,51 @@
+﻿title: Matheo.Start
+tags:
+---
+<<showcharactername Managers Matheo>>
+<<set $questIsActive to isquestactive("QuestAAA")>>
+
+<<if not isvisited("Matheo","Start")>>
+    [[Matheo.InPresent]]
+<<elseif $questIsActive>>
+    [[Matheo.FoundMe]]
+<<else>>
+    [[Matheo.Idle]]  
+<<endif>>
+===
+
+title: Matheo.Idle
+tags:
+---
+It's so nice and quiet in here.
+===
+
+title: Matheo.InPresent
+tags:
+---
+Oh? Is someone out there?
+I was checking out the presents...
+And then I saw this gigantic one...
+and I wanted to have a look inside...
+and then I fell in...
+but I like it in here.
+Please don't force me to get out...
+===
+
+title: Matheo.FoundMe
+tags:
+---
+<<if not isvisited("Matheo","FoundMe")>>
+    Oh? Mom is looking for me?
+    Can you just tell her I'm at the presents?
+<<else>>
+    [[Matheo.Idle]]
+<<endif>>
+===
+
+title: Matheo.ICantSay
+tags:
+---
+Ah. Too bad.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

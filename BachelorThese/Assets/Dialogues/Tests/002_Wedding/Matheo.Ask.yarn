@@ -1,0 +1,47 @@
+﻿title: Matheo.Ask
+tags:
+---
+<<if not isvisited("Matheo", "Ask")>>
+    You have a question?
+<<else>>
+    You have another question?
+<<endif>>
+===
+
+title: Matheo.AuntHeleen
+tags:
+---
+My mom? She should be around here somewhere.
+Usually when we go somewhere, 
+she's close to where the music is.
+[[Matheo.Continue]]
+===
+
+title: Matheo.DJ
+tags:
+---
+The DJ? I heard he's looking for Jordan.
+He didn't seem to like me very much.
+[[Matheo.Continue]]
+===
+
+title: Matheo.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[Matheo.Continue]]
+===
+
+title: Matheo.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: Matheo.Continue
+tags:
+---
+But we were talking about...
+===
