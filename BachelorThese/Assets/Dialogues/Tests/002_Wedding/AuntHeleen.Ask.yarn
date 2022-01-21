@@ -2,9 +2,9 @@
 tags:
 ---
 <<if not isvisited("AuntHeleen", "Ask")>>
-    Do you have a question?
+    Yes, Do you have a question?
 <<else>>
-    Oh, do you have another question?
+    Yes, do you have another question?
 <<endif>>
 ===
 

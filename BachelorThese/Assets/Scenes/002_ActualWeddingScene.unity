@@ -26850,11 +26850,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.066
+      value: 0.068
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.014
+      value: -0.004
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26862,31 +26862,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 0.05761165
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: -0.70475566
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0.05761184
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0.70475626
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: -9.347
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 3861721495969480796, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5243954218606645575, guid: 1b8919076d70cbe4f8f47c45a7b1626c, type: 3}
       propertyPath: m_Name
@@ -34073,7 +34073,7 @@ MonoBehaviour:
   generatorContinueButton: {fileID: 896377919}
   showWordsText: {fileID: 1521601433}
   startWords:
-  - Yes
+  - Good
   - No
   startCommands:
   - removeDoubles
@@ -35355,19 +35355,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: question
-      value: ... and what is your relationship to them?
+      value: ... Are you part of the family?
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[0].description
-      value: Parent
+      value: I'm family
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[1].description
-      value: Sibling
+      value: I'm a friend
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[2].description
@@ -35375,11 +35375,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[0].relatedWords.Array.size
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[1].relatedWords.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[2].relatedWords.Array.size
@@ -35387,11 +35387,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[0].relatedWords.Array.data[0]
-      value: Parent
+      value: Renna
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[1]
+      value: James
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[2]
+      value: Aunt Heleen
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[3]
+      value: Uncle Mickey
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[4]
+      value: Matheo
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[5]
+      value: Minnie
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[0].relatedWords.Array.data[6]
+      value: Minnie
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[1].relatedWords.Array.data[0]
-      value: Sibling
+      value: Minnie
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[1].relatedWords.Array.data[1]
+      value: Jordan
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[1].relatedWords.Array.data[2]
+      value: Renna
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: answers.Array.data[1].relatedWords.Array.data[3]
+      value: James
       objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958189, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: answers.Array.data[2].relatedWords.Array.data[0]
@@ -35649,20 +35685,6 @@ MonoBehaviour:
     - Ashley River
     - Northland Woods
     relatedCommands: []
-  - description: knows everyone
-    relatedWords:
-    - Renna
-    - James
-    - Jordan
-    - Aunt Heleen
-    - Cousin Hartley
-    - Uncle Mickey
-    - Matheo
-    relatedCommands: []
-  - description: bad at conversation
-    relatedWords: []
-    relatedCommands:
-    - removeYes
   - description: rich
     relatedWords:
     - House
