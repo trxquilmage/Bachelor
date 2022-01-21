@@ -196,12 +196,9 @@ public static class WordUtilities
         Vector3[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
         promptBubble.transform.SetParent(bubbleParent, false);
-        RectTransform rT = promptBubble.GetComponent<RectTransform>();
-        rT.localPosition = wordParameters[0];
-        rT.sizeDelta = wordParameters[1];
-        rT.localEulerAngles = Vector3.zero;
-        PromptBubble pB = promptBubble.AddComponent<PromptBubble>();
-        pB.Initialize(wordInfo.GetWord());
+
+        PromptBubble pB = promptBubble.GetComponent<PromptBubble>();
+        pB.Initialize(wordInfo.GetWord(), wordParameters);
     }
     /// <summary>
     /// Parents the child to the prompt the mouse is currently hovering over
@@ -268,7 +265,7 @@ public static class WordUtilities
             tagName = wordTagList[wordName][0];
         //if its a non existent filler word, tag it as "Other"
         else
-            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name; 
+            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name;
 
         if (!ReferenceManager.instance.noGreyOut) //greys out everything used
         {

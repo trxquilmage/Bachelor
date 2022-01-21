@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class PromptBubble : MonoBehaviour
 {
-    public bool acceptsCurrentWord;
+    [SerializeField] Vector2 additionalSizeDelta;
+    [HideInInspector] public bool acceptsCurrentWord;
     bool isHover = false;
 
-    Vector2[] parameters;
+    Vector2[] defaultSizeDelta;
     PromptBubbleData data;
     Image bubble;
     ReferenceManager refM;
@@ -21,9 +22,9 @@ public class PromptBubble : MonoBehaviour
         {
             Child = value;
             if (value != null)
-                ScaleToChild();
+                ScaleToChildsSize();
             else
-                ScaleBack();
+                ScaleBackToOriginalSize();
         }
     }
     GameObject Child;
@@ -34,13 +35,14 @@ public class PromptBubble : MonoBehaviour
         public string subtag;
         public Color imageColor;
     }
-    private void Start()
+    private void Awake()
     {
         refM = ReferenceManager.instance;
     }
-    public void Initialize(string tag)
+    public void Initialize(string tag, Vector3[] wordParameters)
     {
         InitializeValues();
+        ScaleObjectOnSpawn(wordParameters);
 
         string[] tagAndSubtag = SplitTagIntoTagAndSubtag(tag);
         SaveTagAndSubtag(tagAndSubtag[0], tagAndSubtag[1]);
@@ -89,13 +91,12 @@ public class PromptBubble : MonoBehaviour
     void ColorPromptBubbleToTagColor()
     {
         data.imageColor = WordUtilities.MatchColorToTag(data.tag.name);
-        data.imageColor.a = 1;
         bubble.color = data.imageColor;
     }
     void SaveStartScaleParameters()
     {
         rT.localScale = new Vector3(1, 1, 1);
-        parameters = new Vector2[2] { rT.localPosition, rT.sizeDelta };
+        defaultSizeDelta = new Vector2[2] { rT.localPosition, rT.sizeDelta };
     }
     /// <summary>
     /// Called, when the mouse is over the bubble. colors it darker for words of the correct tah
@@ -189,10 +190,19 @@ public class PromptBubble : MonoBehaviour
         else
             return false;
     }
+    void ScaleObjectOnSpawn(Vector3[] wordParameters)
+    {
+        rT.localPosition = wordParameters[0];
+        rT.sizeDelta = wordParameters[1];
+        rT.localEulerAngles = Vector3.zero;
+
+        rT.sizeDelta += additionalSizeDelta;
+        rT.localPosition -= (Vector3)(additionalSizeDelta / 2) + Vector3.down*2;
+    }
     /// <summary>
     /// Scale the bubble so it fits the child
     /// </summary>
-    public void ScaleToChild()
+    public void ScaleToChildsSize()
     {
         RectTransform childRT = child.GetComponent<RectTransform>();
         RectTransform rT = GetComponent<RectTransform>();
@@ -205,10 +215,10 @@ public class PromptBubble : MonoBehaviour
     /// <summary>
     /// Scale the bubble back to It's original size
     /// </summary>
-    public void ScaleBack()
+    public void ScaleBackToOriginalSize()
     {
         RectTransform rT = GetComponent<RectTransform>();
-        rT.localPosition = parameters[0];
-        rT.sizeDelta = parameters[1];
+        rT.localPosition = defaultSizeDelta[0];
+        rT.sizeDelta = defaultSizeDelta[1];
     }
 }
