@@ -18,10 +18,12 @@ public class Companion : NPC
             MovementDir = value;
             if (value == Vector3.zero)
             {
+                rigid.isKinematic = true;
                 TriggerWalkingAnimation(false);
             }
             else
             {
+                rigid.isKinematic = false;
                 TriggerWalkingAnimation(true);
             }
         }
