@@ -126,6 +126,8 @@ did
 didn't
 different
 directly
+distracted
+distract
 do
 does
 doesn't
@@ -172,6 +174,7 @@ fewer
 fifth
 first
 five
+follow
 followed
 following
 follows
@@ -312,6 +315,8 @@ mayn't
 mean
 meantime
 meanwhile
+meet
+meeting
 merely
 might
 mightn't
@@ -479,6 +484,8 @@ take
 taken
 taking
 tell
+telling
+tells
 tends
 th
 than
@@ -552,6 +559,8 @@ uhhh
 un
 under
 underneath
+understand
+understanding
 undoing
 unfortunately
 unless

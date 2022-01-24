@@ -19,6 +19,8 @@ tags:
     [[Riley.Casual]]
 <<elseif not isvisited("Riley", "AboutYou1")>>
     [[Riley.AboutYou1]]
+<<elseif not isvisited("Riley", "AboutYou2")>>
+    [[Riley.AboutYou2]]
 <<else>>
     Im really enjoying myself!
 <<endif>>
@@ -50,6 +52,25 @@ So, which part of the family are we here for?
 <<else>>
     Ah, guessing that's one of the people marrying.
     [[Riley.RelatedToCouple]]
+<<endif>>
+===
+
+title: Riley.AboutYou2
+tags: 
+---
+So. That drunk girl over there,
+<<showicantsay Managers>>
+<<displaypromptmenu Managers NameAAA>>
+by the benches - what's her name?
+<<set $cantsay to icantsay("Riley", "Secretive")>>
+<<set $name to react("name", "", "Riley")>>
+<<if $name eq "Riley">>
+    ... That's my name.
+    [[Riley.Secretive]]
+<<else>>
+    Ah, {$name}. 
+    She seems really unfriendly.
+    Maybe it's just because she's drunk?
 <<endif>>
 ===
 

@@ -25,11 +25,7 @@ Tables;Location;Local;Ashley River
 House;Item;Item;expensive
 Car;Item;Item;expensive
 Yacht;Item;Item;expensive
-Soup;Item;Item;cheap
-Pizza;Item;Item;cheap
 Wine;Item;Item;moderate
-Fish;Item;Item;cheap
-Salad;Item;Item;cheap
 Good;Adjective;Rating;positive
 Nice;Adjective;Rating;positive
 Beautiful;Adjective;Rating;positive
@@ -45,8 +41,6 @@ Interesting;Adjective;Rating;positive
 Wonderful;Adjective;Rating;positive
 Otherworldly;Adjective;Rating;positive
 Vegan;Adjective;Trait;neutral
-Riesling;Item;Item;moderate
-Dessert;Item;Item;cheap
 Food;Item;Item;cheap
 DJ;Name;NameA;
 Present;Item;Item;undefined
@@ -68,3 +62,16 @@ Small;Adjective;Descriptor;neutral
 Sweet;Adjective;Descriptor;neutral
 Favorite;Adjective;Descriptor;neutral
 Email;Item;Imm;
+Wedding;Item;Imm;
+Sushi;Item;Mat;cheap
+Dough;Item;Mat;cheap
+Meaty;Adjective;Descriptor;neutral
+Girl;Name;Title;
+Relationship;Item;Imm;
+Unusual;Adjective;Descriptor;neutral
+Brutal;Adjective;Descriptor;negative
+Drunk;Adjective;Descriptor;neutral
+Here;Location;Null;
+Home;Location;Null;
+Inside;Location;Null;
+Woods;Location;Null;
