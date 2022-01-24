@@ -58,3 +58,13 @@ Molly;Name;NameA;
 Kim;Name;NameA;
 Alex;Name;NameA;
 Sam;Name;NameA;
+Parker;Name;NameA;
+Goldfish;Item;Mat;cheap
+Aquarium;Item;Mat;moderate
+Job;Item;Imm;
+Dish;Item;Mat;cheap
+Careful;Adjective;Descriptor;neutral
+Small;Adjective;Descriptor;neutral
+Sweet;Adjective;Descriptor;neutral
+Favorite;Adjective;Descriptor;neutral
+Email;Item;Imm;

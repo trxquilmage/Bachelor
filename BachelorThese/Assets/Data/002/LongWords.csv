@@ -3,8 +3,10 @@ Northland Woods;Location;District;Bridgetown;
 Aunt Heleen;Name;NameA;;
 Cousin Hartley;Name;NameA;;
 Uncle Mickey;Name;NameA;;
-Rensgate Car Services;Location;House;House;Greybell
-Carrot Cream Soup;Item;Item;cheap;
-Austrian Riesling;Item;Item;moderate;
-Creme Brulee;Item;Item;cheap;
-Secret Word;;;;
+Rensgate Car Services;Location;House;Greybell;
+Carrot Cream Soup;Item;Mat;cheap;
+Austrian Riesling;Item;Mat;moderate;
+Creme Brulee;Item;Mat;cheap;
+Secret Word;Item;Imm;;
+Glass Bowl;Item;Mat;cheap;
+Pineapple Bum;Item;Mat;cheap;
