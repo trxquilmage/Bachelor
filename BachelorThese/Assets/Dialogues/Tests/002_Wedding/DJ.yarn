@@ -2,10 +2,16 @@
 tags:
 ---
 <<showcharactername Managers DJ>>
+<<set $questIsActive to isquestactive("QuestAAB")>>
+<<set $quest2IsActive to isquestactive("QuestAAC")>>
 <<if not isvisited("DJ","Start")>>
     [[DJ.Introduction]]
+<<elseif $questIsActive>>
+    [[DJ.ForgotAboutPlayer]]
+<<elseif $quest2IsActive>>
+    [[DJ.RetrySecretWord]]
 <<else>>
-    [[DJ.Forgot]]
+    [[DJ.Idle]]
 <<endif>>
 ===
 
@@ -23,23 +29,89 @@ I'm looking for someone here...
 <<if $name eq "Jordan">>
     <<completequest Managers QuestAAB>>
     Great! I was looking for you!
+    [[DJ.ExplainSecretWord]]
 <<else>>
     Oh, too bad, 
     you're not who I'm looking for.
 <<endif>>
 ===
 
-title: DJ.Forgot
+title: DJ.ForgotAboutPlayer
 tags:
 ---
 Oh? Have we met already?
 [[DJ.Introduction]]
 ===
 
+title: DJ.ExplainSecretWord
+tags:
+---
+Oh, sorry... 
+I need to check if it's really you.
+[[DJ.SecretWord]]
+===
+
+title: DJ.RetrySecretWord
+tags:
+---
+Sorry, I really need to make sure,
+that you are Jordan...
+[[DJ.SecretWord]]
+===
+
+title: DJ.SecretWord
+tags:
+---
+<<showicantsay Managers>>
+<<displaypromptmenu Managers AllAAA>>
+<<setquest Managers QuestAAC>>
+What is the secret word we made out?
+<<set $cantsay to icantsay("DJ", "ForgotWord")>>
+<<set $secretWord to react("value", "", "DJ")>>
+<<if $secretWord eq "Pineapple Bun">>
+    [[DJ.TheDeal]]
+<<else>>
+    Nah. Sorry, that's wrong.
+    [[DJ.ForgotWord]]
+<<endif>>
+===
+
+title: DJ.Idle
+tags:
+---
+I'm so glad Parker found a home.
+===
+
 title: DJ.Nevermind
 tags:
 ---
 Okay nevermind, then...
+===
+
+title: DJ.ForgotWord
+tags:
+---
+Did you forget the secret word?
+Just check your emails, again then.
+And come back when you found it.
+===
+
+
+title: DJ.TheDeal
+tags:
+---
+<<completequest Managers QuestAAC>>
+Great. Sorry, I'm just careful.
+<<showcharactername Managers Action>>
+<i><color=grey>The DJ hands you a small glass bowl.</i>
+<i><color=grey>Inside is a goldfish, swimming around.</i>
+<<showcharactername Managers DJ>>
+His name is Parker. 
+Try to get him a bigger Aquarium, 
+as soon as you can.
+I already got your payment, so...
+<<setquest Managers QuestAAD>>
+It was nice doing buisness with you. 
 ===
 
 title: DJ.ICantSay

@@ -15,8 +15,26 @@ Matheo? Who's that?
 Oh, a small kid? Yeah...
 He was here... 
 Wanted to do my job for me.
-Told him to check out the presents.
+So I distracted him by telling him
+to check out the presents.
 [[DJ.Continue]]
+===
+
+title: DJ.Buffet
+tags:
+---
+The food at the buffet looks so good.
+If I wouldn't be working here, 
+I'd be over there... Trying everything.
+Especially the sweet stuff...
+They even have my favorite dish. 
+[[DJ.Continue]]
+===
+
+title: DJ.Food
+tags:
+---
+[[DJ.Buffet]]
 ===
 
 title: DJ.Catchall
