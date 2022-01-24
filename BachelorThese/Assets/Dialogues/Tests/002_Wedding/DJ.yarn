@@ -4,7 +4,6 @@ tags:
 <<showcharactername Managers DJ>>
 <<set $questIsActive to isquestactive("QuestAAB")>>
 <<set $quest2IsActive to isquestactive("QuestAAC")>>
-Pineapple Bun
 <<if not isvisited("DJ","Start")>>
     [[DJ.FirstIntroduction]]
 <<elseif $questIsActive>>

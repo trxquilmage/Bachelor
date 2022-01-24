@@ -166,10 +166,9 @@ public static class WordUtilities
     /// <summary>
     /// checks the given text for promt inputs in the type of "|Tag|"
     /// </summary>
-    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent)
+    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent, string subtags)
     {
         text.ForceMeshUpdate();
-        // Variables
         TMP_CharacterInfo[] charInfo = textInfo.characterInfo;
         //If the word starts with "|" -> give out the word
         TMP_WordInfo wordInfo;
@@ -181,7 +180,7 @@ public static class WordUtilities
             {
                 if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"|"[0])
                 {
-                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent);
+                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, subtags);
                 }
             }
         }
@@ -191,14 +190,14 @@ public static class WordUtilities
     /// </summary>
     /// <param name="text"></param>
     /// <param name="wordInfo"></param>
-    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent)
+    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, string subtags)
     {
         Vector3[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
         promptBubble.transform.SetParent(bubbleParent, false);
 
         PromptBubble pB = promptBubble.GetComponent<PromptBubble>();
-        pB.Initialize(wordInfo.GetWord(), wordParameters);
+        pB.Initialize(wordInfo.GetWord(), subtags, wordParameters);
     }
     /// <summary>
     /// Parents the child to the prompt the mouse is currently hovering over

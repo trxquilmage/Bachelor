@@ -230,7 +230,8 @@ public class PlayerInputManager : MonoBehaviour
             Debug.Log("The prompt {0} does not exist in the lookup table" + promptID);
 
         //show required text prompts OVER the text at |Tag|
-        WordUtilities.CheckForPromptInputs(promptAnswer, promptAnswer.textInfo, bubbleParent); // textinfo somehow gets deleted or something after that
+        string subtags = (wlReader.questionTag[promptID].Length > 1) ? wlReader.questionTag[promptID][1] : "";
+        WordUtilities.CheckForPromptInputs(promptAnswer, promptAnswer.textInfo, bubbleParent, subtags); // textinfo somehow gets deleted or something after that
 
         //make interactable
         StartCoroutine(diManager.CloseAWindow(promptMenu));// tell the diManager what window to close when done

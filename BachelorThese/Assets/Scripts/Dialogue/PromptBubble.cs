@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,21 +30,21 @@ public class PromptBubble : MonoBehaviour
     public struct PromptBubbleData
     {
         public WordInfo.WordTag tag;
-        public string subtag;
+        public string[] subtags;
         public Color imageColor;
     }
     private void Awake()
     {
         refM = ReferenceManager.instance;
     }
-    public void Initialize(string tag, Vector3[] wordParameters)
+    public void Initialize(string tag, string givenSubtags, Vector3[] wordParameters)
     {
         InitializeValues();
         ScaleObjectOnSpawn(wordParameters);
 
-        string[] tagAndSubtag = SplitTagIntoTagAndSubtag(tag);
-        SaveTagAndSubtag(tagAndSubtag[0], tagAndSubtag[1]);
-
+        string[] subtags = SplitSubtagsIntoArray(givenSubtags);
+        SaveTagAndSubtag(tag, subtags);
+        Debug.Log(data.subtags.Length);
         ColorPromptBubbleToTagColor();
 
         PlayerInputManager.instance.SavePrompt(this);
@@ -58,35 +56,18 @@ public class PromptBubble : MonoBehaviour
         data = new PromptBubbleData();
         rT = GetComponent<RectTransform>();
     }
-    void SaveTagAndSubtag(string tag, string subtag)
+    void SaveTagAndSubtag(string tag, string[] subtags)
     {
-        data.tag = GetTagFromAbbreviation(tag);
-        data.subtag = subtag;
+        data.tag = WordUtilities.GetTag(tag);
+        data.subtags = subtags;
     }
-    string[] SplitTagIntoTagAndSubtag(string tagAndSubtag)
+    string[] SplitSubtagsIntoArray(string subtags)
     {
-        return tagAndSubtag.Trim().Split("-"[0]);
-    }
-    WordInfo.WordTag GetTagFromAbbreviation(string abbreviation)
-    {
-        switch (abbreviation)
-        {
-            case "All":
-                return WordUtilities.GetTag("AllWords");
-            case "Adj":
-                return WordUtilities.GetTag("Adjective");
-            case "Item":
-                return WordUtilities.GetTag("Item");
-            case "Name":
-                return WordUtilities.GetTag("Name");
-            case "Loc":
-                return WordUtilities.GetTag("Location");
-            case "Oth":
-                return WordUtilities.GetTag("Other");
-            default:
-                Debug.Log("Tag abbreviation " + abbreviation + " unknown!");
-                return new WordInfo.WordTag();
-        }
+        if (subtags.Contains("-"))
+            return subtags.Trim().Split("-"[0]);
+        else if (subtags != "")
+            return new string[1] { subtags };
+        return new string[0];
     }
     void ColorPromptBubbleToTagColor()
     {
@@ -98,6 +79,13 @@ public class PromptBubble : MonoBehaviour
         rT.localScale = new Vector3(1, 1, 1);
         defaultSizeDelta = new Vector2[2] { rT.localPosition, rT.sizeDelta };
     }
+    bool DoesPromptTagMatchASubtag(string compareToTag)
+    {
+        foreach (string subtag in data.subtags)
+            if (subtag == compareToTag)
+                return true;
+        return false;
+    }
     /// <summary>
     /// Called, when the mouse is over the bubble. colors it darker for words of the correct tah
     /// </summary>
@@ -105,42 +93,53 @@ public class PromptBubble : MonoBehaviour
     public void OnBubbleHover(bool isOnHover)
     {
         bool hasCurrentWord = WordClickManager.instance.currentWord != null;
+        bool noSubtags = data.subtags.Length == 0;
+        bool promptSubtagMatchesAWordSubtag = false;
+        bool promptSubtagMatchesAWordTag = false;
+
         BubbleData currentBubbleData = null;
         string allTagName = refM.wordTags[refM.allTagIndex].name;
         if (hasCurrentWord)
+        {
             currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
+            promptSubtagMatchesAWordSubtag = DoesPromptTagMatchASubtag(currentBubbleData.subtag);
+            promptSubtagMatchesAWordTag = DoesPromptTagMatchASubtag(currentBubbleData.tag);
+        }
 
         if (isOnHover && !isHover && hasCurrentWord) //mouse starts hover
         {
+            Debug.Log(!promptSubtagMatchesAWordSubtag);
             //correct input to bubble
             if (
                 //prompt bubble: all:all
-                data.tag.name == allTagName && data.subtag == "All" ||
+                data.tag.name == allTagName && noSubtags ||
 
                 //prompt bubble: all:"TagName" is excluding said tagname
-                data.tag.name == allTagName && currentBubbleData.tag != data.subtag ||
+                data.tag.name == allTagName && !noSubtags && 
+                !promptSubtagMatchesAWordTag && !promptSubtagMatchesAWordSubtag ||
 
                 //prompt bubble: "Tag":All (tag != all)
-                data.tag.name != allTagName && data.subtag == "All"
+                data.tag.name != allTagName && noSubtags
                 && currentBubbleData.tag == data.tag.name ||
 
                 //prompt bubble: "Tag":"Subtag" (Neither of these is all)
-                data.tag.name != allTagName && data.subtag != "All" &&
-                data.tag.name == currentBubbleData.tag && data.subtag == currentBubbleData.subtag
+                data.tag.name != allTagName && !noSubtags &&
+                data.tag.name == currentBubbleData.tag && promptSubtagMatchesAWordSubtag
                 )
             {
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
             //wrong Input to bubble, show message
-            
+
             else if (
                 // All:"Tag"
-                data.tag.name == allTagName && currentBubbleData.tag == data.subtag ||
+                data.tag.name == allTagName && promptSubtagMatchesAWordTag ||
+                data.tag.name == allTagName && promptSubtagMatchesAWordSubtag ||
 
                 // "Tag":"Subtag"
-                data.tag.name != allTagName && data.subtag != "All" &&
-                data.tag.name == currentBubbleData.tag && data.subtag != currentBubbleData.subtag
+                data.tag.name != allTagName && noSubtags &&
+                data.tag.name == currentBubbleData.tag && !promptSubtagMatchesAWordSubtag
                 )
             {
                 acceptsCurrentWord = false;
@@ -197,7 +196,7 @@ public class PromptBubble : MonoBehaviour
         rT.localEulerAngles = Vector3.zero;
 
         rT.sizeDelta += additionalSizeDelta;
-        rT.localPosition -= (Vector3)(additionalSizeDelta / 2) + Vector3.down*2;
+        rT.localPosition -= (Vector3)(additionalSizeDelta / 2) + Vector3.down * 2;
     }
     /// <summary>
     /// Scale the bubble so it fits the child

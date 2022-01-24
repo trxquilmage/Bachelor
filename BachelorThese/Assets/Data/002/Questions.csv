@@ -1,15 +1,16 @@
-AdjAAA;<alpha=#00>|Adj-All|
-AdjAAB;I think it's <br><alpha=#00>|Adj-Rating|
-AllAAA;<alpha=#00>|All-All|
-AllAAB;My name is<br><alpha=#00>|All-All|
-AskAAA;Can you tell me about<br><alpha=#00>|All-Other|
-GenAAA;<alpha=#00>|Oth-Boolean|
-ItemAAA;<br><alpha=#00>|Item-All|
-LocAAA;I'm from<br><alpha=#00>|Loc-City|
-LocAAB;He's at the<br><alpha=#00>|Loc-Local|
-NameAAA;<alpha=#00>|Name-NameA|
-SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adj-Rating|<alpha=#FF>  party.
-SpeechAAB;For Renna's and <br><alpha=#00>|Name-NameA|<alpha=#FF>'s wedding.
-SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item-All|<alpha=#FF>!
-SpeechAAD;This is gonna be a <br><alpha=#00>|Adj-Rating|<alpha=#FF> night!
-AdjAAC;I'm <br><alpha=#00>|Adj-Rating|
+AdjAAA;<alpha=#00>|Adjective|;Rating
+AdjAAB;I think it's <br><alpha=#00>|Adjective|;Rating
+AllAAA;<alpha=#00>|AllWords|;
+AllAAB;My name is<br><alpha=#00>|AllWords|;
+AskAAA;Can you tell me about<br><alpha=#00>|AllWords|;Other-Rating-Descriptor
+GenAAA;<alpha=#00>|Other|;Boolean
+ItemAAA;<br><alpha=#00>|Item|;Mat
+ItemAAB;<br><alpha=#00>|Item|;Imm
+LocAAA;I'm from<br><alpha=#00>|Location|;City
+LocAAB;He's at the<br><alpha=#00>|Location|;Local
+NameAAA;<alpha=#00>|Name|;NameA
+SpeechAAA;Thanks for coming to this <br><alpha=#00>|Adjective|<alpha=#FF>  party.;Rating
+SpeechAAB;For Renna's and <br><alpha=#00>|Name|<alpha=#FF>'s wedding.;NameA
+SpeechAAC;I hope y'all brought your <br><alpha=#00>|Item|<alpha=#FF>!;
+SpeechAAD;This is gonna be a <br><alpha=#00>|Adjective|<alpha=#FF> night!;Rating
+AdjAAC;I'm <br><alpha=#00>|Adjective|;Rating

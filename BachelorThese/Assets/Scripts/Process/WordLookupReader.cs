@@ -53,8 +53,8 @@ public class WordLookupReader : MonoBehaviour
             if (s != "")
             {
                 string[] lineData = s.Trim().Split(";"[0]);
-                string[] textPrompts = new string[1]{
-                    lineData[1]
+                string[] textPrompts = new string[2]{
+                    lineData[1], lineData[2]
                 };
                 questionTag.Add(lineData[0], textPrompts);
             }

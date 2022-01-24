@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Yarn.Unity;
+using UnityEditor;
 
 public class ReferenceManager : MonoBehaviour
 {
@@ -150,11 +151,13 @@ public class ReferenceManager : MonoBehaviour
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;
     public int otherTagIndex = 1;
+
     void Awake()
     {
         instance = this;
         ReadColors();
     }
+
     /// <summary>
     /// Read out the color schemes from the current scriptable objects
     /// </summary>
@@ -166,7 +169,7 @@ public class ReferenceManager : MonoBehaviour
         interactedColor = colors.interactedColor;
         inListColor = colors.inListColor;
         // tag Colors
-        for(int i = 0; i < wordTags.Length; i++)
+        for (int i = 0; i < wordTags.Length; i++)
         {
             wordTags[i].tagColor = colors.generalTagColors[i];
         }
@@ -183,4 +186,5 @@ public class ReferenceManager : MonoBehaviour
         trashColor = colors.trashColor;
         highlightColor = colors.highlightColor;
     }
+
 }
