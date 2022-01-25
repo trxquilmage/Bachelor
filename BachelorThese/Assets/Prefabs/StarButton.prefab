@@ -37,8 +37,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26.1, y: -9.5}
-  m_SizeDelta: {x: 25, y: 25}
+  m_AnchoredPosition: {x: 26.099976, y: -9.5}
+  m_SizeDelta: {x: 22, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2397348166806830930
 CanvasRenderer:
@@ -148,6 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalColor: {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 1}
   clickedColor: {r: 1, g: 0.703192, b: 0, a: 1}
+  offsetToText: 16
 --- !u!114 &4699027549839568965
 MonoBehaviour:
   m_ObjectHideFlags: 0

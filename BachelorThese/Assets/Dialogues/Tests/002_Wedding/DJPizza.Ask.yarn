@@ -1,14 +1,14 @@
-﻿title: DJ.Ask
+﻿title: DJPizza.Ask
 tags:
 ---
-<<if not isvisited("DJ", "Ask")>>
+<<if not isvisited("DJPizza", "Ask")>>
     Do you have a question?
 <<else>>
     Oh, do you have another question?
 <<endif>>
 ===
 
-title: DJ.Matheo
+title: DJPizza.Matheo
 tags:
 ---
 Matheo? Who's that?
@@ -17,10 +17,10 @@ He was here...
 Wanted to do my job for me.
 So I distracted him by telling him
 to check out the presents.
-[[DJ.Continue]]
+[[DJPizza.Continue]]
 ===
 
-title: DJ.Buffet
+title: DJPizza.Buffet
 tags:
 ---
 The food at the buffet looks so good.
@@ -28,23 +28,49 @@ If I wouldn't working right now,
 I'd be over there... Trying everything.
 Especially the sweet dishes...
 They have my favorite dish of all time. 
-[[DJ.Continue]]
+[[DJPizza.Continue]]
 ===
 
-title: DJ.Food
+title: DJPizza.Food
 tags:
 ---
-[[DJ.Buffet]]
+[[DJPizza.Buffet]]
 ===
 
-title: DJ.Catchall
+title: DJPizza.Pizza
+tags:
+---
+Don't try to get me any pizza to eat.
+I know you think it's funny.
+I <i>know</i> that you wanted to ask me that.
+People hire me for pizza parties all the time.
+I don't even like pizza that much.
+It's just memorable and sells well. 
+[[DJPizza.Continue]]
+===
+
+title: DJPizza.DJPizza
+tags:
+---
+Like I said. I'm DJ Pizza.
+The DJ for the evening.
+[[DJPizza.Pizza]]
+===
+
+title: DJPizza.DJ
+tags:
+---
+[[DJPizza.DJPizza]]
+===
+
+title: DJPizza.Catchall
 tags:
 ---
 Sorry, I don't think I understand.
-[[DJ.Continue]]
+[[DJPizza.Continue]]
 ===
 
-title: DJ.ICantSay
+title: DJPizza.ICantSay
 tags:
 ---
 Oh, okay.
@@ -52,7 +78,7 @@ Oh, okay.
 This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
 ===
 
-title: DJ.Continue
+title: DJPizza.Continue
 tags:
 ---
 But we were talking about...

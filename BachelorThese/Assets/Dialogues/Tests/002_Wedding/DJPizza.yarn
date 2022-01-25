@@ -1,100 +1,108 @@
-﻿title: DJ.Start
+﻿title: DJPizza.Start
 tags:
 ---
-<<showcharactername Managers DJ>>
+<<showcharactername Managers DJ Pizza>>
 <<set $questIsActive to isquestactive("QuestAAB")>>
 <<set $quest2IsActive to isquestactive("QuestAAC")>>
-<<if not isvisited("DJ","Start")>>
-    [[DJ.FirstIntroduction]]
+<<if not isvisited("DJPizza","Start")>>
+    [[DJPizza.FirstIntroduction]]
 <<elseif $questIsActive>>
-    [[DJ.ForgotAboutPlayer]]
+    [[DJPizza.ForgotAboutPlayer]]
 <<elseif $quest2IsActive>>
-    [[DJ.RetrySecretWord]]
+    [[DJPizza.RetrySecretWord]]
 <<else>>
-    [[DJ.Idle]]
+    [[DJPizza.Idle]]
 <<endif>>
 ===
 
-title: DJ.FirstIntroduction
+title: DJPizza.FirstIntroduction
 tags:
 ---
 I'm the DJ for the evening.
+DJ Pizza, known for weddings, funerals and
+children's parties.
+So, if you're throwing one of those, 
+be sure to call me! Yay... 
 Say... what is your name?
 <<setquest Managers QuestAAB>>
-[[DJ.Introduction]]
+[[DJPizza.Introduction]]
 ===
 
-title: DJ.Introduction
+title: DJPizza.Introduction
 tags:
 ---
 <<showicantsay Managers>>
 <<displaypromptmenu Managers NameAAB>>
 I'm looking for someone here...
-<<set $cantsay to icantsay("DJ", "Nevermind")>>
-<<set $name to react("name", "", "DJ")>>
+<<set $cantsay to icantsay("DJPizza", "Nevermind")>>
+<<set $name to react("name", "", "DJPizza")>>
 <<if $name eq "Jordan">>
     Great! I was looking for you!
     <<completequest Managers QuestAAB>>
     <<setquest Managers QuestAAC>>
-    [[DJ.ExplainSecretWord]]
+    [[DJPizza.ExplainSecretWord]]
 <<else>>
     Oh, too bad, 
     you're not who I'm looking for.
 <<endif>>
 ===
 
-title: DJ.ForgotAboutPlayer
+title: DJPizza.ForgotAboutPlayer
 tags:
 ---
 Oh? Have we met already?
-[[DJ.Introduction]]
+[[DJPizza.Introduction]]
 ===
 
-title: DJ.ExplainSecretWord
+title: DJPizza.ExplainSecretWord
 tags:
 ---
 Oh, sorry... 
 I need to check if it's really you.
-[[DJ.SecretWord]]
+[[DJPizza.SecretWord]]
 ===
 
-title: DJ.RetrySecretWord
+title: DJPizza.RetrySecretWord
 tags:
 ---
 Sorry, I really need to make sure,
 that you are Jordan...
-[[DJ.SecretWord]]
+[[DJPizza.SecretWord]]
 ===
 
-title: DJ.SecretWord
+title: DJPizza.SecretWord
 tags:
 ---
 <<showicantsay Managers>>
 <<displaypromptmenu Managers AllAAA>>
 What is the secret word we made out?
-<<set $cantsay to icantsay("DJ", "ForgotWord")>>
-<<set $secretWord to react("name", "", "DJ")>>
+<<set $cantsay to icantsay("DJPizza", "ForgotWord")>>
+<<set $secretWord to react("name", "", "DJPizza")>>
 <<if $secretWord eq "Pineapple Bun">>
-    [[DJ.TheDeal]]
+    [[DJPizza.TheDeal]]
+<<elseif $secretWord eq "Pizza">>
+    You think that's funny, huh? 
+    The joke isn't even good. 
+    My passion for pizza died about 13 years ago.
 <<else>>
     Nah. Sorry, that's wrong.
-    [[DJ.ForgotWord]]
+    [[DJPizza.ForgotWord]]
 <<endif>>
 ===
 
-title: DJ.Idle
+title: DJPizza.Idle
 tags:
 ---
 I'm so glad Parker found a home.
 ===
 
-title: DJ.Nevermind
+title: DJPizza.Nevermind
 tags:
 ---
 Okay nevermind, then...
 ===
 
-title: DJ.ForgotWord
+title: DJPizza.ForgotWord
 tags:
 ---
 Did you forget the secret word?
@@ -103,15 +111,15 @@ And come back when you found it.
 ===
 
 
-title: DJ.TheDeal
+title: DJPizza.TheDeal
 tags:
 ---
 <<completequest Managers QuestAAC>>
 Great. Sorry, I'm just careful.
 <<showcharactername Managers Action>>
-<i><color=grey>The DJ hands you a small glass bowl.</i>
+<i><color=grey>DJ Pizza hands you a small glass bowl.</i>
 <i><color=grey>Inside is a goldfish, swimming around.</i>
-<<showcharactername Managers DJ>>
+<<showcharactername Managers DJPizza>>
 His name is Parker. 
 Try to get him a bigger Aquarium, 
 as soon as you can.
@@ -120,7 +128,7 @@ I already got your payment, so...
 It was nice doing buisness with you. 
 ===
 
-title: DJ.ICantSay
+title: DJPizza.ICantSay
 tags:
 ---
 Hm.

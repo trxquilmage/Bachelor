@@ -44,7 +44,6 @@ public class PromptBubble : MonoBehaviour
 
         string[] subtags = SplitSubtagsIntoArray(givenSubtags);
         SaveTagAndSubtag(tag, subtags);
-        Debug.Log(data.subtags.Length);
         ColorPromptBubbleToTagColor();
 
         PlayerInputManager.instance.SavePrompt(this);
@@ -108,7 +107,6 @@ public class PromptBubble : MonoBehaviour
 
         if (isOnHover && !isHover && hasCurrentWord) //mouse starts hover
         {
-            Debug.Log(!promptSubtagMatchesAWordSubtag);
             //correct input to bubble
             if (
                 //prompt bubble: all:all

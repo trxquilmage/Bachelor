@@ -36,7 +36,7 @@ Beautiful;Adjective;Rating;positive
 Great;Adjective;Rating;positive
 Cool;Adjective;Rating;positive
 Bad;Adjective;Rating;negative
-Ugly;Adjective;Rating;negative
+Ugly;Adjective;Descriptor;negative
 Boring;Adjective;Rating;negative
 Okay;Adjective;Rating;neutral
 Fine;Adjective;Rating;neutral
@@ -46,7 +46,6 @@ Wonderful;Adjective;Rating;positive
 Otherworldly;Adjective;Rating;positive
 Vegan;Adjective;Trait;neutral
 Food;Item;Item;cheap
-DJ;Name;NameA;
 Present;Item;Item;undefined
 Benches;Location;Local;Ashley River
 Embarrassing;Adjective;Rating;negative
@@ -78,3 +77,4 @@ Home;Location;Null;
 Inside;Location;Null;
 Opinion;Item;Imm;
 Akward;Adjective;Decriptor;
+DJ;Name;NameA;

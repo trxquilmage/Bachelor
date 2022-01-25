@@ -20,7 +20,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
     }
     public void Initialize(int index, WordInfo.WordTag tag)
     {
-        SetAllClassVariablesVariables(index, tag);
+        SetAllClassVariables(index, tag);
         ColorButtonToTagColor();
         ReplaceWordsForBrevity();
         ScaleButtonToAlignWithTextLength();
@@ -28,7 +28,7 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
         SetInactive();
         StartWithProminentAllButton();
     }
-    protected void SetAllClassVariablesVariables(int i, WordInfo.WordTag tag)
+    protected void SetAllClassVariables(int i, WordInfo.WordTag tag)
     {
         refM = ReferenceManager.instance;
         tagIndex = i;
@@ -43,18 +43,25 @@ public class TagButtonInfo : MonoBehaviour, IPointerClickHandler
     }
     protected void ScaleButtonToAlignWithTextLength()
     {
-        Vector3[] parameters = WordUtilities.GetWordParameters(relatedText, relatedText.textInfo.wordInfo[0], false);
-        relatedTransform.sizeDelta = new Vector2(parameters[1].x + 25, relatedTransform.sizeDelta.y);
+        float width = 0;
+        for (int i = 0; i < relatedText.textInfo.wordCount; i++)
+        {
+            width += WordUtilities.GetWordParameters(relatedText, relatedText.textInfo.wordInfo[i], false)[1].x;
+        }
+        width += 30 * (relatedText.textInfo.wordCount-1);
+        relatedTransform.sizeDelta = new Vector2(width + 25, relatedTransform.sizeDelta.y);
     }
     protected void ReplaceWordsForBrevity()
     {
         //apply text into the buttons
         if (wordTag.name == ReferenceManager.instance.wordTags[ReferenceManager.instance.allTagIndex].name) // if is "AllWords"
             relatedText.text = "All";
-        else if (wordTag.name == "Adjective") // if is "AllWords"
+        else if (wordTag.name == "Adjective")
             relatedText.text = "Adj.";
-        else if (wordTag.name == "Location") // if is "AllWords"
+        else if (wordTag.name == "Location")
             relatedText.text = "Places";
+        else if (wordTag.name == "YesNo")
+            relatedText.text = "Yes & No";
         else
             relatedText.text = wordTag.name;
 

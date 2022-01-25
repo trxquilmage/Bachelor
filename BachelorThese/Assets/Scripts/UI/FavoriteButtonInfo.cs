@@ -26,11 +26,11 @@ public class FavoriteButtonInfo : TagButtonInfo
     }
     public override void SetInactive()
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
     }
     public override void SetActive()
     {
-        this.gameObject.SetActive(true);
+        //this.gameObject.SetActive(true);
     }
     public override void OnPointerClick(PointerEventData eventData)
     {
