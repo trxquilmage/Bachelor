@@ -126,7 +126,7 @@ public class Case : MonoBehaviour
     {
         BubbleData data = bubble.data;
         bubble.data.origin = origin;
-        if (CheckIfCanSaveBubble(data.name, out int index))
+        if (CheckIfCanSaveBubble(data.name, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull))
         {
             SaveBubbleDataInContents(index, data);
             CheckIfANewTagIsIncludedAndAddButton(data.tag);
@@ -389,37 +389,33 @@ public class Case : MonoBehaviour
     /// takes the name of a bubble and checks if it fits into the contents array
     /// </summary>
     /// <param name="name"></param>
-    /// <param name="index"></param>
+    /// <param name="saveAtIndex"></param>
     /// <returns></returns>
-    public bool CheckIfCanSaveBubble(string name, out int index, string overrideTag = null)
+    public bool CheckIfCanSaveBubble(string name, out int saveAtIndex, out bool bubbleIsAlreadyInList, out bool caseIsFull, string overrideTag = null)
     {
         WordCaseManager.instance.overrideTag = overrideTag;
         BubbleData[] currentContents = contents;
-        index = -1;
-        bool inList;
-        if (ReferenceManager.instance.duplicateWords)
-            inList = false;
-        else
-            inList = CheckIfBubbleInList(name, currentContents);
+        
+        saveAtIndex = -1;
+        bubbleIsAlreadyInList = (ReferenceManager.instance.duplicateWords) ? false : CheckIfBubbleInList(name, currentContents);
+        caseIsFull = true;
 
-        if (!inList)
+        if (!bubbleIsAlreadyInList)
         {
-            bool foundASpot = false;
             for (int i = 0; i < maxContentAmount; i++)
             {
                 if (currentContents != null) //can be null because of the wordcase?
                 {
                     if (currentContents[i].name == null)
                     {
-                        index = i;
-                        foundASpot = true;
+                        saveAtIndex = i;
+                        caseIsFull = false;
                         break;
                     }
                 }
             }
-            if (foundASpot)
+            if (!caseIsFull)
                 return true;
-            return false;
         }
         return false;
     }

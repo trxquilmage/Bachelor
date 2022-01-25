@@ -18,6 +18,7 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color interactableColor;
     [HideInInspector] public Color interactedColor;
     [HideInInspector] public Color inListColor;
+    [HideInInspector] public Color listFullColor;
     //public OtherColors otherColors;
     [HideInInspector] public Color shadowButtonColor; //Color that mixes into Button Shadows
     [HideInInspector] public Color askColor; //Color for ask & barter button (not set on start rn)
@@ -168,6 +169,7 @@ public class ReferenceManager : MonoBehaviour
         interactableColor = colors.interactableColor;
         interactedColor = colors.interactedColor;
         inListColor = colors.inListColor;
+        listFullColor = colors.listFullColor;
         // tag Colors
         for (int i = 0; i < wordTags.Length; i++)
         {

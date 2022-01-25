@@ -15,7 +15,8 @@ MonoBehaviour:
   normalColor: {r: 0.023529414, g: 0.04705883, b: 0.20000002, a: 1}
   interactableColor: {r: 0.008944447, g: 0.2333222, b: 0.6320754, a: 1}
   interactedColor: {r: 0.1545871, g: 0.0999911, b: 0.1981132, a: 1}
-  inListColor: {r: 0.6313726, g: 0.007843152, b: 0.5097652, a: 1}
+  inListColor: {r: 0.44745988, g: 0.007843152, b: 0.6313726, a: 1}
+  listFullColor: {r: 1, g: 0, b: 0.06326771, a: 1}
   generalTagColors:
   - {r: 0.9490197, g: 0.91372555, b: 0.882353, a: 1}
   - {r: 0.6392157, g: 0.85882354, b: 0.87058824, a: 1}

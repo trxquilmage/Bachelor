@@ -106,12 +106,14 @@ public static class EffectUtilities
                     TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
                     if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos, out bool isFillerWord))
                     {
-                        if (WordUtilities.CheckIfWordIsUsed(WordUtilities.WordInfoToString(wordInfos), wordInfos.Length, isFillerWord, out bool cantBeSaved))
+                        if (WordUtilities.IsWordInADataBank(WordUtilities.WordInfoToString(wordInfos), isFillerWord, out bool wordAlreadyInWordCase, out bool wordCaseIsFull))
                         {
-                            if (!cantBeSaved)
-                                ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
-                            else
+                            if (wordAlreadyInWordCase)
                                 ColorAWord(text, wordInfos, ReferenceManager.instance.inListColor);
+                            else if (wordCaseIsFull)
+                                ColorAWord(text, wordInfos, ReferenceManager.instance.listFullColor);
+                            else
+                                ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
                         }
                         else
                             ColorAWord(text, wordInfos, ReferenceManager.instance.interactableColor);

@@ -8144,7 +8144,7 @@ Transform:
   m_LocalScale: {x: 1.98327, y: 3.8472, z: 1}
   m_Children: []
   m_Father: {fileID: 2132782336}
-  m_RootOrder: 76
+  m_RootOrder: 65
   m_LocalEulerAnglesHint: {x: 90.850006, y: 0, z: 0}
 --- !u!65 &557666086
 BoxCollider:
@@ -33865,6 +33865,7 @@ MonoBehaviour:
   interactableColor: {r: 0.19215687, g: 0.54901963, b: 1, a: 1}
   interactedColor: {r: 0.8, g: 0.8156863, b: 0.99215686, a: 1}
   inListColor: {r: 0, g: 0, b: 0, a: 0}
+  listFullColor: {r: 0, g: 0, b: 0, a: 0}
   shadowButtonColor: {r: 0, g: 0.060203552, b: 1, a: 1}
   askColor: {r: 1, g: 0.95686275, b: 0.95686275, a: 1}
   greyedOutColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
@@ -34016,7 +34017,7 @@ MonoBehaviour:
   player: {fileID: 66482614}
   allInteractableObjects:
   - {fileID: 1192500447}
-  maxWordsPerTag: 6
+  maxWordsPerTag: 8
   bubbleScreenHeightMaxSize: 60
   maxLongWordLength: 8
   maxQuests: 5
@@ -34690,6 +34691,7 @@ Transform:
   - {fileID: 218932603}
   - {fileID: 1458512062}
   - {fileID: 1930612775}
+  - {fileID: 557666085}
   - {fileID: 655567893}
   - {fileID: 794091828}
   - {fileID: 975084013}
@@ -34701,7 +34703,6 @@ Transform:
   - {fileID: 1504835265}
   - {fileID: 729977722}
   - {fileID: 1653423595}
-  - {fileID: 557666085}
   - {fileID: 81080148}
   - {fileID: 1799520197}
   - {fileID: 342734949}

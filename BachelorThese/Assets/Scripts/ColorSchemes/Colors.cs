@@ -9,6 +9,7 @@ public class Colors : ScriptableObject
     public Color interactableColor;
     public Color interactedColor;
     public Color inListColor;
+    public Color listFullColor;
 
     //Tag colors
     [Header("Tag Colors")]

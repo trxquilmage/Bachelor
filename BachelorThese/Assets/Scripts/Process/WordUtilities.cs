@@ -232,62 +232,49 @@ public static class WordUtilities
         //update text colors
         EffectUtilities.ReColorAllInteractableWords();
     }
-    /// <summary>
-    /// Check if a word is currently in use, meaning, it is in the word case, is highlighted or is currently being dragged
-    /// true means its being used, out cant be saved ONLY refers to words that are actually in a word case or the questlog
-    /// </summary>
-    /// <param name="wordInfo"></param>
-    /// <param name="wordTagList"></param>
-    /// <returns></returns>
-    public static bool CheckIfWordIsUsed(string wordName, int wordLength, bool isFillerWord, out bool cantBeSaved)
+
+
+    public static bool IsWordInADataBank(string wordName, bool isFillerWord, out bool wordAlreadyInWordCase, out bool wordCaseIsFull)
     {
-        cantBeSaved = true;
+        wordAlreadyInWordCase = true;
+        wordCaseIsFull = true;
+        int numberOfWords = wordName.Trim().Split(" "[0]).Length;
         if (wordName == "")
             return false;
+
         wordName = CapitalizeAllWordsInString(wordName);
         bool isUsed = false;
 
-        //Get the list we should check for words (from the wordlookupreader)
-        Dictionary<string, string[]> wordTagList;
-        if (isFillerWord)
-        {
-            wordTagList = WordLookupReader.instance.fillerTag;
-        }
-        else if (wordLength == 1)
-            wordTagList = WordLookupReader.instance.wordTag;
-        else
-            wordTagList = WordLookupReader.instance.longWordTag;
+        WordLookupReader wlReader = WordLookupReader.instance;
+        ReferenceManager refM = ReferenceManager.instance;
+        Dictionary<string, string[]> wordTagList = (isFillerWord) ? wlReader.fillerTag : 
+            (numberOfWords == 1) ? wlReader.wordTag : wlReader.longWordTag;
 
-        // Get the tag
-        string tagName;
-        if (wordTagList.ContainsKey(wordName))
-            tagName = wordTagList[wordName][0];
-        //if its a non existent filler word, tag it as "Other"
-        else
-            tagName = ReferenceManager.instance.wordTags[ReferenceManager.instance.otherTagIndex].name;
+        string tagName = wordTagList.ContainsKey(wordName) ? wordTagList[wordName][0] : refM.wordTags[refM.otherTagIndex].name;
 
-        if (!ReferenceManager.instance.noGreyOut) //greys out everything used
+        if (!refM.noGreyOut)
         {
-            //if it's in the word case or the word case is full
-            if (!WordCaseManager.instance.CheckIfCanSaveBubble(wordName, out int index, tagName))
+            if (!WordCaseManager.instance.CheckIfCanSaveBubble(wordName, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull, tagName))
             {
+                wordAlreadyInWordCase = bubbleIsAlreadyInList;
+                wordCaseIsFull = caseIsFull;
                 isUsed = true;
-                cantBeSaved = true;
             }
 
-            // if it is the currently highlighted word OR is the current word 
             if (WordClickManager.instance.currentWord != null &&
                 wordName == WordClickManager.instance.currentWord.GetComponent<Bubble>().data.name)
             {
-                cantBeSaved = false;
+                wordCaseIsFull = false;
+                wordAlreadyInWordCase = false;
                 isUsed = true;
             }
         }
-        //otherwise only grey out the word that is being highlighted night now
+
         if (WordClickManager.instance.wordLastHighlighted != null &&
             wordName == WordClickManager.instance.wordLastHighlighted.GetComponent<Bubble>().data.name)
         {
-            cantBeSaved = false;
+            wordCaseIsFull = false;
+            wordAlreadyInWordCase = false;
             isUsed = true;
         }
 

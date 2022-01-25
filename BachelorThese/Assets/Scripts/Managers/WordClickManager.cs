@@ -330,10 +330,11 @@ public class WordClickManager : MonoBehaviour
             TMP_CharacterInfo charInfo = text.textInfo.characterInfo[wordInfo.firstCharacterIndex];
 
             //Get Color of the first character of the word
-            //if its interactable OR inList, you can instantiate a word from it (not from interactedColor though)
+            //if its not interactedColor, you can instantiate a word from it
             Color32[] currentCharacterColor = text.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
             if (EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.interactableColor) ||
-                EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.inListColor))
+                EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.inListColor) ||
+                EffectUtilities.CompareColor32(currentCharacterColor[charInfo.vertexIndex], (Color32)ReferenceManager.instance.listFullColor))
             {
                 TMP_WordInfo[] wordInfos = FindAllWordsToBubble(text, wordIndex);
                 WordUtilities.CreateABubble(text, wordInfos); //Word info of the START word, not the hovered word

@@ -591,7 +591,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //check, if the word fits in the case right now
         if (this is Word)
         {
-            if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index))
+            if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull))
                 fits = true;
         }
         //if yes slowly animate this to the correct case & save it in there
