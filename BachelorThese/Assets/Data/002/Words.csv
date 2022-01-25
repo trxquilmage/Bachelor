@@ -1,5 +1,9 @@
-Yes;Other;Boolean;true
-No;Other;Boolean;false
+Yes;YesNo;Boolean;true
+No;YesNo;Boolean;false
+Yeah;YesNo;Boolean;true
+Nope;YesNo;Boolean;false
+Definetly;YesNo;Boolean;true
+Nah;YesNo;Boolean;false
 Renna;Name;NameA;
 James;Name;NameA;
 Minnie;Name;NameA;
@@ -72,6 +76,5 @@ Drunk;Adjective;Descriptor;neutral
 Here;Location;Null;
 Home;Location;Null;
 Inside;Location;Null;
-Woods;Location;Null;
 Opinion;Item;Imm;
 Akward;Adjective;Decriptor;

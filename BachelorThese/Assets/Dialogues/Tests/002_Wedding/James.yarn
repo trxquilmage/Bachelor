@@ -29,8 +29,7 @@ Hey! I'm so glad you could make it!
         Ah, okay then. I hope it gets better.
     <<elseif $dateIsGoing eq "negative">>
         Oh, that doesn't sound good. 
-        If you want to get rid of your date,
-        I bet Jordan could distract them.
+        Told you he looked boring.
     <<endif>>
 <<else>>
     I hope the venue wasn't too hard to find.

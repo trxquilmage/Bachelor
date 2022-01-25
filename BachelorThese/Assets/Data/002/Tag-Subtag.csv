@@ -1,7 +1,7 @@
 Location;name;subtag;location
 Item;name;subtag;value
-Other;name;subtag;value
+Other;name;subtag;
 Name;name;subtag;
 Adjective;name;subtag;value
 Quest;name;subtag;
-Action;name;subtag;
+YesNo;name;subtag;value

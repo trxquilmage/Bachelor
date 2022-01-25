@@ -133,14 +133,14 @@ MonoBehaviour:
     m_Value: 126.02
   meanFreePath:
     m_OverrideState: 1
-    m_Value: 26.1
+    m_Value: 27.68
     min: 1
   enableVolumetricFog:
     m_OverrideState: 1
     m_Value: 1
   albedo:
     m_OverrideState: 1
-    m_Value: {r: 0.30980393, g: 0.05098038, b: 0.18603206, a: 1}
+    m_Value: {r: 0.7264151, g: 0.2706924, b: 0.5048834, a: 1}
     hdr: 0
     showAlpha: 1
     showEyeDropper: 1
@@ -151,7 +151,7 @@ MonoBehaviour:
     max: 1
   depthExtent:
     m_OverrideState: 1
-    m_Value: 22.8
+    m_Value: 13.9
     min: 0.1
   denoisingMode:
     m_OverrideState: 0
@@ -211,13 +211,13 @@ MonoBehaviour:
   m_AdvancedMode: 0
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 0.99, y: 1, z: 0.9981667, w: 0.15552099}
+    m_Value: {x: 1, y: 0.92105436, z: 0.92768776, w: 0.13492368}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.23328139}
+    m_Value: {x: 1, y: 1, z: 1, w: -0.0479055}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.15552102}
+    m_Value: {x: 0.9734631, y: 0.9999996, z: 1, w: -0.4232863}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
