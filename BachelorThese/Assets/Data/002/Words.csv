@@ -22,10 +22,10 @@ Nocturne;Location;Country;XXX
 Buffet;Location;Local;Ashley River
 Presents;Location;Local;Ashley River
 Tables;Location;Local;Ashley River
-House;Item;Item;expensive
-Car;Item;Item;expensive
-Yacht;Item;Item;expensive
-Wine;Item;Item;moderate
+House;Item;Mat;expensive
+Car;Item;Mat;expensive
+Yacht;Item;Mat;expensive
+Wine;Item;Mat;moderate
 Good;Adjective;Rating;positive
 Nice;Adjective;Rating;positive
 Beautiful;Adjective;Rating;positive
@@ -59,13 +59,11 @@ Job;Item;Imm;
 Dish;Item;Mat;cheap
 Careful;Adjective;Descriptor;neutral
 Small;Adjective;Descriptor;neutral
-Sweet;Adjective;Descriptor;neutral
 Favorite;Adjective;Descriptor;neutral
 Email;Item;Imm;
 Wedding;Item;Imm;
 Sushi;Item;Mat;cheap
 Dough;Item;Mat;cheap
-Meaty;Adjective;Descriptor;neutral
 Girl;Name;Title;
 Relationship;Item;Imm;
 Unusual;Adjective;Descriptor;neutral
@@ -75,3 +73,5 @@ Here;Location;Null;
 Home;Location;Null;
 Inside;Location;Null;
 Woods;Location;Null;
+Opinion;Item;Imm;
+Akward;Adjective;Decriptor;

@@ -165,13 +165,13 @@ For my evaluation:
 <<else>>
     The intro was really good.
 <<endif>>
-<<if not $secondSpeechDone eq "James">>
+<<if $secondSpeechDone eq "James">>
+    After that you had a strong middle.
+<<else>>
     Why'd you say I'm marrying {$secondSpeechDone}?
     That was really weird.
-<<else>>
-    After that you had a strong middle.
-    I liked the {$thirdSpeechDone} - part a lot.
 <<endif>>
+    The "{$thirdSpeechDone}" thing sure was... unique.
 <<if $firstSpeechDone eq "negative">>
     And I don't really get why everyone
     should have a bad night?

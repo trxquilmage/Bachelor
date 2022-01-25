@@ -3442,7 +3442,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 25.300003, y: 40.4}
-  m_SizeDelta: {x: 237.2, y: 36.5}
+  m_SizeDelta: {x: 237.2, y: 39.24}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &296037795
 MonoBehaviour:
@@ -3503,7 +3503,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 35
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -6028,7 +6028,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 21.71997, y: 35.15289}
-  m_SizeDelta: {x: 257.2, y: 41.1}
+  m_SizeDelta: {x: 257.2, y: 39.24}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &476785697
 MonoBehaviour:
@@ -6089,7 +6089,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 35
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -34112,7 +34112,7 @@ MonoBehaviour:
   player: {fileID: 66482614}
   allInteractableObjects:
   - {fileID: 1192500447}
-  maxWordsPerTag: 10
+  maxWordsPerTag: 14
   bubbleScreenHeightMaxSize: 60
   maxLongWordLength: 8
   maxQuests: 5

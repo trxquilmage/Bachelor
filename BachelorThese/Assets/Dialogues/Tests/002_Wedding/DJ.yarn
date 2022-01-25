@@ -28,7 +28,7 @@ title: DJ.Introduction
 tags:
 ---
 <<showicantsay Managers>>
-<<displaypromptmenu Managers NameAAA>>
+<<displaypromptmenu Managers NameAAB>>
 I'm looking for someone here...
 <<set $cantsay to icantsay("DJ", "Nevermind")>>
 <<set $name to react("name", "", "DJ")>>
@@ -74,7 +74,6 @@ tags:
 What is the secret word we made out?
 <<set $cantsay to icantsay("DJ", "ForgotWord")>>
 <<set $secretWord to react("name", "", "DJ")>>
-{$secretWord}
 <<if $secretWord eq "Pineapple Bun">>
     [[DJ.TheDeal]]
 <<else>>
@@ -99,7 +98,7 @@ title: DJ.ForgotWord
 tags:
 ---
 Did you forget the secret word?
-Just check your emails, again then.
+Just check your email, again then.
 And come back when you found it.
 ===
 

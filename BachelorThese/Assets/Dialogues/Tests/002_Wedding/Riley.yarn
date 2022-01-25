@@ -22,7 +22,8 @@ tags:
 <<elseif not isvisited("Riley", "AboutYou2")>>
     [[Riley.AboutYou2]]
 <<else>>
-    Im really enjoying myself!
+    If you want to know anything about me,
+    just ask away!
 <<endif>>
 ===
 
@@ -39,7 +40,7 @@ title: Riley.AboutYou1
 tags: 
 ---
 <<showicantsay Managers>>
-<<displaypromptmenu Managers NameAAA>>
+<<displaypromptmenu Managers NameAAC>>
 So, which part of the family are we here for?
 <<set $cantsay to icantsay("Riley", "Secretive")>>
 <<set $familySide to react("name", "", "Riley")>>
