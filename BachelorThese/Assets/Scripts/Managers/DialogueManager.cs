@@ -37,7 +37,7 @@ public class DialogueManager : MonoBehaviour
      */
     public void StartConversationWithNPC(NPC npc)
     {
-        if (npc != null && (npc.transform.position - this.transform.position).magnitude <= refM.interactionRadius)
+        if (npc != null && npc.IsInRangeToPlayer())
         {
             currentTarget = npc;
             currentTarget.TurnTowardsPlayer((transform.position - npc.transform.position).normalized);

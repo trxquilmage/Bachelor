@@ -139,7 +139,6 @@ public class ReferenceManager : MonoBehaviour
     public int bubbleScreenHeightMaxSize = 60;
     public int maxLongWordLength = 3;
     public int maxQuests = 5;
-    public int interactionRadius = 5;
     public int maxStartWordTraitAmount = 5;
     public string sceneNumber = "001";
     [Header("Game Options")]
@@ -155,6 +154,7 @@ public class ReferenceManager : MonoBehaviour
 
     void Awake()
     {
+        Time.timeScale = 1;
         instance = this;
         ReadColors();
     }

@@ -144,8 +144,7 @@ public class Player : MonoBehaviour
         {
             if (!(allNPCs[i] is Companion) || !((Companion)allNPCs[i]).inParty)
             {
-                if ((allNPCs[i].transform.position - this.transform.position)// is in range?
-                        .magnitude <= ReferenceManager.instance.interactionRadius)
+                if (allNPCs[i].IsInRangeToPlayer())
                 {
                     target = allNPCs[i].gameObject;
                     return true;
@@ -159,14 +158,10 @@ public class Player : MonoBehaviour
         Companion[] allNPCs = ReferenceManager.instance.npcParent.GetComponentsInChildren<Companion>();
         for (int i = 0; i < allNPCs.Length; i++)
         {
-            if (allNPCs[i].inParty)
+            if (allNPCs[i].inParty && allNPCs[i].IsInRangeToPlayer())
             {
-                if ((allNPCs[i].transform.position - this.transform.position)// is in range?
-                        .magnitude <= ReferenceManager.instance.interactionRadius)
-                {
-                    companionTarget = allNPCs[i].gameObject;
-                    return true;
-                }
+                companionTarget = allNPCs[i].gameObject;
+                return true;
             }
         }
         return false;
@@ -176,8 +171,7 @@ public class Player : MonoBehaviour
         Transform[] allObjects = ReferenceManager.instance.allInteractableObjects;
         for (int i = 0; i < allObjects.Length; i++)
         {
-            if ((allObjects[i].transform.position - this.transform.position)// is in range?
-                    .magnitude <= ReferenceManager.instance.interactionRadius)
+            if (allObjects[i].GetComponentInChildren<InteractableObject>().IsInRangeToPlayer())
             {
                 target = allObjects[i].gameObject;
                 return true;

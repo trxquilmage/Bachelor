@@ -29,16 +29,13 @@ public class Companion : NPC
         }
     }
 
-    GameObject targetPlayer;
-    ReferenceManager refM;
     DialogueManager diaM;
     Rigidbody rigid;
     Animator animator;
-    private void Start()
+    protected override void Start()
     {
-        refM = ReferenceManager.instance;
+        base.Start();
         diaM = DialogueManager.instance;
-        targetPlayer = refM.player;
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
     }
@@ -55,6 +52,11 @@ public class Companion : NPC
         {
             TurnTowardsPlayer((targetPlayer.transform.position - npcMesh.transform.position).normalized);
         }
+    }
+    public void JoinParty()
+    {
+        inParty = true;
+        interactionRadius /= 1.8f;
     }
     void FollowPlayer()
     {

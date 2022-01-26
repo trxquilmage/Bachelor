@@ -6,17 +6,41 @@ using Yarn.Unity;
 public class NPC : MonoBehaviour
 {
     public string characterName = "";
-    public string talkToNode = "";
-    public string askNode = "";
+    [HideInInspector] public string talkToNode = "";
+    [HideInInspector] public string askNode = "";
+
+    public float interactionRadius = 3;
 
     protected Vector3 normalizedDefaultForward;
-
+    protected GameObject targetPlayer;
+    protected ReferenceManager refM;
     [SerializeField] protected GameObject npcMesh;
 
-    private void Awake()
+    protected virtual void Start()
     {
-        normalizedDefaultForward = npcMesh.transform.forward;
+        SetValues();
     }
+    protected void SetValues()
+    {
+        refM = ReferenceManager.instance;
+        normalizedDefaultForward = npcMesh.transform.forward;
+        targetPlayer = refM.player;
+        talkToNode = characterName + ".Start";
+        askNode = characterName + ".Ask";
+    }
+
+    public bool IsInRangeToPlayer()
+    {
+        return GetDistanceToPlayer() <= interactionRadius;
+    }
+    public float GetDistanceToPlayer()
+    {
+        if (targetPlayer != null)
+            return (transform.position - targetPlayer.transform.position).magnitude;
+        return interactionRadius + 1;
+    }
+
+    #region Turning
     public virtual void TurnTowardsPlayer(Vector3 directionToPlayer)
     {
         StartCoroutine(Turn(directionToPlayer));
@@ -34,5 +58,6 @@ public class NPC : MonoBehaviour
             yield return delay;
         }
     }
+    #endregion
 }
 

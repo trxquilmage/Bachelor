@@ -5,13 +5,29 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviour
 {
     public CallFunction function;
+    public float interactionRadius = 3;
+    public GameObject targetPlayer;
+    public ReferenceManager refM;
+
     public enum CallFunction
     {
         WorldMap
     }
-    /// <summary>
-    /// calls the function, that has been selected in the inspector
-    /// </summary>
+    void Start()
+    {
+        SetValues();
+    }
+
+    void SetValues()
+    {
+        refM = ReferenceManager.instance;
+        targetPlayer = refM.player;
+    }
+
+    public bool IsInRangeToPlayer()
+    {
+        return (transform.position - targetPlayer.transform.position).magnitude <= interactionRadius;
+    }
     public void Interact(bool open)
     {
         switch (function)
@@ -23,11 +39,8 @@ public class InteractableObject : MonoBehaviour
     }
     void WorldMap(bool open)
     {
-        //enable world map
         ReferenceManager.instance.worldMap.SetActive(open);
-        // Update Color all text
         EffectUtilities.ReColorAllInteractableWords();
-        // pause movement
         UIManager.instance.isInteracting = open;
     }
 }

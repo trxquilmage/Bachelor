@@ -33,12 +33,7 @@ Interesting email for sure.
 title: Matheo.SecretWord
 tags:
 ---
-Yeah, I saw that the DJ made out 
-some secret word in his email.
-Sadly he didn't mention the actual word...
-He just said that the secret word 
-is his favorite food? 
-[[Matheo.Continue]]
+[[Matheo.Email]]
 ===
 
 title: Matheo.Email

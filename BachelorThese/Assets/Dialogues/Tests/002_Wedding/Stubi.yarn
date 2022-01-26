@@ -1,0 +1,91 @@
+﻿title: Stubi.Start
+tags:
+---
+<<showcharactername Managers Stubi>>
+<<set $gotPresentName to getinfo("gotPresentName", 0)>>
+<<if not isvisited("Stubi","Start")>>
+    [[Stubi.Introduction]]
+<<elseif $gotPresentName eq "">>
+    [[Stubi.RetryPresent]]
+<<else>>
+    [[Stubi.Idle]]
+<<endif>>
+===
+
+title: Stubi.Introduction
+tags:
+---
+Hahaha the wedding is amazing.
+Hahaha....
+Jordan hasn't even shown up yet,
+and I'm already drunk... hahaha
+Such a great party, huh?
+<<displaypromptmenu Managers GenAAA>>
+I paid for all of this... Did you know?
+<<set $didKnow to react("value", "", "Stubi")>>
+<<if $didKnow>>
+    Good! Hahaha...
+<<else>>
+    You should, though... Hahaha
+<<endif>>
+But don't worry!
+Since I'm Renna's richest friend...
+...it's really not a problem.
+[[Stubi.WhatPresent]]
+===
+
+title: Stubi.WhatPresent
+tags:
+---
+Tell me...
+<<showicantsay Managers>>
+<<displaypromptmenu Managers ItemAAA>>
+What... *hic* present did *you* get them?
+<<set $cantsay to icantsay("Stubi", "WontTell")>>
+<<set $gotPresentName to react("name", "gotPresentName", "Stubi")>>
+<<set $gotPresentValue to react("value", "gotPresentValue", "Stubi")>>
+<<if $gotPresentValue eq "cheap">>
+    ... A ... {$gotPresentName}?
+    Ha hahaha... That's... cute...
+    I mean that costs almost nothing.
+    Ha hahaha...
+<<elseif $gotPresentValue eq "moderate">>
+    A {$gotPresentName}?
+    I mean that's a cool thing,
+    but really, was it *that* expensive?
+<<elseif $gotPresentValue eq "expensive">>
+    ... Wow. Okay now *that* is a cool present.
+    ...
+    ... anyways...
+<<endif>>
+===
+
+title: Stubi.RetryPresent
+tags:
+---
+You again... hahaha...
+[[Stubi.WhatPresent]]
+===
+
+title: Stubi.WontTell
+tags:
+---
+Okay then... hahaha...
+===
+
+title: Stubi.Idle
+tags:
+---
+Hahaha ha ha hahaha. 
+It's amazing....
+Jordan hasn't even shown up yet,
+and I'm already drunk... hahaha
+===
+
+title: Stubi.ICantSay
+tags:
+---
+Hm.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===

@@ -142,7 +142,10 @@ public class CommandManager : MonoBehaviour
     {
         foreach (Companion companion in refM.npcParent.GetComponentsInChildren<Companion>())
             if (companion.characterName == characterName)
-                companion.inParty = true;
+            {
+                companion.JoinParty();
+                break;
+            }
     }
     /// <summary>
     /// Open Prompt Menu and related question

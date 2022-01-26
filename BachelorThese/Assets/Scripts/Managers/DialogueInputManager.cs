@@ -95,9 +95,9 @@ public class DialogueInputManager : MonoBehaviour
         else //Shake no feedback for the text box
         {
             if (!PlayerInputManager.instance.inAsk)
-                StartCoroutine(EffectUtilities.ShakeNo(refM.npcDialogueTextBox, 0.3f));
+                StartCoroutine(EffectUtilities.ShakeNo(refM.nPCDialogueField, 0.3f));
             else
-                StartCoroutine(EffectUtilities.ShakeNo(refM.npcDialogueTextBoxAsk, 0.3f));
+                StartCoroutine(EffectUtilities.ShakeNo(refM.askNPCField, 0.3f));
         }
     }
     /// <summary>

@@ -41,7 +41,7 @@ How have you been?
     I hope it gets better for you, though.
 <<elseif $hasBeen eq "negative">>
     Oh, that doesn't sound good. 
-    Hey, made help yourself to some wine,
+    Hey, help yourself to some wine,
     and have a good night.
 <<endif>>
 [[Renna.AskForFavorIntro]]
@@ -57,10 +57,11 @@ title: Renna.AskForFavorIntro
 tags:
 ---
 But while I'm speaking to you...
-Minnie had a few too much already.
-And I need to replace her speech.
-Because I'm scared she's gonna say
-something bad or really embarrassing.
+Stubi had a few too much already.
+And I need to replace his speech.
+Because I'm scared he's gonna say
+something embarrassing. He always talks
+about treasures when he's drunk.
 [[Renna.AskForFavor]]
 ===
 

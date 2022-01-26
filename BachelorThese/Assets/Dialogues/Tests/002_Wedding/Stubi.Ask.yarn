@@ -1,0 +1,38 @@
+﻿title: Stubi.Ask
+tags:
+---
+<<if not isvisited("Stubi", "Ask")>>
+    Do you have a question?
+<<else>>
+    Oh, do you have another question?
+<<endif>>
+===
+
+title: Stubi.Matheo
+tags:
+---
+Matheo? I've seen him a while back.
+He was talking to the DJ, i think...
+[[Stubi.Continue]]
+===
+
+title: Stubi.Catchall
+tags:
+---
+Sorry, I don't think I understand.
+[[Stubi.Continue]]
+===
+
+title: Stubi.ICantSay
+tags:
+---
+Oh, okay.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
+
+title: Stubi.Continue
+tags:
+---
+But we were talking about...
+===
