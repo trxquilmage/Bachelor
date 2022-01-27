@@ -36,11 +36,7 @@ public class DialogueInputManager : MonoBehaviour
         controls.Dialogue.DoubleClick.performed += context => CheckDoubleClick();
     }
 
-    /// <summary>
-    /// disables continue for the time the ask menu is open
-    /// </summary>
-    /// <param name="open"></param>
-    public void AskMenuOpen(bool open)
+    public void DisableContinueDuringAsk(bool open)
     {
         continueEnabledAsk = !open;
     }
@@ -49,7 +45,7 @@ public class DialogueInputManager : MonoBehaviour
     /// </summary>
     public void ContinueButton()
     {
-        if (PlayerInputManager.instance.CheckForPromptsFilled() && continueEnabledAsk)
+        if (PlayerInputManager.instance.CheckIfAllPromptsAreFilled() && continueEnabledAsk)
         {
             PlayerInputManager.instance.SaveGivenAnswer();
             Continue(uiHandler);
@@ -57,7 +53,7 @@ public class DialogueInputManager : MonoBehaviour
             closeAWindow = true;
             PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
+            WordCaseManager.instance.ReloadContents();
             refM.playerInputField.SetActive(false);
             refM.iCantSayButton.SetActive(false);
         }
@@ -71,7 +67,7 @@ public class DialogueInputManager : MonoBehaviour
             closeAWindow = true;
             PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
+            WordCaseManager.instance.ReloadContents();
             refM.playerInputField.SetActive(false);
             refM.iCantSayButton.SetActive(false);
         }

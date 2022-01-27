@@ -35,6 +35,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject selectedWordParent;
     public GameObject selectedWordParentAsk;
     public GameObject listingParent;
+    public GameObject questListingParent;
     public GameObject promptBubbleParent;
     public GameObject askPromptBubbleParent;
     public GameObject tagButtonParent;
@@ -75,6 +76,7 @@ public class ReferenceManager : MonoBehaviour
     public TMP_Text wordLimit;
     public TMP_Text questText;
     public Image wordJournal;
+    public Image questJournal;
     public GameObject ask;
     public GameObject abortAsk;
     public GameObject barter;
@@ -88,6 +90,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject warningCaseFull;
     public GameObject warningWordAlreadyInList;
     public Scrollbar bubbleScrollbar;
+    public Scrollbar questScrollbar;
     public GameObject nameField;
     public GameObject npcDialogueTextBox;
     public GameObject npcDialogueTextBoxAsk;

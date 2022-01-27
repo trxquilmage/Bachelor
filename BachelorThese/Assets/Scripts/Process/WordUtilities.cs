@@ -11,12 +11,31 @@ public static class WordUtilities
     /// Match the word to a color fitting the tag
     /// </summary>
     /// <param name="word"></param>
-    public static Color MatchColorToTag(string tagName)
+    public static Color MatchColorToTag(string tagName, string subtagName)
     {
         WordInfo.WordTag tag = GetTag(tagName);
         Color color = tag.tagColor;
+        color = (subtagName != "") ? DiluteColorToSubtag(color, subtagName) : color;
         return color;
     }
+
+    public static Color DiluteColorToSubtag(Color color, string subtagName)
+    {
+        int seed = subtagName.GetHashCode();
+        System.Random randomSystem = new System.Random(seed);
+
+        for (int i = 0; i < 2; i++)
+            randomSystem.Next();
+
+        Color dilutionColor = new Color32(
+            (byte)randomSystem.Next(0, 255),
+            (byte)randomSystem.Next(0, 255),
+            (byte)randomSystem.Next(0, 255), 255);
+
+        color = Color.Lerp(color, dilutionColor, 0.15f);
+        return color;
+    }
+
     /// <summary>
     /// Creates a word-Object at the mouse's position
     /// </summary>
@@ -247,7 +266,7 @@ public static class WordUtilities
 
         WordLookupReader wlReader = WordLookupReader.instance;
         ReferenceManager refM = ReferenceManager.instance;
-        Dictionary<string, string[]> wordTagList = (isFillerWord) ? wlReader.fillerTag : 
+        Dictionary<string, string[]> wordTagList = (isFillerWord) ? wlReader.fillerTag :
             (numberOfWords == 1) ? wlReader.wordTag : wlReader.longWordTag;
 
         string tagName = wordTagList.ContainsKey(wordName) ? wordTagList[wordName][0] : refM.wordTags[refM.otherTagIndex].name;

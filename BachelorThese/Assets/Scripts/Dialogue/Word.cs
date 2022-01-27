@@ -35,7 +35,7 @@ public class Word : Bubble
         ScaleAllParentsToTheirCorrectSizes();
         MoveLinesAccordingToOffset(true);
 
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
@@ -54,7 +54,7 @@ public class Word : Bubble
         ScaleAllParentsToTheirCorrectSizes();
         MoveLinesAccordingToOffset(false);
 
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag,data.subtag);
     }
     protected override void DroppedOverWordCase()
     {

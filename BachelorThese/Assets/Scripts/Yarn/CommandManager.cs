@@ -154,7 +154,7 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenu")]
     public void DisplayPromptMenu(string promptQ)
     {
-        PlayerInputManager.instance.DisplayPrompt(promptQ, refM.promptMenu,
+        PlayerInputManager.instance.GeneratePromptBubble(promptQ, refM.promptMenu,
             refM.promptAnswer, refM.promptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptBubbles);
     }
@@ -166,7 +166,7 @@ public class CommandManager : MonoBehaviour
     public void DisplayPromptMenuAsk(string promptQ)
     {
 
-        PlayerInputManager.instance.DisplayPrompt(promptQ, refM.askField,
+        PlayerInputManager.instance.GeneratePromptBubble(promptQ, refM.askField,
             refM.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptAskBubbles);
         //activate the "continue" button above the Ask button

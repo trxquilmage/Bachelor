@@ -18,13 +18,14 @@ public class WordCaseManager : Case
             if (OpenTag == value)
             {
                 OpenTag = value;
-                ReloadContents(false);
+                ReloadContents();
             }
             else
             {
                 MakeOtherTagProminent(OpenTag, value);
                 OpenTag = value;
-                ReloadContents(true);
+                ReloadContents();
+                ResetScrollbar();
             }
         }
     }
@@ -216,10 +217,10 @@ public class WordCaseManager : Case
     /// <summary>
     /// Loads the Word Case on the given tag. removes the previous words.
     /// </summary>
-    public override void ReloadContents(bool resetScrollbar)
+    public override void ReloadContents()
     {
         ChangeCaseColor();
-        base.ReloadContents(resetScrollbar);
+        base.ReloadContents();
     }
     public override void SpawnContents()
     {
@@ -257,15 +258,14 @@ public class WordCaseManager : Case
             }
         }
     }
-    /// <summary>
-    /// Updates the wordcount text UI of the word case
-    /// </summary>
     public override void UpdateContentCount()
     {
         int wordCount = GetTagWordCount(openTag);
         if (openTag != refM.wordTags[refM.allTagIndex].name)
         {
             refM.wordLimit.text = wordCount.ToString() + "<b>/" + refM.maxWordsPerTag + "</b>";
+            if (wordCount == refM.maxWordsPerTag)
+                refM.wordLimit.text = "<b><color=red>" + refM.wordLimit.text ;
         }
         else
         {
@@ -305,7 +305,7 @@ public class WordCaseManager : Case
     public void ChangeCaseColor()
     {
         // Set Background Color to Tag Color + a bit grey
-        Color color = WordUtilities.MatchColorToTag(openTag);
+        Color color = WordUtilities.MatchColorToTag(openTag, "");
         Color highlightColor = Color.Lerp(color, ReferenceManager.instance.highlightColor, 0.35f);
         ReferenceManager.instance.wordJournal.GetComponent<Image>().color = highlightColor;
     }

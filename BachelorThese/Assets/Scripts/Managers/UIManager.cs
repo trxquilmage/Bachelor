@@ -304,7 +304,7 @@ public class UIManager : MonoBehaviour
                 wcM.DeleteOutOfCase();
                 wclM.DestroyCurrentWord();
                 wcM.UpdateContentCount();
-                StartCoroutine(wcM.RescaleScrollbar(true));
+                StartCoroutine(wcM.RescaleScrollbar());
                 wcM.ResetScrollbar();
                 wcM.DestroyReplacement();
             }

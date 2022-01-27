@@ -9,9 +9,9 @@ using System.Text.RegularExpressions;
 
 public static class EffectUtilities
 {
-    public static void ColorAllChildrenOfAnObject(GameObject parent, string tagName)
+    public static void ColorAllChildrenOfAnObject(GameObject parent, string tagName, string subtagName)
     {
-        Color tagColor = WordUtilities.MatchColorToTag(tagName);
+        Color tagColor = WordUtilities.MatchColorToTag(tagName, subtagName);
         foreach (Image image in parent.GetComponentsInChildren<Image>())
         {
             image.color = tagColor;

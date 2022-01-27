@@ -70,9 +70,10 @@ public class PromptBubble : MonoBehaviour
     }
     void ColorPromptBubbleToTagColor()
     {
-        data.imageColor = WordUtilities.MatchColorToTag(data.tag.name);
+        data.imageColor = WordUtilities.MatchColorToTag(data.tag.name, "");
         bubble.color = data.imageColor;
     }
+
     void SaveStartScaleParameters()
     {
         rT.localScale = new Vector3(1, 1, 1);
@@ -151,7 +152,7 @@ public class PromptBubble : MonoBehaviour
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
                                     new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                    new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                    new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag, currentBubbleData.subtag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
 
             }
         }
@@ -168,7 +169,7 @@ public class PromptBubble : MonoBehaviour
 
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
                     new Color[] { currentBubbleColor, new Color(), new Color(), new Color(),
-                    WordUtilities.MatchColorToTag(currentBubbleData.tag) }, 0.3f));
+                    WordUtilities.MatchColorToTag(currentBubbleData.tag, currentBubbleData.subtag) }, 0.3f));
             }
         }
         isHover = isOnHover;

@@ -83,6 +83,7 @@ public class WordClickManager : MonoBehaviour
         wlReader = WordLookupReader.instance;
         refM = ReferenceManager.instance;
         controls.Dialogue.Scroll.performed += context => WordCaseManager.instance.ChangeScrollbarValue(context.ReadValue<float>());
+        controls.Dialogue.Scroll.performed += context => QuestManager.instance.ChangeScrollbarValue(context.ReadValue<float>());
     }
     private void Update()
     {
@@ -265,18 +266,19 @@ public class WordClickManager : MonoBehaviour
         string currentlyOver = "none";
         foreach (RaycastResult uIObject in results)
         {
-            //over the trashcan
-            if (uIObject.gameObject == ReferenceManager.instance.trashCan)
+            if (uIObject.gameObject == refM.trashCan)
             {
                 lastSavedTrashCan = uIObject.gameObject;
                 currentlyOver = "trashCan";
             }
-            //over the wordcase
-            else if (uIObject.gameObject == ReferenceManager.instance.wordJournal.gameObject && currentlyOver == "none")
+            else if (uIObject.gameObject == refM.wordJournal.gameObject && currentlyOver == "none")
             {
                 currentlyOver = "wordCase";
             }
-            //over a promptbubble
+            else if (uIObject.gameObject == refM.questJournal.gameObject)
+            {
+                currentlyOver = "questLog";
+            }
             else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
             {
                 lastSavedPromptBubble = pB;

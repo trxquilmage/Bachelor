@@ -68,15 +68,14 @@ public class Case : MonoBehaviour
     public virtual void ManuallyOpenCase()
     {
         caseObject.SetActive(!caseObject.activeInHierarchy);
-        ReloadContents(true);
+        ReloadContents();
         ResetScrollbar();
     }
     /// <summary>
     /// Reloads the Case and respawns it's content
     /// </summary>
-    public virtual void ReloadContents(bool resetScrollbar)
+    public virtual void ReloadContents()
     {
-        // Delete all possibly active bubbles
         if (listingParent != null)
         {
             foreach (Bubble data in listingParent.GetComponentsInChildren<Bubble>())
@@ -88,7 +87,7 @@ public class Case : MonoBehaviour
             }
             SpawnContents();
             UpdateContentCount();
-            StartCoroutine(RescaleScrollbar(resetScrollbar));
+            StartCoroutine(RescaleScrollbar());
         }
     }
     /// <summary>
@@ -139,9 +138,8 @@ public class Case : MonoBehaviour
                 UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
             WordUtilities.ReturnWordIntoText(bubble);
         }
-        //Reload
-        ReloadContents(false);
-        StartCoroutine(RescaleScrollbar(false));
+
+        ReloadContents();
         EffectUtilities.ReColorAllInteractableWords();
     }
     /// <summary>
@@ -173,7 +171,8 @@ public class Case : MonoBehaviour
             Debug.Log("The bubble to delete couldnt be found " + currentData.name);
         contents = currentContents;
 
-        ReloadContents(true);
+        ReloadContents();
+        RescaleScrollbar();
         DestroyReplacement();
         UpdateContentCount();
     }
@@ -184,7 +183,7 @@ public class Case : MonoBehaviour
     public virtual void SpawnReplacement(Bubble bubble)
     {
         bubbleReplacement = SpawnBubbleInCase(bubble.data);
-        Color color = WordUtilities.MatchColorToTag(bubble.data.name);
+        Color color = WordUtilities.MatchColorToTag(bubble.data.name, bubble.data.subtag);
         color.a = 0.3f;
         foreach (Image img in bubbleReplacement.GetComponentsInChildren<Image>())
         {
@@ -225,30 +224,20 @@ public class Case : MonoBehaviour
     /// Takes the ScrollBar and re-scales it according to the current amount of words
     /// </summary>
     /// <param name="bubbleCount"></param>
-    public virtual IEnumerator RescaleScrollbar(bool resetScrollbar)
+    public virtual IEnumerator RescaleScrollbar()
     {
-        //The old names arent deleted until the frame is over
         yield return new WaitForEndOfFrame();
+        
+        UpdateScrollbarBubbleHeight();
 
-        UpdateBubbleHeight();
-
-        //if the value is smaller than what fits the canvas, it is irrelevant
         float addedHeight = Mathf.Clamp(bubbleScreenHeight, 0, refM.bubbleScreenHeightMaxSize);
-
-        //between biggest size (1) and smallest we want (0.05f)
         float scrollbarSize = WordUtilities.Remap(addedHeight, 0, refM.bubbleScreenHeightMaxSize, 1, 0.05f);
         scrollbar.size = scrollbarSize;
-
-        //if required, reset scrollbar
-        if (resetScrollbar)
-        {
-            ResetScrollbar();
-        }
     }
     /// <summary>
     /// Take the height of all bubbles that are protrayed at the moment and subtract them by the screen height
     /// </summary>
-    public virtual void UpdateBubbleHeight()
+    public virtual void UpdateScrollbarBubbleHeight()
     {
         float spacing = listingParent.GetComponent<HorizontalOrVerticalLayoutGroup>().spacing;
         bubbleScreenHeight = spacing;
@@ -360,19 +349,15 @@ public class Case : MonoBehaviour
     /// <param name="open"></param>
     public void AutomaticOpenCase(bool open)
     {
-        // open the case
         if (open)
         {
             if (caseObject.activeInHierarchy)
                 automaticallyOpen = true;
             caseObject.SetActive(true);
         }
-        //close the case
         else
-        {
             if (!automaticallyOpen)
                 caseObject.SetActive(false);
-        }
         ResetScrollbar();
     }
     /// <summary>
@@ -398,7 +383,7 @@ public class Case : MonoBehaviour
     {
         WordCaseManager.instance.overrideTag = overrideTag;
         BubbleData[] currentContents = contents;
-        
+
         saveAtIndex = -1;
         bubbleIsAlreadyInList = (ReferenceManager.instance.duplicateWords) ? false : CheckIfBubbleInList(name, currentContents);
         caseIsFull = true;

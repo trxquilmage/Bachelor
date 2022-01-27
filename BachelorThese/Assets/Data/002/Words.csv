@@ -45,8 +45,8 @@ Interesting;Adjective;Rating;positive
 Wonderful;Adjective;Rating;positive
 Otherworldly;Adjective;Rating;positive
 Vegan;Adjective;Trait;neutral
-Food;Item;Item;cheap
-Present;Item;Item;undefined
+Food;Item;Mat;cheap
+Present;Item;Mat;undefined
 Benches;Location;Local;Ashley River
 Embarrassing;Adjective;Rating;negative
 Cute;Adjective;Rating;positive

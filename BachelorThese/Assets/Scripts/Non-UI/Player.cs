@@ -15,6 +15,11 @@ public class Player : MonoBehaviour
         get { return MovementDir; }
         set
         {
+            if (value == Vector3.zero && MovementDir != value)
+                OnStopWalking();
+            else if (value != Vector3.zero && MovementDir == Vector3.zero)
+                OnStartWalking();
+
             MovementDir = value;
         }
     }
@@ -56,12 +61,17 @@ public class Player : MonoBehaviour
             movementDir = new Vector3(direction.x, 0, direction.y);
 
             rigid.velocity = movementDir * speed;
-
-            if (rigid.velocity == Vector3.zero)
-                TriggerWalkingAnimation(false);
-            else
-                TriggerWalkingAnimation(true);
         }
+    }
+    void OnStopWalking()
+    {
+        rigid.isKinematic = true;
+        TriggerWalkingAnimation(false);
+    }
+    void OnStartWalking()
+    {
+        rigid.isKinematic = false;
+        TriggerWalkingAnimation(true);
     }
     void TriggerWalkingAnimation(bool changeTo)
     {

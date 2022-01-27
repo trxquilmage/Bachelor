@@ -93,7 +93,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
     }
     protected virtual void DroppedOverWordCase()
     {
@@ -310,7 +310,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             j++;
         }
         DestroyFirstChild();
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
     }
     protected void ShapeBubbleIntoCompactForm()
     {
@@ -362,7 +362,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             j++;
         }
         DestroyFirstChild();
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
     }
     protected void UpdateImageAndScaleForAllLines()
     {
@@ -733,7 +733,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         //put the word back
         WordClickManager.instance.DestroyCurrentWord(this);
         if (data.origin == WordInfo.Origin.WordCase)
-            WordCaseManager.instance.ReloadContents(false);
+            WordCaseManager.instance.ReloadContents();
         EffectUtilities.ReColorAllInteractableWords();
     }
     #endregion

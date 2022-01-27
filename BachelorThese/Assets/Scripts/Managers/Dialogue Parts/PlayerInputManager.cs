@@ -124,7 +124,7 @@ public class PlayerInputManager : MonoBehaviour
     /// <summary>
     /// Checks, whether all prompts are filled at the moment
     /// </summary>
-    public bool CheckForPromptsFilled()
+    public bool CheckIfAllPromptsAreFilled()
     {
         bool allFilled = true;
         if (CheckForActivePromptBubbleParent(out PromptBubble[] promptBubbles))
@@ -208,7 +208,7 @@ public class PlayerInputManager : MonoBehaviour
     /// <param name="promptMenu"></param>
     /// <param name="promptAnswer"></param>
     /// <param name="promptQuestion"></param>
-    public void DisplayPrompt(string promptID, GameObject promptMenu, TMP_Text promptAnswer, Transform bubbleParent, PromptBubble[] saveIn)
+    public void GeneratePromptBubble(string promptID, GameObject promptMenu, TMP_Text promptAnswer, Transform bubbleParent, PromptBubble[] saveIn)
     {
         //disable continue click
         if (saveIn == currentPromptBubbles)
@@ -262,31 +262,22 @@ public class PlayerInputManager : MonoBehaviour
         }
 
         string promptID = "AskAAA";
-        //disable continue
-        DialogueInputManager.instance.AskMenuOpen(true);
-        // open the fake ask menu
+        DialogueInputManager.instance.DisableContinueDuringAsk(true);
         refM.askField.SetActive(true);
-        // disable ask and barter
         AskAndBarterButton(false);
-        //make new button "abort ask" available
         AbortAskButton(true);
 
-        //Enable the 2nd DialogueRunner
         refM.askRunner.gameObject.SetActive(true);
-        //start the second runner
         refM.askRunner.StartDialogue(DialogueManager.instance.currentTarget.askNode);
-        //generate prompt bubble
-        DisplayPrompt(promptID, refM.askField, refM.askPrompt,
+        GeneratePromptBubble(promptID, refM.askField, refM.askPrompt,
             refM.askPromptBubbleParent.transform, currentPromptAskBubbles);
-        // Temporarily disable any other active prompts
+
         if (DialogueManager.instance.isInDialogue)
         {
-            TemporarilyClosePromptMenu(true);
-            //disable the text below for the moment, because its causing quite some problems
+            TemporarilyCloseNormalPromptMenu(true);
             refM.interactableTextList[0].gameObject.SetActive(false);
         }
-        //Reload the word case, so any possibly missing words from other prompt inputs respawn
-        WordCaseManager.instance.ReloadContents(false);
+        WordCaseManager.instance.ReloadContents();
     }
     /// <summary>
     /// When prompt was filled etc, find the correct way to answer.
@@ -294,9 +285,8 @@ public class PlayerInputManager : MonoBehaviour
     /// <param name="promptID"></param>
     public void SendAskButton()
     {
-        if (CheckForPromptsFilled())
+        if (CheckIfAllPromptsAreFilled())
         {
-            //check prompt bubble for content
             SaveGivenAnswer();
             //enable click continue
             DialogueInputManager.instance.continueEnabledPromptAsk = true;
@@ -305,7 +295,7 @@ public class PlayerInputManager : MonoBehaviour
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
-            WordCaseManager.instance.ReloadContents(false);
+            WordCaseManager.instance.ReloadContents();
             //Jump to NPC.answer
             WordUtilities.JumpToNode(refM.askRunner, givenAnswerAsk.bubbleData.name);
             //Continue()
@@ -324,7 +314,7 @@ public class PlayerInputManager : MonoBehaviour
     public void OnQuestionDialogueEnded(bool naturalEnd)
     {
         //enable continue
-        DialogueInputManager.instance.AskMenuOpen(false);
+        DialogueInputManager.instance.DisableContinueDuringAsk(false);
         // close the fake ask menu
         refM.askField.SetActive(false);
         //set ask and barter buttons active again
@@ -334,7 +324,7 @@ public class PlayerInputManager : MonoBehaviour
         // if the prompt menu has been closed, reopen it
         if (DialogueManager.instance.isInDialogue)
         {
-            TemporarilyClosePromptMenu(false);
+            TemporarilyCloseNormalPromptMenu(false);
             //enable the text below again
             refM.interactableTextList[0].gameObject.SetActive(true);
         }
@@ -354,7 +344,7 @@ public class PlayerInputManager : MonoBehaviour
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
-            WordCaseManager.instance.ReloadContents(false);
+            WordCaseManager.instance.ReloadContents();
             // Close Prompt Field
             refM.askField.SetActive(false);
             refM.askICantSayButton.SetActive(false);
@@ -366,7 +356,7 @@ public class PlayerInputManager : MonoBehaviour
     public void CantSayAsk()
     {
         //enable continue
-        DialogueInputManager.instance.AskMenuOpen(false);
+        DialogueInputManager.instance.DisableContinueDuringAsk(false);
         //set ask and barter buttons active again
         AskAndBarterButton(true);
         //disable 2nd runner again
@@ -374,7 +364,7 @@ public class PlayerInputManager : MonoBehaviour
         // if the prompt menu has been closed, reopen it
         if (DialogueManager.instance.isInDialogue)
         {
-            TemporarilyClosePromptMenu(false);
+            TemporarilyCloseNormalPromptMenu(false);
             //enable the text below again
             refM.interactableTextList[0].gameObject.SetActive(true);
         }
@@ -392,7 +382,7 @@ public class PlayerInputManager : MonoBehaviour
         //Delete current word gets deleted, so empty the currentWord var
         WordClickManager.instance.currentWord = null;
         //Reload, so that the missing word comes back
-        WordCaseManager.instance.ReloadContents(false);
+        WordCaseManager.instance.ReloadContents();
         // Close Prompt Field
         refM.askField.SetActive(false);
         refM.askICantSayButton.SetActive(false);
@@ -421,14 +411,14 @@ public class PlayerInputManager : MonoBehaviour
     /// </summary>
     public void ContinueButtonAsk()
     {
-        if (CheckForPromptsFilled())
+        if (CheckIfAllPromptsAreFilled())
         {
             SaveGivenAnswer();
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
             DialogueInputManager.instance.continueEnabledPromptAsk = true;
             DeleteAllPrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents(false); //Reload, so that the missing word comes back
+            WordCaseManager.instance.ReloadContents();
             ReferenceManager.instance.askField.SetActive(false);
         }
         ReferenceManager.instance.askContinueButton.SetActive(false);
@@ -436,7 +426,7 @@ public class PlayerInputManager : MonoBehaviour
     /// <summary>
     /// when called close the prompt menu and possible related promps
     /// </summary>
-    public void TemporarilyClosePromptMenu(bool close)
+    public void TemporarilyCloseNormalPromptMenu(bool close)
     {
         if (close && ReferenceManager.instance.playerInputField.activeInHierarchy)
         {
