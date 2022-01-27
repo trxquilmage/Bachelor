@@ -4,6 +4,7 @@ tags:
 <<showcharactername Managers DJ Pizza>>
 <<set $questIsActive to isquestactive("QuestAAB")>>
 <<set $quest2IsActive to isquestactive("QuestAAC")>>
+Hello.
 <<if not isvisited("DJPizza","Start")>>
     [[DJPizza.FirstIntroduction]]
 <<elseif $questIsActive>>

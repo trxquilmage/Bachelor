@@ -61,6 +61,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject questCase;
     public GameObject askField;
     public GameObject askNPCField;
+    public GameObject areYouSureField;
     public Canvas dialogueCanvas;
     [Header("Menu")]
     public GameObject menuField;

@@ -33,7 +33,6 @@ public class StarFavorite : MonoBehaviour
         word.data.isFavorite = !word.data.isFavorite;
         UpdateStar();
         FavoriteButtonInfo favoriteButton = ReferenceManager.instance.favoritesButton.GetComponent<FavoriteButtonInfo>();
-        Debug.Log(WordCaseManager.instance.GetFavoritesCount());
         if (WordCaseManager.instance.GetFavoritesCount() > 0)
             favoriteButton.SetActive();
         else

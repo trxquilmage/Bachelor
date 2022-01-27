@@ -174,16 +174,13 @@ public class QuestManager : MonoBehaviour
         TMP_CharacterInfo firstLetter = textInfo.characterInfo[0];
         TMP_CharacterInfo lastLetter = textInfo.characterInfo[lastLetterIndex];
 
-        Debug.Log(lastLetterIndex);
         float firstLetterHeight = firstLetter.topLeft.y;
         float lastLetterHeight = lastLetter.bottomRight.y;
         
         questTextHeight = firstLetterHeight - lastLetterHeight;
-        Debug.Log(firstLetterHeight + " - " + lastLetterHeight + " = " + questTextHeight);
         float frameHeight = listingParent.GetComponent<RectTransform>().sizeDelta.y;
 
         questTextHeight -= frameHeight;
-        Debug.Log("------");
     }
     #endregion
 }

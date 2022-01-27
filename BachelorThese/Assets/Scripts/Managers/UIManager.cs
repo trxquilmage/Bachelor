@@ -298,15 +298,10 @@ public class UIManager : MonoBehaviour
             Bubble bubble = wclM.currentWord.GetComponent<Bubble>();
             if (!bubble.data.permanentWord)
             {
-                //spawn delete-vfx
-                wclM.currentWord.GetComponent<Bubble>().CallEffect(1);
-
-                wcM.DeleteOutOfCase();
-                wclM.DestroyCurrentWord();
-                wcM.UpdateContentCount();
-                StartCoroutine(wcM.RescaleScrollbar());
-                wcM.ResetScrollbar();
-                wcM.DestroyReplacement();
+                if (bubble.data.isFavorite)
+                    CallSafetyCheck();
+                else
+                    DeleteBubble();
             }
             else
             {
@@ -314,6 +309,32 @@ public class UIManager : MonoBehaviour
                 BlendInUI(refM.warningTrashYesNo, 3);
             }
         }
+    }
+    void CallSafetyCheck()
+    {
+        Time.timeScale = 0;
+        refM.areYouSureField.SetActive(true);
+    }
+    public void ButtonCallAnswerAreYouSure(bool isAccepted)
+    {
+        Time.timeScale = 1;
+        refM.areYouSureField.SetActive(false);
+        if (isAccepted)
+            DeleteBubble();
+        else
+            wclM.currentWord.GetComponent<Word>().DroppedOverNothing();
+    }
+    void DeleteBubble()
+    {
+        //spawn delete-vfx
+        wclM.currentWord.GetComponent<Bubble>().CallEffect(1);
+
+        wcM.DeleteOutOfCase();
+        wclM.DestroyCurrentWord();
+        wcM.UpdateContentCount();
+        StartCoroutine(wcM.RescaleScrollbar());
+        wcM.ResetScrollbar();
+        wcM.DestroyReplacement();
     }
     public void ClickedICantSay()
     {
