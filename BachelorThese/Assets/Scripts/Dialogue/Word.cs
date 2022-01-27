@@ -61,7 +61,7 @@ public class Word : Bubble
         if (WordUtilities.IsNotFromACase(data))
         {
             //save it
-            WordCaseManager.instance.SaveBubble(this);
+            WordCaseManager.instance.TryToSaveTheBubble(this);
 
             //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
@@ -139,10 +139,7 @@ public class Word : Bubble
     }
     void CheckIfShouldSetAsPermanentWord()
     {
-        if (data.subtag == "Boolean")
-        {
-            data.permanentWord = true;
-        }
+        data.permanentWord = (data.tag == refM.wordTags[refM.yesNoTagIndex].name) ? true : false;
     }
     void SaveTagInfoAsYarnValuesInTagObject()
     {

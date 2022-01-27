@@ -272,10 +272,10 @@ public class WordCaseManager : Case
             refM.wordLimit.text = wordCount.ToString() + "<b> Words</b>";
         }
     }
-    public override void SaveBubble(Bubble bubble)
+    public override void TryToSaveTheBubble(Bubble bubble)
     {
         ((WordData)bubble.data).origin = origin;
-        base.SaveBubble(bubble);
+        base.TryToSaveTheBubble(bubble);
     }
     #endregion
     public void ChangeToTag(TagButtonInfo info)

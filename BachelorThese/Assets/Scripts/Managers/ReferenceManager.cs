@@ -83,8 +83,10 @@ public class ReferenceManager : MonoBehaviour
     public GameObject iCantSayButton;
     public GameObject askICantSayButton;
     public GameObject askButton;
-    public GameObject feedbackTextOtherTag;
-    public GameObject feedbackTextTrashYesNo;
+    public GameObject warningWrongTag;
+    public GameObject warningTrashYesNo;
+    public GameObject warningCaseFull;
+    public GameObject warningWordAlreadyInList;
     public Scrollbar bubbleScrollbar;
     public GameObject nameField;
     public GameObject npcDialogueTextBox;
@@ -151,6 +153,7 @@ public class ReferenceManager : MonoBehaviour
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;
     public int otherTagIndex = 1;
+    public int yesNoTagIndex = 6;
 
     void Awake()
     {

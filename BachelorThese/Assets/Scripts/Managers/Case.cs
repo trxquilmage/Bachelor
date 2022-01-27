@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class Case : MonoBehaviour
 {
@@ -122,7 +122,7 @@ public class Case : MonoBehaviour
         contentCount.text =
             GetContentCount().ToString() + "<b>/" + maxContentAmount.ToString() + "</b>";
     }
-    public virtual void SaveBubble(Bubble bubble)
+    public virtual void TryToSaveTheBubble(Bubble bubble)
     {
         BubbleData data = bubble.data;
         bubble.data.origin = origin;
@@ -133,7 +133,10 @@ public class Case : MonoBehaviour
         }
         else
         {
-            //put the bubble back into the dialogue
+            if (bubbleIsAlreadyInList)
+                UIManager.instance.BlendInUI(refM.warningWordAlreadyInList, 3);
+            else if (caseIsFull)
+                UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
             WordUtilities.ReturnWordIntoText(bubble);
         }
         //Reload

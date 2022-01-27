@@ -588,18 +588,19 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         WordCaseManager.instance.openTag = data.tag;
         bool fits = false;
-        //check, if the word fits in the case right now
+
         if (this is Word)
         {
             if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull))
                 fits = true;
+            else if (bubbleIsAlreadyInList)
+                UIManager.instance.BlendInUI(refM.warningWordAlreadyInList, 3);
+            else if (caseIsFull)
+                UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
         }
-        //if yes slowly animate this to the correct case & save it in there
+
         if (fits)
-        {
             AnimateMovementIntoCase();
-        }
-        //if not, shaking animation
         else
         {
             StartCoroutine(ShakeBubbleAsFeedback(false, false));

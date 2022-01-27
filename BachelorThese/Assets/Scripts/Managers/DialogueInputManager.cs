@@ -116,7 +116,7 @@ public class DialogueInputManager : MonoBehaviour
     {
         textFinished = true;
         if (continueEnabledPrompt && continueEnabledPromptAsk)
-            UIManager.instance.StartClickFeedback();
+            UIManager.instance.StartFeedbackRightClickDialoge();
         // Color all interactable words, force update, so there are no errors
         ReferenceManager.instance.interactableTextList[0].ForceMeshUpdate();
         EffectUtilities.ReColorAllInteractableWords();

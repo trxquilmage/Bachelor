@@ -18,7 +18,8 @@ public class UIManager : MonoBehaviour
     float scaleFactor = 0;
     float timer = 0;
     GameObject currentTrashCan;
-
+    WordCaseManager wcM;
+    WordClickManager wclM;
     private void Awake()
     {
         instance = this;
@@ -26,6 +27,8 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         refM = ReferenceManager.instance;
+        wcM = WordCaseManager.instance;
+        wclM = WordClickManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
         ColorUI();
         FillActiveEffects();
@@ -104,7 +107,7 @@ public class UIManager : MonoBehaviour
         refM.askNPCField.SetActive(true);
         refM.questCase.SetActive(true);
 
-        InitializeButtons();
+        InitializeWordCaseTagSwitchButtons();
 
         refM.ask.GetComponent<Image>().color = refM.askColor;
         refM.barter.GetComponent<Image>().color = refM.askColor;
@@ -214,22 +217,19 @@ public class UIManager : MonoBehaviour
         Destroy(vfx.gameObject);
     }
 
-    /// <summary>
-    /// Create All Buttons in the WordCaseManager that are used to change the current tag
-    /// </summary>
-    void InitializeButtons()
+    void InitializeWordCaseTagSwitchButtons()
     {
         int i = 0;
         foreach (WordInfo.WordTag tag in refM.wordTags)
         {
-            
+
             if (tag.name != refM.wordTags[refM.otherTagIndex].name)
             {
-                InstantiateButton(i, tag);
+                InstantiateTagSwitchButton(i, tag);
             }
             i++;
         } //initialize the "other" tag last
-        InstantiateButton(refM.otherTagIndex, refM.wordTags[refM.otherTagIndex]);
+        InstantiateTagSwitchButton(refM.otherTagIndex, refM.wordTags[refM.otherTagIndex]);
 
         //get the width of all buttons combined
         float padding = refM.tagButtonParent.GetComponent<VerticalLayoutGroup>().spacing;
@@ -245,33 +245,27 @@ public class UIManager : MonoBehaviour
         //minus the size thats already on screen
         buttonWidth -= refM.tagButtonParent.transform.parent.GetComponent<RectTransform>().sizeDelta.x;
     }
-    /// <summary>
-    /// Instantiate a Tag-Button (into the wordCase)
-    /// </summary>
-    /// <param name="i"></param>
-    /// <param name="tag"></param>
-    void InstantiateButton(int i, WordInfo.WordTag tag)
+    void InstantiateTagSwitchButton(int i, WordInfo.WordTag tag)
     {
         GameObject button = GameObject.Instantiate(refM.buttonPrefab, Vector2.zero, Quaternion.identity);
         button.transform.SetParent(refM.tagButtonParent.transform, false);
         TagButtonInfo info = button.GetComponent<TagButtonInfo>();
         info.Initialize(i, tag);
     }
-    public void StartClickFeedback()
+    public void StartFeedbackRightClickDialoge()
     {
         clickFeedbackIsRunning.refBool = true;
         StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickIcon, clickFeedbackIsRunning));
         StartCoroutine(EffectUtilities.AlphaWave(refM.rightClickAskIcon, clickFeedbackIsRunning));
     }
-    /// <summary>
-    /// When a right click happened, fade out the current feedback to rightclick and briefly light it up
-    /// </summary>
-    /// <param name="isInAsk"></param>
     public void OnRightClicked(bool isInAsk)
     {
-        //Fade out the click Feedback
-        clickFeedbackIsRunning.refBool = false;
+        FadeOutRightClickFeedback();
         StartCoroutine(LightUpFeedback(isInAsk));
+    }
+    void FadeOutRightClickFeedback()
+    {
+        clickFeedbackIsRunning.refBool = false;
     }
     IEnumerator LightUpFeedback(bool isInAsk)
     {
@@ -296,31 +290,28 @@ public class UIManager : MonoBehaviour
             activeEffects[i] = new RefBool();
         }
     }
-    /// <summary>
-    /// throw a word out of the case OR throw a quest out of the log
-    /// </summary>
     public void TrashAWord()
     {
-        BubbleData data = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
+        BubbleData data = wclM.currentWord.GetComponent<Bubble>().data;
         if (data is WordData && data.origin == WordInfo.Origin.WordCase)
         {
-            Bubble bubble = WordClickManager.instance.currentWord.GetComponent<Bubble>();
+            Bubble bubble = wclM.currentWord.GetComponent<Bubble>();
             if (!bubble.data.permanentWord)
             {
                 //spawn delete-vfx
-                WordClickManager.instance.currentWord.GetComponent<Bubble>().CallEffect(1);
+                wclM.currentWord.GetComponent<Bubble>().CallEffect(1);
 
-                WordCaseManager.instance.DeleteOutOfCase();
-                WordClickManager.instance.DestroyCurrentWord();
-                WordCaseManager.instance.UpdateContentCount();
-                StartCoroutine(WordCaseManager.instance.RescaleScrollbar(true));
-                WordCaseManager.instance.ResetScrollbar();
-                WordCaseManager.instance.DestroyReplacement();
+                wcM.DeleteOutOfCase();
+                wclM.DestroyCurrentWord();
+                wcM.UpdateContentCount();
+                StartCoroutine(wcM.RescaleScrollbar(true));
+                wcM.ResetScrollbar();
+                wcM.DestroyReplacement();
             }
             else
             {
                 bubble.DroppedOverNothing();
-                BlendInUI(refM.feedbackTextTrashYesNo, 3);
+                BlendInUI(refM.warningTrashYesNo, 3);
             }
         }
     }

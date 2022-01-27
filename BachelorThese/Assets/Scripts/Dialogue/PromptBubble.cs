@@ -142,7 +142,7 @@ public class PromptBubble : MonoBehaviour
             {
                 acceptsCurrentWord = false;
                 StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                UIManager.instance.BlendInUI(refM.feedbackTextOtherTag, 3);
+                UIManager.instance.BlendInUI(refM.warningWrongTag, 3);
             }
             //wrong Input to bubble, no message
             else
