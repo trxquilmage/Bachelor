@@ -85,9 +85,26 @@ public class CommandManager : MonoBehaviour
             return CheckIfIsQuestActive(parameters[0].AsString);
         });
     }
-    /// <summary>
-    /// Set a quest in the questlog
-    /// </summary>
+
+
+    [YarnCommand("activateaskbutton")]
+    public void ActivateAskButton()
+    {
+        TutorialManager.instance.EnableOrDisableAskButton(true);
+    }
+
+    [YarnCommand("activatewordhighlighting")]
+    public void ActivateWordHighlighting()
+    {
+        TutorialManager.instance.EnableOrDisableHighlightingWords(true);
+    }
+
+    [YarnCommand("endtutorial")]
+    public void EndTutorial()
+    {
+        TutorialManager.instance.EndTutorial();
+    }
+
     [YarnCommand("setquest")]
     public void SetQuest(string questName)
     {

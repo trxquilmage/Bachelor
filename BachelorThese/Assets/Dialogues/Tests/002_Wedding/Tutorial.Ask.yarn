@@ -1,0 +1,53 @@
+﻿title: Tutorial.Ask
+tags:
+---
+Yes? Do you have a question?
+===
+
+title: Tutorial.Questions
+tags:
+---
+Congratulations! You just posed a question!
+You can ask characters in this game about
+any word you are able to drag into the
+question box. Please note that some 
+categories of words just don't make sense
+as a question topic. Because of that,
+you can't ask about adjectives or adverbs.
+Characters will answer almost any question
+for you. But not me. 
+I am just a tutorial character!
+So asking me questions is a waste of time.
+[[Tutorial.FirstContinue]]
+===
+
+
+title: Tutorial.Catchall
+tags:
+---
+Other characters will answer many questions
+for you. But not me. I am just here, so that
+you understand the game!
+[[Tutorial.Continue]]
+===
+
+title: Tutorial.ICantSay
+tags:
+---
+...
+===
+
+title: Tutorial.FirstContinue
+tags:
+---
+When a character has answered your question,
+they will go back to the topic they were 
+talking about, before you asked a question.
+So, as I was saying... 
+===
+
+title: Tutorial.Continue
+tags:
+---
+So, as I was saying... 
+===

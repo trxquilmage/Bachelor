@@ -96,32 +96,41 @@ public static class EffectUtilities
     /// </summary>
     public static void ReColorAllInteractableWords()
     {
-        foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
+        if (ReferenceManager.instance.highlightedWordsEnabled)
         {
-            text.ForceMeshUpdate();
-            if (text.isActiveAndEnabled)
+            foreach (TMP_Text text in ReferenceManager.instance.interactableTextList)
             {
-                for (int i = 0; i < text.textInfo.wordCount; i++)
+                text.ForceMeshUpdate();
+                if (text.isActiveAndEnabled)
                 {
-                    TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
-                    if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos, out bool isFillerWord))
+                    for (int i = 0; i < text.textInfo.wordCount; i++)
                     {
-                        if (WordUtilities.IsWordInADataBank(WordUtilities.WordInfoToString(wordInfos), isFillerWord, out bool wordAlreadyInWordCase, out bool wordCaseIsFull))
-                        {
-                            if (wordAlreadyInWordCase)
-                                ColorAWord(text, wordInfos, ReferenceManager.instance.inListColor);
-                            else if (wordCaseIsFull)
-                                ColorAWord(text, wordInfos, ReferenceManager.instance.listFullColor);
-                            else
-                                ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
-                        }
-                        else
-                            ColorAWord(text, wordInfos, ReferenceManager.instance.interactableColor);
+                        TMP_WordInfo wordInfo = text.textInfo.wordInfo[i];
+                        FindCorrectWordColorAndColorWord(wordInfo, text);
                     }
                 }
             }
         }
     }
+
+    public static void FindCorrectWordColorAndColorWord(TMP_WordInfo wordInfo, TMP_Text text)
+    {
+        if (WordLookupReader.instance.CheckForWord(wordInfo, out TMP_WordInfo[] wordInfos, out bool isFillerWord))
+        {
+            if (WordUtilities.IsWordInADataBank(WordUtilities.WordInfoToString(wordInfos), isFillerWord, out bool wordAlreadyInWordCase, out bool wordCaseIsFull))
+            {
+                if (wordAlreadyInWordCase)
+                    ColorAWord(text, wordInfos, ReferenceManager.instance.inListColor);
+                else if (wordCaseIsFull)
+                    ColorAWord(text, wordInfos, ReferenceManager.instance.listFullColor);
+                else
+                    ColorAWord(text, wordInfos, ReferenceManager.instance.interactedColor);
+            }
+            else
+                ColorAWord(text, wordInfos, ReferenceManager.instance.interactableColor);
+        }
+    }
+
     /// <summary>
     /// Takes in a Gradient and mixes in the colors in between the given ones
     /// </summary>

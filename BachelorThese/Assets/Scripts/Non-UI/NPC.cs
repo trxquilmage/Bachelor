@@ -52,6 +52,8 @@ public class NPC : MonoBehaviour
     IEnumerator Turn(Vector3 turnTowards)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        turnTowards.Scale(new Vector3(1,0,1));
+
         while (Vector3.Dot(turnTowards, npcMesh.transform.forward) < 0.99f)
         {
             npcMesh.transform.forward = Vector3.Lerp(npcMesh.transform.forward, turnTowards, 0.4f);

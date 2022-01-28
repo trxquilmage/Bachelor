@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 79fef173c3ac1604eb282f9a7b8dd779
+guid: f596426e9f50f8443b9b8a5e9437e109
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -8,15 +8,10 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
-  baseLanguageID: en
-  stringIDs:
-  - Karl1-Karl1-0
-  - Karl1-Karl1-1
-  - Karl1-Karl1-2
-  - Karl1-Karl2-3
-  - Karl1-Karl2-4
-  compilationStatus: 1
+  baseLanguageID: de-DE
+  stringIDs: []
+  compilationStatus: 0
   isSuccesfullyCompiled: 1
   compilationErrorMessage: 
-  baseLanguage: {fileID: 7128917941130120860, guid: bd1d6caa173f5624fbb4ff4877d9af6a, type: 3}
+  baseLanguage: {instanceID: 0}
   localizations: []

@@ -96,6 +96,13 @@ public struct TransformValues
         return transform;
     }
 
+    public void SetTransform(Transform transform)
+    {
+        transform.position = position;
+        transform.rotation = rotation;
+        transform.localScale = scale;
+    }
+
     public void FillTransform(Transform transformToFill)
     {
         transformToFill.localPosition = position;

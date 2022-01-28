@@ -87,7 +87,8 @@ public class WordClickManager : MonoBehaviour
     }
     private void Update()
     {
-        GetMouseOverUI();
+        if (refM.highlightedWordsEnabled)
+            GetMouseOverUI();
     }
     /// <summary>
     /// Ckeck if the word is actually in the keywords list, then skip to WordUtilities.CreateWord()

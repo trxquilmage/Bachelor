@@ -31,6 +31,7 @@ public class ReferenceManager : MonoBehaviour
     [HideInInspector] public Color headerColor;
     [HideInInspector] public Color trashColor;
     [HideInInspector] public Color highlightColor;
+    [HideInInspector] public bool highlightedWordsEnabled = true;
     [Header("Parents")]
     public GameObject selectedWordParent;
     public GameObject selectedWordParentAsk;
@@ -109,6 +110,8 @@ public class ReferenceManager : MonoBehaviour
     public TMP_Text showWordsText;
     public List<string> startWords;
     public List<string> startCommands;
+    [Header("Tutorial")]
+    public TransformValues tutorialStartPosition;
     [Header("TEXTS")]
     public TMP_Text[] interactableTextList;
     public int npcTextIndex = 0;
@@ -153,6 +156,7 @@ public class ReferenceManager : MonoBehaviour
     public bool noGreyOut = false;
     public bool duplicateWords = false;
     public bool startWithStartWords = false;
+    public bool startWithTutorial = false;
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;

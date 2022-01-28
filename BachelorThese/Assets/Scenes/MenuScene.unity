@@ -1134,7 +1134,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 351432400}
   m_LocalRotation: {x: -0.5341694, y: -0.40091068, z: 0.56783545, w: 0.48114097}
-  m_LocalPosition: {x: -3.13, y: -2.85, z: -4.65}
+  m_LocalPosition: {x: -2.917, y: -2.723, z: -4.549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 758630933}
@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_ShapeWidth: 21.41358
   m_ShapeHeight: 16.28
   m_AspectRatio: 1
-  m_ShapeRadius: 0
+  m_ShapeRadius: 0.5
   m_SoftnessScale: 1
   m_UseCustomSpotLightShadowCone: 0
   m_CustomSpotLightShadowCone: 30
@@ -1273,7 +1273,7 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 0.4444623, b: 0, a: 1}
+  m_Color: {r: 0.6415094, g: 0.47450572, b: 0.16037735, a: 1}
   m_Intensity: 3978873.5
   m_Range: 13.709617
   m_SpotAngle: 102.26063
@@ -1322,7 +1322,7 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 14.893391}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
-  m_ShadowRadius: 0
+  m_ShadowRadius: 0.5
   m_ShadowAngle: 0
 --- !u!95 &351432404
 Animator:
@@ -3384,7 +3384,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: cd68cc4d629e3a8428dc557c801023e5, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 5973c9dfdb89eb340ad9dc7a16c69ee0, type: 2}
 --- !u!1001 &998157617
 PrefabInstance:
   m_ObjectHideFlags: 0

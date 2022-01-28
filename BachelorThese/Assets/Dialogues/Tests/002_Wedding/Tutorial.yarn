@@ -1,0 +1,167 @@
+﻿title: Tutorial.Start
+tags:
+---
+<<showcharactername Managers Tutorial>>
+[[Tutorial.Welcome]]
+===
+
+title: Tutorial.Welcome
+tags: 
+---
+Hello.
+You are currently playing a bachelor thesis,
+made by Maria Fleischer in 2022. 
+The topic of the thesis was the exploration 
+of concepts for dialogue systems in games.
+Since this is an 18-week bachelor thesis 
+and not a finished game, please
+bear with me, as we go through the tutorial
+[[Tutorial.AWordAppears]]
+===
+
+title: Tutorial.AWordAppears
+tags: 
+---
+Look! From now on,
+<<activatewordhighlighting Managers>>
+words in our dialogue are highlighted!
+Try dragging the words into your inventory.
+Always keep your eyes peeled, since
+interesting words may appear at any time.
+[[Tutorial.FirstQuestion]]
+===
+
+
+title: Tutorial.FirstQuestion
+tags: 
+---
+Now. Let's get into answering.
+You can answer a posed question
+by dragging a word into the answer prompt.
+That word can be from your inventory
+or from the dialogue text. Let's try it. 
+<<displaypromptmenu Managers GenAAA>>
+Yes or no: Did you understand all of that?
+<<set $understood to react("value", "", "Tutorial")>>
+<<if $understood>>
+    Great. Just another test...
+    [[Tutorial.SecondQuestion]]
+<<else>>
+    Sorry, then let's go back a few sentences...
+    [[Tutorial.AWordAppears]]
+<<endif>>
+===
+
+title: Tutorial.SecondQuestion
+tags: 
+---
+What name do you want your character to have?
+<<showicantsay Managers>>
+<<displaypromptmenu Managers NameAAA>>
+Your choices are: Kim, Molly, Sam and Alex.
+<<set $cantsay to icantsay("Tutorial", "PressedCantSay")>>
+<<set $name to react("name", "characterName", "Tutorial")>>
+So you're {$name}, huh?
+[[Tutorial.AskAboutAsks]]
+===
+
+title: Tutorial.PressedCantSay
+---
+So let's go back...
+[[Tutorial.SecondQuestion]] 
+===
+
+title: Tutorial.AskAboutAsks
+tags: 
+---
+<<activateaskbutton Managers>>
+Oh! Look at the top right corner of the dialogue.
+A new button has appeared there...
+Click on it and ask me about "questions"!
+[[Tutorial.BasicsDone]]
+===
+
+title: Tutorial.BasicsDone
+tags: 
+---
+Okay, now we're done with the basics.
+Just a few questions left to set you up!
+[[Tutorial.BrideOrGroom]]
+===
+
+title: Tutorial.BrideOrGroom
+tags: 
+---
+You were invited to a wedding.
+And you will be arriving there very soon.
+<<displaypromptmenu Managers NameAAD>>
+Were you invited by the bride or the groom?
+<<set $invitedBy to react("name", "invitedBy", "Tutorial")>>
+<<if $invitedBy eq "Bride">>
+    Great. The bride it is. Her name is Renna.
+    She's the middle child of a big family, who
+    isn't on best terms with most of her family.
+<<elseif $invitedBy eq "Groom">>
+    Ah, the groom. His name is James.
+    His family is always late for everything.
+    Including his own wedding...
+<<endif>>
+[[Tutorial.FriendsOrFamily]]
+===
+
+title: Tutorial.FriendsOrFamily
+tags: 
+---
+So now that we have that out of the way...
+the {$invitedBy} has a few siblings.
+And a lot of friends, too.
+<<displaypromptmenu Managers NameAAE>>
+Are you a friend or are you family?
+<<set $friendOrFamily to react("name", "friendOrFamily", "Tutorial")>>
+<<if $friendOrFamily eq "Friend">>
+    You're a friend, then?
+    James and Renna both have a lot of friends,
+    but the ones you met are Jordan, who is
+    James' best friend, and Katie, who is
+    Renna's co-worker and good friend.
+    One other friend you heard Renna and 
+    James talk about is a certain guy,
+    they called "Stubi", but you never met him.
+<<elseif $friendOrFamily eq "Family">>
+    <<if $invitedBy eq "Bride">>
+        You're Renna's sibling then?
+        You made it onto the guest list. Congrats.
+        She invited only three other family members.
+        Uncle Mickey, who got them a catering discount,
+        his wife, Aunt Heleen, who was the only Aunt
+        that didn't nag Renna about finally marrying.
+        And their 12 year old son, Matheo.
+    <<elseif $invitedBy eq "Groom">>
+        You're James' sibling then?
+        Aside from you, only both of your parents
+        were invited to the wedding. He didn't want to 
+        bother most of his more distant relatives,
+        as the location was a bit hard to reach.
+    <<endif>>
+<<endif>>
+[[Tutorial.End]]
+===
+
+title: Tutorial.End
+tags: 
+---
+Great! That concludes our tutorial!
+Now you can start with the real scene!
+<<endtutorial Managers>>
+===
+
+title: Tutorial.ICantSay
+tags:
+---
+Oh! You pressed the "Can't Say" button,
+this button helps you in case no word
+in your inventory applies to the situation.
+In our case, though, that isn't true.
+<<onnodecomplete Managers>>
+This has to be here so the dialogue doesnt end otherwise the dialogue will be over before the command is done and that causes problems.
+===
