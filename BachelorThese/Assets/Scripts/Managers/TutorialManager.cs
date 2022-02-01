@@ -5,8 +5,10 @@ using UnityEngine;
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager instance;
+    public bool askQuestionDone;
 
     TransformValues defaultStartTransform;
+    Tutorial[] tutorials;
 
     GameObject player;
     ReferenceManager refM;
@@ -28,12 +30,35 @@ public class TutorialManager : MonoBehaviour
     {
         refM = ReferenceManager.instance;
         tutorialOn = refM.startWithTutorial;
+        tutorials = new Tutorial[] { new SaveAWord(), new AskAQuestion() };
         if (tutorialOn)
         {
             player = refM.player;
             EnableOrDisableHighlightingWords(false);
             EnableOrDisableAskButton(false);
         }
+    }
+    public void AskQuestionsDone()
+    {
+        askQuestionDone = true;
+    }
+    public void DisableContinueUntilTutorialStepIsDone(int tutorialStepNumber)
+    {
+        DialogueInputManager.instance.continueHandler.OnStartTutorial();
+        StartCoroutine(WaitUntilTutorialConditionIsMet(tutorials[tutorialStepNumber]));
+    }
+
+    IEnumerator WaitUntilTutorialConditionIsMet(Tutorial tutorial)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        bool tutorialIsDone = false;
+
+        while(!tutorialIsDone)
+        {
+            tutorialIsDone = tutorial.CheckForCondition();
+            yield return delay;
+        }
+        DialogueInputManager.instance.continueHandler.OnEndTutorial();
     }
     void PlacePlayerIntoTutorial()
     {
@@ -59,5 +84,44 @@ public class TutorialManager : MonoBehaviour
     public void EndTutorial()
     {
         PlacePlayerAtPosition(defaultStartTransform);
+    }
+}
+
+public interface Tutorial
+{
+    public abstract bool CheckForCondition();
+}
+
+public class SaveAWord : Tutorial
+{
+    ReferenceManager refM;
+    WordCaseManager wcM;
+    public SaveAWord()
+    {
+        refM = ReferenceManager.instance;
+        wcM = WordCaseManager.instance;
+    }
+
+    public bool CheckForCondition()
+    {
+        int wordCountInCase = wcM.GetTagWordCount(refM.wordTags[refM.allTagIndex].name);
+        bool hasAtLeastOneWordSaved = wordCountInCase > 0;
+        return hasAtLeastOneWordSaved;
+    }
+}
+
+public class AskAQuestion : Tutorial
+{
+    ReferenceManager refM;
+    TutorialManager tutorialManager;
+    public AskAQuestion()
+    {
+        refM = ReferenceManager.instance;
+        tutorialManager = TutorialManager.instance;
+    }
+
+    public bool CheckForCondition()
+    {
+        return tutorialManager.askQuestionDone;
     }
 }

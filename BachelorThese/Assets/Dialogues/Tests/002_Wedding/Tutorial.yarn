@@ -9,13 +9,14 @@ title: Tutorial.Welcome
 tags: 
 ---
 Hello.
+[[Tutorial.End]]
 You are currently playing a bachelor thesis,
 made by Maria Fleischer in 2022. 
 The topic of the thesis was the exploration 
 of concepts for dialogue systems in games.
 Since this is an 18-week bachelor thesis 
-and not a finished game, please
-bear with me, as we go through the tutorial
+and not a finished game, please bear with me,
+as we go through the tutorial together.
 [[Tutorial.AWordAppears]]
 ===
 
@@ -25,6 +26,7 @@ tags:
 Look! From now on,
 <<activatewordhighlighting Managers>>
 words in our dialogue are highlighted!
+<<starttutorialstep Managers 0>>
 Try dragging the words into your inventory.
 Always keep your eyes peeled, since
 interesting words may appear at any time.
@@ -77,6 +79,7 @@ tags:
 <<activateaskbutton Managers>>
 Oh! Look at the top right corner of the dialogue.
 A new button has appeared there...
+<<starttutorialstep Managers 1>>
 Click on it and ask me about "questions"!
 [[Tutorial.BasicsDone]]
 ===

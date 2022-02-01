@@ -292,21 +292,24 @@ public class UIManager : MonoBehaviour
     }
     public void TrashAWord()
     {
-        BubbleData data = wclM.currentWord.GetComponent<Bubble>().data;
-        if (data is WordData && data.origin == WordInfo.Origin.WordCase)
+        if (wclM.currentWord != null)
         {
-            Bubble bubble = wclM.currentWord.GetComponent<Bubble>();
-            if (!bubble.data.permanentWord)
+            BubbleData data = wclM.currentWord.GetComponent<Bubble>().data;
+            if (data is WordData && data.origin == WordInfo.Origin.WordCase)
             {
-                if (bubble.data.isFavorite)
-                    CallSafetyCheck();
+                Bubble bubble = wclM.currentWord.GetComponent<Bubble>();
+                if (!bubble.data.permanentWord)
+                {
+                    if (bubble.data.isFavorite)
+                        CallSafetyCheck();
+                    else
+                        DeleteBubble();
+                }
                 else
-                    DeleteBubble();
-            }
-            else
-            {
-                bubble.DroppedOverNothing();
-                BlendInUI(refM.warningTrashYesNo, 3);
+                {
+                    bubble.DroppedOverNothing();
+                    BlendInUI(refM.warningTrashYesNo, 3);
+                }
             }
         }
     }

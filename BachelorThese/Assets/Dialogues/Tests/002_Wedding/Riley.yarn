@@ -20,7 +20,7 @@ tags:
 <<elseif not isvisited("Riley", "AboutYou1")>>
     [[Riley.AboutYou1]]
 <<elseif not isvisited("Riley", "AboutYou2")>>
-    [[Riley.AboutYou2]]
+    [[Riley.AboutStubi]]
 <<else>>
     If you want to know anything about me,
     just ask away!
@@ -56,22 +56,24 @@ So, which part of the family are we here for?
 <<endif>>
 ===
 
-title: Riley.AboutYou2
+title: Riley.AboutStubi
 tags: 
 ---
-So. That drunk girl over there,
-<<showicantsay Managers>>
-<<displaypromptmenu Managers NameAAA>>
-by the benches - what's her name?
-<<set $cantsay to icantsay("Riley", "Secretive")>>
-<<set $name to react("name", "", "Riley")>>
-<<if $name eq "Riley">>
-    ... That's my name.
-    [[Riley.Secretive]]
+So. That weird guy over there at the benches... 
+The one with the hat...?
+Are you sure he belongs here...?
+Back when I was waiting on you, I saw him like...
+sneak in through the bushes...?
+<<displaypromptmenu Managers GenAAA>>
+Is he a guest here at the party?
+<<set $isGuest to react("value", "", "Riley")>>
+<<if $isGuest eq true>>
+    Oh, good. I was really worried. 
+    He looks like some kind of fancy burglar.
+    You know? Like from a cartoon.
 <<else>>
-    Ah, {$name}. 
-    She seems really unfriendly.
-    Maybe it's just because she's drunk?
+    ... That doesn't sound too good?
+    Should we tell someone? Bride or Groom maybe?
 <<endif>>
 ===
 

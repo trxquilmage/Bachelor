@@ -265,7 +265,7 @@ public class WordCaseManager : Case
         {
             refM.wordLimit.text = wordCount.ToString() + "<b>/" + refM.maxWordsPerTag + "</b>";
             if (wordCount == refM.maxWordsPerTag)
-                refM.wordLimit.text = "<b><color=red>" + refM.wordLimit.text ;
+                refM.wordLimit.text = "<b><color=red>" + refM.wordLimit.text;
         }
         else
         {
@@ -297,7 +297,7 @@ public class WordCaseManager : Case
             {
                 foreach (BubbleData data in tagRelatedWords[tag.name])
                     if (data.isFavorite)
-                        count ++;
+                        count++;
             }
         }
         return count;
@@ -309,7 +309,7 @@ public class WordCaseManager : Case
         Color highlightColor = Color.Lerp(color, ReferenceManager.instance.highlightColor, 0.35f);
         ReferenceManager.instance.wordJournal.GetComponent<Image>().color = highlightColor;
     }
-    int GetTagWordCount(string tag)
+    public int GetTagWordCount(string tag)
     {
         int wordCount = 0;
         if (tag != refM.wordTags[refM.allTagIndex].name)
@@ -324,8 +324,7 @@ public class WordCaseManager : Case
         {
             foreach (string allTags in tagRelatedWords.Keys)
             {
-                if (allTags != ReferenceManager.instance.wordTags[refM.allTagIndex].name &&
-                    allTags != ReferenceManager.instance.wordTags[refM.otherTagIndex].name)
+                if (allTags != ReferenceManager.instance.wordTags[refM.allTagIndex].name)
                 {
                     wordCount += GetTagWordCount(allTags);
                 }

@@ -2,68 +2,93 @@
 tags:
 ---
 <<showcharactername Managers Stubi>>
-<<set $gotPresentName to getinfo("gotPresentName", 0)>>
+<<set $gotPresentName to getinfo("gotPresentValue", 0)>>
 <<if not isvisited("Stubi","Start")>>
     [[Stubi.Introduction]]
-<<elseif $gotPresentName eq "">>
-    [[Stubi.RetryPresent]]
-<<else>>
+<<elseif $gotPresentName eq "expensive">>
     [[Stubi.Idle]]
+<<else>>
+    [[Stubi.RetryPresent]]
 <<endif>>
 ===
 
 title: Stubi.Introduction
 tags:
 ---
-Hahaha the wedding is amazing.
-Hahaha....
-Jordan hasn't even shown up yet,
-and I'm already drunk... hahaha
-Such a great party, huh?
+Such a great party, hm?
+We don't know each other, do we?
+I'm Stubi, very pleased to meet you!
+So... 
+Let's talk buisness...
 <<displaypromptmenu Managers GenAAA>>
-I paid for all of this... Did you know?
-<<set $didKnow to react("value", "", "Stubi")>>
-<<if $didKnow>>
-    Good! Hahaha...
+Do you like treasures?
+<<set $likesTreasures to react("value", "", "Stubi")>>
+<<if $likesTreasures>>
+    Good!
+    What is a life without hunting treasures!
 <<else>>
-    You should, though... Hahaha
+    Oh, you just say that!
+    Who doesn't love hunting for treasure!
 <<endif>>
 But don't worry!
-Since I'm Renna's richest friend...
-...it's really not a problem.
-[[Stubi.WhatPresent]]
+We can go on a treasure hunt together.
+[[Stubi.FindPresents]]
 ===
 
-title: Stubi.WhatPresent
+title: Stubi.FindPresents
 tags:
 ---
-Tell me...
+I want you to talk to the people here... 
+And find out, what the most expensive present is,
+that someone got for the couple!
+<<setquest Managers QuestAAE>>
+Oh? What we do once we have that information?
+Don't worry about that! *wink*
+===
+
+title: Stubi.FoundPresent
+---
+So... Have you found out about the treasure...
 <<showicantsay Managers>>
-<<displaypromptmenu Managers ItemAAA>>
-What... *hic* present did *you* get them?
+<<displaypromptmenu Managers ItemAAC>>
+Err... I mean... the presents?
 <<set $cantsay to icantsay("Stubi", "WontTell")>>
-<<set $gotPresentName to react("name", "gotPresentName", "Stubi")>>
+<<set $gotPresentName to react("name", "", "Stubi")>>
 <<set $gotPresentValue to react("value", "gotPresentValue", "Stubi")>>
 <<if $gotPresentValue eq "cheap">>
-    ... A ... {$gotPresentName}?
-    Ha hahaha... That's... cute...
-    I mean that costs almost nothing.
-    Ha hahaha...
+    {$gotPresentName}? ...
+    Hm. That is not very impressive.
+    I mean... it costs almost nothing.
+    You should keep searching...
 <<elseif $gotPresentValue eq "moderate">>
-    A {$gotPresentName}?
-    I mean that's a cool thing,
-    but really, was it *that* expensive?
+    {$gotPresentName}? I mean...
+    That's cool, but really, it doesn't seem too special. 
+    You should keep looking...
 <<elseif $gotPresentValue eq "expensive">>
     ... Wow. Okay now *that* is a cool present.
-    ...
-    ... anyways...
+    ........
+    [[Stubi.ThankYou]]
 <<endif>>
+===
+
+title: Stubi.ThankYou
+tags:
+---
+<<completequest Managers QuestAAE>>
+Thank you so much for that information!
+This is for you. 
+<<showcharactername Managers Action>>
+<i><color=grey>Stubi hands you a wad of cash.</i>
+<i><color=grey>It's a lot of money.</i>
+<<showcharactername Managers Stubi>>
+I hope you had fun hunting treasure!
+<size=70%> Now I will go on my own little treaure hunt...
 ===
 
 title: Stubi.RetryPresent
 tags:
 ---
-You again... hahaha...
+It's you! Have you asked around?
 [[Stubi.WhatPresent]]
 ===
 
@@ -76,10 +101,7 @@ Okay then... hahaha...
 title: Stubi.Idle
 tags:
 ---
-Hahaha ha ha hahaha. 
-It's amazing....
-Jordan hasn't even shown up yet,
-and I'm already drunk... hahaha
+Hahaha ha ha hahaha. What a great party!
 ===
 
 title: Stubi.ICantSay

@@ -23,9 +23,9 @@ public class WordClickManager : MonoBehaviour
         {
             CurrentWord = value;
             if (value == null)
-                DialogueInputManager.instance.continueEnabledDrag = true;
+                DialogueInputManager.instance.continueHandler.OnEndDrag();
             else
-                DialogueInputManager.instance.continueEnabledDrag = false;
+                DialogueInputManager.instance.continueHandler.OnStartDrag();
         }
     }
     [HideInInspector] public GameObject CurrentWord;

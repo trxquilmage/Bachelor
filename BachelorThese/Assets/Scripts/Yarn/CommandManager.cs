@@ -110,9 +110,7 @@ public class CommandManager : MonoBehaviour
     {
         QuestManager.instance.SetQuest(questName);
     }
-    /// <summary>
-    /// Set a quest that is in the questlog to completed
-    /// </summary>
+
     [YarnCommand("completequest")]
     public void CompleteQuest(string questName)
     {
@@ -124,10 +122,6 @@ public class CommandManager : MonoBehaviour
         return QuestManager.instance.CheckIfQuestIsActive(questName);
     }
 
-    /// <summary>
-    /// show the i cant say button
-    /// </summary>
-    /// <param name="characterName"></param>
     [YarnCommand("showicantsay")]
     public void ICantSay()
     {
@@ -136,10 +130,6 @@ public class CommandManager : MonoBehaviour
         else
             refM.iCantSayButton.SetActive(true);
     }
-    /// <summary>
-    /// Change speaking character's name
-    /// </summary>
-    /// <param name="characterName"></param>
     [YarnCommand("showcharactername")]
     public void ShowCharacterName(string[] characterName)
     {
@@ -150,10 +140,6 @@ public class CommandManager : MonoBehaviour
         }
         refM.interactableTextList[refM.characterNameIndex].text = name;
     }
-    /// <summary>
-    /// Set a character as a companion, who follows you around
-    /// </summary>
-    /// <param name="characterName"></param>
     [YarnCommand("settocompanion")]
     public void SetToCompanion(string characterName)
     {
@@ -164,10 +150,6 @@ public class CommandManager : MonoBehaviour
                 break;
             }
     }
-    /// <summary>
-    /// Open Prompt Menu and related question
-    /// </summary>
-    /// <param name="promptQ"></param>
     [YarnCommand("displaypromptmenu")]
     public void DisplayPromptMenu(string promptQ)
     {
@@ -175,10 +157,6 @@ public class CommandManager : MonoBehaviour
             refM.promptAnswer, refM.promptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptBubbles);
     }
-    /// <summary>
-    /// Open Ask Prompt Menu and related question
-    /// </summary>
-    /// <param name="promptQ"></param>
     [YarnCommand("displaypromptmenuask")]
     public void DisplayPromptMenuAsk(string promptQ)
     {
@@ -189,12 +167,6 @@ public class CommandManager : MonoBehaviour
         //activate the "continue" button above the Ask button
         refM.askContinueButton.SetActive(true);
     }
-    /// <summary>
-    /// Goes through all subtags of the main tag 
-    /// additionally takes the name of a value it is supposed to save
-    /// </summary>
-    /// <param name="lookingFor"></param>
-    /// <returns></returns>
     public Yarn.Value ReactToAnswer(string lookingFor, string saveIn, string npcName)
     {
         if (!inICantSay)
@@ -210,12 +182,6 @@ public class CommandManager : MonoBehaviour
     {
         return InfoManager.instance.GetInfo(lookingFor, chosenValue);
     }
-    /// <summary>
-    /// Check, wheter a node has already been visited. if not, save it in the list
-    /// </summary>
-    /// <param name="characterName"></param>
-    /// <param name="nodeName"></param>
-    /// <returns></returns>
     public bool GetVisited(string characterName, string nodeName)
     {
         bool nodeAlreadyExists = false;
@@ -244,18 +210,10 @@ public class CommandManager : MonoBehaviour
         }
         return nodeAlreadyExists;
     }
-    /// <summary>
-    /// Checks, wheter the dialogue is currently running, or if we just randomly asked a question outside the dialogue
-    /// </summary>
-    /// <returns></returns>
     public bool CheckIfOnlyAsk()
     {
         return DialogueManager.instance.isOnlyInAsk;
     }
-    /// <summary>
-    /// Check if "I can't say" was pressed, if yes, jump to node "ICantSay"
-    /// </summary>
-    /// <returns></returns>
     public bool ICantSay(DialogueRunner runner, string characterName, string nextNode)
     {
         if (iCantSay)
@@ -263,21 +221,13 @@ public class CommandManager : MonoBehaviour
         StartCoroutine(ICantSayNextFrame(runner, characterName, nextNode));
         return false;
     }
-    /// <summary>
-    /// Continue is triggered twice when calling a new dialogue, whic essentially skips the first line of every new called dialogue
-    /// because of that we wait 1 frame
-    /// </summary>
-    /// <param name="runner"></param>
-    /// <param name="characterName"></param>
-    /// <param name="nextNode"></param>
-    /// <returns></returns>
-    IEnumerator ICantSayNextFrame(DialogueRunner runner, string characterName, string nextNode)
+    IEnumerator ICantSayNextFrame(DialogueRunner runner, string characterName, string nextNode) // Continue is triggered twice when calling a new dialogue, which essentially skips the first line of every new called dialogue
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         yield return delay;
         currentCharacterName = "";
         currentNextNodeName = "";
-        //check if "I cant say" was pressed
+
         if (iCantSay)
         {
             iCantSay = false;
@@ -286,10 +236,18 @@ public class CommandManager : MonoBehaviour
             WordUtilities.JumpToNode(runner, "ICantSay");
         }
     }
-    /// <summary>
-    /// is called when the node "icantsay" is done, then waits one frame (so there isnt any problem with the MarkLineComplete-Command)
-    /// the goes to "nextcurrentnode", which is set in the "ICantSay()" function
-    /// </summary>
+    [YarnCommand("starttutorialstep")]
+    public void DisableContinueTutorial(string tutorialStepNumber)
+    {
+        TutorialManager.instance.DisableContinueUntilTutorialStepIsDone(int.Parse(tutorialStepNumber));
+    }
+
+    [YarnCommand("tutorialaskquestionsdone")]
+    public void TutorialDoneAskQuestions()
+    {
+        TutorialManager.instance.AskQuestionsDone();
+    }
+
     [YarnCommand("onnodecomplete")]
     public void OnNodeComplete()
     {
@@ -297,16 +255,11 @@ public class CommandManager : MonoBehaviour
     }
     IEnumerator OnNodeCompleteNextFrame()
     {
-        DialogueRunner runner;
-        if (PlayerInputManager.instance.inAsk)
-            runner = refM.askRunner;
-        else
-            runner = refM.runner;
+        DialogueRunner runner = (PlayerInputManager.instance.inAsk) ? refM.askRunner: refM.runner;
 
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         yield return delay;
 
-        //set next node
         WordUtilities.JumpToNode(runner, currentNextNodeName);
         currentCharacterName = "";
         currentNextNodeName = "";

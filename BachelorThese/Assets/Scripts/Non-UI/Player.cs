@@ -86,17 +86,19 @@ public class Player : MonoBehaviour
     }
     public void TurnTowardsNPC(GameObject npc)
     {
-        StartCoroutine(Turn((npc.transform.position - transform.position).normalized));
+        StartCoroutine(Turn(npc.transform.position - transform.position));
     }
     IEnumerator Turn(Vector3 targetDirection)
     {
-        targetDirection = Vector3.Scale(targetDirection, new Vector3(1, 0, 1));
+        targetDirection = Vector3.Scale(targetDirection, new Vector3(1, 0, 1)).normalized;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
         while (Vector3.Dot(targetDirection, animator.transform.forward) < 0.99f)
         {
             animator.transform.forward = Vector3.Lerp(animator.transform.forward, targetDirection, 0.4f);
             yield return delay;
         }
+        animator.transform.forward = targetDirection;
     }
     void EnterMenu()
     {

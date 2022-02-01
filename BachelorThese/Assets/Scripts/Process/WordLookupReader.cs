@@ -260,17 +260,7 @@ public class WordLookupReader : MonoBehaviour
                 }
             }
         }
-        //is this just a regular word?
-        if (wordTag.ContainsKey(word))
-        {
-            isWord = true;
-            wordCollection = new TMP_WordInfo[] { wordInfo };
-            //Might be temporary, but delete long word progress, when finding a short word
-            currentReferenceWords = new List<string[]>();
-            currentWordList = new List<TMP_WordInfo>();
-            currentLongWordIndex = 0;
-            return isWord;
-        }
+        
         //is this the first word of a longer word chain?
         if (currentWordList.Count == 0)
         {
@@ -287,6 +277,17 @@ public class WordLookupReader : MonoBehaviour
                 currentLongWordIndex = 0;
                 return false;
             }
+        }
+        //is this just a regular word?
+        if (wordTag.ContainsKey(word))
+        {
+            isWord = true;
+            wordCollection = new TMP_WordInfo[] { wordInfo };
+            //Might be temporary, but delete long word progress, when finding a short word
+            currentReferenceWords = new List<string[]>();
+            currentWordList = new List<TMP_WordInfo>();
+            currentLongWordIndex = 0;
+            return isWord;
         }
         // is this word on the block list?
         if (ReferenceManager.instance.blockListOn && blocked.Contains(word))
