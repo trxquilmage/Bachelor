@@ -175,6 +175,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         Bounds bounds = text.textBounds;
         float width = bounds.size.x + bubbleOffset.offsetSelected.x;
         float height = bounds.size.y + bubbleOffset.offsetSelected.y;
+
+        RectTransform transformHoleImage = rTransform.parent.GetComponentInChildren<Image>().rectTransform;
+        if (transformHoleImage != rTransform)
+        {
+            width = bounds.size.x + 15;
+            transformHoleImage.sizeDelta = new Vector2(15, height);
+        }
+
         rTransform.sizeDelta = new Vector2(width, height);
     }
     protected void NameTextCorrectly()
@@ -328,7 +336,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             child = InstantiateNewLineSelected();
 
             relatedText = child.GetComponentInChildren<TMP_Text>();
-            Image relatedImage = child.GetComponentInChildren<Image>();
+
+            Image relatedImage = GetRelatedImage(child);
 
             FillLineWithText(sourceText, startEnd);
             ScaleRectSelected(relatedText, relatedImage.rectTransform);
@@ -354,7 +363,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         {
             child = InstantiateNewLineSelected();
             relatedText = child.GetComponentInChildren<TMP_Text>();
-            Image relatedImage = child.GetComponentInChildren<Image>();
+            Image relatedImage = GetRelatedImage(child);
 
             FillLineWithText(sourceText, startEnd);
             ScaleRectSelected(relatedText, relatedImage.rectTransform);
@@ -363,6 +372,13 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         }
         DestroyFirstChild();
         EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
+    }
+    protected Image GetRelatedImage(GameObject imageParent)
+    {
+        foreach (Image image in imageParent.GetComponentsInChildren<Image>())
+            if (image.tag == "WordCard")
+                return image;
+        return imageParent.GetComponentInChildren<Image>();
     }
     protected void UpdateImageAndScaleForAllLines()
     {
@@ -376,7 +392,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     protected void UpdateLineImageAndScale()
     {
-        Image wordCard = GetComponentInChildren<Image>();
+        Image wordCard = GetRelatedImage(this.gameObject);
         RectTransform firstChild = wordCard.GetComponent<RectTransform>();
 
         wordCard.sprite = ReferenceManager.instance.wordSelectedSprite;
@@ -857,9 +873,9 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         if (round > 0)
         {
             GameObject tape = Instantiate(refM.tapePrefab, image.transform, false);
-            tape.transform.localPosition += new Vector3(40, 20, 0);
+            tape.transform.localPosition += new Vector3(15, 20, 0);
             tape = Instantiate(refM.tapePrefab, image.transform, false);
-            tape.transform.localPosition += new Vector3(90, 18, 0);
+            tape.transform.localPosition += new Vector3(40, 18, 0);
             tape.transform.localScale = Vector3.Scale(tape.transform.localScale, new Vector3(1, -1, 1));
         }
     }

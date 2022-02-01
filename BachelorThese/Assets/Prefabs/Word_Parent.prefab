@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetHighlighted: {x: 40, y: 6}
-  offsetSelected: {x: 60, y: 8}
+  offsetSelected: {x: 50, y: 8}
 --- !u!1001 &6437647085327351411
 PrefabInstance:
   m_ObjectHideFlags: 0

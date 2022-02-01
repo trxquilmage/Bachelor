@@ -14382,8 +14382,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -1.32}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -80.3, y: 1.300003}
-  m_SizeDelta: {x: 97.03, y: 216.9}
+  m_AnchoredPosition: {x: -80.3, y: 1.949997}
+  m_SizeDelta: {x: 97.03, y: 247.82}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &779717324
 MonoBehaviour:
@@ -38464,11 +38464,11 @@ MonoBehaviour:
     tagColor: {r: 0, g: 0, b: 0, a: 0}
     tagButton: {fileID: 0}
     buttonIsActive: 0
-  - name: Item
+  - name: Adjective
     tagColor: {r: 0, g: 0, b: 0, a: 0}
     tagButton: {fileID: 0}
     buttonIsActive: 0
-  - name: Adjective
+  - name: Item
     tagColor: {r: 0, g: 0, b: 0, a: 0}
     tagButton: {fileID: 0}
     buttonIsActive: 0
