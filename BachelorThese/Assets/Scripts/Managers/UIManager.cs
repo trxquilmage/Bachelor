@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
         wcM = WordCaseManager.instance;
         wclM = WordClickManager.instance;
         scaleFactor = refM.canvas.scaleFactor;
-        ColorUI();
+        ColorUIOnGameStart();
         FillActiveEffects();
     }
     private void Update()
@@ -49,19 +49,18 @@ public class UIManager : MonoBehaviour
     /// Portray The E-Button Feedack On The Canvas
     /// </summary>
     /// <param name="target"></param>
-    public void PortrayButton(GameObject target, Image sprite)
+    public void PortrayOrHideInputButtonFeedback(GameObject target, Image sprite)
     {
-        if (target == null) //if null hide button
+        if (target == null)
         {
             sprite.enabled = false;
             return;
         }
 
-        //place e button correctly
         Vector2 targetInScreenSpace = Camera.main.WorldToScreenPoint(target.transform.position) / refM.canvas.scaleFactor;
-        sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 100f + Vector2.up * 100;
+        sprite.transform.localPosition = targetInScreenSpace + Vector2.right * 70;
 
-        sprite.enabled = true; //show e button
+        sprite.enabled = true;
     }
     /// <summary>
     /// Changes the trashcan icon and makes sure that putting the word back is disabled while over the can
@@ -94,7 +93,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Gives the correct colors to all UI Elements
     /// </summary>
-    void ColorUI()
+    void ColorUIOnGameStart()
     {
         //Declare variables
         GameObject tagParent = refM.tagButtonParent;

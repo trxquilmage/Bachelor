@@ -24,8 +24,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    GameObject target;
-    GameObject companionTarget;
+    NPC npcTarget;
+    Companion companionTarget;
+    GameObject objectTarget;
     Rigidbody rigid;
     ReferenceManager refM;
     Animator animator;
@@ -113,16 +114,16 @@ public class Player : MonoBehaviour
     {
         if (!DialogueManager.instance.isInDialogue && !DialogueManager.instance.isOnlyInAsk)
         {
-            if (target != null)
+            if (npcTarget != null && npcTarget.TryGetComponent<NPC>(out NPC npc) && npc.IsInRangeToPlayer())
             {
                 StopWalking();
-                if (target.TryGetComponent<NPC>(out NPC npc))
-                {
-                    TurnTowardsNPC(npc.gameObject);
-                    DialogueManager.instance.StartConversationWithNPC(npc);
-                }
-                else if (target.TryGetComponent<InteractableObject>(out InteractableObject iO))
-                    iO.Interact(true);
+                TurnTowardsNPC(npc.gameObject);
+                DialogueManager.instance.StartConversationWithNPC(npc);
+            }
+            else if (objectTarget != null && objectTarget.TryGetComponent<InteractableObject>(out InteractableObject iO))
+            {
+                StopWalking();
+                iO.Interact(true);
             }
         }
     }
@@ -158,7 +159,7 @@ public class Player : MonoBehaviour
             {
                 if (allNPCs[i].IsInRangeToPlayer())
                 {
-                    target = allNPCs[i].gameObject;
+                    npcTarget = allNPCs[i];
                     return true;
                 }
             }
@@ -172,7 +173,7 @@ public class Player : MonoBehaviour
         {
             if (allNPCs[i].inParty && allNPCs[i].IsInRangeToPlayer())
             {
-                companionTarget = allNPCs[i].gameObject;
+                companionTarget = allNPCs[i];
                 return true;
             }
         }
@@ -185,7 +186,7 @@ public class Player : MonoBehaviour
         {
             if (allObjects[i].GetComponentInChildren<InteractableObject>().IsInRangeToPlayer())
             {
-                target = allObjects[i].gameObject;
+                objectTarget = allObjects[i].gameObject;
                 return true;
             }
         }
@@ -198,21 +199,21 @@ public class Player : MonoBehaviour
         {
             if (CheckForCompanionRange())
             {
-                UIManager.instance.PortrayButton(companionTarget, refM.fButtonSprite);
+                UIManager.instance.PortrayOrHideInputButtonFeedback(companionTarget.pivotForE, refM.fButtonSprite);
             }
             else if (ReferenceManager.instance.fButtonSprite.enabled)
-                UIManager.instance.PortrayButton(null, refM.fButtonSprite);
+                UIManager.instance.PortrayOrHideInputButtonFeedback(null, refM.fButtonSprite);
 
             if (CheckForNPCRange())
             {
-                UIManager.instance.PortrayButton(target, refM.eButtonSprite);
+                UIManager.instance.PortrayOrHideInputButtonFeedback(npcTarget.pivotForE, refM.eButtonSprite);
             }
             else if (CheckForInteractableObjectRange())
             {
-                UIManager.instance.PortrayButton(target, refM.eButtonSprite);
+                UIManager.instance.PortrayOrHideInputButtonFeedback(objectTarget, refM.eButtonSprite);
             }
             else if (ReferenceManager.instance.eButtonSprite.enabled)
-                UIManager.instance.PortrayButton(null, refM.eButtonSprite);
+                UIManager.instance.PortrayOrHideInputButtonFeedback(null, refM.eButtonSprite);
         }
     }
 }

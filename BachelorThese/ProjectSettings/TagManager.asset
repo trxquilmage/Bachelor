@@ -7,6 +7,7 @@ TagManager:
   - IgnoreImageCast
   - TextOnOverlayCanvas
   - WordCard
+  - PivotForE
   layers:
   - Default
   - TransparentFX

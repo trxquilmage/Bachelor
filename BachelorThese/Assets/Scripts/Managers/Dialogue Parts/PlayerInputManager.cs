@@ -33,13 +33,11 @@ public class PlayerInputManager : MonoBehaviour
         //disable askrunner
         ReferenceManager.instance.askRunner.gameObject.SetActive(false);
     }
-    /// <summary>
-    /// saves the Info given, after pressing continue
-    /// </summary>
+
     public void SaveGivenAnswer()
     {
         //get the list we should save the answer into
-        if (CheckForActivePromptBubbleParent(out PromptBubble[] promptBubbles))
+        if (CheckForAnyActivePromptBubbleParents(out PromptBubble[] promptBubbles))
         {
             //go through all prompts and look for one that is filled
             foreach (PromptBubble prompt in promptBubbles)
@@ -50,7 +48,7 @@ public class PlayerInputManager : MonoBehaviour
                     Bubble bubble = prompt.child.GetComponent<Bubble>();
                     if (bubble is Word)
                         answer = new AnswerData() { wordData = (WordData)bubble.data, bubbleData = bubble.data };
-                    
+
                     if (promptBubbles == currentPromptBubbles)
                         givenAnswer = answer;
                     else if (promptBubbles == currentPromptAskBubbles)
@@ -59,13 +57,11 @@ public class PlayerInputManager : MonoBehaviour
             }
         }
     }
-    /// <summary>
-    /// see if there are any prompt bubbles 
-    /// </summary>
-    public bool CheckForPrompts(out PromptBubble[] pB)
+
+    public bool CheckIfThereAreAnyPromptBubbles(out PromptBubble[] pB)
     {
         List<PromptBubble> pBList = new List<PromptBubble>();
-        if (CheckForActivePromptBubbleParent(out PromptBubble[] promptBubbles))
+        if (CheckForAnyActivePromptBubbleParents(out PromptBubble[] promptBubbles))
         {
             foreach (PromptBubble prompt in promptBubbles)
             {
@@ -81,16 +77,11 @@ public class PlayerInputManager : MonoBehaviour
         pB = pBList.ToArray();
         return false;
     }
-    /// <summary>
-    /// See if there currently are any prompt bubbles with the fitting tag 
-    /// </summary>
-    /// <param name="tag"></param>
-    /// <param name="pB"></param>
-    /// <returns></returns>
-    public bool CheckForPromptsWithTag(string tag, out PromptBubble pB)
+
+    public bool CheckIfThereArePromptBubblesWithTag(string tag, out PromptBubble pB)
     {
         pB = null;
-        if (CheckForPrompts(out PromptBubble[] promptBubbles))
+        if (CheckIfThereAreAnyPromptBubbles(out PromptBubble[] promptBubbles))
         {
             foreach (PromptBubble bubble in promptBubbles)
             {
@@ -103,12 +94,8 @@ public class PlayerInputManager : MonoBehaviour
         }
         return false;
     }
-    /// <summary>
-    /// See if any promptbubbleparent is active right now
-    /// </summary>
-    /// <param name="pBParent"></param>
-    /// <returns></returns>
-    public bool CheckForActivePromptBubbleParent(out PromptBubble[] pBParent)
+
+    public bool CheckForAnyActivePromptBubbleParents(out PromptBubble[] pBParent)
     {
         pBParent = null;
         if (inAsk)
@@ -121,13 +108,11 @@ public class PlayerInputManager : MonoBehaviour
             return false;
         return true;
     }
-    /// <summary>
-    /// Checks, whether all prompts are filled at the moment
-    /// </summary>
-    public bool CheckIfAllPromptsAreFilled()
+
+    public bool CheckIfAllActivePromptsAreFilled()
     {
         bool allFilled = true;
-        if (CheckForActivePromptBubbleParent(out PromptBubble[] promptBubbles))
+        if (CheckForAnyActivePromptBubbleParents(out PromptBubble[] promptBubbles))
         {
             foreach (PromptBubble prompt in promptBubbles)
             {
@@ -140,13 +125,10 @@ public class PlayerInputManager : MonoBehaviour
         }
         return false;
     }
-    /// <summary>
-    /// Save a prompt, after it was created
-    /// </summary>
-    /// <param name="bubble"></param>
-    public void SavePrompt(PromptBubble bubble)
+
+    public void SavePromptAfterCreation(PromptBubble bubble)
     {
-        if (CheckForActivePromptBubbleParent(out PromptBubble[] array))
+        if (CheckForAnyActivePromptBubbleParents(out PromptBubble[] array))
         {
             for (int i = 0; i < array.Length; i++)
             {
@@ -158,10 +140,7 @@ public class PlayerInputManager : MonoBehaviour
             }
         }
     }
-    /// <summary>
-    /// Delete all prompts on the screen
-    /// </summary>
-    public void DeleteAllPrompts(PromptBubble[] promptBubbles)
+    public void DeleteAllActivePrompts(PromptBubble[] promptBubbles)
     {
         for (int i = 0; i < promptBubbles.Length; i++)
         {
@@ -188,11 +167,11 @@ public class PlayerInputManager : MonoBehaviour
         else
             data = givenAnswerAsk;
 
-        if (data.wordData != null) //is word
+        if (data.wordData != null)
         {
             Bubble.TagObject tagObj = data.wordData.tagObj;
             val = InfoManager.instance.FindValue(data.wordData, lookingFor);
-            //save the required Info
+
             if (CheckIfShouldSave(saveIn))
             {
                 info.SaveInfo(saveIn, val, NPCname, tagObj);
@@ -201,45 +180,48 @@ public class PlayerInputManager : MonoBehaviour
 
         return val;
     }
-    /// <summary>
-    /// wites out the given prompt & adds the prompt bubbles
-    /// </summary>
-    /// <param name="promptID"></param>
-    /// <param name="promptMenu"></param>
-    /// <param name="promptAnswer"></param>
-    /// <param name="promptQuestion"></param>
     public void GeneratePromptBubble(string promptID, GameObject promptMenu, TMP_Text promptAnswer, Transform bubbleParent, PromptBubble[] saveIn)
     {
-        bool isAsk = (saveIn == currentPromptAskBubbles) ? true : false;
+        bool isAsk = saveIn == currentPromptAskBubbles;
         if (isAsk)
             diManager.continueHandler.OnAskPromptStart();
         else
             diManager.continueHandler.OnPromptStart();
-            
 
+        
         promptMenu.SetActive(true);
 
-        //if prompt exists
-        if (wlReader.questionTag.ContainsKey(promptID))
+        if (DoesPromptIDExist(promptID))
         {
             promptAnswer.ForceMeshUpdate();
-            //before filling in new text into the prompt menu, empty the array, as it doesnt do that
             promptAnswer.text = wlReader.questionTag[promptID][0];
             promptAnswer.ForceMeshUpdate();
         }
         else
             Debug.Log("The prompt {0} does not exist in the lookup table" + promptID);
 
-        //show required text prompts OVER the text at |Tag|
         string subtags = (wlReader.questionTag[promptID].Length > 1) ? wlReader.questionTag[promptID][1] : "";
-        WordUtilities.CheckForPromptInputs(promptAnswer, promptAnswer.textInfo, bubbleParent, subtags); // textinfo somehow gets deleted or something after that
-
-        //make interactable
-        StartCoroutine(diManager.ClosePromptMenuAfterContinue(promptMenu));// tell the diManager what window to close when done
+        // textinfo somehow gets deleted or something after that, so we need to pass it in
+        GameObject prompt = WordUtilities.CheckForPromptInputsAndCreatePrompt(promptAnswer, promptAnswer.textInfo, bubbleParent, subtags);
+        
+        OnPromptStart(prompt);
+        StartCoroutine(diManager.ClosePromptMenuAfterContinue(promptMenu));
     }
-    /// <summary>
-    /// Checks, wheter the data should be saved somewhere
-    /// </summary>
+
+    void OnPromptStart(GameObject prompt)
+    {
+        WordCaseManager.instance.StartGreyOut(prompt);
+    }
+
+    public void OnPromptEnd()
+    {
+        WordCaseManager.instance.EndGreyOut();
+    }
+
+    bool DoesPromptIDExist(string promptID)
+    {
+        return wlReader.questionTag.ContainsKey(promptID);
+    }
     bool CheckIfShouldSave(string saveIn)
     {
         if (saveIn != "")
@@ -283,12 +265,12 @@ public class PlayerInputManager : MonoBehaviour
 
     public void SendAskButton()
     {
-        if (CheckIfAllPromptsAreFilled())
+        if (CheckIfAllActivePromptsAreFilled())
         {
             SaveGivenAnswer();
             diManager.continueHandler.OnAskPromptEnd();
             //Delete existing prompts
-            DeleteAllPrompts(currentPromptAskBubbles);
+            DeleteAllActivePrompts(currentPromptAskBubbles);
             //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
             //Reload, so that the missing word comes back
@@ -327,7 +309,7 @@ public class PlayerInputManager : MonoBehaviour
         if (!wasAborted)
         {
             diManager.continueHandler.OnAskPromptEnd();
-            DeleteAllPrompts(currentPromptAskBubbles);
+            DeleteAllActivePrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents();
             refM.askField.SetActive(false);
@@ -356,7 +338,7 @@ public class PlayerInputManager : MonoBehaviour
         }
         DialogueManager.instance.isOnlyInAsk = false;
         diManager.continueHandler.OnAskPromptEnd();
-        DeleteAllPrompts(currentPromptAskBubbles);
+        DeleteAllActivePrompts(currentPromptAskBubbles);
         WordClickManager.instance.currentWord = null;
         WordCaseManager.instance.ReloadContents();
         // Close Prompt Field
@@ -378,12 +360,12 @@ public class PlayerInputManager : MonoBehaviour
     }
     public void ContinueButtonAsk()
     {
-        if (CheckIfAllPromptsAreFilled())
+        if (CheckIfAllActivePromptsAreFilled())
         {
             SaveGivenAnswer();
             diManager.Continue(ReferenceManager.instance.askDialogueUI);
             diManager.continueHandler.OnAskPromptEnd();
-            DeleteAllPrompts(currentPromptAskBubbles);
+            DeleteAllActivePrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents();
             ReferenceManager.instance.askField.SetActive(false);

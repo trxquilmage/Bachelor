@@ -9,6 +9,7 @@ public class WordCaseManager : Case
     //Handles everything happening in the word case
     public static WordCaseManager instance;
 
+
     [HideInInspector]
     public string openTag
     {
@@ -43,13 +44,12 @@ public class WordCaseManager : Case
     string OverrideTag = null;
     [HideInInspector] public Dictionary<string, BubbleData[]> tagRelatedWords;
     bool onlyShowFavorites;
+    GreyOutManager greyOutManager;
 
     public void Start()
     {
         Initialize();
     }
-
-    #region OVERRIDES
     public override void Awake()
     {
         instance = this;
@@ -57,6 +57,19 @@ public class WordCaseManager : Case
     public override void Initialize()
     {
         base.Initialize();
+        SetValues();
+    }
+    void SetValues()
+    {
+        greyOutManager = new GreyOutManager();
+    }
+    public void StartGreyOut(GameObject prompt)
+    {
+        greyOutManager.StartGreyOut(prompt);
+    }
+    public void EndGreyOut()
+    {
+        greyOutManager.EndGreyOut();
     }
     public override void SetContents(BubbleData[] value)
     {
@@ -225,8 +238,7 @@ public class WordCaseManager : Case
     public override void SpawnContents()
     {
         RearrangeContents();
-        // Load words of current tag
-        // if tag isnt "AllWords"
+
         if (openTag != refM.wordTags[refM.allTagIndex].name)
         {
             foreach (BubbleData data in contents)
@@ -238,7 +250,6 @@ public class WordCaseManager : Case
 
             }
         }
-        // go through ALL tags
         else
         {
             List<BubbleData> allWordsTemp = new List<BubbleData>();
@@ -257,6 +268,12 @@ public class WordCaseManager : Case
                         SpawnBubbleInCase((WordData)data);
             }
         }
+    }
+    public override GameObject SpawnBubbleInCase(BubbleData data)
+    {
+        GameObject spawnedObject = base.SpawnBubbleInCase(data);
+        greyOutManager.GreyOutWord(spawnedObject.GetComponent<Bubble>());
+        return spawnedObject;
     }
     public override void UpdateContentCount()
     {
@@ -277,7 +294,6 @@ public class WordCaseManager : Case
         ((WordData)bubble.data).origin = origin;
         base.TryToSaveTheBubble(bubble);
     }
-    #endregion
     public void ChangeToTag(TagButtonInfo info)
     {
         onlyShowFavorites = false;
@@ -359,5 +375,46 @@ public class WordCaseManager : Case
     {
         if (WordClickManager.instance.mouseOverUIObject == "wordCase")
             base.ChangeScrollbarValue(scrollValue);
+    }
+}
+
+public class GreyOutManager
+{
+    ReferenceManager refM;
+    bool currentlyInPrompt;
+    bool greyOutTurnedOn;
+    PromptBubble currentPrompt;
+
+    public GreyOutManager()
+    {
+        SetValues();
+    }
+    void SetValues()
+    {
+        refM = ReferenceManager.instance;
+        greyOutTurnedOn = refM.greyOutUnfittingWordsForPrompts;
+    }
+
+    public void StartGreyOut(GameObject prompt)
+    {
+        currentlyInPrompt = true;
+        WordCaseManager.instance.ReloadContents();
+        currentPrompt = prompt.GetComponent<PromptBubble>();
+    }
+
+    public void EndGreyOut()
+    {
+        currentlyInPrompt = false;
+        WordCaseManager.instance.ReloadContents();
+        currentPrompt = null;
+    }
+
+    public void GreyOutWord(Bubble word)
+    {
+        if (currentlyInPrompt && greyOutTurnedOn)
+        {
+            //if (currentPrompt.)
+            word.effects.ColorWordGrey();
+        }
     }
 }

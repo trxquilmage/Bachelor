@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using Pinwheel.UIEffects;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.VFX;
-using Yarn.Unity;
 
 public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler
 {
     [HideInInspector] public TMP_Text relatedText;
     [HideInInspector] public BubbleData data;
+    [HideInInspector] public BubbleEffects effects;
     [HideInInspector] public GameObject prefabReference;
     [HideInInspector] public GameObject wordParent;
     [HideInInspector] public BubbleOffset bubbleOffset;
@@ -21,6 +20,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
     [HideInInspector] public bool wasDragged; //checks if the object was actually dragged
     [HideInInspector] public bool fadingOut;
+    [HideInInspector] public bool currentlyRotatingAsFeedback;
 
     [HideInInspector] public TMP_WordInfo originalWordInfo;
     [HideInInspector] public TMP_Text originalText;
@@ -39,7 +39,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         public List<Yarn.Value> allGivenValues;
     }
 
-    #region VIRTUAL
     public virtual void Awake()
     {
         refM = ReferenceManager.instance;
@@ -75,6 +74,17 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public virtual void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
+        FillData(bubbleData);
+        relatedText = transform.GetComponentInChildren<TMP_Text>();
+
+        NameTextCorrectly();
+        ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
+        wordSize = this.GetComponent<RectTransform>().sizeDelta;
+
+        CreateEffectsAndColorWordToTag();
+    }
+    protected void FillData(BubbleData bubbleData)
+    {
         if (data == null)
             data = new BubbleData();
 
@@ -86,14 +96,11 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.lineLengths = bubbleData.lineLengths;
         data.isLongWord = bubbleData.isLongWord;
         data.isFavorite = bubbleData.isFavorite;
-
-        relatedText = transform.GetComponentInChildren<TMP_Text>();
-
-        NameTextCorrectly();
-        ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
-        wordSize = this.GetComponent<RectTransform>().sizeDelta;
-
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
+    }
+    protected void CreateEffectsAndColorWordToTag()
+    {
+        effects = new BubbleEffects(this);
+        effects.ColorWordToTag();
     }
     protected virtual void DroppedOverWordCase()
     {
@@ -126,9 +133,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             OnBeginDragFunction();
         }
     }
-    #endregion
-
-    #region NOT VIRTUAL
     protected void OnBeginDragFunction()
     {
         if (!fadingOut)
@@ -458,6 +462,40 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             MakeBubbleInvisible(false);
         }
     }
+    public void ShakeBubbleAsFeedbackRotated()
+    {
+        if (!currentlyRotatingAsFeedback)
+            StartCoroutine(ShakeBubbleRotated());
+    }
+    protected IEnumerator ShakeBubbleRotated()
+    {
+        currentlyRotatingAsFeedback = true;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        RectTransform rT = GetComponent<RectTransform>();
+        Vector3 startRotation = rT.localEulerAngles;
+        Vector3 targetRotRight = startRotation + (Vector3.forward * 5);
+        Vector3 targetRotLeft = startRotation + (Vector3.forward * -5);
+
+        float t;
+        float timer = 0;
+        while (timer < shakeTime)
+        {
+            timer += Time.deltaTime;
+            if (timer < shakeTime / 6)
+                t = WordUtilities.Remap(timer, 0, shakeTime / 6, 0.5f, 1);
+            else if (timer < shakeTime * 3 / 6)
+                t = WordUtilities.Remap(timer, shakeTime / 6, shakeTime * 3 / 6, 1, 0);
+            else if (timer < shakeTime * 5 / 6)
+                t = WordUtilities.Remap(timer, shakeTime * 3 / 6, shakeTime * 5 / 6, 0, 1);
+            else
+                t = WordUtilities.Remap(timer, shakeTime * 5 / 6, shakeTime, 1, 0.5f);
+
+            rT.localEulerAngles = Vector3.Lerp(targetRotLeft, targetRotRight, t);
+            yield return delay;
+        }
+        rT.localEulerAngles = startRotation;
+        currentlyRotatingAsFeedback = false;
+    }
 
     #region LINE LENGTHS
     /// <summary>
@@ -626,15 +664,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     protected void DoubleClickedOnCase()
     {
-        //figure out, if there is a promptbubble nearby()
-        if (piManager.CheckForPromptsWithTag(data.tag, out PromptBubble pB))
-        {
+        if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
             AnimateMovementIntoPrompt(pB);
-        }
         else
-        {
-            StartCoroutine(ShakeBubbleAsFeedback(true, false)); //isQuest is irrelevant
-        }
+            StartCoroutine(ShakeBubbleAsFeedback(true, false));
     }
     /// <summary>
     /// Animates a word from its current position into a fitting case and saves it
@@ -879,7 +912,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             tape.transform.localScale = Vector3.Scale(tape.transform.localScale, new Vector3(1, -1, 1));
         }
     }
-    #endregion
 }
 public class BubbleData
 {
@@ -977,5 +1009,26 @@ public class BubbleData
 
     public virtual void UpdateBubbleData()
     {
+    }
+}
+
+public class BubbleEffects
+{
+    ReferenceManager refM;
+    Bubble relatedBubble;
+    public BubbleEffects(Bubble relatedBubble)
+    {
+        refM = ReferenceManager.instance;
+        this.relatedBubble = relatedBubble;
+    }
+
+    public void ColorWordGrey()
+    {
+        Color grey = refM.greyedOutColor;
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, grey);
+    }
+    public void ColorWordToTag()
+    {
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, relatedBubble.data.tag, relatedBubble.data.subtag);
     }
 }

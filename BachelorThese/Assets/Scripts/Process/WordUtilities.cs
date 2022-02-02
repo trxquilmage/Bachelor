@@ -182,34 +182,50 @@ public static class WordUtilities
         // Set the hovered word to interacted
         EffectUtilities.ReColorAllInteractableWords();
     }
+
     /// <summary>
     /// checks the given text for promt inputs in the type of "|Tag|"
     /// </summary>
-    public static void CheckForPromptInputs(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent, string subtags)
+    public static GameObject CheckForPromptInputsAndCreatePrompt(TMP_Text text, TMP_TextInfo textInfo, Transform bubbleParent, string subtags)
     {
         text.ForceMeshUpdate();
         TMP_CharacterInfo[] charInfo = textInfo.characterInfo;
+
         //If the word starts with "|" -> give out the word
         TMP_WordInfo wordInfo;
         for (int i = 0; i < textInfo.wordCount; i++)
         {
             wordInfo = textInfo.wordInfo[i];
+
             // wordInfo igores Sonderzeichen in front of words, so iam checking the letter in front of the word
             if (wordInfo.firstCharacterIndex - 1 > -1)
             {
                 if (charInfo[wordInfo.firstCharacterIndex - 1].character == @"|"[0])
                 {
-                    CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, subtags);
+                    return CreatePromptBubble(textInfo.textComponent, wordInfo, bubbleParent, subtags);
                 }
             }
         }
+        return null;
     }
+
+    public static GameObject GetChildWithTag(GameObject parent, string tag)
+    {
+        for (int i = 0; i < parent.transform.childCount; i++)
+            if (parent.transform.GetChild(i).tag == tag)
+                return parent.transform.GetChild(i).gameObject;
+
+        Debug.Log("No child with that tag found. Note that this " +
+            "function only finds first generation children");
+        return null;
+    }
+
     /// <summary>
     /// Create a Prompt Bubble above a word in a given text
     /// </summary>
     /// <param name="text"></param>
     /// <param name="wordInfo"></param>
-    public static void CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, string subtags)
+    public static GameObject CreatePromptBubble(TMP_Text text, TMP_WordInfo wordInfo, Transform bubbleParent, string subtags)
     {
         Vector3[] wordParameters = GetWordParameters(text, wordInfo, true);
         GameObject promptBubble = GameObject.Instantiate(ReferenceManager.instance.promptBoxPrefab, wordParameters[0], Quaternion.identity);
@@ -217,6 +233,7 @@ public static class WordUtilities
 
         PromptBubble pB = promptBubble.GetComponent<PromptBubble>();
         pB.Initialize(wordInfo.GetWord(), subtags, wordParameters);
+        return promptBubble;
     }
     /// <summary>
     /// Parents the child to the prompt the mouse is currently hovering over

@@ -30,12 +30,10 @@ public class Word : Bubble
         ((WordData)data).tagObj.allGivenValues.Add(new Yarn.Value(data.name));
 
         SaveTagInfoAsYarnValuesInTagObject();
-
         ShapeBubbleAccordingToSize(firstAndLastWordIndex, true);
         ScaleAllParentsToTheirCorrectSizes();
         MoveLinesAccordingToOffset(true);
-
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
+        CreateEffectsAndColorWordToTag();
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {

@@ -10,6 +10,7 @@ public class NPC : MonoBehaviour
     [HideInInspector] public string askNode = "";
 
     public float interactionRadius = 3;
+    public GameObject pivotForE;
 
     protected Vector3 normalizedDefaultForward;
     protected GameObject targetPlayer;
@@ -27,7 +28,11 @@ public class NPC : MonoBehaviour
         targetPlayer = refM.player;
         talkToNode = characterName + ".Start";
         askNode = characterName + ".Ask";
+
+        pivotForE = WordUtilities.GetChildWithTag(this.gameObject, "PivotForE");
     }
+
+
 
     public bool IsInRangeToPlayer()
     {
@@ -52,7 +57,7 @@ public class NPC : MonoBehaviour
     IEnumerator Turn(Vector3 turnTowards)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        turnTowards.Scale(new Vector3(1,0,1));
+        turnTowards.Scale(new Vector3(1, 0, 1));
 
         while (Vector3.Dot(turnTowards, npcMesh.transform.forward) < 0.99f)
         {

@@ -51,8 +51,8 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue()
     {
         isInDialogue = true;
-        UIManager.instance.PortrayButton(null, refM.eButtonSprite);
-        UIManager.instance.PortrayButton(null, refM.fButtonSprite);
+        UIManager.instance.PortrayOrHideInputButtonFeedback(null, refM.eButtonSprite);
+        UIManager.instance.PortrayOrHideInputButtonFeedback(null, refM.fButtonSprite);
     }
     /// <summary>
     /// called in Dialogue UI -> end Dialogue

@@ -48,7 +48,7 @@ public class PromptBubble : MonoBehaviour
         SaveTagAndSubtag(tag, subtags);
         ColorPromptBubbleToTagColor();
 
-        PlayerInputManager.instance.SavePrompt(this);
+        PlayerInputManager.instance.SavePromptAfterCreation(this);
         SaveStartScaleParameters();
         childPadding.UpdateBounds();
     }
@@ -106,19 +106,19 @@ public class PromptBubble : MonoBehaviour
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
-            else if (onHoverHandler.InputIsIncorrect_RequiresFeedback())
+            else
             {
                 acceptsCurrentWord = false;
-                StartCoroutine(EffectUtilities.ColorSingularObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                UIManager.instance.BlendInUI(refM.warningWrongTag, 3);
-            }
-            else //wrong Input to bubble, no message
-            {
-                acceptsCurrentWord = false;
+
                 StartCoroutine(EffectUtilities.ColorSingularObjectInGradient(bubble.gameObject,
                                     new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(WordClickManager.instance.currentWord.gameObject,
                     new Color[] { WordUtilities.MatchColorToTag(currentWord.data.tag, currentWord.data.subtag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
+
+                currentWord.ShakeBubbleAsFeedbackRotated();
+
+                if (onHoverHandler.InputIsIncorrect_RequiresFeedback())
+                    UIManager.instance.BlendInUI(refM.warningWrongTag, 3);
             }
         }
         else if (onHoverHandler.MouseEndsHover(isCurrentlyHovering, wasHoveringLastFrame))

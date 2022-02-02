@@ -36,13 +36,13 @@ public class DialogueInputManager : MonoBehaviour
 
     public void ContinueButton()
     {
-        if (PlayerInputManager.instance.CheckIfAllPromptsAreFilled() && !PlayerInputManager.instance.inAsk)
+        if (PlayerInputManager.instance.CheckIfAllActivePromptsAreFilled() && !PlayerInputManager.instance.inAsk)
         {
             PlayerInputManager.instance.SaveGivenAnswer();
             Continue(uiHandler);
             continueHandler.OnPromptEnd();
             closeAWindow = true;
-            PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
+            PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents();
             refM.playerInputField.SetActive(false);
@@ -56,7 +56,7 @@ public class DialogueInputManager : MonoBehaviour
             Continue(uiHandler);
             continueHandler.OnPromptEnd();
             closeAWindow = true;
-            PlayerInputManager.instance.DeleteAllPrompts(PlayerInputManager.instance.currentPromptBubbles);
+            PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents();
             refM.playerInputField.SetActive(false);
@@ -117,6 +117,8 @@ public class DialogueInputManager : MonoBehaviour
         }
         target.SetActive(false);
         closeAWindow = false;
+
+        PlayerInputManager.instance.OnPromptEnd();
     }
     void CheckWhereDoubleClickHappened()
     {
