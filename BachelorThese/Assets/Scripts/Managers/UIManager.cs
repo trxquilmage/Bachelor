@@ -280,7 +280,7 @@ public class UIManager : MonoBehaviour
         startColor.a = 1;
         Color32 endColor = startColor;
         endColor.a = 1; //not zero bc otherwise its indistinguishable from new Color()
-        StartCoroutine(EffectUtilities.ColorObjectInGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
+        StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(rightClickIcon.gameObject, new Color[5] { startColor, new Color(), Color.Lerp(rightClickIcon.color, Color.red, 0.8f), new Color(), endColor }, 0.5f)); ;
     }
     void FillActiveEffects()
     {

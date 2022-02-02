@@ -621,7 +621,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         {
             StartCoroutine(ShakeBubbleAsFeedback(false, false));
             Color color = GetComponentInChildren<Image>().color;
-            StartCoroutine(EffectUtilities.ColorObjectInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
+            StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
     }
     protected void DoubleClickedOnCase()

@@ -5,13 +5,15 @@ public class PromptBubble : MonoBehaviour
 {
     [SerializeField] Vector2 additionalSizeDelta;
     [HideInInspector] public bool acceptsCurrentWord;
-    bool isHover = false;
+    bool wasHoveringLastFrame = false;
+
+    public PromptBubbleData data;
 
     Vector2[] defaultSizeDelta;
-    PromptBubbleData data;
     Image bubble;
     ReferenceManager refM;
     RectTransform rT;
+    PromptBubblePadding childPadding;
 
     public GameObject child
     {
@@ -48,12 +50,14 @@ public class PromptBubble : MonoBehaviour
 
         PlayerInputManager.instance.SavePrompt(this);
         SaveStartScaleParameters();
+        childPadding.UpdateBounds();
     }
     void InitializeValues()
     {
         bubble = GetComponent<Image>();
         data = new PromptBubbleData();
         rT = GetComponent<RectTransform>();
+        childPadding = GetComponentInChildren<PromptBubblePadding>();
     }
     void SaveTagAndSubtag(string tag, string[] subtags)
     {
@@ -79,7 +83,7 @@ public class PromptBubble : MonoBehaviour
         rT.localScale = new Vector3(1, 1, 1);
         defaultSizeDelta = new Vector2[2] { rT.localPosition, rT.sizeDelta };
     }
-    bool DoesPromptTagMatchASubtag(string compareToTag)
+    public bool DoesPromptTagMatchASubtag(string compareToTag)
     {
         foreach (string subtag in data.subtags)
             if (subtag == compareToTag)
@@ -89,90 +93,54 @@ public class PromptBubble : MonoBehaviour
     /// <summary>
     /// Called, when the mouse is over the bubble. colors it darker for words of the correct tah
     /// </summary>
-    /// <param name="isOnHover"></param>
-    public void OnBubbleHover(bool isOnHover)
+    /// <param name="isCurrentlyHovering"></param>
+    public void OnBubbleHover(bool isCurrentlyHovering)
     {
-        bool hasCurrentWord = WordClickManager.instance.currentWord != null;
-        bool noSubtags = data.subtags.Length == 0;
-        bool promptSubtagMatchesAWordSubtag = false;
-        bool promptSubtagMatchesAWordTag = false;
+        OnHoverHandler onHoverHandler = new OnHoverHandler(this);
+        Bubble currentWord = onHoverHandler.HasCurrentWord() ? WordClickManager.instance.currentWord.GetComponent<Bubble>() : null;
 
-        BubbleData currentBubbleData = null;
-        string allTagName = refM.wordTags[refM.allTagIndex].name;
-        if (hasCurrentWord)
+        if (onHoverHandler.MouseStartsHover(isCurrentlyHovering, wasHoveringLastFrame))
         {
-            currentBubbleData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
-            promptSubtagMatchesAWordSubtag = DoesPromptTagMatchASubtag(currentBubbleData.subtag);
-            promptSubtagMatchesAWordTag = DoesPromptTagMatchASubtag(currentBubbleData.tag);
-        }
-
-        if (isOnHover && !isHover && hasCurrentWord) //mouse starts hover
-        {
-            //correct input to bubble
-            if (
-                //prompt bubble: all:all
-                data.tag.name == allTagName && noSubtags ||
-
-                //prompt bubble: all:"TagName" is excluding said tagname
-                data.tag.name == allTagName && !noSubtags && 
-                !promptSubtagMatchesAWordTag && !promptSubtagMatchesAWordSubtag ||
-
-                //prompt bubble: "Tag":All (tag != all)
-                data.tag.name != allTagName && noSubtags
-                && currentBubbleData.tag == data.tag.name ||
-
-                //prompt bubble: "Tag":"Subtag" (Neither of these is all)
-                data.tag.name != allTagName && !noSubtags &&
-                data.tag.name == currentBubbleData.tag && promptSubtagMatchesAWordSubtag
-                )
+            if (onHoverHandler.InputIsCorrect())
             {
                 bubble.color = Color.Lerp(data.imageColor, refM.shadowButtonColor, 0.2f);
                 acceptsCurrentWord = true;
             }
-            //wrong Input to bubble, show message
-
-            else if (
-                // All:"Tag"
-                data.tag.name == allTagName && promptSubtagMatchesAWordTag ||
-                data.tag.name == allTagName && promptSubtagMatchesAWordSubtag ||
-
-                // "Tag":"Subtag"
-                data.tag.name != allTagName && noSubtags &&
-                data.tag.name == currentBubbleData.tag && !promptSubtagMatchesAWordSubtag
-                )
+            else if (onHoverHandler.InputIsIncorrect_RequiresFeedback())
             {
                 acceptsCurrentWord = false;
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
+                StartCoroutine(EffectUtilities.ColorSingularObjectInGradient(bubble.gameObject, new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
                 UIManager.instance.BlendInUI(refM.warningWrongTag, 3);
             }
-            //wrong Input to bubble, no message
-            else
+            else //wrong Input to bubble, no message
             {
                 acceptsCurrentWord = false;
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject,
+                StartCoroutine(EffectUtilities.ColorSingularObjectInGradient(bubble.gameObject,
                                     new Color[] { bubble.color, new Color(), new Color(), new Color(), Color.red }, 0.3f));
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                    new Color[] { WordUtilities.MatchColorToTag(currentBubbleData.tag, currentBubbleData.subtag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
-
+                StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(WordClickManager.instance.currentWord.gameObject,
+                    new Color[] { WordUtilities.MatchColorToTag(currentWord.data.tag, currentWord.data.subtag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
             }
         }
-        else if (!isOnHover && isHover) //mouse stops hover
+        else if (onHoverHandler.MouseEndsHover(isCurrentlyHovering, wasHoveringLastFrame))
         {
             acceptsCurrentWord = false;
-            if (WordClickManager.instance.currentWord != null && bubble.color == Color.red)
+            if (currentWord != null)
             {
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(bubble.gameObject, new Color[]
+                Color currentWordColor = currentWord.wordParent.GetComponentInChildren<Image>().color;
+                Color targetWordColor = WordUtilities.MatchColorToTag(currentWord.data.tag, currentWord.data.subtag);
+
+                if (!EffectUtilities.CompareColor(currentWordColor, targetWordColor))
+                {
+                    StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(currentWord.gameObject,
+                        new Color[] { currentWordColor, new Color(), new Color(), new Color(), targetWordColor }, 0.3f));
+                }
+            }
+
+            StartCoroutine(EffectUtilities.ColorSingularObjectInGradient(bubble.gameObject, new Color[]
                     { bubble.color, new Color(), new Color(), new Color(), data.imageColor }, 0.4f));
 
-                Color currentBubbleColor = WordClickManager.instance.currentWord.GetComponent<Bubble>().
-                    wordParent.GetComponentInChildren<Image>().color;
-
-                StartCoroutine(EffectUtilities.ColorObjectInGradient(WordClickManager.instance.currentWord.gameObject,
-                    new Color[] { currentBubbleColor, new Color(), new Color(), new Color(),
-                    WordUtilities.MatchColorToTag(currentBubbleData.tag, currentBubbleData.subtag) }, 0.3f));
-            }
         }
-        isHover = isOnHover;
+        wasHoveringLastFrame = isCurrentlyHovering;
     }
     /// <summary>
     /// takes a tag and checks, wheter it fits the bubble or not
@@ -209,6 +177,7 @@ public class PromptBubble : MonoBehaviour
         rT.localPosition = childPosition;
         rT.sizeDelta = childSize;
         childRT.localPosition = new Vector2(5, 3);
+        childPadding.UpdateBounds();
     }
     /// <summary>
     /// Scale the bubble back to It's original size
@@ -218,5 +187,92 @@ public class PromptBubble : MonoBehaviour
         RectTransform rT = GetComponent<RectTransform>();
         rT.localPosition = defaultSizeDelta[0];
         rT.sizeDelta = defaultSizeDelta[1];
+        childPadding.UpdateBounds();
+    }
+}
+
+public class OnHoverHandler
+{
+    bool hasCurrentWord;
+    bool noSubtags;
+    bool promptSubtagMatchesAWordSubtag;
+    bool promptSubtagMatchesAWordTag;
+    BubbleData wordData;
+    PromptBubble.PromptBubbleData data;
+    string allTagName;
+
+    ReferenceManager refM;
+
+    public OnHoverHandler(PromptBubble relatedPromptBubble)
+    {
+        AssignInitialValues(relatedPromptBubble);
+
+        if (hasCurrentWord)
+        {
+            wordData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
+            promptSubtagMatchesAWordSubtag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.subtag);
+            promptSubtagMatchesAWordTag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.tag);
+        }
+    }
+
+    void AssignInitialValues(PromptBubble relatedPromptBubble)
+    {
+        refM = ReferenceManager.instance;
+
+        hasCurrentWord = WordClickManager.instance.currentWord != null;
+        data = relatedPromptBubble.data;
+        noSubtags = data.subtags.Length == 0;
+        promptSubtagMatchesAWordSubtag = false;
+        promptSubtagMatchesAWordTag = false;
+        wordData = null;
+        allTagName = refM.wordTags[refM.allTagIndex].name;
+    }
+
+    public bool InputIsCorrect()
+    {
+        return
+        (//prompt bubble: all:all
+        data.tag.name == allTagName && noSubtags ||
+
+        //prompt bubble: all:"TagName" is excluding said tagname
+        data.tag.name == allTagName && !noSubtags &&
+        !promptSubtagMatchesAWordTag && !promptSubtagMatchesAWordSubtag ||
+
+        //prompt bubble: "Tag":All (tag != all)
+        data.tag.name != allTagName && noSubtags
+        && wordData.tag == data.tag.name ||
+
+        //prompt bubble: "Tag":"Subtag" (Neither of these is all)
+        data.tag.name != allTagName && !noSubtags &&
+        data.tag.name == wordData.tag && promptSubtagMatchesAWordSubtag
+        );
+    }
+
+    public bool HasCurrentWord()
+    {
+        return hasCurrentWord;
+    }
+
+    public bool InputIsIncorrect_RequiresFeedback()
+    {
+        return (
+        // All:"Tag"
+        data.tag.name == allTagName && promptSubtagMatchesAWordTag ||
+        data.tag.name == allTagName && promptSubtagMatchesAWordSubtag ||
+
+        // "Tag":"Subtag"
+        data.tag.name != allTagName && !noSubtags &&
+        data.tag.name == wordData.tag && !promptSubtagMatchesAWordSubtag
+        );
+    }
+
+    public bool MouseStartsHover(bool isCurrentlyHovering, bool wasHoveringLastFrame)
+    {
+        return (isCurrentlyHovering && !wasHoveringLastFrame && HasCurrentWord());
+    }
+
+    public bool MouseEndsHover(bool isCurrentlyHovering, bool wasHoveringLastFrame)
+    {
+        return (!isCurrentlyHovering && wasHoveringLastFrame);
     }
 }

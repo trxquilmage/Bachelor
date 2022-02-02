@@ -280,7 +280,8 @@ public class WordClickManager : MonoBehaviour
             {
                 currentlyOver = "questLog";
             }
-            else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB))
+            else if (uIObject.gameObject.TryGetComponent<PromptBubble>(out PromptBubble pB) ||
+                uIObject.gameObject.transform.parent.TryGetComponent<PromptBubble>(out pB))
             {
                 lastSavedPromptBubble = pB;
                 currentlyOver = "playerInput";

@@ -23,6 +23,11 @@ public static class EffectUtilities
             foreach (Image image in parent.GetComponentsInChildren<Image>())
                 image.color = color;
     }
+    public static void ColorAnObject(GameObject gameObject, Color color)
+    {
+        if (gameObject != null && gameObject.TryGetComponent<Image>(out Image image))
+            image.color = color;
+    }
     /// <summary>
     /// take a game object and color all its images in a gradient for "time"-seconds
     /// put in a Color Gradient here with FIVE (5) Colors. empty colors will be ignored
@@ -30,7 +35,7 @@ public static class EffectUtilities
     /// <param name="word"></param>
     /// <param name="colorGradient"></param>
     /// <returns></returns>
-    public static IEnumerator ColorObjectInGradient(GameObject word, Color[] colorGradient, float time)
+    public static IEnumerator ColorObjectAndChildrenInGradient(GameObject word, Color[] colorGradient, float time)
     {
         Color[] calculatedColorGradient = ReadColorGradient(colorGradient);
         Color currentColor;
@@ -55,6 +60,32 @@ public static class EffectUtilities
             yield return delay;
         }
         ColorAllChildrenOfAnObject(word, calculatedColorGradient[4]);
+    }
+    public static IEnumerator ColorSingularObjectInGradient(GameObject word, Color[] colorGradient, float time)
+    {
+        Color[] calculatedColorGradient = ReadColorGradient(colorGradient);
+        Color currentColor;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        float timer = 0;
+        float t;
+        int index;
+        while (timer < time)
+        {
+            timer += Time.deltaTime;
+            if (word != null)
+            {
+                index = Mathf.FloorToInt(timer / (time / 5)); //returns the current int we are starting from
+
+                if (index < 4)
+                {
+                    t = WordUtilities.Remap(timer, index * (time / 5), (index + 1) * (time / 5), 0, 1);
+                    currentColor = Color.Lerp(calculatedColorGradient[index], calculatedColorGradient[index + 1], t);
+                    ColorAnObject(word, currentColor);
+                }
+            }
+            yield return delay;
+        }
+        ColorAnObject(word, calculatedColorGradient[4]);
     }
     /// <summary>
     /// color the given word in the text in the given color
@@ -177,6 +208,20 @@ public static class EffectUtilities
     /// <param name="colorB"></param>
     /// <returns></returns>
     public static bool CompareColor32(Color32 colorA, Color32 colorB)
+    {
+        if (colorA.r == colorB.r)
+        {
+            if (colorA.g == colorB.g)
+            {
+                if (colorA.b == colorB.b)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public static bool CompareColor(Color colorA, Color colorB)
     {
         if (colorA.r == colorB.r)
         {
