@@ -11,22 +11,20 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     [HideInInspector] public TMP_Text relatedText;
     [HideInInspector] public BubbleData data;
     [HideInInspector] public BubbleEffects effects;
+    [HideInInspector] public BubbleDoubleClickHandler doubleClickHandler;
     [HideInInspector] public GameObject prefabReference;
     [HideInInspector] public GameObject wordParent;
     [HideInInspector] public BubbleOffset bubbleOffset;
-    [HideInInspector] public GameObject star;
     public GameObject vfxParent;
     [HideInInspector] public Case relatedCase;
 
     [HideInInspector] public bool wasDragged; //checks if the object was actually dragged
-    [HideInInspector] public bool fadingOut;
+    [HideInInspector] public bool fadingOut = false;
     [HideInInspector] public bool currentlyRotatingAsFeedback;
 
     [HideInInspector] public TMP_WordInfo originalWordInfo;
     [HideInInspector] public TMP_Text originalText;
     [HideInInspector] public Vector3 wordSize;
-    [HideInInspector] public RefBool movementDone;
-    [HideInInspector] public float floatTime = 0.4f;
     [HideInInspector] public float shakeTime = 0.5f;
 
     [HideInInspector] public PlayerInputManager piManager;
@@ -45,7 +43,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public virtual void Start()
     {
-        movementDone = new RefBool() { refBool = false };
         piManager = PlayerInputManager.instance;
         CallEffect(0);
     }
@@ -61,12 +58,13 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.subtag = inputData.tagInfo[1];
         data.origin = origin;
 
-        if (WordUtilities.IsNotFromACase(data))
+        if (data.IsNotFromACase())
         {
             originalWordInfo = wordInfo;
             originalText = wordInfo.textComponent;
         }
 
+        SetAdditionalValues();
         NameTextCorrectly();
         CheckIfLongWordAndSaveLineLength();
 
@@ -75,13 +73,14 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     public virtual void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
         FillData(bubbleData);
+        SetAdditionalValues();
         relatedText = transform.GetComponentInChildren<TMP_Text>();
 
         NameTextCorrectly();
         ScaleRectHighlighted(relatedText, GetComponentInChildren<Image>().rectTransform);
         wordSize = this.GetComponent<RectTransform>().sizeDelta;
 
-        CreateEffectsAndColorWordToTag();
+        effects.ColorWordToTag();
     }
     protected void FillData(BubbleData bubbleData)
     {
@@ -97,27 +96,26 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         data.isLongWord = bubbleData.isLongWord;
         data.isFavorite = bubbleData.isFavorite;
     }
-    protected void CreateEffectsAndColorWordToTag()
+    protected void SetAdditionalValues()
     {
+        doubleClickHandler = new BubbleDoubleClickHandler(this);
         effects = new BubbleEffects(this);
-        effects.ColorWordToTag();
     }
-    protected virtual void DroppedOverWordCase()
+    public virtual void DroppedOverWordCase()
     {
 
     }
-    protected virtual void DroppedOverPlayerInput()
+    public virtual void DroppedOverPlayerInput()
     {
     }
     public virtual void DroppedOverNothing()
     {
         CheckIfWasDroppedOverNPC();
-        if (WordUtilities.IsNotFromACase(data))
-        {
-            //close the case & Delete the UI word
+        WordCaseManager.instance.ReloadContents();
+        EffectUtilities.ReColorAllInteractableWords();
+
+        if (data.IsNotFromACase())
             WordCaseManager.instance.AutomaticOpenCase(false);
-            WordClickManager.instance.DestroyCurrentWord();
-        }
     }
     protected virtual void ParentToNewParent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
@@ -133,37 +131,34 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             OnBeginDragFunction();
         }
     }
-    protected void OnBeginDragFunction()
+    public void OnBeginDragFunction()
     {
-        if (!fadingOut)
+        if (fadingOut)
+            return;
+
+        effects.DestroyStar();
+        WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
+
+        if (IsCurrentlyInPrompt(out PromptBubble pB))
         {
-            if (star != null)
-                Destroy(star.gameObject);
-            WordClickManager.instance.RemoveFromArray(WordClickManager.instance.activeWords, this.gameObject);
-
-            //if currently attached to a prompt bubble, remove
-            if (transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB))
-            {
-                OnRemoveFromPromptBubble(pB);
-            }
-
-            // if the word is being dragged out of the dialogue
-            if (WordUtilities.IsNotFromACase(data))
-            {
-                if (this is Word)
-                {
-                    WordCaseManager.instance.AutomaticOpenCase(true);
-                    WordCaseManager.instance.openTag = data.tag;
-                    UpdateImageAndScaleForAllLines();
-                }
-                if (WordClickManager.instance.wordLastHighlighted != null && this == WordClickManager.instance.wordLastHighlighted.GetComponent<Bubble>())
-                    WordClickManager.instance.SwitchFromHighlightedToCurrent();
-            }
-            else if (data.origin == WordInfo.Origin.WordCase)
-            {
-                ParentToNewParent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
-            }
+            OnRemoveFromPromptBubble(pB);
         }
+
+        if (data.IsNotFromACase())
+        {
+            WordCaseManager.instance.AutomaticOpenCase(true);
+            WordCaseManager.instance.openTag = data.tag;
+            UpdateImageAndScaleForAllLines();
+
+            if (WordClickManager.instance.wordLastHighlighted != null &&
+                this == WordClickManager.instance.wordLastHighlighted.GetComponent<Bubble>())
+                WordClickManager.instance.SwitchFromHighlightedToCurrent();
+        }
+        else if (data.IsFromWordCase())
+        {
+            ParentToNewParent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
+        }
+        effects.ColorWordToTag();
     }
     protected void ScaleRectHighlighted(TMP_Text text, RectTransform rTransform)
     {
@@ -195,52 +190,36 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public void OnDrag(PointerEventData eventData)
     {
-        if (!fadingOut && eventData.button == PointerEventData.InputButton.Left)
-        {
-            //drag the object through the scene
-            RectTransform rT = GetComponent<RectTransform>();
-            rT.localPosition = WordUtilities.LocalScreenToCanvasPosition(WordClickManager.instance.GetMousePos());
-            rT.localPosition -= wordSize / 2;
-            wasDragged = true;
-        }
+        if (fadingOut || eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        RectTransform rT = GetComponent<RectTransform>();
+        rT.localPosition = WordUtilities.LocalScreenToCanvasPosition(WordClickManager.instance.GetMousePos());
+        rT.localPosition -= wordSize / 2;
+        wasDragged = true;
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!fadingOut)
-        {
-            // if mouse was dragging the object and now releases it
-            if (eventData.button == PointerEventData.InputButton.Left && wasDragged)
-            {
-                OnDroppedReactToPosition();
-            }
-        }
+        if (fadingOut || eventData.button != PointerEventData.InputButton.Left || !wasDragged)
+            return;
+        OnDroppedReactToPosition();
+        wasDragged = false;
     }
     public void OnDroppedReactToPosition()
     {
         WordClickManager clickM = WordClickManager.instance;
-        // check where it is released
-        //if it was dragged into the case, save it
-        if (clickM.isActiveAndEnabled)
-        {
-            if (clickM.mouseOverUIObject == "trashCan" && data.origin != WordInfo.Origin.Dialogue &&
-                data.origin != WordInfo.Origin.Ask && data.origin != WordInfo.Origin.Environment)
-            {
-                UIManager.instance.TrashAWord();
-            }
-            else if (clickM.mouseOverUIObject == "wordCase")
-            {
-                DroppedOverWordCase();
-            }
-            // if it was dragged onto a prompt, react
-            else if (clickM.mouseOverUIObject == "playerInput")
-            {
-                DroppedOverPlayerInput();
-            }
-            else
-            {
-                DroppedOverNothing();
-            }
-        }
+        if (!clickM.isActiveAndEnabled)
+            return;
+
+        if (clickM.mouseOverUIObject == "trashCan" && data.origin != WordInfo.Origin.Dialogue &&
+            data.origin != WordInfo.Origin.Ask && data.origin != WordInfo.Origin.Environment)
+            UIManager.instance.TrashAWord();
+        else if (clickM.mouseOverUIObject == "wordCase")
+            DroppedOverWordCase();
+        else if (clickM.mouseOverUIObject == "playerInput")
+            DroppedOverPlayerInput();
+        else
+            DroppedOverNothing();
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -248,7 +227,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     protected void CheckIfWasDroppedOverNPC()
     {
-        //Check, if the word is above a character
         Vector2 mousePos = WordClickManager.instance.GetMousePos();
         RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(mousePos));
         foreach (RaycastHit hit in hits)
@@ -274,11 +252,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
         }
     }
-    protected void OnRemoveFromPromptBubble(PromptBubble pB)
+    public void OnRemoveFromPromptBubble(PromptBubble pB)
     {
+        ParentToNewParent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
         pB.child = null;
     }
-    protected void OnEnterPromptBubble()
+    public void OnEnterPromptBubble()
     {
         WordCaseManager.instance.DestroyReplacement();
     }
@@ -286,7 +265,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         if (data.isLongWord)
         {
-            if (WordUtilities.IsNotFromACase(data))
+            if (data.IsNotFromACase())
                 FitBubbleShapeToSceneText((int)firstAndLastWordIndex.x, (int)firstAndLastWordIndex.y);
             else
                 ShapeBubbleIntoCompactForm();
@@ -298,7 +277,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             else
                 UpdateLineImageAndScale();
             wordSize = this.GetComponent<RectTransform>().sizeDelta;
-            StartCoroutine(InstantiateStar());
+            StartCoroutine(effects.InstantiateStar());
         }
     }
     protected void FitBubbleShapeToSceneText(int firstWordInfoIndex, int lastWordInfoIndex)
@@ -348,7 +327,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             AddDuctTapeToLowerChildren(relatedImage, j);
             j++;
         }
-        StartCoroutine(InstantiateStar());
+        StartCoroutine(effects.InstantiateStar());
     }
     protected void UpdateBubbleIntoCompactForm()
     {
@@ -402,24 +381,15 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordCard.sprite = ReferenceManager.instance.wordSelectedSprite;
         ScaleRectSelected(relatedText, firstChild);
     }
-    IEnumerator InstantiateStar()
-    {
-        //called after one frame, because otherwise the acessed Text can be wrong
-        yield return new WaitForEndOfFrame();
-        if (data.origin == WordInfo.Origin.WordCase)
-        {
-            refM = ReferenceManager.instance;
-            star = Instantiate(refM.starPrefab, GetComponentInChildren<TMP_Text>().transform, false);
-        }
-    }
-    protected IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
+
+    public IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
     {
         GameObject duplicate = null;
         if (inACase)
         {
-            duplicate = SpawnDuplicateOnTopOnThisBubble();
+            duplicate = effects.SpawnDuplicateOnTopOnThisBubble();
             StartCoroutine(duplicate.GetComponent<Bubble>().ShakeBubbleAsFeedback(false, true));
-            MakeBubbleInvisible(true);
+            effects.MakeBubbleInvisible(true);
         }
         fadingOut = true;
 
@@ -459,7 +429,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         {
             if (duplicate != null)
                 Destroy(duplicate);
-            MakeBubbleInvisible(false);
+            effects.MakeBubbleInvisible(false);
         }
     }
     public void ShakeBubbleAsFeedbackRotated()
@@ -583,207 +553,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     protected void StartANewLine(ref List<Vector2> firstAndLastCharIndexPerLine, int firstCharacterIndex)
     {
         firstAndLastCharIndexPerLine.Add(new Vector2(firstCharacterIndex, 0));
-    }
-    #endregion
-    #region DOUBLE CLICK
-    protected void MakeBubbleInvisible(bool makeInvisible)
-    {
-        Color color;
-
-        foreach (Image img in GetComponentsInChildren<Image>())
-        {
-            if (makeInvisible)
-            {
-                color = img.color;
-                color.a = 0;
-            }
-            else
-            {
-                color = img.color;
-                color.a = 1;
-            }
-            img.color = color;
-        }
-        foreach (TMP_Text text in GetComponentsInChildren<TMP_Text>())
-        {
-            if (makeInvisible)
-            {
-                color = text.color;
-                color.a = 0;
-            }
-            else
-            {
-                color = text.color;
-                color.a = 1;
-            }
-            text.color = color;
-        }
-    }
-    protected GameObject SpawnDuplicateOnTopOnThisBubble()
-    {
-        GameObject duplicate = GameObject.Instantiate(this.gameObject, this.transform.position, this.transform.rotation);
-        duplicate.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform, false);
-        duplicate.transform.position = this.transform.position;
-        duplicate.transform.rotation = this.transform.rotation;
-        return duplicate;
-    }
-    public void OnDoubleClicked()
-    {
-        if (WordUtilities.IsNotFromACase(data))
-        {
-            DoubleClickedOnDialogue();
-        }
-        else //is in word case or quest log
-        {
-            DoubleClickedOnCase();
-        }
-    }
-    protected virtual void DoubleClickedOnDialogue()
-    {
-        WordCaseManager.instance.openTag = data.tag;
-        bool fits = false;
-
-        if (this is Word)
-        {
-            if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull))
-                fits = true;
-            else if (bubbleIsAlreadyInList)
-                UIManager.instance.BlendInUI(refM.warningWordAlreadyInList, 3);
-            else if (caseIsFull)
-                UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
-        }
-
-        if (fits)
-            AnimateMovementIntoCase();
-        else
-        {
-            StartCoroutine(ShakeBubbleAsFeedback(false, false));
-            Color color = GetComponentInChildren<Image>().color;
-            StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(this.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
-        }
-    }
-    protected void DoubleClickedOnCase()
-    {
-        if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
-            AnimateMovementIntoPrompt(pB);
-        else
-            StartCoroutine(ShakeBubbleAsFeedback(true, false));
-    }
-    /// <summary>
-    /// Animates a word from its current position into a fitting case and saves it
-    /// </summary>
-    /// <param name="isQuest"></param>
-    protected void AnimateMovementIntoCase()
-    {
-        //get target position
-        Vector2 targetPos = GetCaseTargetPosition();
-        relatedCase.AutomaticOpenCase(true);
-        StartCoroutine(AnimateMovement(movementDone, targetPos));
-        StartCoroutine(AfterMovementToCase(movementDone));
-    }
-    /// <summary>
-    /// Animates a word from its current position into a fitting prompt
-    /// </summary>
-    protected void AnimateMovementIntoPrompt(PromptBubble pB)
-    {
-        //get target position
-        transform.SetParent(refM.selectedWordParentAsk.transform);
-        Vector2 targetPos = pB.transform.localPosition;
-        StartCoroutine(AnimateMovement(movementDone, targetPos));
-        StartCoroutine(AfterMovementToPromptBubble(movementDone, pB));
-    }
-    /// <summary>
-    /// Animates a word from its current position back into the case where it came from
-    /// </summary>
-    /// <param name="isQuest"></param>
-    protected void AnimateMovementBackToCase()
-    {
-        //get target position
-        Vector2 targetPos = GetCaseTargetPosition();
-        StartCoroutine(AnimateMovement(movementDone, targetPos));
-        StartCoroutine(AfterMovementBackToCase(movementDone));
-    }
-    /// <summary>
-    /// Get the target position of the case we want to animate to 
-    /// </summary>
-    /// <returns></returns>
-    protected virtual Vector2 GetCaseTargetPosition()
-    {
-        return Vector2.zero;
-    }
-    /// <summary>
-    /// Animate this word from its position to a targetPosition
-    /// </summary>
-    /// <returns></returns>
-    protected IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
-    {
-        OnBeginDragFunction();
-        fadingOut = true;
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        RectTransform rT = GetComponent<RectTransform>();
-        Vector2 startPos = rT.localPosition;
-        float timer = 0;
-        float t;
-        while (timer < floatTime)
-        {
-            timer += Time.deltaTime;
-            t = WordUtilities.Remap(timer, 0, floatTime, 0, 1);
-            rT.localPosition = Vector2.Lerp(startPos, targetPos, t);
-            yield return delay;
-        }
-        isDone.refBool = true;
-    }
-    /// <summary>
-    /// wait until movement is done and then save the word in the fitting case
-    /// </summary>
-    /// <param name="isQuest"></param>
-    /// <returns></returns>
-    protected virtual IEnumerator AfterMovementToCase(RefBool isDone)
-    {
-        //wait until movement is done
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (!isDone.refBool)
-            yield return delay;
-
-        //treat the word as if it was dragged onto the Questlog/Wordcase
-        movementDone.refBool = false;
-
-        DroppedOverWordCase();
-        relatedCase.AutomaticOpenCase(false);
-        EffectUtilities.ReColorAllInteractableWords();
-    }
-    /// <summary>
-    /// wait until movement is done and then parent the word to a promptbubble
-    /// </summary>
-    /// <param name="isDone"></param>
-    /// <param name="pB"></param>
-    /// <returns></returns>
-    protected IEnumerator AfterMovementToPromptBubble(RefBool isDone, PromptBubble pB)
-    {
-        //wait until movement is done
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (!isDone.refBool)
-            yield return delay;
-        movementDone.refBool = false;
-
-        WordClickManager.instance.promptBubble = pB;
-        WordUtilities.ParentBubbleToPrompt(this.gameObject);
-        WordClickManager.instance.promptBubble = null;
-        OnEnterPromptBubble();
-    }
-    protected IEnumerator AfterMovementBackToCase(RefBool isDone)
-    {
-        //wait until movement is done
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (!isDone.refBool)
-            yield return delay;
-        movementDone.refBool = false;
-
-        //put the word back
-        WordClickManager.instance.DestroyCurrentWord(this);
-        if (data.origin == WordInfo.Origin.WordCase)
-            WordCaseManager.instance.ReloadContents();
-        EffectUtilities.ReColorAllInteractableWords();
     }
     #endregion
     /// <summary>
@@ -912,6 +681,18 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             tape.transform.localScale = Vector3.Scale(tape.transform.localScale, new Vector3(1, -1, 1));
         }
     }
+    public virtual Vector2 GetCaseTargetPosition()
+    {
+        return Vector2.zero;
+    }
+    public bool IsCurrentlyInPrompt()
+    {
+        return transform.parent.TryGetComponent<PromptBubble>(out PromptBubble pB);
+    }
+    public bool IsCurrentlyInPrompt(out PromptBubble pB)
+    {
+        return transform.parent.TryGetComponent<PromptBubble>(out pB);
+    }
 }
 public class BubbleData
 {
@@ -1010,25 +791,220 @@ public class BubbleData
     public virtual void UpdateBubbleData()
     {
     }
+    public bool IsNotFromACase()
+    {
+        return origin == WordInfo.Origin.Dialogue || origin == WordInfo.Origin.Environment || origin == WordInfo.Origin.Ask;
+    }
+    public bool IsFromWordCase()
+    {
+        return origin == WordInfo.Origin.WordCase;
+    }
 }
-
 public class BubbleEffects
 {
     ReferenceManager refM;
     Bubble relatedBubble;
+    BubbleData data;
+    float floatTime = 0.4f;
+    GameObject star;
+
     public BubbleEffects(Bubble relatedBubble)
     {
         refM = ReferenceManager.instance;
         this.relatedBubble = relatedBubble;
+        data = relatedBubble.data;
+        star = null;
     }
-
     public void ColorWordGrey()
     {
-        Color grey = refM.greyedOutColor;
+        Color grey = Color.Lerp(refM.greyedOutColor, WordUtilities.MatchColorToTag(relatedBubble.data.tag, relatedBubble.data.subtag), 0.2f);
+        grey.a = 0.7f;
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, grey);
     }
     public void ColorWordToTag()
     {
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, relatedBubble.data.tag, relatedBubble.data.subtag);
+    }
+    public GameObject SpawnDuplicateOnTopOnThisBubble()
+    {
+        GameObject duplicate = GameObject.Instantiate(relatedBubble.gameObject, relatedBubble.transform.position, relatedBubble.transform.rotation);
+        duplicate.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform, false);
+        duplicate.transform.position = relatedBubble.transform.position;
+        duplicate.transform.rotation = relatedBubble.transform.rotation;
+        return duplicate;
+    }
+    public void MakeBubbleInvisible(bool makeInvisible)
+    {
+        Color color;
+        foreach (Image img in relatedBubble.GetComponentsInChildren<Image>())
+        {
+            if (makeInvisible)
+            {
+                color = img.color;
+                color.a = 0;
+            }
+            else
+            {
+                color = img.color;
+                color.a = 1;
+            }
+            img.color = color;
+        }
+        foreach (TMP_Text text in relatedBubble.GetComponentsInChildren<TMP_Text>())
+        {
+            if (makeInvisible)
+            {
+                color = text.color;
+                color.a = 0;
+            }
+            else
+            {
+                color = text.color;
+                color.a = 1;
+            }
+            text.color = color;
+        }
+    }
+    public IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
+    {
+        relatedBubble.fadingOut = false;
+        relatedBubble.OnBeginDragFunction();
+        relatedBubble.fadingOut = true;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
+        RectTransform rT = relatedBubble.GetComponent<RectTransform>();
+        Vector2 startPos = rT.localPosition;
+
+        float timer = 0;
+        float t;
+
+        while (timer < floatTime)
+        {
+            timer += Time.deltaTime;
+            t = WordUtilities.Remap(timer, 0, floatTime, 0, 1);
+            rT.localPosition = Vector2.Lerp(startPos, targetPos, t);
+            yield return delay;
+        }
+        isDone.refBool = true;
+    }
+    public void DestroyStar()
+    {
+        if (star != null)
+            Object.Destroy(star.gameObject);
+    }
+    public IEnumerator InstantiateStar()
+    {
+        //called after one frame, because otherwise the acessed Text can be wrong
+        yield return new WaitForEndOfFrame();
+        if (data.IsFromWordCase())
+        {
+            refM = ReferenceManager.instance;
+            star = Object.Instantiate(refM.starPrefab, relatedBubble.GetComponentInChildren<TMP_Text>().transform, false);
+        }
+    }
+}
+public class BubbleDoubleClickHandler
+{
+    ReferenceManager refM;
+    PlayerInputManager piManager;
+    Bubble relatedBubble;
+    BubbleData data;
+    RefBool movementDone;
+
+    public BubbleDoubleClickHandler(Bubble relatedBubble)
+    {
+        this.relatedBubble = relatedBubble;
+        data = relatedBubble.data;
+        refM = ReferenceManager.instance;
+        piManager = PlayerInputManager.instance;
+        movementDone = new RefBool() { refBool = false };
+    }
+    public void OnDoubleClicked()
+    {
+        if (data.IsNotFromACase())
+            DoubleClickedOnDialogue();
+        else
+            DoubleClickedOnCaseOrPromptBubble();
+    }
+    void DoubleClickedOnDialogue()
+    {
+        WordCaseManager.instance.openTag = data.tag;
+        bool fits = false;
+
+        if (WordCaseManager.instance.CheckIfCanSaveBubble(data.name, out int index, out bool bubbleIsAlreadyInList, out bool caseIsFull))
+            fits = true;
+        else if (bubbleIsAlreadyInList)
+            UIManager.instance.BlendInUI(refM.warningWordAlreadyInList, 3);
+        else if (caseIsFull)
+            UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
+        Debug.Log(fits + " " + bubbleIsAlreadyInList + " " + caseIsFull);
+        if (fits)
+            AnimateMovementIntoCase();
+        else
+        {
+            relatedBubble.StartCoroutine(relatedBubble.ShakeBubbleAsFeedback(false, false));
+            Color color = relatedBubble.GetComponentInChildren<Image>().color;
+            relatedBubble.StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(relatedBubble.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
+        }
+    }
+    void DoubleClickedOnCaseOrPromptBubble()
+    {
+        if (relatedBubble.IsCurrentlyInPrompt())
+            AnimateMovementBackToCase();
+        else if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
+            AnimateMovementIntoPrompt(pB);
+        else
+            relatedBubble.StartCoroutine(relatedBubble.ShakeBubbleAsFeedback(true, false));
+    }
+    void AnimateMovementIntoCase()
+    {
+        Vector2 targetPos = relatedBubble.GetCaseTargetPosition();
+        relatedBubble.relatedCase.AutomaticOpenCase(true);
+        relatedBubble.StartCoroutine(relatedBubble.effects.AnimateMovement(movementDone, targetPos));
+        relatedBubble.StartCoroutine(AfterMovementToCase(movementDone));
+    }
+    void AnimateMovementIntoPrompt(PromptBubble pB)
+    {
+        relatedBubble.transform.SetParent(refM.selectedWordParentAsk.transform);
+        Vector2 targetPos = pB.transform.localPosition;
+        relatedBubble.StartCoroutine(relatedBubble.effects.AnimateMovement(movementDone, targetPos));
+        relatedBubble.StartCoroutine(AfterMovementToPromptBubble(movementDone, pB));
+    }
+    public void AnimateMovementBackToCase()
+    {
+        Vector2 targetPos = relatedBubble.GetCaseTargetPosition();
+        relatedBubble.StartCoroutine(relatedBubble.effects.AnimateMovement(movementDone, targetPos));
+        relatedBubble.StartCoroutine(AfterMovementBackToCase(movementDone));
+    }
+    IEnumerator AfterMovementToCase(RefBool isDone)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+        movementDone.refBool = false;
+
+        relatedBubble.DroppedOverWordCase();
+        relatedBubble.relatedCase.AutomaticOpenCase(false);
+    }
+    IEnumerator AfterMovementToPromptBubble(RefBool isDone, PromptBubble pB)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+        movementDone.refBool = false;
+
+        WordUtilities.ParentBubbleToPrompt(pB.gameObject, relatedBubble.gameObject);
+        relatedBubble.OnEnterPromptBubble();
+    }
+    IEnumerator AfterMovementBackToCase(RefBool isDone)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+        movementDone.refBool = false;
+
+        Object.Destroy(relatedBubble.gameObject);
+        WordCaseManager.instance.ReloadContents();
+        EffectUtilities.ReColorAllInteractableWords();
     }
 }

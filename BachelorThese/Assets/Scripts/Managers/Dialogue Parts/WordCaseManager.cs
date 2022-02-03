@@ -384,6 +384,7 @@ public class GreyOutManager
     bool currentlyInPrompt;
     bool greyOutTurnedOn;
     PromptBubble currentPrompt;
+    OnPromptGreyoutHandler wcMGreyOutHandler;
 
     public GreyOutManager()
     {
@@ -398,23 +399,25 @@ public class GreyOutManager
     public void StartGreyOut(GameObject prompt)
     {
         currentlyInPrompt = true;
-        WordCaseManager.instance.ReloadContents();
         currentPrompt = prompt.GetComponent<PromptBubble>();
+        wcMGreyOutHandler = new OnPromptGreyoutHandler(currentPrompt);
+        WordCaseManager.instance.ReloadContents();
     }
 
     public void EndGreyOut()
     {
         currentlyInPrompt = false;
-        WordCaseManager.instance.ReloadContents();
         currentPrompt = null;
+        wcMGreyOutHandler = null;
+        WordCaseManager.instance.ReloadContents();
     }
 
     public void GreyOutWord(Bubble word)
     {
         if (currentlyInPrompt && greyOutTurnedOn)
         {
-            //if (currentPrompt.)
-            word.effects.ColorWordGrey();
+            if (!wcMGreyOutHandler.InputIsCorrect(word.data))
+                word.effects.ColorWordGrey();
         }
     }
 }

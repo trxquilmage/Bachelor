@@ -33,7 +33,7 @@ public class Word : Bubble
         ShapeBubbleAccordingToSize(firstAndLastWordIndex, true);
         ScaleAllParentsToTheirCorrectSizes();
         MoveLinesAccordingToOffset(true);
-        CreateEffectsAndColorWordToTag();
+        effects.ColorWordToTag();
     }
     public override void Initialize(BubbleData bubbleData, Vector2 firstAndLastWordIndex)
     {
@@ -52,39 +52,33 @@ public class Word : Bubble
         ScaleAllParentsToTheirCorrectSizes();
         MoveLinesAccordingToOffset(false);
 
-        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag,data.subtag);
+        EffectUtilities.ColorAllChildrenOfAnObject(wordParent, data.tag, data.subtag);
     }
-    protected override void DroppedOverWordCase()
+    public override void DroppedOverWordCase()
     {
-        if (WordUtilities.IsNotFromACase(data))
+        if (data.IsNotFromACase())
         {
-            //save it
             WordCaseManager.instance.TryToSaveTheBubble(this);
-
-            //close the case & Delete the UI word
             WordCaseManager.instance.AutomaticOpenCase(false);
             WordClickManager.instance.DestroyCurrentWord(this);
         }
-        else if (data.origin == WordInfo.Origin.WordCase)
+        else if (data.IsFromWordCase())
         {
             DroppedOverNothing();
-        }
+                    }
     }
-    protected override void DroppedOverPlayerInput()
+    public override void DroppedOverPlayerInput()
     {
         if (WordClickManager.instance.promptBubble.acceptsCurrentWord)
         {
-            if (WordUtilities.IsNotFromACase(data))
+            if (data.IsNotFromACase())
             {
-                //parent to word
-                WordUtilities.ParentBubbleToPrompt(this.gameObject);
-                //close wordCase
+                WordUtilities.ParentBubbleToPromptOnDrop(this.gameObject);
                 WordCaseManager.instance.AutomaticOpenCase(false);
             }
-            else if (data.origin == WordInfo.Origin.WordCase)
+            else if (data.IsFromWordCase())
             {
-                // parent to word
-                WordUtilities.ParentBubbleToPrompt(this.gameObject);
+                WordUtilities.ParentBubbleToPromptOnDrop(this.gameObject);
                 OnEnterPromptBubble();
             }
         }
@@ -93,14 +87,11 @@ public class Word : Bubble
     }
     public override void DroppedOverNothing()
     {
-        //check if the mouse is above an NPC
         base.DroppedOverNothing();
 
-        //this happens, regardless wheter a character was hit or not
-        if (data.origin == WordInfo.Origin.WordCase)
+        if (data.IsFromWordCase())
         {
-            // put it back
-            AnimateMovementBackToCase();
+            doubleClickHandler.AnimateMovementBackToCase();
         }
     }
     public override void OnBeginDrag(PointerEventData eventData)
@@ -112,11 +103,11 @@ public class Word : Bubble
         base.ParentToNewParent(newParent, spawnWordReplacement, toCurrentWord);
         if (spawnWordReplacement)
         {
-            if (data.origin == WordInfo.Origin.WordCase)
+            if (data.IsFromWordCase())
                 WordCaseManager.instance.SpawnReplacement(this);
         }
     }
-    protected override Vector2 GetCaseTargetPosition()
+    public override Vector2 GetCaseTargetPosition()
     {
         if (data.origin != WordInfo.Origin.QuestLog)
             return ReferenceManager.instance.wordCase.GetComponent<RectTransform>().rect.center +
@@ -198,7 +189,7 @@ public class WordData : BubbleData
     public override void UpdateBubbleData()
     {
         base.UpdateBubbleData();
-        if (origin == WordInfo.Origin.WordCase)
+        if (IsFromWordCase())
         {
             WordCaseManager.instance.UpdateBubbleData(this);
         }

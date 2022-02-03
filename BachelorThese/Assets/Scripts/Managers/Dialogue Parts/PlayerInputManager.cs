@@ -188,7 +188,7 @@ public class PlayerInputManager : MonoBehaviour
         else
             diManager.continueHandler.OnPromptStart();
 
-        
+
         promptMenu.SetActive(true);
 
         if (DoesPromptIDExist(promptID))
@@ -203,14 +203,15 @@ public class PlayerInputManager : MonoBehaviour
         string subtags = (wlReader.questionTag[promptID].Length > 1) ? wlReader.questionTag[promptID][1] : "";
         // textinfo somehow gets deleted or something after that, so we need to pass it in
         GameObject prompt = WordUtilities.CheckForPromptInputsAndCreatePrompt(promptAnswer, promptAnswer.textInfo, bubbleParent, subtags);
-        
+
         OnPromptStart(prompt);
         StartCoroutine(diManager.ClosePromptMenuAfterContinue(promptMenu));
     }
 
     void OnPromptStart(GameObject prompt)
     {
-        WordCaseManager.instance.StartGreyOut(prompt);
+        if (prompt != null)
+            WordCaseManager.instance.StartGreyOut(prompt);
     }
 
     public void OnPromptEnd()

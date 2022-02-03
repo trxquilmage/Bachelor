@@ -193,15 +193,16 @@ public class PromptBubble : MonoBehaviour
 
 public class OnHoverHandler
 {
-    bool hasCurrentWord;
-    bool noSubtags;
-    bool promptSubtagMatchesAWordSubtag;
-    bool promptSubtagMatchesAWordTag;
-    BubbleData wordData;
-    PromptBubble.PromptBubbleData data;
-    string allTagName;
+    protected bool hasCurrentWord;
+    protected bool noSubtags;
+    protected bool promptSubtagMatchesAWordSubtag;
+    protected bool promptSubtagMatchesAWordTag;
+    protected BubbleData wordData;
+    protected PromptBubble.PromptBubbleData data;
+    protected PromptBubble relatedPromptBubble;
+    protected string allTagName;
 
-    ReferenceManager refM;
+    protected ReferenceManager refM;
 
     public OnHoverHandler(PromptBubble relatedPromptBubble)
     {
@@ -210,12 +211,17 @@ public class OnHoverHandler
         if (hasCurrentWord)
         {
             wordData = WordClickManager.instance.currentWord.GetComponent<Bubble>().data;
-            promptSubtagMatchesAWordSubtag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.subtag);
-            promptSubtagMatchesAWordTag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.tag);
+            CheckSubtagMatches();
         }
     }
 
-    void AssignInitialValues(PromptBubble relatedPromptBubble)
+    protected void CheckSubtagMatches()
+    {
+        promptSubtagMatchesAWordSubtag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.subtag);
+        promptSubtagMatchesAWordTag = relatedPromptBubble.DoesPromptTagMatchASubtag(wordData.tag);
+    }
+
+    protected void AssignInitialValues(PromptBubble relatedPromptBubble)
     {
         refM = ReferenceManager.instance;
 
@@ -226,9 +232,10 @@ public class OnHoverHandler
         promptSubtagMatchesAWordTag = false;
         wordData = null;
         allTagName = refM.wordTags[refM.allTagIndex].name;
+        this.relatedPromptBubble = relatedPromptBubble;
     }
 
-    public bool InputIsCorrect()
+    public virtual bool InputIsCorrect()
     {
         return
         (//prompt bubble: all:all
@@ -274,5 +281,23 @@ public class OnHoverHandler
     public bool MouseEndsHover(bool isCurrentlyHovering, bool wasHoveringLastFrame)
     {
         return (!isCurrentlyHovering && wasHoveringLastFrame);
+    }
+}
+
+public class OnPromptGreyoutHandler : OnHoverHandler
+{
+    public OnPromptGreyoutHandler(PromptBubble relatedPromptBubble) : base(relatedPromptBubble)
+    {
+        AssignInitialValues(relatedPromptBubble);
+    }
+    void GetWordDataAndCheckSubtagMatches(BubbleData wordData)
+    {
+        this.wordData = wordData;
+        CheckSubtagMatches();
+    }
+    public bool InputIsCorrect(BubbleData wordData)
+    {
+        GetWordDataAndCheckSubtagMatches(wordData);
+        return base.InputIsCorrect();
     }
 }

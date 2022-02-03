@@ -39,6 +39,7 @@ public class InteractableObject : MonoBehaviour
     }
     void WorldMap(bool open)
     {
+        DialogueInputManager.instance.enabled = open;
         ReferenceManager.instance.worldMap.SetActive(open);
         EffectUtilities.ReColorAllInteractableWords();
         UIManager.instance.isInteracting = open;

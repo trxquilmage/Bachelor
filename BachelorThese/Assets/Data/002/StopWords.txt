@@ -81,7 +81,11 @@ best
 better
 between
 beyond
+book
+books
+booking
 both
+bother
 brief
 buddy
 but
@@ -94,8 +98,16 @@ can't
 caption
 cause
 causes
+celebrating
+celebrate
+celebrates
+celebrated
 certain
 certainly
+check
+ckecking
+checks
+checked
 changes
 clearly
 c'mon
@@ -323,6 +335,8 @@ mightn't
 mine
 minus
 miss
+mobile
+mobility
 more
 moreover
 most
@@ -483,6 +497,7 @@ sure
 take
 taken
 taking
+talk
 tell
 telling
 tells

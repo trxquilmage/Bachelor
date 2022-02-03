@@ -28,7 +28,7 @@ MonoBehaviour:
   - {r: 1, g: 0.6745098, b: 0.4745098, a: 1}
   shadowButtonColor: {r: 0.078431375, g: 0.3647059, b: 0.654902, a: 1}
   askColor: {r: 0.9811321, g: 0.5784977, b: 0.7209948, a: 1}
-  greyedOutColor: {r: 0.745283, g: 0.60590994, b: 0.5730242, a: 1}
+  greyedOutColor: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 1}
   textFieldColor: {r: 1, g: 0.9450981, b: 0.83921576, a: 1}
   inputFieldColor: {r: 0.43529415, g: 0.57254905, b: 0.7960785, a: 1}
   nameFieldColor: {r: 0.6392157, g: 0.85882354, b: 0.87058824, a: 1}

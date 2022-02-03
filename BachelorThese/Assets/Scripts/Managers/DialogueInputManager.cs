@@ -126,7 +126,7 @@ public class DialogueInputManager : MonoBehaviour
         {
             WordCaseManager.instance.AutomaticOpenCase(true);
             wcManager.SwitchFromHighlightedToCurrent();
-            wcManager.currentWord.GetComponent<Bubble>().OnDoubleClicked();
+            wcManager.currentWord.GetComponent<Bubble>().doubleClickHandler.OnDoubleClicked();
         }
         else
         {
@@ -140,17 +140,17 @@ public class DialogueInputManager : MonoBehaviour
                 {
                     if (result.gameObject.TryGetComponent<Bubble>(out Bubble word))
                     {
-                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        word.doubleClickHandler.OnDoubleClicked(); //this will result in a wiggle animation
                         break;
                     }
                     else if (result.gameObject.transform.parent.TryGetComponent<Bubble>(out word))
                     {
-                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        word.doubleClickHandler.OnDoubleClicked(); //this will result in a wiggle animation
                         break;
                     }
                     else if (result.gameObject.transform.parent.parent != null && result.gameObject.transform.parent.parent.TryGetComponent<Bubble>(out word))
                     {
-                        word.OnDoubleClicked(); //this will result in a wiggle animation
+                        word.doubleClickHandler.OnDoubleClicked(); //this will result in a wiggle animation
                         break;
                     }
                 }

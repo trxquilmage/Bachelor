@@ -20,10 +20,9 @@ title: DJPizza.FirstIntroduction
 tags:
 ---
 I'm the DJ for the evening.
-DJ Pizza, known for weddings, funerals and
-children's parties.
-So, if you're throwing one of those, 
-be sure to call me! Yay... 
+DJ Pizza - book me if you are celebrating a 
+wedding, a funeral or a birthday party!
+Me and my pizza mobile will be right with you!
 Say... what is your name?
 <<setquest Managers QuestAAB>>
 [[DJPizza.Introduction]]
@@ -83,7 +82,6 @@ What is the secret word we made out?
     [[DJPizza.TheDeal]]
 <<elseif $secretWord eq "Pizza">>
     You think that's funny, huh? 
-    The joke isn't even good. 
     My passion for pizza died about 13 years ago.
 <<else>>
     Nah. Sorry, that's wrong.
@@ -122,11 +120,9 @@ Great. Sorry, I'm just careful.
 <i><color=grey>Inside is a goldfish, swimming around.</i>
 <<showcharactername Managers DJPizza>>
 His name is Parker. 
-Try to get him a bigger Aquarium, 
-as soon as you can.
 I already got your payment, so...
 <<setquest Managers QuestAAD>>
-It was nice doing buisness with you. 
+It was nice doing business with you. 
 ===
 
 title: DJPizza.ICantSay

@@ -294,7 +294,7 @@ public class UIManager : MonoBehaviour
         if (wclM.currentWord != null)
         {
             BubbleData data = wclM.currentWord.GetComponent<Bubble>().data;
-            if (data is WordData && data.origin == WordInfo.Origin.WordCase)
+            if (data is WordData && data.IsFromWordCase())
             {
                 Bubble bubble = wclM.currentWord.GetComponent<Bubble>();
                 if (!bubble.data.permanentWord)

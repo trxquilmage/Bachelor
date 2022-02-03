@@ -15,7 +15,7 @@ tags:
 title: AuntHeleen.Idle
 tags:
 ---
-Thank you so much!
+Thank you so much, dear!
 I hope you have fun at the party!
 ===
 
@@ -24,12 +24,12 @@ tags:
 ---
 Where is he, again...
 .... Oh, you're here!
-I'm so sorry to bother you with this, but 
-if you see Matheo somewhere, could you 
+I'm so sorry to bother you with this, dear,
+but if you see Matheo somewhere, could you 
 <<setquest Managers QuestAAA>>
 tell me where you saw him?
-I mean you're gonna talk to a lot of people 
-here, could you try asking around?
+If you're gonna talk to the other guests, 
+could you take a second to ask them about Matheo?
 ===
 
 title: AuntHeleen.HaveYouFoundMatheo
@@ -40,11 +40,8 @@ tags:
 Have you found him?
 <<set $cantsay to icantsay("AuntHeleen", "HasntFoundMatheo")>>
 <<set $location to react("name", "", "AuntHeleen")>>
-<<set $isCity to react("type", "", "AuntHeleen")>>
 <<if $location eq "Presents">>
     [[AuntHeleen.FoundMatheo]]
-<<elseif not $isCity eq "Local">>
-    [[AuntHeleen.WrongFoundMatheoCity]]
 <<else>>
     [[AuntHeleen.WrongFoundMatheo]]
 <<endif>>
@@ -63,19 +60,12 @@ Are you sure? I already checked there,
 he didn't seem to be there.
 ===
 
-title: AuntHeleen.WrongFoundMatheoCity
-tags:
----
-Ha-ha. Very funny.
-But really, if you see him, please tell me.
-===
-
 title: AuntHeleen.FoundMatheo
 tags:
 ---
 Thank you so much, I will go looking for him.
 <<completequest Managers QuestAAA>>
-Children are sure something, huh. 
+Having a child sure is something, huh?
 ===
 
 title: AuntHeleen.ICantSay

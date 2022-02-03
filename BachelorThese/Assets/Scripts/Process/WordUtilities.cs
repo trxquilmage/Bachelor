@@ -235,22 +235,18 @@ public static class WordUtilities
         pB.Initialize(wordInfo.GetWord(), subtags, wordParameters);
         return promptBubble;
     }
-    /// <summary>
-    /// Parents the child to the prompt the mouse is currently hovering over
-    /// </summary>
-    /// <param name="child"></param>
-    public static void ParentBubbleToPrompt(GameObject child)
+
+    public static void ParentBubbleToPromptOnDrop(GameObject child)
     {
         GameObject promptBubble = WordClickManager.instance.promptBubble.gameObject;
-
+        ParentBubbleToPrompt(promptBubble, child);
+    }
+    public static void ParentBubbleToPrompt(GameObject promptBubble, GameObject child)
+    {
         PromptBubble bubble = promptBubble.GetComponent<PromptBubble>();
-        if (bubble.child != null) // if there is already a prompt put in
-        {
-            // remove the word
-            bubble.child.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform);
-            bubble.child.GetComponent<Bubble>().DroppedOverNothing(); // put the OG word back where it came from
-            bubble.child = null;
-        }
+        if (bubble.child != null)
+            bubble.child.GetComponent<Bubble>().doubleClickHandler.OnDoubleClicked();
+
         child.transform.SetParent(promptBubble.transform);
         float localX = promptBubble.GetComponent<RectTransform>().sizeDelta.x / 2; //center
         localX -= child.GetComponent<RectTransform>().sizeDelta.x / 2; // - half of word case
@@ -268,8 +264,6 @@ public static class WordUtilities
         //update text colors
         EffectUtilities.ReColorAllInteractableWords();
     }
-
-
     public static bool IsWordInADataBank(string wordName, bool isFillerWord, out bool wordAlreadyInWordCase, out bool wordCaseIsFull)
     {
         wordAlreadyInWordCase = true;
@@ -512,8 +506,4 @@ public static class WordUtilities
         return false;
     }
 
-    public static bool IsNotFromACase(BubbleData data)
-    {
-        return (data.origin == WordInfo.Origin.Dialogue || data.origin == WordInfo.Origin.Environment || data.origin == WordInfo.Origin.Ask);
-    }
 }
