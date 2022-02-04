@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     public InputMap controls;
     [SerializeField] GameObject characterMesh;
 
+    public Companion currentCompanion;
+
     Vector3 MovementDir;
     Vector3 movementDir
     {
@@ -68,11 +70,19 @@ public class Player : MonoBehaviour
     {
         rigid.isKinematic = true;
         TriggerWalkingAnimation(false);
+        CallMovementInCompanion(false);
     }
     void OnStartWalking()
     {
         rigid.isKinematic = false;
         TriggerWalkingAnimation(true);
+        CallMovementInCompanion(true);
+    }
+    void CallMovementInCompanion(bool start)
+    {
+        if (currentCompanion == null)
+            return;
+        currentCompanion.StartFollowPlayer(start);
     }
     void TriggerWalkingAnimation(bool changeTo)
     {

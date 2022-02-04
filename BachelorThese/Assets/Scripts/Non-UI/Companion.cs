@@ -9,33 +9,23 @@ public class Companion : NPC
     public float minDistanceToPlayer = 2;
     public float speed = 2;
 
-    Vector3 MovementDir;
-    Vector3 movementDir
+    Vector3 currentTargetPosition
     {
-        get { return MovementDir; }
+        get { return CurrentTargetPosition; }
         set
         {
-            rigid.velocity = value;
-            //MoveAgentTo();
-            MovementDir = value;
-            if (value == Vector3.zero)
-            {
-                rigid.isKinematic = true;
-                TriggerWalkingAnimation(false);
-            }
-            else
-            {
-                rigid.isKinematic = false;
-                TriggerWalkingAnimation(true);
-            }
+            MoveAgentToCurrentTargetPosition();
+            CurrentTargetPosition = value;
         }
     }
+    Vector3 CurrentTargetPosition;
 
     DialogueManager diaM;
     Rigidbody rigid;
     Animator animator;
     NavMeshAgent agent;
 
+    bool playerIsMoving;
 
     protected override void Start()
     {
@@ -44,18 +34,11 @@ public class Companion : NPC
     }
     void SetCompanionValues()
     {
-
         diaM = DialogueManager.instance;
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         agent = GetComponent<NavMeshAgent>();
-    }
-    private void Update()
-    {
-        if (!inParty)
-            return;
-
-        FollowPlayer();
+        agent.speed = speed;
     }
     private void FixedUpdate()
     {
@@ -64,35 +47,69 @@ public class Companion : NPC
         Vector3 normalizedDirectionToPlayer = (targetPlayer.transform.position - npcMesh.transform.position).normalized;
         TurnTowardsPlayer(normalizedDirectionToPlayer);
     }
-    void MoveAgentTo(Vector3 destination)
+    void MoveAgentToCurrentTargetPosition()
     {
-        agent.destination = destination;
+        agent.destination = currentTargetPosition;
+        if (agent.hasPath)
+            OnMovementStart();
     }
     public void JoinParty()
     {
         inParty = true;
         interactionRadius /= 1.8f;
+        targetPlayer.GetComponent<Player>().currentCompanion = this;
     }
-    void FollowPlayer()
+    public void StartFollowPlayer(bool start)
     {
         if (diaM.isInDialogue || diaM.isOnlyInAsk)
-        {
-            movementDir = Vector3.zero;
+
             return;
-        }
 
-        Vector3 directionToPlayer = (targetPlayer.transform.position - transform.position).normalized;
-
-        float currentDistance = Vector3.Distance(transform.position, targetPlayer.transform.position);
-        if (currentDistance < minDistanceToPlayer)
-            movementDir = Vector3.zero;
-        else
-            movementDir = directionToPlayer * speed;
-
+        playerIsMoving = start;
+        if (playerIsMoving)
+            StartCoroutine(FollowPlayer());
     }
-    void GetTargetPositionFromWalkingDirection(Vector3 normalizedDirection)
+    IEnumerator FollowPlayer()
     {
-        //transform.position + 
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (playerIsMoving)
+        {
+            SetCurrentTargetPosition();
+            yield return delay;
+        }
+    }
+    void SetCurrentTargetPosition()
+    {
+        Vector3 directionToPlayer = Vector3.Scale((targetPlayer.transform.position - transform.position), new Vector3(1, 0, 1));
+        directionToPlayer = directionToPlayer.normalized;
+
+        float currentDistanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
+        float distanceToTargetPosition = currentDistanceToPlayer - minDistanceToPlayer;
+
+        if (currentDistanceToPlayer < 0)
+            return;
+
+        currentTargetPosition = transform.position + (directionToPlayer * distanceToTargetPosition);
+    }
+    IEnumerator CheckIfGoalIsReachedEachFrame()
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (agent.hasPath)
+        {
+            yield return delay;
+        }
+        OnMovementEnd();
+    }
+    void OnMovementStart()
+    {
+        rigid.isKinematic = false;
+        TriggerWalkingAnimation(true);
+        StartCoroutine(CheckIfGoalIsReachedEachFrame());
+    }
+    void OnMovementEnd()
+    {
+        rigid.isKinematic = true;
+        TriggerWalkingAnimation(false);
     }
     public override void TurnTowardsPlayer(Vector3 directionToPlayer)
     {
