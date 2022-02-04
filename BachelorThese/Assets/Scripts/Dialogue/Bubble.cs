@@ -937,7 +937,7 @@ public class BubbleDoubleClickHandler
             UIManager.instance.BlendInUI(refM.warningWordAlreadyInList, 3);
         else if (caseIsFull)
             UIManager.instance.BlendInUI(refM.warningCaseFull, 3);
-        Debug.Log(fits + " " + bubbleIsAlreadyInList + " " + caseIsFull);
+
         if (fits)
             AnimateMovementIntoCase();
         else

@@ -28,8 +28,8 @@ Hey! I'm so glad you could make it!
     <<elseif $dateIsGoing eq "neutral">>
         Ah, okay then. I hope it gets better.
     <<elseif $dateIsGoing eq "negative">>
-        Oh, that doesn't sound good. 
-        Told you he looked boring.
+        Oh, that doesn't sound good...
+        Well... uh... anyway.
     <<endif>>
 <<else>>
     I hope the venue wasn't too hard to find.
@@ -37,7 +37,7 @@ Hey! I'm so glad you could make it!
     but there were too many possibilites
     from where guests could be coming.
 <<endif>>
-Anyways, I hope you enjoy the evening!
+I hope you enjoy the evening!
 [[James.Tour]]
 ===
 
@@ -52,7 +52,7 @@ title: James.Tour
 tags:
 ---
 Help yourself at the Buffet, and have 
-a sit at one of the tables.
+a seat at one of the tables.
 There should be enough space for everyone.
 And if you haven't yet, you can add your 
 present to the presents near the entrance!

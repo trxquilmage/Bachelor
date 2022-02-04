@@ -9,7 +9,6 @@ title: Tutorial.Welcome
 tags: 
 ---
 Hello.
-[[Tutorial.End]]
 You are currently playing a bachelor thesis,
 made by Maria Fleischer in 2022. 
 The topic of the thesis was the exploration 
@@ -38,7 +37,7 @@ title: Tutorial.FirstQuestion
 tags: 
 ---
 Now. Let's get into answering.
-You can answer a posed question
+When being asked a question, you can answer
 by dragging a word into the answer prompt.
 That word can be from your inventory
 or from the dialogue text. Let's try it. 

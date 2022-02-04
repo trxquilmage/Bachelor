@@ -88,3 +88,18 @@ Party;Concept;Imm;
 Name;Concept;Imm;
 Pizza;Item;Mat;
 Funny;Adjective;Descriptor;positive
+Big;Adjective;Descriptor;neutral
+Sibling;Name;Relation;
+Wife;Name;Relation;
+Co-worker;Concept;Imm;
+Catering;Concept;Imm;
+Caterer;Concept;Imm;
+Real;Adjective;Descriptor;neutral
+Son;Name;Relation;
+New;Adjective;Descriptor;neutral
+Katie;Name;NameA;
+Hard;Adjective;Descriptor;negative
+Glad;Adjective;Rating;positive
+Date;Concept;Imm;
+Venue;Location;Local;Ashley River
+Entrance;Location;Local;Ashley River
