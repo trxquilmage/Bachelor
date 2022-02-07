@@ -32,7 +32,7 @@ public static class WordUtilities
             (byte)randomSystem.Next(0, 255),
             (byte)randomSystem.Next(0, 255), 255);
 
-        color = Color.Lerp(color, dilutionColor, 0.15f);
+        color = Color.Lerp(color, dilutionColor, 0.05f);
         return color;
     }
 
