@@ -4,6 +4,7 @@ Yeah;YesNo;Boolean;true
 Nope;YesNo;Boolean;false
 Definetly;YesNo;Boolean;true
 Nah;YesNo;Boolean;false
+Hm;YesNo;Boolean;true
 Renna;Name;NameA;
 James;Name;NameA;
 Stubi;Name;NameA;
@@ -25,6 +26,13 @@ Sam;Name;NameA;
 Parker;Name;NameA;
 Girl;Name;Title;
 DJ;Name;NameA;
+Dear;Name;Address;
+Child;Name;Relation;
+Sibling;Name;Relation;
+Wife;Name;Relation;
+Son;Name;Relation;
+Katie;Name;NameA;
+Kid;Name;Relation;
 Bridgetown;Location;City;Nocturne
 Greybell;Location;City;Nocturne
 Nocturne;Location;Country;XXX
@@ -36,6 +44,9 @@ Here;Location;Null;
 Home;Location;Null;
 Inside;Location;Null;
 Bushes;Location;Local;Ashley River
+Venue;Location;Local;Ashley River
+Entrance;Location;Local;Ashley River
+Workshop;Location;House;Greybell
 Wine;Item;Mat;moderate
 Food;Item;Mat;cheap
 Present;Item;Mat;undefined
@@ -44,6 +55,9 @@ Aquarium;Item;Mat;moderate
 Dish;Item;Mat;cheap
 Sushi;Item;Mat;cheap
 Dough;Item;Mat;cheap
+Pizza;Item;Mat;
+Hat;Item;Mat;moderate
+Car;Item;Mat;expensive
 Job;Concept;Imm;
 Email;Concept;Imm;
 Wedding;Concept;Imm;
@@ -55,6 +69,18 @@ Treasure;Concept;Imm;
 Treasures;Concept;Imm;
 Adventure;Concept;Imm;
 Business;Concept;Imm;
+Funeral;Concept;Imm;
+Birthday;Concept;Imm;
+Party;Concept;Imm;
+Name;Concept;Imm;
+Co-worker;Concept;Imm;
+Catering;Concept;Imm;
+Caterer;Concept;Imm;
+Date;Concept;Imm;
+Person;Concept;Imm;
+God;Concept;Imm;
+Engineer;Concept;Imm;
+World;Concept;Imm;
 Good;Adjective;Rating;positive
 Nice;Adjective;Rating;positive
 Beautiful;Adjective;Rating;positive
@@ -79,27 +105,18 @@ Favorite;Adjective;Descriptor;neutral
 Unusual;Adjective;Descriptor;neutral
 Brutal;Adjective;Descriptor;negative
 Drunk;Adjective;Descriptor;neutral
-Akward;Adjective;Decriptor;
-Dear;Name;Address;
-Child;Name;Relation;
-Funeral;Concept;Imm;
-Birthday;Concept;Imm;
-Party;Concept;Imm;
-Name;Concept;Imm;
-Pizza;Item;Mat;
+Akward;Adjective;Descriptor;
 Funny;Adjective;Descriptor;positive
 Big;Adjective;Descriptor;neutral
-Sibling;Name;Relation;
-Wife;Name;Relation;
-Co-worker;Concept;Imm;
-Catering;Concept;Imm;
-Caterer;Concept;Imm;
 Real;Adjective;Descriptor;neutral
-Son;Name;Relation;
 New;Adjective;Descriptor;neutral
-Katie;Name;NameA;
 Hard;Adjective;Descriptor;negative
 Glad;Adjective;Rating;positive
-Date;Concept;Imm;
-Venue;Location;Local;Ashley River
-Entrance;Location;Local;Ashley River
+Secretive;Adjective;Descriptor;neutral
+Weird;Adjective;Descriptor;negative
+Super;Adjective;Descriptor;positive
+Sucessful;Adjective;Descriptor;positive
+Average;Adjective;Rating;neutral
+Plates;Item;Present;moderate
+Boat;Item;Present;expensive
+Cutlery;Item;Present;moderate

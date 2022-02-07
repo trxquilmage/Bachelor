@@ -13,21 +13,25 @@ public class StopWordsLookupReader : MonoBehaviour
     string dataPath;
     string allBlocked;
     List<string> blocked;
-    BucketSort bucketSort;
+    StopWordSorter bucketSort;
+    void Awake()
+    {
+        instance = this;
+    }
     public void StartSorting()
     {
         instance = this;
         dataPath = Application.dataPath + "/Data/" + "002";
 
-        LookUpBlocked();
         StartBucketSort();
     }
     void StartBucketSort()
     {
         blocked = new List<string>();
         blockedWords = new List<string>();
+        LookUpBlocked();
 
-        bucketSort = new BucketSort(blocked, 0);
+        bucketSort = new StopWordSorter(blocked);
         blockedWords = bucketSort.GetSortedList();
     }
     void LookUpBlocked()
@@ -38,8 +42,7 @@ public class StopWordsLookupReader : MonoBehaviour
         foreach (string s in lines)
         {
             if (s == "")
-                return;
-
+                break;
             string line = s.Substring(0, s.Length - 1);
             line = WordUtilities.CapitalizeAllWordsInString(line);
             blocked.Add(line);

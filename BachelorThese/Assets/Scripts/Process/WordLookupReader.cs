@@ -16,8 +16,7 @@ public class WordLookupReader : MonoBehaviour
     public Dictionary<string, string[]> fillerTag = new Dictionary<string, string[]>();
     public Dictionary<string, string> questDescriptions = new Dictionary<string, string>();
     public Dictionary<string, string[]> tagSubtag = new Dictionary<string, string[]>();
-    public List<string> blocked = new List<string>();
-    Searcher searcher;
+    List<string> blocked = new List<string>();
     List<TMP_WordInfo> currentWordList;
     List<string[]> currentReferenceWords;
     int currentLongWordIndex;
@@ -43,8 +42,8 @@ public class WordLookupReader : MonoBehaviour
         dataPath = Application.dataPath + "/Data/" + refM.sceneNumber;
         currentWordList = new List<TMP_WordInfo>();
         currentReferenceWords = new List<string[]>();
+        Debug.Log(StopWordsLookupReader.instance);
         blocked = StopWordsLookupReader.instance.blockedWords;
-        searcher = new Searcher();
     }
     void LookUpQuestion()
     {
@@ -277,7 +276,7 @@ public class WordLookupReader : MonoBehaviour
             return isWord;
         }
         // is this word on the block list?
-        if (ReferenceManager.instance.blockListOn && blocked.Contains(word))
+        if (ReferenceManager.instance.blockListOn && BinaryListSearcher.SortedStringListContains(blocked, word, 0, blocked.Count))
         {
             currentReferenceWords = new List<string[]>();
             currentWordList = new List<TMP_WordInfo>();
@@ -304,35 +303,26 @@ public class WordLookupReader : MonoBehaviour
         return isWord;
     }
 }
-public class BucketSort
+public class StopWordSorter
 {
-    int alphabetSize = 26;
     List<string> listToSort;
-    List<string>[] buckets;
-    List<string> additionalBucket;
-    int currentLetterIndex = 0;
-    public BucketSort(string[] arrayToSort, int currentLetterIndex)
+    public StopWordSorter(string[] arrayToSort)
     {
-        StartBucketSort(ArrayToList(arrayToSort), currentLetterIndex);
+        Start(ArrayToList(arrayToSort));
     }
-    public BucketSort(List<string> listToSort, int currentLetterIndex)
+    public StopWordSorter(List<string> listToSort)
     {
-        StartBucketSort(listToSort, currentLetterIndex);
+        Start(listToSort);
     }
-    void StartBucketSort(List<string> listToSort, int currentLetterIndex)
+    void Start(List<string> listToSort)
     {
-        if (currentLetterIndex > 25)
-            return;
-
-        this.listToSort = listToSort;
-        this.currentLetterIndex = currentLetterIndex;
-        buckets = new List<string>[alphabetSize];
-
-        PlaceInBuckets();
-        MergeBuckets();
+        AssignValues(listToSort);
+        this.listToSort.Sort();
         RemoveDuplicates();
-        BucketSort bucketSort = new BucketSort(this.listToSort, currentLetterIndex + 1);
-        this.listToSort = bucketSort.GetSortedList();
+    }
+    void AssignValues(List<string> listToSort)
+    {
+        this.listToSort = listToSort;
     }
     List<string> ArrayToList(string[] array)
     {
@@ -340,38 +330,6 @@ public class BucketSort
         foreach (string word in array)
             list.Add(word);
         return list;
-    }
-    void PlaceInBuckets()
-    {
-        int bucketIndex;
-        foreach (string word in listToSort)
-        {
-            if (currentLetterIndex >= word.Length)
-                return;
-
-            bucketIndex = word[currentLetterIndex] - 'a';
-
-            if (bucketIndex >= alphabetSize)
-            {
-                additionalBucket.Add(word);
-                return;
-            }
-
-            buckets[bucketIndex].Add(word);
-        }
-    }
-    void MergeBuckets()
-    {
-        List<string> allWords = new List<string>();
-        foreach (List<string> bucket in buckets)
-        {
-            for (int i = 0; i < bucket.Count; i++)
-                allWords.Add(bucket[i]);
-        }
-        for (int i = 0; i < additionalBucket.Count; i++)
-            allWords.Add(additionalBucket[i]);
-
-        listToSort = allWords;
     }
     void RemoveDuplicates()
     {
@@ -388,8 +346,28 @@ public class BucketSort
         return listToSort;
     }
 }
-
-public class Searcher
+public static class BinaryListSearcher
 {
+    public static bool SortedStringListContains(List<string> listToSearch, string wordToFind, int startIndex, int endIndex)
+    {
+        if ((endIndex - startIndex) < 1.1f)
+        {
+            if (listToSearch[startIndex] == wordToFind)
+                return true;
+            else if (listToSearch[endIndex] == wordToFind)
+                return true;
+            else
+                return false;
+        }
 
+        int middle = startIndex + (endIndex - startIndex) / 2;
+        int comparisonMiddleAndFind = string.Compare(listToSearch[middle], wordToFind);
+
+        if (comparisonMiddleAndFind < 0) // find is smaller than middle
+            return SortedStringListContains(listToSearch, wordToFind, middle, endIndex);
+        else if (comparisonMiddleAndFind > 0) //find is bigger than middle
+            return SortedStringListContains(listToSearch, wordToFind, startIndex, middle);
+        else //find is middle
+            return true;
+    }
 }

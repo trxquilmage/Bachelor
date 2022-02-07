@@ -1,7 +1,9 @@
-Secret Word;Concept;Imm;
-Dim Sum;Concept;Imm;
-Chinese Cuisine;Concept;Imm;
-Online Dating App;Concept;Imm;
+Aunt Heleen;Name;NameA;
+Uncle Mickey;Name;NameA;
+DJ Pizza;Name;NameA;
+Ashley River;Location;City;Nocturne
+Northland Woods;Location;District;Bridgetown
+Rensgate Car Services;Location;House;Greybell
 Glass Bowl;Item;Mat;cheap
 Pineapple Bun;Item;Mat;cheap
 Fried Tofu;Item;Mat;cheap
@@ -20,11 +22,12 @@ Steam Pork Rib Rice;Item;Mat;cheap
 Fino Sherry;Item;Mat;moderate
 Sweet Dishes;Item;Mat;cheap
 Meaty Dishes;Item;Mat;cheap
-Ashley River;Location;City;Nocturne
-Northland Woods;Location;District;Bridgetown
-Rensgate Car Services;Location;House;Greybell
-Aunt Heleen;Name;NameA;
-Cousin Hartley;Name;NameA;
-Uncle Mickey;Name;NameA;
-DJ Pizza;Name;NameA;
+Secret Word;Concept;Imm;
+Dim Sum;Concept;Imm;
+Chinese Cuisine;Concept;Imm;
+Dating App;Concept;Imm;
 Guest List;Concept;Imm;
+Coffee Machine;Item;Present;moderate
+Fishing Set;Item;Present;moderate
+Party Hat;Item;Present;cheap
+Gift Basket;Item;Present;moderate
