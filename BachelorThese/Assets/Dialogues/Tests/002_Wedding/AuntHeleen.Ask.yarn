@@ -22,50 +22,58 @@ but I already checked and it seems he isn't.
 title: AuntHeleen.AuntHeleen
 tags:
 ---
-
+Me? Well, dear, I am doing amazing.
+Today is such a wonderful day,
+Oh, it reminds me of my own wedding!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.UncleMickey
 tags:
 ---
-
+Oh, you're looking for him? He's at the buffet!
+Food is his true passion, hahaha. 
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.DJPizza
 tags:
 ---
-
+The DJ? He's... okay, I think...?
+I don't really listen to the music.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.AshleyRiver
 tags:
 ---
-
+It's been one confusing car ride to get here.
+But I think it was really worth it!
+Marrying in a forest is so magical!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.NorthlandWoods
 tags:
 ---
-
+The area of northland woods is way too big.
+It took us an hour to get here.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.RensgateCarServices
 tags:
 ---
-
+The car workshop in Greybell?
+We go there sometimes when we're in the area.
+They're actually really good!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.GlassBowl
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Goldfish]]
 ===
 
 title: AuntHeleen.PineappleBun
@@ -185,56 +193,75 @@ tags:
 title: AuntHeleen.AllDishes
 tags:
 ---
-
+The food? I couldn't tell you a thing about it.
+In fact, I haven't even looked at the food yet.
+Ask my husband, over at the buffet.
+He knows that kind of stuff.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.SecretWord
 tags:
 ---
-
+Secret... what?
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.DatingApp
 tags:
 ---
-
+Oh, dear! I'm not in an age anymore, 
+where one uses dating apps.
+Also, I'm happily married, thank you very much.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.GuestList
 tags:
 ---
-
+Not many people here, huh?
+I guess there are still people on their way?
+I havent seen Katie and Jordan yet.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Renna
 tags:
 ---
-
+I'm so happy for my dear Renna!
+She lots of effort into planning this wedding.
+I'm so happy everything went well.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.James
 tags:
 ---
-
+James? Have you talked to him yet?
+He seems so happy!
+If he ever hurts Renna I will beat the s-
+.............
+I will... uh. Nevermind.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Stubi
 tags:
 ---
-
+Oh, you mean James' and Renna's weird friend?
+I tried to talk to him, but... uh.
+How do I phrase this politely....
+He talks. like a burglar. like. from a cartoon.
+I don't get what Renna and James see in him?
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Jordan
 tags:
 ---
-
+Jordan seems to be late. Again.
+But I guess he knew he'd be running late,
+left his present with us, so we'd deliver it.
 [[AuntHeleen.Continue]]
 ===
 
@@ -259,42 +286,31 @@ tags:
 title: AuntHeleen.Me
 tags:
 ---
-
+It's so nice to see you again!
+I think I haven't seen you in at least...
+Two years? 
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Family
 tags:
 ---
-
-[[AuntHeleen.Continue]]
-===
-
-title: AuntHeleen.Friend
-tags:
----
-
+Oh you know, the family is the usual drama.
+Let's not gossip on this beautiful day.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Riley
 tags:
 ---
-
-[[AuntHeleen.Continue]]
-===
-
-title: AuntHeleen.Matheo
-tags:
----
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Date]]
 ===
 
 title: AuntHeleen.Father
 tags:
 ---
-
+My father? He's still kicking.
+We donÄt see each other often, you know?
 [[AuntHeleen.Continue]]
 ===
 
@@ -337,42 +353,46 @@ tags:
 title: AuntHeleen.DJ
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.DJPizza]]
 ===
 
 title: AuntHeleen.Child
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Matheo]]
 ===
 
 title: AuntHeleen.Sibling
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Wife
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
+===
+
+title: AuntHeleen.Husband
+tags:
+---
+[[AuntHeleen.UncleMickey]]
 ===
 
 title: AuntHeleen.Son
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Matheo]]
 ===
 
 title: AuntHeleen.Katie
 tags:
 ---
-
+Katie? Haven't seen her yet.
+But she'll probably turn up soon.
 [[AuntHeleen.Continue]]
 ===
 
@@ -385,49 +405,61 @@ tags:
 title: AuntHeleen.Bridgetown
 tags:
 ---
-
+How Bridgetown is doing? 
+The same as usual, yeah.
+Our favorite restaurant closed down.
+A new pizza shop opened up, but they're not... good. 
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Greybell
 tags:
 ---
-
+Greybell? Haven't been in a while. 
+We went through there on our way here,
+but that's really it.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Nocturne
 tags:
 ---
-
+Nocturne? Like the country?
+That's a pretty broad topic.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Buffet
 tags:
 ---
-
+The buffet seems to be good. I can't really judge it,
+as I haven't tried anything yet.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Presents
 tags:
 ---
-
+Oh, we got Renna and James some basic stuff. You know,
+a set of plates, cutlery, and a coffee machine! 
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Tables
 tags:
 ---
-
+It's really nice here. 
+Standing below the trees, drinking my wine...
+A really good day! 
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Benches
 tags:
 ---
-
+I was over at the benches before,
+because I tried to talk to Stubi. 
+He's... a bit too weird for my taste.
 [[AuntHeleen.Continue]]
 ===
 
@@ -440,35 +472,40 @@ tags:
 title: AuntHeleen.Home
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Bridgetown]]
 ===
 
 title: AuntHeleen.Bushes
 tags:
 ---
-
+I really hope, that Matheo isn't playing around
+in the bushes...
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Venue
 tags:
 ---
-
+It's so nice here.
+I never actually even knew that there was 
+a venue to rent out here!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Workshop
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Wine
 tags:
 ---
-
+Oh, I love the wine here!
+We usually can't afford such an expensive
+wine brand at home, so it's nice to live
+a bit luxurious tonight.
 [[AuntHeleen.Continue]]
 ===
 
@@ -487,7 +524,8 @@ tags:
 title: AuntHeleen.Goldfish
 tags:
 ---
-
+Oh, if I want a goldfish? I don't think that 
+Matheo isn't old enough for a pet yet...
 [[AuntHeleen.Continue]]
 ===
 
@@ -512,49 +550,47 @@ tags:
 title: AuntHeleen.Hat
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Car
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Job
 tags:
 ---
-
+Same as always, dear.
+Lots and lots of books to stack,
+belitteling customers, and so on.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Email
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Wedding
 tags:
 ---
-
-[[AuntHeleen.Continue]]
-===
-
-title: AuntHeleen.Relationship
-tags:
----
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Venue]]
 ===
 
 title: AuntHeleen.Treasure
 tags:
 ---
-
+What? 
+You sound like Renna's and James' weird friend.
+He talked all about treasures and adventure.
+I think it might have been code for drugs?
+I don't know how young people talk...
 [[AuntHeleen.Continue]]
 ===
 
@@ -567,28 +603,28 @@ tags:
 title: AuntHeleen.Adventure
 tags:
 ---
-
-[[AuntHeleen.Continue]]
+[[AuntHeleen.Treasure]]
 ===
 
 title: AuntHeleen.Business
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Funeral
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Birthday
 tags:
 ---
-
+My birthday? You remembered?
+Yes, it was last week! We had lots of fun!
 [[AuntHeleen.Continue]]
 ===
 
@@ -601,21 +637,23 @@ tags:
 title: AuntHeleen.Name
 tags:
 ---
-
+... You do remember my name, right?
+... right?
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Co-worker
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Catering
 tags:
 ---
-
+Oh the caterer? You should ask my husband.
+He's like. Their biggest fan. Ever.
 [[AuntHeleen.Continue]]
 ===
 
@@ -628,84 +666,86 @@ tags:
 title: AuntHeleen.Date
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.God
 tags:
 ---
-
+Oh, why the sudden interest?
+Do you want to join next time we go to church?
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Engineer
 tags:
 ---
-
-[[AuntHeleen.Continue]]
-===
-
-title: AuntHeleen.World
-tags:
----
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Vegan
 tags:
 ---
-
+If I'm vegan? I've tried a while, but it really
+limits your cooking choices, especially if you're 
+living with a chef and a hungry ten year old.
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.CoffeeMachine
 tags:
 ---
-
+The coffee machine? Oh, it was a steal!
+We got one from a top-notch brand from one of
+my husband's co-workers. I'm so happy!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.FishingSet
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.PartyHat
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.GiftBasket
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Plates
 tags:
 ---
-
+The plates? We got two sets, but we
+didn't really know if they would fit
+with their kitchen, so we chose a very 
+minimalist style that fits everywhere!
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Boat
 tags:
 ---
-
+REMOVE
 [[AuntHeleen.Continue]]
 ===
 
 title: AuntHeleen.Cutlery
 tags:
 ---
-
+I cannot imagine what could possibly
+be interesting about the cutlery...
 [[AuntHeleen.Continue]]
 ===
 
