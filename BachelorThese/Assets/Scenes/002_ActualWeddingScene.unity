@@ -44630,6 +44630,7 @@ GameObject:
   - component: {fileID: 2098945807}
   - component: {fileID: 2098945808}
   - component: {fileID: 2098945809}
+  - component: {fileID: 2098945810}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -45081,6 +45082,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   askQuestionDone: 0
+--- !u!114 &2098945810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098945795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772c473798979084c89161563fcf3c95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockedWords: []
 --- !u!1001 &2099225568
 PrefabInstance:
   m_ObjectHideFlags: 0

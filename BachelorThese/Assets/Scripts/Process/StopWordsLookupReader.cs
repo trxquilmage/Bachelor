@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEditor;
 
 [ExecuteInEditMode]
 public class StopWordsLookupReader : MonoBehaviour
@@ -13,13 +14,13 @@ public class StopWordsLookupReader : MonoBehaviour
     string allBlocked;
     List<string> blocked;
     BucketSort bucketSort;
-    void Awake()
+    public void StartSorting()
     {
-        /*instance = this;
+        instance = this;
         dataPath = Application.dataPath + "/Data/" + "002";
 
         LookUpBlocked();
-        StartBucketSort();*/
+        StartBucketSort();
     }
     void StartBucketSort()
     {
