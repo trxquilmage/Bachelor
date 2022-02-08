@@ -42,7 +42,6 @@ public class WordLookupReader : MonoBehaviour
         dataPath = Application.dataPath + "/Data/" + refM.sceneNumber;
         currentWordList = new List<TMP_WordInfo>();
         currentReferenceWords = new List<string[]>();
-        Debug.Log(StopWordsLookupReader.instance);
         blocked = StopWordsLookupReader.instance.blockedWords;
     }
     void LookUpQuestion()

@@ -201,7 +201,7 @@ public class PlayerInputManager : MonoBehaviour
             Debug.Log("The prompt {0} does not exist in the lookup table" + promptID);
 
         string subtags = (wlReader.questionTag[promptID].Length > 1) ? wlReader.questionTag[promptID][1] : "";
-        // textinfo somehow gets deleted or something after that, so we need to pass it in
+
         GameObject prompt = WordUtilities.CheckForPromptInputsAndCreatePrompt(promptAnswer, promptAnswer.textInfo, bubbleParent, subtags);
 
         OnPromptStart(prompt);
@@ -253,6 +253,7 @@ public class PlayerInputManager : MonoBehaviour
 
         refM.askRunner.gameObject.SetActive(true);
         refM.askRunner.StartDialogue(DialogueManager.instance.currentTarget.askNode);
+
         GeneratePromptBubble(promptID, refM.askField, refM.askPrompt,
             refM.askPromptBubbleParent.transform, currentPromptAskBubbles);
 

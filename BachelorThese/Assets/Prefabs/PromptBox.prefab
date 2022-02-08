@@ -179,4 +179,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bfaaa8419f5eb4a961c8d47a09543f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounds: {x: 10, y: 20}
+  bounds: {x: 10, y: 40}

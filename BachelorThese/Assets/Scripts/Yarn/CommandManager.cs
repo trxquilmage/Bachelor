@@ -160,7 +160,6 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("displaypromptmenuask")]
     public void DisplayPromptMenuAsk(string promptQ)
     {
-
         PlayerInputManager.instance.GeneratePromptBubble(promptQ, refM.askField,
             refM.askPrompt, ReferenceManager.instance.askPromptBubbleParent.transform,
             PlayerInputManager.instance.currentPromptAskBubbles);

@@ -75,7 +75,6 @@ public static class WordUtilities
         }
         return tagInfo;
     }
-
     /// <summary>
     /// Get The Position of a wordInfo that is added to this
     /// </summary>
@@ -102,6 +101,7 @@ public static class WordUtilities
             lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
             wordPosition = lowerLeftTextBox + lowerLeftCorner;
             wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
+            wordPosition += Vector3.down * 3 + Vector3.left * 2;
             return wordPosition;
         }
         //Text is on a canvas that has ScreenSpace - Overlay
@@ -117,6 +117,7 @@ public static class WordUtilities
             float canvasScaler = (ReferenceManager.instance.canvas.scaleFactor * 2);
             wordPosition = lowerLeftTextBox + lowerLeftCorner * canvasScaler;
             wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
+            
             return wordPosition;
         }
     }
@@ -182,7 +183,6 @@ public static class WordUtilities
         // Set the hovered word to interacted
         EffectUtilities.ReColorAllInteractableWords();
     }
-
     /// <summary>
     /// checks the given text for promt inputs in the type of "|Tag|"
     /// </summary>
@@ -208,7 +208,6 @@ public static class WordUtilities
         }
         return null;
     }
-
     public static GameObject GetChildWithTag(GameObject parent, string tag)
     {
         for (int i = 0; i < parent.transform.childCount; i++)
@@ -219,7 +218,6 @@ public static class WordUtilities
             "function only finds first generation children");
         return null;
     }
-
     /// <summary>
     /// Create a Prompt Bubble above a word in a given text
     /// </summary>
@@ -235,7 +233,6 @@ public static class WordUtilities
         pB.Initialize(wordInfo.GetWord(), subtags, wordParameters);
         return promptBubble;
     }
-
     public static void ParentBubbleToPromptOnDrop(GameObject child)
     {
         GameObject promptBubble = WordClickManager.instance.promptBubble.gameObject;

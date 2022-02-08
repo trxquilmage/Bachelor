@@ -129,7 +129,7 @@ public class ReferenceManager : MonoBehaviour
     public Sprite buttonSelected;
     public Sprite wordSelectedSprite;
     [Header("Prompt Related")]
-    public TextMeshProUGUI promptAnswer;
+    public TMP_Text promptAnswer;
     public GameObject promptMenu;
     public TMP_Text askPrompt;
     public TMP_Text askNPCText;
