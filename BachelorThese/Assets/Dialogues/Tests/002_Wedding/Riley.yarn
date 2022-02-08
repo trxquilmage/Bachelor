@@ -2,6 +2,9 @@
 tags:
 ---
 <<showcharactername Managers Riley>>
+Talk Back Bachelor- Arbeit
+von Maria Fleischer
+Konzeption & Umsetzung eines experimentellen Dialogsystems.
 <<set $hasDate to getinfo("hasDate", 0)>>
 <<if not isvisited("Riley", "Start")>>
     [[Riley.Introduction]]
