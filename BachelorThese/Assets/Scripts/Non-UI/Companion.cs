@@ -86,7 +86,7 @@ public class Companion : NPC
         float currentDistanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
         float distanceToTargetPosition = currentDistanceToPlayer - minDistanceToPlayer;
 
-        if (currentDistanceToPlayer < 0)
+        if (currentDistanceToPlayer < minDistanceToPlayer)
             return;
 
         currentTargetPosition = transform.position + (directionToPlayer * distanceToTargetPosition);

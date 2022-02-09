@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-/*
+
 [CustomEditor(typeof(StopWordsLookupReader))]
 public class StopWordsLookupReaderEditor : Editor
 {
@@ -16,4 +16,3 @@ public class StopWordsLookupReaderEditor : Editor
         }
     }
 }
-*/

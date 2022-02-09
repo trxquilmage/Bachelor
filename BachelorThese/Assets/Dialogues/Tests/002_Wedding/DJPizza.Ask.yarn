@@ -13,10 +13,9 @@ tags:
 ---
 Matheo? Who's that?
 Oh, a small kid? Yeah...
-He was here... 
-Wanted to do my job for me.
-So I distracted him by telling him
-to check out the presents.
+He was here... Was a bit of a nosy kid... 
+Tried to read my messages, while i wasn't looking.
+I distracted him. Said, he should go check the presents.
 [[DJPizza.Continue]]
 ===
 
@@ -76,34 +75,36 @@ She sure knows how to party...
 title: DJPizza.UncleMickey
 tags:
 ---
-Oh, you're looking for him? He's at the buffet!
-Food is his true passion, hahaha. 
+Sorry, I don't know who that is.
+The man at the buffet? He keeps looking over here,
+kind of with a ... concerned look? I don't know...
+Did I do something wrong ...?
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.AshleyRiver
 tags:
 ---
-It's been one confusing car ride to get here.
-But I think it was really worth it!
-Marrying in a forest is so magical!
+Do you know how hard it is to get musical equipment
+into the middle of the woods? The DJ pult is being 
+powered by a generator in my car. It's exhausting.
+And there's tons of bugs here, too! Amazing!
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.NorthlandWoods
 tags:
 ---
-The area of northland woods is way too big.
-It took us an hour to get here.
+Who in their right mind marries in northland woods?
+There are actual beautiful places in this world.
+And they decide to hold their wedding here?
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.RensgateCarServices
 tags:
 ---
-The car workshop in Greybell?
-We go there sometimes when we're in the area.
-They're actually really good!
+REMOVE
 [[DJPizza.Continue]]
 ===
 
@@ -116,6 +117,8 @@ tags:
 title: DJPizza.PineappleBun
 tags:
 ---
+... Oh I love a good pineapple bun...
+I could eat them all day... It's my favorite food.
 [[DJPizza.AllDishes]]
 ===
 
@@ -230,26 +233,25 @@ tags:
 title: DJPizza.AllDishes
 tags:
 ---
-The food? I couldn't tell you a thing about it.
-In fact, I haven't even looked at the food yet.
-Ask my husband, over at the buffet.
-He knows that kind of stuff.
+The food? Oh the food looks really nice, no?
+I can't really tell you much about it...
+... But somehow, they have my favorite food... 
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.SecretWord
 tags:
 ---
-Secret... what?
+Hahaha, I will not just *tell* you the word, Jordan.
+Just check your email, I told you, what the word was.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.DatingApp
 tags:
 ---
-Oh, dear! I'm not in an age anymore, 
-where one uses dating apps.
-Also, I'm happily married, thank you very much.
+A dating app? Yeah, I'm on a few of them.
+I feel like this isn't your buisness, though.
 [[DJPizza.Continue]]
 ===
 
@@ -257,39 +259,31 @@ title: DJPizza.GuestList
 tags:
 ---
 Not many people here, huh?
-I guess there are still people on their way?
-I havent seen Katie and Jordan yet.
+But I was told it would be a small party, so it's fine.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Renna
 tags:
 ---
-I'm so happy for my dear Renna!
-She lots of effort into planning this wedding.
-I'm so happy everything went well.
+The bride? She looks really pretty, right?
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.James
 tags:
 ---
-James? Have you talked to him yet?
-He seems so happy!
-If he ever hurts Renna I will beat the s-
-.............
-I will... uh. Nevermind.
+The groom? I think I had one conversation with him?
+The bride did most of the organizing.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Stubi
 tags:
 ---
-Oh, you mean James' and Renna's weird friend?
-I tried to talk to him, but... uh.
-How do I phrase this politely....
-He talks. like a burglar. like. from a cartoon.
-I don't get what Renna and James see in him?
+The weird guy with the hat?
+Thought he was a wedding crasher at first, 
+but then I found out he isn't, which was akward.
 [[DJPizza.Continue]]
 ===
 
@@ -323,17 +317,15 @@ tags:
 title: DJPizza.Me
 tags:
 ---
-It's so nice to see you again!
-I think I haven't seen you in at least...
-Two years? 
+You? Now what am I supposed to tell you about that?
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Family
 tags:
 ---
-Oh you know, the family is the usual drama.
-Let's not gossip on this beautiful day.
+I feel like you're getting real personal here,
+I'm literally just the DJ.
 [[DJPizza.Continue]]
 ===
 
@@ -416,20 +408,21 @@ REMOVE
 title: DJPizza.Husband
 tags:
 ---
-[[DJPizza.UncleMickey]]
+REMOVE
+[[DJPizza.Continue]]
 ===
 
 title: DJPizza.Son
 tags:
 ---
-[[DJPizza.Matheo]]
+REMOVE
+[[DJPizza.Continue]]
 ===
 
 title: DJPizza.Katie
 tags:
 ---
-Katie? Haven't seen her yet.
-But she'll probably turn up soon.
+I don't know a Katie, sorry.
 [[AuntHeleen.Continue]]
 ===
 
@@ -442,62 +435,50 @@ tags:
 title: DJPizza.Bridgetown
 tags:
 ---
-How Bridgetown is doing? 
-The same as usual, yeah.
-Our favorite restaurant closed down.
-A new pizza shop opened up, but they're not... good. 
+Bridgetown? Haven't been in a while.
+Capital people have their own DJs, I'm afraid.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Greybell
 tags:
 ---
-Greybell? Haven't been in a while. 
-We went through there on our way here,
-but that's really it.
+Did a gig in Greybell five months back.
+Was for a surprise birthday party. The kid hated it.
+But the parents paid me well, so it was fine.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Nocturne
 tags:
 ---
-Nocturne? Like the country?
-That's a pretty broad topic.
-[[DJPizza.Continue]]
-===
-
-title: DJPizza.Buffet
-tags:
----
-The buffet seems to be good. I can't really judge it,
-as I haven't tried anything yet.
+I don't get much out of the country, so yeah,
+all of my gigs are usually here in Nocturne.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Presents
 tags:
 ---
-Oh, we got Renna and James some basic stuff. You know,
-a set of plates, cutlery, and a coffee machine! 
+It's not expected of me to get the couple a gift,
+but I usually get them a party hat each. It's my 
+marketing technique.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Tables
 tags:
 ---
-It's really nice here. 
-Standing below the trees, drinking my wine...
-A really good day! 
+I'm glad I'm over here in a more open space,
+sitting underneath the trees... is not my thing.
+There's tons of bugs in trees.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Benches
 tags:
 ---
-I was over at the benches before,
-because I tried to talk to Stubi. 
-He's... a bit too weird for my taste.
-[[DJPizza.Continue]]
+[[DJPizza.Tables]]
 ===
 
 title: DJPizza.Here
@@ -509,23 +490,28 @@ tags:
 title: DJPizza.Home
 tags:
 ---
-[[DJPizza.Bridgetown]]
+Me? I'm not from around.
+Huh? You want to know, where I'm from exactly? 
+...Why are you asking me so many questions?
+[[DJPizza.Continue]]
 ===
 
 title: DJPizza.Bushes
 tags:
 ---
-I really hope, that Matheo isn't playing around
-in the bushes...
+Bushes are filled with bugs and spiders, so I will
+do everything in my power to stay away from them.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Venue
 tags:
 ---
-It's so nice here.
-I never actually even knew that there was 
-a venue to rent out here!
+Not the best... or most comfortable venue I have ever
+worked at, but it's far from the worst.
+The worst was on a beach a few years back.
+Sand gets absolutely everywhere. 
+I had to buy new equipment entirely.
 [[DJPizza.Continue]]
 ===
 
@@ -539,17 +525,9 @@ REMOVE
 title: DJPizza.Wine
 tags:
 ---
-Oh, I love the wine here!
-We usually can't afford such an expensive
-wine brand at home, so it's nice to live
-a bit luxurious tonight.
+Wine? They don't let me drink the wine while I work.
+I also don't really like wine. I'm more of a beer guy.
 [[DJPizza.Continue]]
-===
-
-title: DJPizza.Food
-tags:
----
-[[DJPizza.Buffet]]
 ===
 
 title: DJPizza.Present
@@ -561,8 +539,8 @@ tags:
 title: DJPizza.Goldfish
 tags:
 ---
-Oh, if I want a goldfish? I don't think that 
-Matheo isn't old enough for a pet yet...
+His name is Parker. He's a rescue.
+Take good care of him.
 [[DJPizza.Continue]]
 ===
 
@@ -578,12 +556,6 @@ tags:
 [[DJPizza.AllDishes]]
 ===
 
-title: DJPizza.Pizza
-tags:
----
-[[DJPizza.AllDishes]]
-===
-
 title: DJPizza.Hat
 tags:
 ---
@@ -594,23 +566,26 @@ REMOVE
 title: DJPizza.Car
 tags:
 ---
-REMOVE
+My DJ mobile? It carries my equipment through
+all of Nocturne. Comes with a power generator, too.
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Job
 tags:
 ---
-Same as always, dear.
-Lots and lots of books to stack,
-belitteling customers, and so on.
+... What my job is?
+Oh, I'm a denist, usually. It's just my day off.
+....... I'm a DJ, obviously. 
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Email
 tags:
 ---
-REMOVE
+The email? just... check your emails...
+What, did you lose it? ... Wait, I'll send it again...
+There, should have reached you now...
 [[DJPizza.Continue]]
 ===
 
@@ -623,23 +598,21 @@ tags:
 title: DJPizza.Treasure
 tags:
 ---
-What? 
-You sound like Renna's and James' weird friend.
-He talked all about treasures and adventure.
-I think it might have been code for drugs?
-I don't know how young people talk...
+REMOVE
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Treasures
 tags:
 ---
+REMOVE
 [[DJPizza.Treasure]]
 ===
 
 title: DJPizza.Adventure
 tags:
 ---
+REMOVE
 [[DJPizza.Treasure]]
 ===
 
@@ -653,15 +626,16 @@ REMOVE
 title: DJPizza.Funeral
 tags:
 ---
-REMOVE
+Yeah, I also do funerals. 
+I mean, the sad music has to come from *somewhere*...
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.Birthday
 tags:
 ---
-My birthday? You remembered?
-Yes, it was last week! We had lots of fun!
+Yeah, birthday parties... The worst of gigs. 
+I developed a pavolovian reflex against children laughing.
 [[DJPizza.Continue]]
 ===
 
@@ -674,8 +648,26 @@ tags:
 title: DJPizza.Name
 tags:
 ---
-... You do remember my name, right?
-... right?
+My name? ... Mark. 
+[[DJPizza.Continue]]
+===
+
+title: DJPizza.Mark
+tags:
+---
+[[DJPizza.You]]
+===
+
+title: DJPizza.Danny
+tags:
+---
+[[DJPizza.Who]]
+===
+
+title: DJPizza.Who
+tags:
+---
+... Who is that?
 [[DJPizza.Continue]]
 ===
 
@@ -689,8 +681,7 @@ REMOVE
 title: DJPizza.Catering
 tags:
 ---
-Oh the caterer? You should ask my husband.
-He's like. Their biggest fan. Ever.
+I don't know stuff about catering or the food.
 [[DJPizza.Continue]]
 ===
 
@@ -710,8 +701,8 @@ REMOVE
 title: DJPizza.God
 tags:
 ---
-Oh, why the sudden interest?
-Do you want to join next time we go to church?
+Getting philosophical now? I'm not in the mood 
+to discuss the concept of god with your right now.
 [[DJPizza.Continue]]
 ===
 
@@ -725,32 +716,50 @@ REMOVE
 title: DJPizza.Vegan
 tags:
 ---
-If I'm vegan? I've tried a while, but it really
-limits your cooking choices, especially if you're 
-living with a chef and a hungry ten year old.
+If I'm vegan? No.
+I'm vegetarian.
+[[DJPizza.Continue]]
+===
+
+title: DJPizza.Vegetarian
+tags:
+---
+Yes. I am vegetarian.
+I like to imagine that I am a DJ Vegetarian Pizza.
+Most people who invite me to their events don't
+bother to ask me, if I am vegetarian, so I usually
+get served normal pizza with salami. 
+Breaks my heart every time. 
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.CoffeeMachine
 tags:
 ---
-The coffee machine? Oh, it was a steal!
-We got one from a top-notch brand from one of
-my husband's co-workers. I'm so happy!
+What coffee machine? 
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.FishingSet
 tags:
 ---
-REMOVE
+What. are. you. talking about?
 [[DJPizza.Continue]]
 ===
 
 title: DJPizza.PartyHat
 tags:
 ---
-REMOVE
+The party hat? It's my favorite part of my look.
+Oh, you think it should have a pizza reference on it?
+No. I did it on purpose. 
+I do not want my whole life to be a pizza joke. 
+I am an actual human person, who has to live every day 
+of his life as "the pizza guy", just so I can make a 
+living for myself. I hate it.
+I want to live without having to sell out my basic humanity
+and be ridiculed by children, be my most fun gigs be funerals,
+just because I'm just an unsuccessful DJ, you know?
 [[DJPizza.Continue]]
 ===
 
@@ -764,10 +773,7 @@ REMOVE
 title: DJPizza.Plates
 tags:
 ---
-The plates? We got two sets, but we
-didn't really know if they would fit
-with their kitchen, so we chose a very 
-minimalist style that fits everywhere!
+REMOVE
 [[DJPizza.Continue]]
 ===
 
@@ -781,8 +787,7 @@ REMOVE
 title: DJPizza.Cutlery
 tags:
 ---
-I cannot imagine what could possibly
-be interesting about the cutlery...
+REMOVE
 [[DJPizza.Continue]]
 ===
 

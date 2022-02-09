@@ -31,6 +31,4 @@ Coffee Machine;Item;Present;moderate
 Fishing Set;Item;Present;moderate
 Party Hat;Item;Present;cheap
 Gift Basket;Item;Present;moderate
-Maria Fleischer;YesNo;Boolean;
-Talk Back;Location;City;
-Bachelor- Arbeit;Name;NameA;
+Twin Brother;Name;Relation;

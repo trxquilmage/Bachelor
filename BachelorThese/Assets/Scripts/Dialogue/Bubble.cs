@@ -113,6 +113,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         CheckIfWasDroppedOverNPC();
         WordCaseManager.instance.ReloadContents();
         EffectUtilities.ReColorAllInteractableWords();
+        WordClickManager.instance.DestroyCurrentWord();
 
         if (data.IsNotFromACase())
             WordCaseManager.instance.AutomaticOpenCase(false);

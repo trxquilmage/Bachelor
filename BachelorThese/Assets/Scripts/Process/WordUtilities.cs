@@ -96,9 +96,13 @@ public static class WordUtilities
             TMP_Vertex vertexBL = charInfo.vertex_BL;
             lowerLeftCorner = vertexBL.position;
 
+            //check if the word doesnt start too low (g, y, q ...) 
+            lowerLeftCorner = new Vector3(lowerLeftCorner.x, GetStandartWordHeight(text, word), lowerLeftCorner.z);
+
             // Get the StartPosition of the bounds (lower left corner)
             Vector3 lowerLeftTextBox = Camera.main.WorldToScreenPoint(text.rectTransform.position);
             lowerLeftTextBox = LocalScreenToCanvasPosition(lowerLeftTextBox);
+
             wordPosition = lowerLeftTextBox + lowerLeftCorner;
             wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
             wordPosition += Vector3.down * 3 + Vector3.left * 2;
@@ -117,10 +121,25 @@ public static class WordUtilities
             float canvasScaler = (ReferenceManager.instance.canvas.scaleFactor * 2);
             wordPosition = lowerLeftTextBox + lowerLeftCorner * canvasScaler;
             wordPosition = Vector3.Scale(wordPosition, new Vector3(1, 1, 0));
-            
+
             return wordPosition;
         }
     }
+
+    public static float GetStandartWordHeight(TMP_Text text, TMP_WordInfo word)
+    {
+        float currentHighestHeight = -Mathf.Infinity;
+        int firstLetter = word.firstCharacterIndex;
+        TMP_CharacterInfo character;
+        for (int i = 0; i < word.characterCount; i++)
+        {
+            character = text.textInfo.characterInfo[firstLetter + i];
+            if (character.bottomLeft.y > currentHighestHeight)
+                currentHighestHeight = character.bottomLeft.y;
+        }
+        return currentHighestHeight;
+    }
+
     /// <summary>
     /// returns the parameters of a word as (lowerLeftcorner.x,lowerLeftcorner.y),(size.x, size.y). 
     /// Can include ignored characters in this format: /Hello/

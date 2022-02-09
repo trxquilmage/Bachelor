@@ -271,19 +271,12 @@ public class PlayerInputManager : MonoBehaviour
         {
             SaveGivenAnswer();
             diManager.continueHandler.OnAskPromptEnd();
-            //Delete existing prompts
             DeleteAllActivePrompts(currentPromptAskBubbles);
-            //Delete current word gets deleted, so empty the currentWord var
             WordClickManager.instance.currentWord = null;
-            //Reload, so that the missing word comes back
             WordCaseManager.instance.ReloadContents();
-            //Jump to NPC.answer
             WordUtilities.JumpToNode(refM.askRunner, givenAnswerAsk.bubbleData.name);
-            //Continue()
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
-            //make new button "abort ask" unavailable
             AbortAskButton(false);
-            // Close Prompt Field
             refM.askField.SetActive(false);
             refM.askICantSayButton.SetActive(false);
         }
@@ -292,7 +285,7 @@ public class PlayerInputManager : MonoBehaviour
     public void OnAskEnded(bool wasAborted)
     {
         diManager.continueHandler.OnEndAsk();
-        refM.askField.SetActive(false);
+        refM.askNPCField.SetActive(false);
         AskAndBarterButton(true);
         refM.askRunner.gameObject.SetActive(false);
 
@@ -307,15 +300,14 @@ public class PlayerInputManager : MonoBehaviour
             DialogueManager.instance.currentTarget = null;
             DialogueInputManager.instance.enabled = false;
         }
-        DialogueManager.instance.isOnlyInAsk = false;
-        if (!wasAborted)
+        if (wasAborted)
         {
             diManager.continueHandler.OnAskPromptEnd();
-            DeleteAllActivePrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
             WordCaseManager.instance.ReloadContents();
             refM.askField.SetActive(false);
             refM.askICantSayButton.SetActive(false);
+            DeleteAllActivePrompts(currentPromptAskBubbles);
             AbortAskButton(false);
         }
         inAsk = false;

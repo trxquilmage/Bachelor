@@ -245,6 +245,26 @@ I will... uh. Nevermind.
 [[AuntHeleen.Continue]]
 ===
 
+
+title: AuntHeleen.Mark
+tags:
+---
+[[AuntHeleen.Who]]
+===
+
+title: AuntHeleen.Danny
+tags:
+---
+[[AuntHeleen.Who]]
+===
+
+title: AuntHeleen.Who
+tags:
+---
+... Who?
+[[AuntHeleen.Continue]]
+===
+
 title: AuntHeleen.Stubi
 tags:
 ---
@@ -691,6 +711,14 @@ tags:
 If I'm vegan? I've tried a while, but it really
 limits your cooking choices, especially if you're 
 living with a chef and a hungry ten year old.
+[[AuntHeleen.Continue]]
+===
+
+title: AuntHeleen.Vegetarian
+tags:
+---
+You know... I try to eat avoid meat, but,
+yeah... you know my husband...
 [[AuntHeleen.Continue]]
 ===
 

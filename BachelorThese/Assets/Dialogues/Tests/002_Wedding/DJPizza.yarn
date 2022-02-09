@@ -121,7 +121,6 @@ Great. Sorry, I'm just careful.
 <<showcharactername Managers DJPizza>>
 His name is Parker. 
 I already got your payment, so...
-<<setquest Managers QuestAAD>>
 It was nice doing business with you. 
 ===
 

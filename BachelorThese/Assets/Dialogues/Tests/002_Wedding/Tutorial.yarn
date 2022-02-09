@@ -29,6 +29,7 @@ words in our dialogue are highlighted!
 Try dragging the words into your inventory.
 Always keep your eyes peeled, since
 interesting words may appear at any time.
+Also try collecting a word by double-clicking it!
 [[Tutorial.FirstQuestion]]
 ===
 
@@ -63,6 +64,8 @@ Your choices are: Kim, Molly, Sam and Alex.
 <<set $cantsay to icantsay("Tutorial", "PressedCantSay")>>
 <<set $name to react("name", "characterName", "Tutorial")>>
 So you're {$name}, huh?
+Whenever you don't have a fitting answer, you can
+just press the "Can't Say"-button!
 [[Tutorial.AskAboutAsks]]
 ===
 
