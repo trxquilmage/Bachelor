@@ -182,13 +182,7 @@ public class Case : MonoBehaviour
     /// <param name="word"></param>
     public virtual void SpawnReplacement(Bubble bubble)
     {
-        bubbleReplacement = SpawnBubbleInCase(bubble.data);
-        Color color = WordUtilities.MatchColorToTag(bubble.data.name, bubble.data.subtag);
-        color.a = 0.3f;
-        foreach (Image img in bubbleReplacement.GetComponentsInChildren<Image>())
-        {
-            img.color = color;
-        }
+        bubble.placeholderHandler.SpawnReplacement();
     }
     protected virtual void CheckIfANewTagIsIncludedAndAddButton(string tagName)
     {

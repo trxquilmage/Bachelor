@@ -115,7 +115,7 @@ public class PromptBubble : MonoBehaviour
                 StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(WordClickManager.instance.currentWord.gameObject,
                     new Color[] { WordUtilities.MatchColorToTag(currentWord.data.tag, currentWord.data.subtag), new Color(), new Color(), new Color(), Color.red }, 0.3f));
 
-                currentWord.ShakeBubbleAsFeedbackRotated();
+                currentWord.effects.ShakeBubbleAsFeedbackRotated();
 
                 if (onHoverHandler.InputIsIncorrect_RequiresFeedback())
                     UIManager.instance.BlendInUI(refM.warningWrongTag, 3);

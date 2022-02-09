@@ -12,6 +12,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     [HideInInspector] public BubbleData data;
     [HideInInspector] public BubbleEffects effects;
     [HideInInspector] public BubbleDoubleClickHandler doubleClickHandler;
+    [HideInInspector] public BubblePlaceholderHandler placeholderHandler;
     [HideInInspector] public GameObject prefabReference;
     [HideInInspector] public GameObject wordParent;
     [HideInInspector] public BubbleOffset bubbleOffset;
@@ -20,8 +21,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
     [HideInInspector] public bool wasDragged; //checks if the object was actually dragged
     [HideInInspector] public bool fadingOut = false;
-    [HideInInspector] public bool currentlyRotatingAsFeedback;
-
+    
     [HideInInspector] public TMP_WordInfo originalWordInfo;
     [HideInInspector] public TMP_Text originalText;
     [HideInInspector] public Vector3 wordSize;
@@ -100,6 +100,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         doubleClickHandler = new BubbleDoubleClickHandler(this);
         effects = new BubbleEffects(this);
+        placeholderHandler = new BubblePlaceholderHandler(this, effects);
     }
     public virtual void DroppedOverWordCase()
     {
@@ -232,25 +233,28 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(mousePos));
         foreach (RaycastHit hit in hits)
         {
-            if (hit.transform.TryGetComponent<NPC>(out NPC npc))
+            if (!hit.transform.TryGetComponent<NPC>(out NPC npc))
+                break;
+
+            if (DialogueManager.instance.currentTarget != null && DialogueManager.instance.currentTarget != npc)
             {
-                if (DialogueManager.instance.currentTarget == null || DialogueManager.instance.currentTarget == npc)
-                {
-                    DialogueManager.instance.currentTarget = npc;
-                    piManager.AskButton();
-                    //force the prompt bubble to check, whether the word fits or not
-                    if (refM.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
-                    {
-                        WordClickManager.instance.CheckPromptBubbleForCurrentWord(pB);
-                        DroppedOverPlayerInput();
-                        return;
-                    }
-                    else
-                        Debug.Log("no prompt was found?");
-                }
-                else
-                    Debug.Log("cant be in a conversation with a different npc");
+                Debug.Log("cant be in a conversation with a different npc");
+                break;
             }
+
+            DialogueManager.instance.currentTarget = npc;
+            piManager.AskButton();
+
+
+            if (!refM.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
+            {
+                Debug.Log("no prompt was found?");
+                break;
+            }
+            //force the prompt bubble to check, whether the word fits or not
+            WordClickManager.instance.CheckPromptBubbleForCurrentWord(pB);
+            DroppedOverPlayerInput();
+            return;
         }
     }
     public void OnRemoveFromPromptBubble(PromptBubble pB)
@@ -383,90 +387,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         ScaleRectSelected(relatedText, firstChild);
     }
 
-    public IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
-    {
-        GameObject duplicate = null;
-        if (inACase)
-        {
-            duplicate = effects.SpawnDuplicateOnTopOnThisBubble();
-            StartCoroutine(duplicate.GetComponent<Bubble>().ShakeBubbleAsFeedback(false, true));
-            effects.MakeBubbleInvisible(true);
-        }
-        fadingOut = true;
-
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-
-        if (!inACase && !isDuplicate)
-        {
-            if (this is Word)
-                WordCaseManager.instance.AutomaticOpenCase(false);
-        }
-
-        RectTransform rT = GetComponent<RectTransform>();
-        Vector2 startPos = rT.localPosition;
-        Vector2 targetPosRight = startPos + Vector2.right * 4 + Vector2.up * 3;
-        Vector2 targetPosLeft = startPos + Vector2.left * 4 + Vector2.down * 3;
-
-        float t;
-        float timer = 0;
-        while (timer < shakeTime)
-        {
-            timer += Time.deltaTime;
-            if (timer < shakeTime / 4)
-                t = WordUtilities.Remap(timer, 0, shakeTime / 4, 0.5f, 1);
-            else if (timer < shakeTime * 3 / 4)
-                t = WordUtilities.Remap(timer, shakeTime / 4, shakeTime * 3 / 4, 1, 0);
-            else
-                t = WordUtilities.Remap(timer, shakeTime * 3 / 4, shakeTime, 0, 0.5f);
-            rT.localPosition = Vector2.Lerp(targetPosLeft, targetPosRight, t);
-            yield return delay;
-        }
-        fadingOut = false;
-
-        if (!inACase && !isDuplicate)
-            WordClickManager.instance.SwitchFromCurrentToHighlight();
-
-        if (inACase)
-        {
-            if (duplicate != null)
-                Destroy(duplicate);
-            effects.MakeBubbleInvisible(false);
-        }
-    }
-    public void ShakeBubbleAsFeedbackRotated()
-    {
-        if (!currentlyRotatingAsFeedback)
-            StartCoroutine(ShakeBubbleRotated());
-    }
-    protected IEnumerator ShakeBubbleRotated()
-    {
-        currentlyRotatingAsFeedback = true;
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        RectTransform rT = GetComponent<RectTransform>();
-        Vector3 startRotation = rT.localEulerAngles;
-        Vector3 targetRotRight = startRotation + (Vector3.forward * 5);
-        Vector3 targetRotLeft = startRotation + (Vector3.forward * -5);
-
-        float t;
-        float timer = 0;
-        while (timer < shakeTime)
-        {
-            timer += Time.deltaTime;
-            if (timer < shakeTime / 6)
-                t = WordUtilities.Remap(timer, 0, shakeTime / 6, 0.5f, 1);
-            else if (timer < shakeTime * 3 / 6)
-                t = WordUtilities.Remap(timer, shakeTime / 6, shakeTime * 3 / 6, 1, 0);
-            else if (timer < shakeTime * 5 / 6)
-                t = WordUtilities.Remap(timer, shakeTime * 3 / 6, shakeTime * 5 / 6, 0, 1);
-            else
-                t = WordUtilities.Remap(timer, shakeTime * 5 / 6, shakeTime, 1, 0.5f);
-
-            rT.localEulerAngles = Vector3.Lerp(targetRotLeft, targetRotRight, t);
-            yield return delay;
-        }
-        rT.localEulerAngles = startRotation;
-        currentlyRotatingAsFeedback = false;
-    }
 
     #region LINE LENGTHS
     /// <summary>
@@ -807,7 +727,9 @@ public class BubbleEffects
     Bubble relatedBubble;
     BubbleData data;
     float floatTime = 0.4f;
+    float shakeTime = 0.5f;
     GameObject star;
+    bool currentlyRotatingAsFeedback;
 
     public BubbleEffects(Bubble relatedBubble)
     {
@@ -825,6 +747,11 @@ public class BubbleEffects
     public void ColorWordToTag()
     {
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, relatedBubble.data.tag, relatedBubble.data.subtag);
+    }
+    public void SetWordToColorAndTransparency(Color color, float alpha)
+    {
+        color.a = alpha;
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, color);
     }
     public GameObject SpawnDuplicateOnTopOnThisBubble()
     {
@@ -903,6 +830,89 @@ public class BubbleEffects
             star = Object.Instantiate(refM.starPrefab, relatedBubble.GetComponentInChildren<TMP_Text>().transform, false);
         }
     }
+    public IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
+    {
+        GameObject duplicate = null;
+        if (inACase)
+        {
+            duplicate = SpawnDuplicateOnTopOnThisBubble();
+            relatedBubble.StartCoroutine(duplicate.GetComponent<Bubble>().effects.ShakeBubbleAsFeedback(false, true));
+            MakeBubbleInvisible(true);
+        }
+        relatedBubble.fadingOut = true;
+
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
+        if (!inACase && !isDuplicate)
+        {
+            WordCaseManager.instance.AutomaticOpenCase(false);
+        }
+
+        RectTransform rT = relatedBubble.GetComponent<RectTransform>();
+        Vector2 startPos = rT.localPosition;
+        Vector2 targetPosRight = startPos + Vector2.right * 4 + Vector2.up * 3;
+        Vector2 targetPosLeft = startPos + Vector2.left * 4 + Vector2.down * 3;
+
+        float t;
+        float timer = 0;
+        while (timer < shakeTime)
+        {
+            timer += Time.deltaTime;
+            if (timer < shakeTime / 4)
+                t = WordUtilities.Remap(timer, 0, shakeTime / 4, 0.5f, 1);
+            else if (timer < shakeTime * 3 / 4)
+                t = WordUtilities.Remap(timer, shakeTime / 4, shakeTime * 3 / 4, 1, 0);
+            else
+                t = WordUtilities.Remap(timer, shakeTime * 3 / 4, shakeTime, 0, 0.5f);
+            rT.localPosition = Vector2.Lerp(targetPosLeft, targetPosRight, t);
+            yield return delay;
+        }
+        relatedBubble.fadingOut = false;
+
+        if (!inACase && !isDuplicate)
+            WordClickManager.instance.SwitchFromCurrentToHighlight();
+
+        if (inACase)
+        {
+            if (duplicate != null)
+                Object.Destroy(duplicate);
+            relatedBubble.effects.MakeBubbleInvisible(false);
+        }
+    }
+    public void ShakeBubbleAsFeedbackRotated()
+    {
+        if (!currentlyRotatingAsFeedback)
+            relatedBubble.StartCoroutine(ShakeBubbleRotated());
+    }
+    protected IEnumerator ShakeBubbleRotated()
+    {
+        currentlyRotatingAsFeedback = true;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        RectTransform rT = relatedBubble.GetComponent<RectTransform>();
+        Vector3 startRotation = rT.localEulerAngles;
+        Vector3 targetRotRight = startRotation + (Vector3.forward * 5);
+        Vector3 targetRotLeft = startRotation + (Vector3.forward * -5);
+
+        float t;
+        float timer = 0;
+        while (timer < shakeTime)
+        {
+            timer += Time.deltaTime;
+            if (timer < shakeTime / 6)
+                t = WordUtilities.Remap(timer, 0, shakeTime / 6, 0.5f, 1);
+            else if (timer < shakeTime * 3 / 6)
+                t = WordUtilities.Remap(timer, shakeTime / 6, shakeTime * 3 / 6, 1, 0);
+            else if (timer < shakeTime * 5 / 6)
+                t = WordUtilities.Remap(timer, shakeTime * 3 / 6, shakeTime * 5 / 6, 0, 1);
+            else
+                t = WordUtilities.Remap(timer, shakeTime * 5 / 6, shakeTime, 1, 0.5f);
+
+            rT.localEulerAngles = Vector3.Lerp(targetRotLeft, targetRotRight, t);
+            yield return delay;
+        }
+        rT.localEulerAngles = startRotation;
+        currentlyRotatingAsFeedback = false;
+    }
 }
 public class BubbleDoubleClickHandler
 {
@@ -922,10 +932,12 @@ public class BubbleDoubleClickHandler
     }
     public void OnDoubleClicked()
     {
-        if (data.IsNotFromACase())
+        if (relatedBubble.IsCurrentlyInPrompt())
+            DoubleClickedPromptBubble();
+        else if (data.IsNotFromACase())
             DoubleClickedOnDialogue();
         else
-            DoubleClickedOnCaseOrPromptBubble();
+            DoubleClickedOnCase();
     }
     void DoubleClickedOnDialogue()
     {
@@ -943,19 +955,30 @@ public class BubbleDoubleClickHandler
             AnimateMovementIntoCase();
         else
         {
-            relatedBubble.StartCoroutine(relatedBubble.ShakeBubbleAsFeedback(false, false));
+            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeedback(false, false));
             Color color = relatedBubble.GetComponentInChildren<Image>().color;
             relatedBubble.StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(relatedBubble.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
     }
-    void DoubleClickedOnCaseOrPromptBubble()
+    void DoubleClickedOnCase()
     {
-        if (relatedBubble.IsCurrentlyInPrompt())
-            AnimateMovementBackToCase();
-        else if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
+        if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
             AnimateMovementIntoPrompt(pB);
         else
-            relatedBubble.StartCoroutine(relatedBubble.ShakeBubbleAsFeedback(true, false));
+            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeedback(true, false));
+    }
+    void DoubleClickedPromptBubble()
+    {
+
+        if (relatedBubble.data.IsNotFromACase())
+            RemoveCurrentWord();
+        else
+            AnimateMovementBackToCase();
+    }
+    void RemoveCurrentWord()
+    {
+        relatedBubble.OnBeginDragFunction();
+        relatedBubble.DroppedOverNothing();
     }
     void AnimateMovementIntoCase()
     {
@@ -1007,5 +1030,28 @@ public class BubbleDoubleClickHandler
         Object.Destroy(relatedBubble.gameObject);
         WordCaseManager.instance.ReloadContents();
         EffectUtilities.ReColorAllInteractableWords();
+    }
+}
+
+public class BubblePlaceholderHandler
+{
+    Bubble relatedBubble;
+    BubbleEffects relatedEffectHandler;
+    GameObject bubbleReplacement; //should be an array later
+    public BubblePlaceholderHandler(Bubble bubble, BubbleEffects effects)
+    {
+        relatedBubble = bubble;
+        relatedEffectHandler = effects;
+    }
+
+    public void SpawnReplacement()
+    {
+        bubbleReplacement = WordCaseManager.instance.SpawnBubbleInCase(relatedBubble.data);
+        relatedBubble.effects.SetWordToColorAndTransparency(ReferenceManager.instance.greyedOutColor, 0.3f);
+    }
+
+    public void RemoveReplacement()
+    {
+
     }
 }
