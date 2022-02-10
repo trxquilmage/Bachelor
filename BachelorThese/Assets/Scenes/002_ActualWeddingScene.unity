@@ -43228,7 +43228,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2098945804}
         m_TargetAssemblyTypeName: PlayerInputManager, Assembly-CSharp
-        m_MethodName: AskButton
+        m_MethodName: OpenAskField
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -44999,7 +44999,6 @@ MonoBehaviour:
   origin: 0
   scrollbar: {fileID: 0}
   maxContentAmount: 0
-  bubbleReplacement: {fileID: 0}
   automaticallyOpen: 0
   caseScreenHeight: 0
   bubbleScreenHeight: 0

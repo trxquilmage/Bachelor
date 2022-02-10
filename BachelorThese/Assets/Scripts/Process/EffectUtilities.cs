@@ -12,21 +12,22 @@ public static class EffectUtilities
     public static void ColorAllChildrenOfAnObject(GameObject parent, string tagName, string subtagName)
     {
         Color tagColor = WordUtilities.MatchColorToTag(tagName, subtagName);
-        foreach (Image image in parent.GetComponentsInChildren<Image>())
-        {
-            image.color = tagColor;
-        }
+        ColorAllChildrenOfAnObject(parent, tagColor);
     }
     public static void ColorAllChildrenOfAnObject(GameObject parent, Color color)
     {
-        if (parent != null)
-            foreach (Image image in parent.GetComponentsInChildren<Image>())
-                image.color = color;
+        if (parent == null)
+            return;
+
+        foreach (Image image in parent.GetComponentsInChildren<Image>())
+            image.color = color;
     }
     public static void ColorAnObject(GameObject gameObject, Color color)
     {
-        if (gameObject != null && gameObject.TryGetComponent<Image>(out Image image))
-            image.color = color;
+        if (gameObject == null || !gameObject.TryGetComponent<Image>(out Image image))
+            return;
+
+        image.color = color;
     }
     /// <summary>
     /// take a game object and color all its images in a gradient for "time"-seconds

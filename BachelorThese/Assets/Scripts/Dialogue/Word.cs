@@ -65,7 +65,7 @@ public class Word : Bubble
         else if (data.IsFromWordCase())
         {
             DroppedOverNothing();
-                    }
+        }
     }
     public override void DroppedOverPlayerInput()
     {
@@ -92,6 +92,7 @@ public class Word : Bubble
         if (data.IsFromWordCase())
         {
             doubleClickHandler.AnimateMovementBackToCase();
+            placeholderHandler.RemoveReplacement();
         }
     }
     public override void OnBeginDrag(PointerEventData eventData)
@@ -101,11 +102,10 @@ public class Word : Bubble
     protected override void ParentToNewParent(Transform newParent, bool spawnWordReplacement, bool toCurrentWord)
     {
         base.ParentToNewParent(newParent, spawnWordReplacement, toCurrentWord);
-        if (spawnWordReplacement)
-        {
-            if (data.IsFromWordCase())
-                WordCaseManager.instance.SpawnReplacement(this);
-        }
+        if (!spawnWordReplacement || !data.IsFromWordCase())
+            return;
+
+        placeholderHandler.SpawnReplacement();
     }
     public override Vector2 GetCaseTargetPosition()
     {

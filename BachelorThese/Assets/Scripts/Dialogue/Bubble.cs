@@ -21,7 +21,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
     [HideInInspector] public bool wasDragged; //checks if the object was actually dragged
     [HideInInspector] public bool fadingOut = false;
-    
+
     [HideInInspector] public TMP_WordInfo originalWordInfo;
     [HideInInspector] public TMP_Text originalText;
     [HideInInspector] public Vector3 wordSize;
@@ -100,7 +100,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         doubleClickHandler = new BubbleDoubleClickHandler(this);
         effects = new BubbleEffects(this);
-        placeholderHandler = new BubblePlaceholderHandler(this, effects);
+        placeholderHandler = new BubblePlaceholderHandler(this);
     }
     public virtual void DroppedOverWordCase()
     {
@@ -243,7 +243,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
             }
 
             DialogueManager.instance.currentTarget = npc;
-            piManager.AskButton();
+            piManager.OpenAskField();
 
 
             if (!refM.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
@@ -264,7 +264,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public void OnEnterPromptBubble()
     {
-        WordCaseManager.instance.DestroyReplacement();
+
     }
     protected void ShapeBubbleAccordingToSize(Vector2 firstAndLastWordIndex, bool isHighlighted)
     {
@@ -386,7 +386,10 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         wordCard.sprite = ReferenceManager.instance.wordSelectedSprite;
         ScaleRectSelected(relatedText, firstChild);
     }
-
+    protected void OnDestroy()
+    {
+        placeholderHandler.RemoveReplacement();
+    }
 
     #region LINE LENGTHS
     /// <summary>
@@ -740,12 +743,18 @@ public class BubbleEffects
     }
     public void ColorWordGrey()
     {
+        if (relatedBubble.placeholderHandler.isPlaceholder)
+            return;
+
         Color grey = Color.Lerp(refM.greyedOutColor, WordUtilities.MatchColorToTag(relatedBubble.data.tag, relatedBubble.data.subtag), 0.2f);
         grey.a = 0.7f;
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, grey);
     }
     public void ColorWordToTag()
     {
+
+        if (relatedBubble.placeholderHandler.isPlaceholder)
+            return;
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, relatedBubble.data.tag, relatedBubble.data.subtag);
     }
     public void SetWordToColorAndTransparency(Color color, float alpha)
@@ -822,13 +831,13 @@ public class BubbleEffects
     }
     public IEnumerator InstantiateStar()
     {
-        //called after one frame, because otherwise the acessed Text can be wrong
+        //called after one frame, because otherwise the placement due to acessed Text can be wrong
         yield return new WaitForEndOfFrame();
-        if (data.IsFromWordCase())
-        {
-            refM = ReferenceManager.instance;
-            star = Object.Instantiate(refM.starPrefab, relatedBubble.GetComponentInChildren<TMP_Text>().transform, false);
-        }
+        if (data.IsNotFromACase() || relatedBubble.placeholderHandler.isPlaceholder)
+            yield break;
+
+        refM = ReferenceManager.instance;
+        star = Object.Instantiate(refM.starPrefab, relatedBubble.GetComponentInChildren<TMP_Text>().transform, false);
     }
     public IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
     {
@@ -1036,22 +1045,31 @@ public class BubbleDoubleClickHandler
 public class BubblePlaceholderHandler
 {
     Bubble relatedBubble;
-    BubbleEffects relatedEffectHandler;
-    GameObject bubbleReplacement; //should be an array later
-    public BubblePlaceholderHandler(Bubble bubble, BubbleEffects effects)
+    GameObject bubbleReplacement;
+    public bool isPlaceholder;
+    public BubblePlaceholderHandler(Bubble bubble)
     {
         relatedBubble = bubble;
-        relatedEffectHandler = effects;
+        isPlaceholder = false;
     }
 
     public void SpawnReplacement()
     {
+        if (bubbleReplacement != null)
+            RemoveReplacement();
+
         bubbleReplacement = WordCaseManager.instance.SpawnBubbleInCase(relatedBubble.data);
-        relatedBubble.effects.SetWordToColorAndTransparency(ReferenceManager.instance.greyedOutColor, 0.3f);
+        bubbleReplacement.GetComponent<Word>().placeholderHandler.isPlaceholder = true;
+
+        bubbleReplacement.GetComponent<Word>().effects.SetWordToColorAndTransparency(ReferenceManager.instance.greyedOutColor, 0.3f);
     }
 
     public void RemoveReplacement()
     {
+        if (bubbleReplacement == null)
+            return;
 
+        Object.Destroy(bubbleReplacement);
+        bubbleReplacement = null;
     }
 }

@@ -15,7 +15,6 @@ public class Case : MonoBehaviour
     [HideInInspector] public Scrollbar scrollbar;
     [HideInInspector] public int maxContentAmount;
 
-    [HideInInspector] public GameObject bubbleReplacement;
     [HideInInspector]
     public BubbleData[] contents
     {
@@ -173,16 +172,7 @@ public class Case : MonoBehaviour
 
         ReloadContents();
         RescaleScrollbar();
-        DestroyReplacement();
         UpdateContentCount();
-    }
-    /// <summary>
-    /// Create a less visible version of the bubble in the case to indicate its position
-    /// </summary>
-    /// <param name="word"></param>
-    public virtual void SpawnReplacement(Bubble bubble)
-    {
-        bubble.placeholderHandler.SpawnReplacement();
     }
     protected virtual void CheckIfANewTagIsIncludedAndAddButton(string tagName)
     {
@@ -419,16 +409,5 @@ public class Case : MonoBehaviour
         return inList;
     }
 
-    /// <summary>
-    /// Destroy the wordReplacement, if there is one
-    /// </summary>
-    public void DestroyReplacement()
-    {
-        if (bubbleReplacement != null)
-        {
-            Destroy(bubbleReplacement);
-            bubbleReplacement = null;
-        }
-    }
     #endregion
 }

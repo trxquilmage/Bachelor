@@ -336,7 +336,6 @@ public class UIManager : MonoBehaviour
         wcM.UpdateContentCount();
         StartCoroutine(wcM.RescaleScrollbar());
         wcM.ResetScrollbar();
-        wcM.DestroyReplacement();
     }
     public void ClickedICantSay()
     {

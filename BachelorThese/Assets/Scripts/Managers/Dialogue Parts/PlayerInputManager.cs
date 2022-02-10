@@ -233,10 +233,7 @@ public class PlayerInputManager : MonoBehaviour
     }
 
     #region Ask Related
-    /// <summary>
-    /// called, when the "ask" button is pressed. opens the prompt "ASK"
-    /// </summary>
-    public void AskButton()
+    public void OpenAskField()
     {
         inAsk = true;
         if (!DialogueManager.instance.isInDialogue)
