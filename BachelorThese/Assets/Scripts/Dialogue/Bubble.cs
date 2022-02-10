@@ -82,6 +82,12 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
 
         effects.ColorWordToTag();
     }
+    public virtual void InitializeDuplicate(Bubble originalBubble)
+    {
+        FillData(originalBubble.data);
+        SetAdditionalValues();
+        effects.SetCardToColorAndTransparency(originalBubble.effects.currentColor, originalBubble.effects.currentColor.a);
+    }
     protected void FillData(BubbleData bubbleData)
     {
         if (data == null)
@@ -99,8 +105,8 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     protected void SetAdditionalValues()
     {
         doubleClickHandler = new BubbleDoubleClickHandler(this);
-        effects = new BubbleEffects(this);
         placeholderHandler = new BubblePlaceholderHandler(this);
+        effects = new BubbleEffects(this);
     }
     public virtual void DroppedOverWordCase()
     {
@@ -123,17 +129,19 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     {
         transform.SetParent(newParent);
 
-        if (toCurrentWord)
-            WordClickManager.instance.currentWord = this.gameObject;
+        if (!toCurrentWord)
+            return;
+
+        WordClickManager.instance.currentWord = this.gameObject;
     }
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            OnBeginDragFunction();
+            OnBeginDragFunction(true);
         }
     }
-    public void OnBeginDragFunction()
+    public void OnBeginDragFunction(bool setToCurrentWord)
     {
         if (fadingOut)
             return;
@@ -158,7 +166,7 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         }
         else if (data.IsFromWordCase())
         {
-            ParentToNewParent(ReferenceManager.instance.selectedWordParentAsk.transform, true, true);
+            ParentToNewParent(ReferenceManager.instance.selectedWordParentAsk.transform, true, setToCurrentWord);
         }
         effects.ColorWordToTag();
     }
@@ -726,6 +734,8 @@ public class BubbleData
 }
 public class BubbleEffects
 {
+    public Color currentColor;
+
     ReferenceManager refM;
     Bubble relatedBubble;
     BubbleData data;
@@ -740,6 +750,7 @@ public class BubbleEffects
         this.relatedBubble = relatedBubble;
         data = relatedBubble.data;
         star = null;
+        currentColor = WordUtilities.MatchColorToTag(relatedBubble.data.tag, relatedBubble.data.subtag);
     }
     public void ColorWordGrey()
     {
@@ -748,26 +759,37 @@ public class BubbleEffects
 
         Color grey = Color.Lerp(refM.greyedOutColor, WordUtilities.MatchColorToTag(relatedBubble.data.tag, relatedBubble.data.subtag), 0.2f);
         grey.a = 0.7f;
-        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, grey);
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, grey, true);
+        currentColor = grey;
     }
     public void ColorWordToTag()
     {
-
         if (relatedBubble.placeholderHandler.isPlaceholder)
             return;
-        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, relatedBubble.data.tag, relatedBubble.data.subtag);
+        Color color = WordUtilities.MatchColorToTag(relatedBubble.data.tag, relatedBubble.data.subtag);
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, color, true);
+        currentColor = color;
     }
     public void SetWordToColorAndTransparency(Color color, float alpha)
     {
         color.a = alpha;
         EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, color);
+        currentColor = color;
+    }
+    public void SetCardToColorAndTransparency(Color color, float alpha)
+    {
+        color.a = alpha;
+        EffectUtilities.ColorAllChildrenOfAnObject(relatedBubble.gameObject, color, true);
+        currentColor = color;
     }
     public GameObject SpawnDuplicateOnTopOnThisBubble()
     {
         GameObject duplicate = GameObject.Instantiate(relatedBubble.gameObject, relatedBubble.transform.position, relatedBubble.transform.rotation);
+
         duplicate.transform.SetParent(ReferenceManager.instance.selectedWordParentAsk.transform, false);
         duplicate.transform.position = relatedBubble.transform.position;
         duplicate.transform.rotation = relatedBubble.transform.rotation;
+        duplicate.GetComponent<Word>().InitializeDuplicate(relatedBubble);
         return duplicate;
     }
     public void MakeBubbleInvisible(bool makeInvisible)
@@ -805,7 +827,7 @@ public class BubbleEffects
     public IEnumerator AnimateMovement(RefBool isDone, Vector2 targetPos)
     {
         relatedBubble.fadingOut = false;
-        relatedBubble.OnBeginDragFunction();
+        relatedBubble.OnBeginDragFunction(false);
         relatedBubble.fadingOut = true;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
 
@@ -839,23 +861,31 @@ public class BubbleEffects
         refM = ReferenceManager.instance;
         star = Object.Instantiate(refM.starPrefab, relatedBubble.GetComponentInChildren<TMP_Text>().transform, false);
     }
-    public IEnumerator ShakeBubbleAsFeedback(bool inACase, bool isDuplicate)
+    public IEnumerator ShakeBubbleAsFeeback_InCase()
     {
-        GameObject duplicate = null;
-        if (inACase)
-        {
-            duplicate = SpawnDuplicateOnTopOnThisBubble();
-            relatedBubble.StartCoroutine(duplicate.GetComponent<Bubble>().effects.ShakeBubbleAsFeedback(false, true));
-            MakeBubbleInvisible(true);
-        }
+        if (relatedBubble.fadingOut)
+            yield break;
+        GameObject duplicate = SpawnDuplicateOnTopOnThisBubble();
+        Bubble dublicateBubble = duplicate.GetComponent<Bubble>();
+        RefBool isDone = new RefBool();
+
+        relatedBubble.StartCoroutine(dublicateBubble.effects.ShakeBubbleAsFeedback_NotInCase(true, isDone));
+        MakeBubbleInvisible(true);
+
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (!isDone.refBool)
+            yield return delay;
+
+        relatedBubble.effects.MakeBubbleInvisible(false);
+    }
+    public IEnumerator ShakeBubbleAsFeedback_NotInCase(bool isDuplicate, RefBool isDone)
+    {
+        if (relatedBubble.fadingOut)
+            yield break;
         relatedBubble.fadingOut = true;
 
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
-
-        if (!inACase && !isDuplicate)
-        {
-            WordCaseManager.instance.AutomaticOpenCase(false);
-        }
+        WordCaseManager.instance.AutomaticOpenCase(false);
 
         RectTransform rT = relatedBubble.GetComponent<RectTransform>();
         Vector2 startPos = rT.localPosition;
@@ -877,16 +907,12 @@ public class BubbleEffects
             yield return delay;
         }
         relatedBubble.fadingOut = false;
+        isDone.refBool = true;
 
-        if (!inACase && !isDuplicate)
+        if (!isDuplicate)
             WordClickManager.instance.SwitchFromCurrentToHighlight();
-
-        if (inACase)
-        {
-            if (duplicate != null)
-                Object.Destroy(duplicate);
-            relatedBubble.effects.MakeBubbleInvisible(false);
-        }
+        if (relatedBubble != null)
+            Object.Destroy(relatedBubble.gameObject);
     }
     public void ShakeBubbleAsFeedbackRotated()
     {
@@ -964,7 +990,7 @@ public class BubbleDoubleClickHandler
             AnimateMovementIntoCase();
         else
         {
-            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeedback(false, false));
+            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeedback_NotInCase(false, new RefBool()));
             Color color = relatedBubble.GetComponentInChildren<Image>().color;
             relatedBubble.StartCoroutine(EffectUtilities.ColorObjectAndChildrenInGradient(relatedBubble.gameObject, new Color[] { color, Color.red, Color.red, Color.red, color }, 0.6f));
         }
@@ -974,7 +1000,7 @@ public class BubbleDoubleClickHandler
         if (piManager.CheckIfThereArePromptBubblesWithTag(data.tag, out PromptBubble pB))
             AnimateMovementIntoPrompt(pB);
         else
-            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeedback(true, false));
+            relatedBubble.StartCoroutine(relatedBubble.effects.ShakeBubbleAsFeeback_InCase());
     }
     void DoubleClickedPromptBubble()
     {
@@ -986,7 +1012,7 @@ public class BubbleDoubleClickHandler
     }
     void RemoveCurrentWord()
     {
-        relatedBubble.OnBeginDragFunction();
+        relatedBubble.OnBeginDragFunction(false);
         relatedBubble.DroppedOverNothing();
     }
     void AnimateMovementIntoCase()

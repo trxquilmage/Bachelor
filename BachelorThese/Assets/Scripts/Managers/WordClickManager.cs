@@ -162,34 +162,20 @@ public class WordClickManager : MonoBehaviour
                 WordUtilities.AddToArray(activeWords, wordLastHighlighted);
         }
     }
-
-    /// <summary>
-    /// Destroy the word that is currently selected by the mouse
-    /// </summary>
     public void DestroyCurrentWord()
     {
-        if (currentWord != null)
-        {
-            // Destroy the Word
-            Destroy(currentWord);
-            currentWord = null;
-            // Set the word color back to interactable
-            EffectUtilities.ReColorAllInteractableWords();
-        }
+        if (currentWord == null)
+            return;
+
+        Destroy(currentWord);
+        currentWord = null;
+        EffectUtilities.ReColorAllInteractableWords();
     }
-    /// <summary>
-    /// this additionally checks, if the word IS the current word and if not, just deletes this word instead
-    /// </summary>
-    /// <param name="wordForCheck"></param>
-    public void DestroyCurrentWord(Bubble wordForCheck)
+    public void DestroyThisWordAndCheckIfCurrent(Bubble wordForCheck)
     {
         if (wordForCheck.gameObject == currentWord && currentWord != null)
         {
-            // Destroy the Word
-            Destroy(currentWord);
-            currentWord = null;
-            // Set the word color back to interactable
-            EffectUtilities.ReColorAllInteractableWords();
+            DestroyCurrentWord();
         }
         else
         {

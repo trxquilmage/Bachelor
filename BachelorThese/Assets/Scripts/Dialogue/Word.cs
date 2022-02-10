@@ -60,7 +60,7 @@ public class Word : Bubble
         {
             WordCaseManager.instance.TryToSaveTheBubble(this);
             WordCaseManager.instance.AutomaticOpenCase(false);
-            WordClickManager.instance.DestroyCurrentWord(this);
+            WordClickManager.instance.DestroyThisWordAndCheckIfCurrent(this);
         }
         else if (data.IsFromWordCase())
         {

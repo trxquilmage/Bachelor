@@ -22,6 +22,25 @@ public static class EffectUtilities
         foreach (Image image in parent.GetComponentsInChildren<Image>())
             image.color = color;
     }
+    public static void ColorAllChildrenOfAnObject(GameObject parent, Color color, bool ignoreStar)
+    {
+        if (parent == null)
+            return;
+
+        foreach (Image image in parent.GetComponentsInChildren<Image>())
+            if (image.tag != "DontColorImage")
+                image.color = color;
+    }
+    public static void ColorAllChildrenOfAnObject(GameObject parent, string tagName, string subtagName, bool ignoreStar)
+    {
+        if (!ignoreStar)
+        {
+            ColorAllChildrenOfAnObject(parent, tagName, subtagName);
+            return;
+        }
+
+        ColorAllChildrenOfAnObject(parent, WordUtilities.MatchColorToTag(tagName, subtagName), ignoreStar);
+    }
     public static void ColorAnObject(GameObject gameObject, Color color)
     {
         if (gameObject == null || !gameObject.TryGetComponent<Image>(out Image image))

@@ -351,16 +351,16 @@ public class PlayerInputManager : MonoBehaviour
     }
     public void ContinueButtonAsk()
     {
-        if (CheckIfAllActivePromptsAreFilled())
-        {
-            SaveGivenAnswer();
-            diManager.Continue(ReferenceManager.instance.askDialogueUI);
-            diManager.continueHandler.OnAskPromptEnd();
-            DeleteAllActivePrompts(currentPromptAskBubbles);
-            WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents();
-            ReferenceManager.instance.askField.SetActive(false);
-        }
+        if (!CheckIfAllActivePromptsAreFilled())
+            return;
+
+        SaveGivenAnswer();
+        diManager.Continue(ReferenceManager.instance.askDialogueUI);
+        diManager.continueHandler.OnAskPromptEnd();
+        DeleteAllActivePrompts(currentPromptAskBubbles);
+        WordClickManager.instance.currentWord = null;
+        WordCaseManager.instance.ReloadContents();
+        ReferenceManager.instance.askField.SetActive(false);
         ReferenceManager.instance.askContinueButton.SetActive(false);
     }
     /// <summary>

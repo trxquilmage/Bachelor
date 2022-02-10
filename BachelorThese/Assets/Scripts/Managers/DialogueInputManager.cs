@@ -33,35 +33,34 @@ public class DialogueInputManager : MonoBehaviour
         controls.Dialogue.DoubleClick.performed += context => CheckWhereDoubleClickHappened();
     }
 
-
     public void ContinueButton()
     {
-        if (PlayerInputManager.instance.CheckIfAllActivePromptsAreFilled() && !PlayerInputManager.instance.inAsk)
-        {
-            PlayerInputManager.instance.SaveGivenAnswer();
-            Continue(uiHandler);
-            continueHandler.OnPromptEnd();
-            closeAWindow = true;
-            PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
-            WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents();
-            refM.playerInputField.SetActive(false);
-            refM.iCantSayButton.SetActive(false);
-        }
+        if (!PlayerInputManager.instance.CheckIfAllActivePromptsAreFilled() || PlayerInputManager.instance.inAsk)
+            return;
+
+        PlayerInputManager.instance.SaveGivenAnswer();
+        Continue(uiHandler);
+        continueHandler.OnPromptEnd();
+        closeAWindow = true;
+        PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
+        WordClickManager.instance.currentWord = null;
+        WordCaseManager.instance.ReloadContents();
+        refM.playerInputField.SetActive(false);
+        refM.iCantSayButton.SetActive(false);
     }
     public void AbortContinueButton()
     {
-        if (!PlayerInputManager.instance.inAsk)
-        {
-            Continue(uiHandler);
-            continueHandler.OnPromptEnd();
-            closeAWindow = true;
-            PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
-            WordClickManager.instance.currentWord = null;
-            WordCaseManager.instance.ReloadContents();
-            refM.playerInputField.SetActive(false);
-            refM.iCantSayButton.SetActive(false);
-        }
+        if (PlayerInputManager.instance.inAsk)
+            return;
+
+        Continue(uiHandler);
+        continueHandler.OnPromptEnd();
+        closeAWindow = true;
+        PlayerInputManager.instance.DeleteAllActivePrompts(PlayerInputManager.instance.currentPromptBubbles);
+        WordClickManager.instance.currentWord = null;
+        WordCaseManager.instance.ReloadContents();
+        refM.playerInputField.SetActive(false);
+        refM.iCantSayButton.SetActive(false);
     }
     /// <summary>
     /// Called whenever a click happens
