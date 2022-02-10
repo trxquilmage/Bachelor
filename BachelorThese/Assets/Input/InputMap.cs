@@ -335,6 +335,33 @@ public class @InputMap : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Other"",
+            ""id"": ""8ecce2b7-9c01-4d3a-92dd-68ed1fbfa517"",
+            ""actions"": [
+                {
+                    ""name"": ""Screenshot"",
+                    ""type"": ""Button"",
+                    ""id"": ""82f2aa9d-8abe-4945-9187-09ac0b2009bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""af18037a-18ef-48c3-9772-383e4bff46be"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Screenshot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -351,6 +378,9 @@ public class @InputMap : IInputActionCollection, IDisposable
         m_Dialogue_MousePosition = m_Dialogue.FindAction("MousePosition", throwIfNotFound: true);
         m_Dialogue_DoubleClick = m_Dialogue.FindAction("DoubleClick", throwIfNotFound: true);
         m_Dialogue_Scroll = m_Dialogue.FindAction("Scroll", throwIfNotFound: true);
+        // Other
+        m_Other = asset.FindActionMap("Other", throwIfNotFound: true);
+        m_Other_Screenshot = m_Other.FindAction("Screenshot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -510,6 +540,39 @@ public class @InputMap : IInputActionCollection, IDisposable
         }
     }
     public DialogueActions @Dialogue => new DialogueActions(this);
+
+    // Other
+    private readonly InputActionMap m_Other;
+    private IOtherActions m_OtherActionsCallbackInterface;
+    private readonly InputAction m_Other_Screenshot;
+    public struct OtherActions
+    {
+        private @InputMap m_Wrapper;
+        public OtherActions(@InputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Screenshot => m_Wrapper.m_Other_Screenshot;
+        public InputActionMap Get() { return m_Wrapper.m_Other; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(OtherActions set) { return set.Get(); }
+        public void SetCallbacks(IOtherActions instance)
+        {
+            if (m_Wrapper.m_OtherActionsCallbackInterface != null)
+            {
+                @Screenshot.started -= m_Wrapper.m_OtherActionsCallbackInterface.OnScreenshot;
+                @Screenshot.performed -= m_Wrapper.m_OtherActionsCallbackInterface.OnScreenshot;
+                @Screenshot.canceled -= m_Wrapper.m_OtherActionsCallbackInterface.OnScreenshot;
+            }
+            m_Wrapper.m_OtherActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Screenshot.started += instance.OnScreenshot;
+                @Screenshot.performed += instance.OnScreenshot;
+                @Screenshot.canceled += instance.OnScreenshot;
+            }
+        }
+    }
+    public OtherActions @Other => new OtherActions(this);
     public interface IPlayerActions
     {
         void OnTalk(InputAction.CallbackContext context);
@@ -523,5 +586,9 @@ public class @InputMap : IInputActionCollection, IDisposable
         void OnMousePosition(InputAction.CallbackContext context);
         void OnDoubleClick(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
+    }
+    public interface IOtherActions
+    {
+        void OnScreenshot(InputAction.CallbackContext context);
     }
 }

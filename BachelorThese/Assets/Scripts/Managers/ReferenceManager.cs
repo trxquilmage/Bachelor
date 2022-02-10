@@ -158,6 +158,7 @@ public class ReferenceManager : MonoBehaviour
     public bool startWithStartWords = false;
     public bool startWithTutorial = false;
     public bool greyOutUnfittingWordsForPrompts = false;
+    public bool enableScreenshots = false;
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;

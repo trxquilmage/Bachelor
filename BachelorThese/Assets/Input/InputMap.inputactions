@@ -322,6 +322,33 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Other",
+            "id": "8ecce2b7-9c01-4d3a-92dd-68ed1fbfa517",
+            "actions": [
+                {
+                    "name": "Screenshot",
+                    "type": "Button",
+                    "id": "82f2aa9d-8abe-4945-9187-09ac0b2009bb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "af18037a-18ef-48c3-9772-383e4bff46be",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Screenshot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
