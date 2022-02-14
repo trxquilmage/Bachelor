@@ -69,26 +69,22 @@ tags:
 title: Matheo.AshleyRiver
 tags:
 ---
-It's been one confusing car ride to get here.
-But I think it was really worth it!
-Marrying in a forest is so magical!
+Is that the name of a river nearby...?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.NorthlandWoods
 tags:
 ---
-The area of northland woods is way too big.
-It took us an hour to get here.
+The woods? Oh, is that the woods name?
+Sounds cool!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.RensgateCarServices
 tags:
 ---
-The car workshop in Greybell?
-We go there sometimes when we're in the area.
-They're actually really good!
+... huh...?
 [[Matheo.Continue]]
 ===
 
@@ -215,51 +211,43 @@ tags:
 title: Matheo.AllDishes
 tags:
 ---
-The food? I couldn't tell you a thing about it.
-In fact, I haven't even looked at the food yet.
-Ask my husband, over at the buffet.
-He knows that kind of stuff.
+The food is really nice!
+Dad is over there, analyzing all of it.
+He didn't stop talking for the entire car ride.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.DatingApp
 tags:
 ---
-Oh, dear! I'm not in an age anymore, 
-where one uses dating apps.
-Also, I'm happily married, thank you very much.
+... What is an app ...?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.GuestList
 tags:
 ---
-Not many people here, huh?
-I guess there are still people on their way?
-I havent seen Katie and Jordan yet.
+I am on the guest list hihihihi.
+Makes me feel like a VIP.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Renna
 tags:
 ---
-I'm so happy for my dear Renna!
-She lots of effort into planning this wedding.
-I'm so happy everything went well.
+Cousin Renna? She looks so pretty!
+I wish they had dresses like that in my size.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.James
 tags:
 ---
-James? Have you talked to him yet?
-He seems so happy!
-If he ever hurts Renna I will beat the s-
-.............
-I will... uh. Nevermind.
+Mr. James?
+He doesn't look as pretty as Cousin Renna.
+Why do men look so boring at weddings?
 [[Matheo.Continue]]
 ===
-
 
 title: Matheo.Mark
 tags:
@@ -283,20 +271,19 @@ tags:
 title: Matheo.Stubi
 tags:
 ---
-Oh, you mean James' and Renna's weird friend?
-I tried to talk to him, but... uh.
-How do I phrase this politely....
-He talks. like a burglar. like. from a cartoon.
-I don't get what Renna and James see in him?
+Oh, the nice guy from earlier!
+I got him to play tag with me!
+He was sooo cool! Also, I saw him looking 
+at the presents earlier, he was mumbling something,
+and the whole time he laughed manically like "hohoho".
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Jordan
 tags:
 ---
-Jordan seems to be late. Again.
-But I guess he knew he'd be running late,
-left his present with us, so we'd deliver it.
+Jordan? I haven't seen him yet...
+He's still coming, right?
 [[Matheo.Continue]]
 ===
 
@@ -321,17 +308,14 @@ tags:
 title: Matheo.Me
 tags:
 ---
-It's so nice to see you again!
-I think I haven't seen you in at least...
-Two years? 
+Hey! It's so nice to see you again!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Family
 tags:
 ---
-Oh you know, the family is the usual drama.
-Let's not gossip on this beautiful day.
+Oh. Mom and dad are doing good!
 [[Matheo.Continue]]
 ===
 
@@ -344,9 +328,7 @@ tags:
 title: Matheo.Father
 tags:
 ---
-My father? He's still kicking.
-We don't see each other often, you know?
-[[Matheo.Continue]]
+[[Matheo.UncleMickey]]
 ===
 
 title: Matheo.Dad
@@ -385,110 +367,87 @@ tags:
 [[Matheo.Goldfish]]
 ===
 
-title: Matheo.Child
-tags:
----
-[[Matheo.Matheo]]
-===
-
 title: Matheo.Sibling
 tags:
 ---
-REMOVE
+Nope, I have no sibings.
+Yet.
+Oh, I wasn't supposed to tell anyone.
+Dad said I might get a sibling in a year or so.
+Why in a year though?
+I mean, can they not get one earlier?
+WHERE exactly *do* you get children from?
 [[Matheo.Continue]]
-===
-
-title: Matheo.Wife
-tags:
----
-REMOVE
-[[Matheo.Continue]]
-===
-
-title: Matheo.Husband
-tags:
----
-[[Matheo.UncleMickey]]
-===
-
-title: Matheo.Son
-tags:
----
-[[Matheo.Matheo]]
 ===
 
 title: Matheo.Katie
 tags:
 ---
-Katie? Haven't seen her yet.
-But she'll probably turn up soon.
+Oh! Is Katie coming to this wedding?
+She is SO cool!
 [[Matheo.Continue]]
-===
-
-title: Matheo.Kid
-tags:
----
-[[Matheo.Matheo]]
 ===
 
 title: Matheo.Bridgetown
 tags:
 ---
-How Bridgetown is doing? 
-The same as usual, yeah.
-Our favorite restaurant closed down.
-A new pizza shop opened up, but they're not... good. 
+I don't really know much about the city.
+But recently in school we learned that 
+the word "town" describes a small settlement.
+I don't understand how the capital is a "town"?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Greybell
 tags:
 ---
-Greybell? Haven't been in a while. 
-We went through there on our way here,
-but that's really it.
+... I never heard the name...
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Nocturne
 tags:
 ---
-Nocturne? Like the country?
-That's a pretty broad topic.
-[[Matheo.Continue]]
+[[Matheo.Greybell]]
 ===
 
 title: Matheo.Buffet
 tags:
 ---
-The buffet seems to be good. I can't really judge it,
-as I haven't tried anything yet.
+Ask dad about the food!
+He loves to talk about it sooo much.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Presents
 tags:
 ---
-Oh, we got Renna and James some basic stuff. You know,
-a set of plates, cutlery, and a coffee machine! 
+... I've seen some of the presents...
+You want to know? Yes? Great!
+Mom and dad got them boring stuff...
+The nice guy with the hat gave them some 
+complicated string stuff...?
+There is a basket with food here,
+the present from Jordan though...
+I looked into it. I think it's an official paper,
+that states, that James and Renna own a boat...
+He got them a boat!
+And the DJ got them a party hat! How cool is that?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Tables
 tags:
 ---
-It's really nice here. 
-Standing below the trees, drinking my wine...
-A really good day! 
+Mom is over there. She really likes the quiet.
+If it were for her, I don't think there'd be a DJ.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Benches
 tags:
 ---
-I was over at the benches before,
-because I tried to talk to Stubi. 
-He's... a bit too weird for my taste.
+The nice guy with the hat is over there!
 [[Matheo.Continue]]
 ===
 
@@ -507,24 +466,19 @@ tags:
 title: Matheo.Bushes
 tags:
 ---
-I really hope, that Matheo isn't playing around
-in the bushes...
+I was playing around in the bushes earlier.
+It was pretty fun! 
+But the nice hat guy told me,
+that it's pretty dangerous and that there are 
+vicious beasts out in the woods. So I went back!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Venue
 tags:
 ---
-It's so nice here.
-I never actually even knew that there was 
-a venue to rent out here!
-[[Matheo.Continue]]
-===
-
-title: Matheo.Workshop
-tags:
----
-REMOVE
+It's nice here. Its waaay better than the place where
+Aunt Nellie's wedding was at last year!
 [[Matheo.Continue]]
 ===
 
@@ -553,8 +507,10 @@ tags:
 title: Matheo.Goldfish
 tags:
 ---
-Oh, if I want a goldfish? I don't think that 
-Matheo isn't old enough for a pet yet...
+OH YOU HAVE A GOLDFISH?
+CAN I SEE IT? 
+OH IT'S SO CUTE!
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 [[Matheo.Continue]]
 ===
 
@@ -576,26 +532,15 @@ tags:
 [[Matheo.AllDishes]]
 ===
 
-title: Matheo.Hat
-tags:
----
-REMOVE
-[[Matheo.Continue]]
-===
-
-title: Matheo.Car
-tags:
----
-REMOVE
-[[Matheo.Continue]]
-===
-
 title: Matheo.Job
 tags:
 ---
-Same as always, dear.
-Lots and lots of books to stack,
-belitteling customers, and so on.
+... I don't have a job. Yet.
+I will one day be the best adventurer in the world!
+The nice guy with the hat told me about his work
+as a treasure hunter. I didn't know you could do that!
+Why do people pick such boring jobs, if you can 
+become a treasure hunter? 
 [[Matheo.Continue]]
 ===
 
@@ -608,11 +553,8 @@ tags:
 title: Matheo.Treasure
 tags:
 ---
-What? 
-You sound like Renna's and James' weird friend.
-He talked all about treasures and adventure.
-I think it might have been code for drugs?
-I don't know how young people talk...
+Treasure! Yes!
+I will become a tresure hunter when I'm older!
 [[Matheo.Continue]]
 ===
 
@@ -625,28 +567,16 @@ tags:
 title: Matheo.Adventure
 tags:
 ---
-[[Matheo.Treasure]]
-===
-
-title: Matheo.Business
-tags:
----
-REMOVE
-[[Matheo.Continue]]
-===
-
-title: Matheo.Funeral
-tags:
----
-REMOVE
+I want to go on an adventure so bad!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Birthday
 tags:
 ---
-My birthday? You remembered?
-Yes, it was last week! We had lots of fun!
+My birthday? 
+Mom got me a wood sword last year!
+I hope I get a stone one this year...
 [[Matheo.Continue]]
 ===
 
@@ -659,23 +589,16 @@ tags:
 title: Matheo.Name
 tags:
 ---
-... You do remember my name, right?
-... right?
-[[Matheo.Continue]]
-===
-
-title: Matheo.Co-worker
-tags:
----
-REMOVE
+... My name is Matheo.
+Did you forget about me? D:
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Catering
 tags:
 ---
-Oh the caterer? You should ask my husband.
-He's like. Their biggest fan. Ever.
+... Catering... That's a word dad uses a lot.
+I don't really know what that is, though.
 [[Matheo.Continue]]
 ===
 
@@ -688,69 +611,66 @@ tags:
 title: Matheo.Date
 tags:
 ---
-REMOVE
+That guy over there?
+Is he nice? I don't know him.
+He brought a gift basket as a present, though.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.God
 tags:
 ---
-Oh, why the sudden interest?
-Do you want to join next time we go to church?
-[[Matheo.Continue]]
-===
-
-title: Matheo.Engineer
-tags:
----
-REMOVE
+Yes, we go to church sometimes.
+Mom volunteers at the church too!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Vegan
 tags:
 ---
-If I'm vegan? I've tried a while, but it really
-limits your cooking choices, especially if you're 
-living with a chef and a hungry ten year old.
+... What is that?
+Not eating meat OR cheese? With dad in the house?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Vegetarian
 tags:
 ---
-You know... I try to eat avoid meat, but,
-yeah... you know my husband...
+... What is that?
+Hahahaha. Not eating meat? With dad in the house?
 [[Matheo.Continue]]
 ===
 
 title: Matheo.CoffeeMachine
 tags:
 ---
-The coffee machine? Oh, it was a steal!
-We got one from a top-notch brand from one of
-my husband's co-workers. I'm so happy!
+Yes, Mom and dad got it for them!
+I would be devastated if someone would 
+get me that for my wedding...
 [[Matheo.Continue]]
 ===
 
 title: Matheo.FishingSet
 tags:
 ---
-REMOVE
+... What is that?
+Ohh the confusing string thing!
+Cool.
 [[Matheo.Continue]]
 ===
 
 title: Matheo.PartyHat
 tags:
 ---
-REMOVE
+The DJ got them a party hat! That is so cool!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.GiftBasket
 tags:
 ---
-REMOVE
+The guy that was lurking at the entrance.
+He put a gift basket here.
 [[Matheo.Continue]]
 ===
 
@@ -767,15 +687,16 @@ minimalist style that fits everywhere!
 title: Matheo.Boat
 tags:
 ---
-REMOVE
+Jordan got them a boat!
+I hope they'll take me along one day!
 [[Matheo.Continue]]
 ===
 
 title: Matheo.Cutlery
 tags:
 ---
-I cannot imagine what could possibly
-be interesting about the cutlery...
+... What is cut-lery? Is it like a butler?
+Or like celery? Doesn't sound very Interesting.
 [[Matheo.Continue]]
 ===
 
