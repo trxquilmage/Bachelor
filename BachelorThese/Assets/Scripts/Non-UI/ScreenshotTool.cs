@@ -32,7 +32,7 @@ public class ScreenshotTool : MonoBehaviour
     {
         System.DateTime currentTime = System.DateTime.Now;
         nextFilename = "Screenshot_" + currentTime.Year + "_" + currentTime.Month + "_" +
-            currentTime.Day + "_" + currentTime.Hour + "_" + currentTime.Minute + "_" 
+            currentTime.Day + "_" + currentTime.Hour + "_" + currentTime.Minute + "_"
             + currentTime.Second + ".png";
     }
     private void OnEnable()
