@@ -10737,6 +10737,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1401715105}
     m_Modifications:
+    - target: {fileID: 5722806499732953584, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 215.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137094194426256221, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 99.000015
+      objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958161, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: m_Name
       value: Question_01
@@ -27188,6 +27196,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1401715105}
     m_Modifications:
+    - target: {fileID: 5722806499732953584, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 215.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137094194426256221, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 99.000015
+      objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958161, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: m_Name
       value: Question_03
@@ -32890,6 +32906,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1401715105}
     m_Modifications:
+    - target: {fileID: 5722806499732953584, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 215.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137094194426256221, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 99.000015
+      objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958161, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: m_Name
       value: Question_04
@@ -41443,6 +41467,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 84.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7344212603805424353, guid: a13a9ae1ea40edf4c8034b300211fefc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -23.900002
+      objectReference: {fileID: 0}
     - target: {fileID: 7344212604109909440, guid: a13a9ae1ea40edf4c8034b300211fefc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -44936,8 +44964,8 @@ MonoBehaviour:
   maxQuests: 5
   maxStartWordTraitAmount: 2
   sceneNumber: 002
-  allWordsInteractable: 0
-  blockListOn: 0
+  allWordsInteractable: 1
+  blockListOn: 1
   noGreyOut: 0
   duplicateWords: 0
   startWithStartWords: 0
@@ -49073,11 +49101,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7344212603805424353, guid: a13a9ae1ea40edf4c8034b300211fefc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 6.1
+      value: 6.0999985
       objectReference: {fileID: 0}
     - target: {fileID: 7344212603805424353, guid: a13a9ae1ea40edf4c8034b300211fefc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20.1
+      value: -20.099998
       objectReference: {fileID: 0}
     - target: {fileID: 7344212604109909440, guid: a13a9ae1ea40edf4c8034b300211fefc, type: 3}
       propertyPath: m_Pivot.x
@@ -49177,6 +49205,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1401715105}
     m_Modifications:
+    - target: {fileID: 5722806499732953584, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 215.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137094194426256221, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 99.000015
+      objectReference: {fileID: 0}
     - target: {fileID: 7682664487055958161, guid: 4d68320dbd6104445b2d75dccc93f779, type: 3}
       propertyPath: m_Name
       value: Question_02
