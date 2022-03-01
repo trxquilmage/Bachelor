@@ -20,6 +20,9 @@ public class MenuManager : MonoBehaviour
     private void Start()
     {
         refM = ReferenceManager.instance;
+
+        CheckIfSoundIsEnabled();
+
         allSubMenus = new SubMenu[2] {
             new SubMenu("credits", false, refM.creditsField, refM.creditsText, refM.creditsTexts, 0),
             new SubMenu("tutorial", false, refM.tutorialField, refM.tutorialText, refM.tutorialTexts, 0)
@@ -87,6 +90,12 @@ public class MenuManager : MonoBehaviour
     {
         if (currentSubMenu.name != null)
             currentSubMenu.SwitchBack();
+    }
+
+    void CheckIfSoundIsEnabled()
+    {
+        if (refM.enableSound)
+            refM.optionsButton.SetActive(true);
     }
 }
 public struct SubMenu

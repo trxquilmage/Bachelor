@@ -68,6 +68,7 @@ public class ReferenceManager : MonoBehaviour
     public GameObject menuField;
     public GameObject tutorialField;
     public GameObject creditsField;
+    public GameObject optionsButton;
     public TMP_Text tutorialText;
     public TMP_Text creditsText;
     public string[] tutorialTexts;
@@ -159,6 +160,8 @@ public class ReferenceManager : MonoBehaviour
     public bool startWithTutorial = false;
     public bool greyOutUnfittingWordsForPrompts = false;
     public bool enableScreenshots = false;
+    public bool enableVFX = false;
+    public bool enableSound = false;
     [Header("Tags")]
     public WordInfo.WordTag[] wordTags;
     public int allTagIndex = 0;

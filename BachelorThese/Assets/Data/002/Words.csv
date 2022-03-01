@@ -139,3 +139,5 @@ Vegetarian;Adjective;Trait;
 Mother;Name;Relation;
 Mom;Name;Relation;
 Brother;Name;Relation;
+Highlighted;Adjective;Descriptor;
+Inventory;Concept;Imm;
