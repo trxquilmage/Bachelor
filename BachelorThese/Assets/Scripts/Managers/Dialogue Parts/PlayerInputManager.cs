@@ -310,6 +310,7 @@ public class PlayerInputManager : MonoBehaviour
             AbortAskButton(false);
         }
         inAsk = false;
+        EffectUtilities.ReColorAllInteractableWords();
     }
     public void CantSayAsk()
     {
