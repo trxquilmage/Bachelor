@@ -116,7 +116,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     }
     public virtual void DroppedOverNothing()
     {
-        CheckIfWasDroppedOverNPC();
         WordCaseManager.instance.ReloadContents();
         EffectUtilities.ReColorAllInteractableWords();
         WordClickManager.instance.DestroyCurrentWord();
@@ -233,36 +232,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     public void OnPointerClick(PointerEventData eventData)
     {
         // this cant be deleted bc for some reasons the other functions dont work without it
-    }
-    protected void CheckIfWasDroppedOverNPC()
-    {
-        Vector2 mousePos = WordClickManager.instance.GetMousePos();
-        RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(mousePos));
-        foreach (RaycastHit hit in hits)
-        {
-            if (!hit.transform.TryGetComponent<NPC>(out NPC npc))
-                break;
-
-            if (DialogueManager.instance.currentTarget != null && DialogueManager.instance.currentTarget != npc)
-            {
-                Debug.Log("cant be in a conversation with a different npc");
-                break;
-            }
-
-            DialogueManager.instance.currentTarget = npc;
-            piManager.OpenAskField();
-
-
-            if (!refM.askPromptBubbleParent.transform.GetChild(0).TryGetComponent<PromptBubble>(out PromptBubble pB))
-            {
-                Debug.Log("no prompt was found?");
-                break;
-            }
-            //force the prompt bubble to check, whether the word fits or not
-            WordClickManager.instance.CheckPromptBubbleForCurrentWord(pB);
-            DroppedOverPlayerInput();
-            return;
-        }
     }
     public void OnRemoveFromPromptBubble(PromptBubble pB)
     {
