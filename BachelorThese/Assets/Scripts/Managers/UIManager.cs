@@ -328,9 +328,6 @@ public class UIManager : MonoBehaviour
     }
     void DeleteBubble()
     {
-        //spawn delete-vfx
-        wclM.currentWord.GetComponent<Bubble>().CallEffect(1);
-
         wcM.DeleteOutOfCase();
         wclM.DestroyCurrentWord();
         wcM.UpdateContentCount();

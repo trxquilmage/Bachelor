@@ -44,7 +44,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
     public virtual void Start()
     {
         piManager = PlayerInputManager.instance;
-        CallEffect(0);
     }
     public virtual void Initialize(BubbleData inputData, WordInfo.Origin origin, TMP_WordInfo wordInfo, Vector2 firstAndLastWordIndex)
     {
@@ -487,35 +486,6 @@ public class Bubble : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerCl
         firstAndLastCharIndexPerLine.Add(new Vector2(firstCharacterIndex, 0));
     }
     #endregion
-    /// <summary>
-    /// Call one of the VFX on the bubble: 0 -> spawn, 1 -> delete
-    /// </summary>
-    /// <param name="i"></param>
-    public void CallEffect(int i)
-    {
-        if (vfxParent != null)
-        {
-            VisualEffect chosenVFX = vfxParent.GetComponentsInChildren<VisualEffect>()[i];
-            if (i != 0)
-            {
-                chosenVFX.gameObject.transform.SetParent(refM.dialogueCanvas.transform);
-                chosenVFX.gameObject.transform.SetAsLastSibling();
-            }
-
-            //set effect width to bubble width
-            chosenVFX.SetFloat("width", wordParent.GetComponentInChildren<Image>().rectTransform.sizeDelta.x);
-            if (i != 1)
-            {
-                //set effect color to bubble color
-                Color color = wordParent.GetComponentInChildren<Image>().color;
-                chosenVFX.SetVector3("color", new Vector3(color.r, color.g, color.b));
-            }
-
-            UIManager.instance.PlayVFX(chosenVFX);
-            if (i != 0)
-                StartCoroutine(UIManager.instance.DestroyVFX(chosenVFX));
-        }
-    }
     protected void CheckIfLongWordAndSaveLineLength()
     {
         data.lineLengths = GetLineLengths();
@@ -1067,7 +1037,6 @@ public class BubbleDoubleClickHandler
         EffectUtilities.ReColorAllInteractableWords();
     }
 }
-
 public class BubblePlaceholderHandler
 {
     Bubble relatedBubble;
