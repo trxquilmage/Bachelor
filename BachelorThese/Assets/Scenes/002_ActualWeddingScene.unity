@@ -27200,7 +27200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1293463838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -44656,17 +44656,16 @@ MonoBehaviour:
     getting your companion better by asking questions about them!
   - Sometimes information can also be collected outside of dialogues, so keep an
     eye out for texts that can be found in the environment!
-  - The words in the beginning of the game are meant to help you in finding a story
-    for the character you want to play. They also offer in-dividual words for you
-    to start with!
   - If someone gives you a task, you can see it in your Quest Log.<br> <br>Note that
     quests do not update when you progress in them.
-  - In this prototype, th words "Yes" and "No" cannot be deleted out of the word
+  - In this prototype, the words "Yes" and "No" cannot be deleted out of the word
     case.<br><br>This is meant as a security measure to not get stuck in dialogue.
   - Do you use a word a lot? Add it to your favorites! <br><br>This adds it to the
     top of every list it is portrayed in and you can also find it in the "Favorites"-Tag.
   - You don't need a word anymore? <br><br>Throw it into the trash can, so it gets
     deleted from your case!
+  - Walk with "W", "A", "S" and "D", interact with characters with "E" and "F". <br><br>Use
+    the mouse to select words.
   creditsTexts:
   - Using <b>Free Low Poly Pack</b> by <b>Broken Vector</b><br><br><size=80%>https://assetstore.unity.com/packages/3d/free-low-poly-pack-65375
   - Using <b>GAZ Street Props</b> by <b>Helsssoo</b><br><br><size=80%>https://assetstore.unity.com/packages/3d/props/exterior/gaz-street-props-57285
