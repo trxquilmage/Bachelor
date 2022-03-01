@@ -270,6 +270,7 @@ public class PlayerInputManager : MonoBehaviour
             diManager.continueHandler.OnAskPromptEnd();
             DeleteAllActivePrompts(currentPromptAskBubbles);
             WordClickManager.instance.currentWord = null;
+            WordCaseManager.instance.EndGreyOut();
             WordCaseManager.instance.ReloadContents();
             WordUtilities.JumpToNode(refM.askRunner, givenAnswerAsk.bubbleData.name);
             DialogueInputManager.instance.Continue(ReferenceManager.instance.askDialogueUI);
