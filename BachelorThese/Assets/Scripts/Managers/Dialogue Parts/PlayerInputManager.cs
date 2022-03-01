@@ -302,6 +302,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             diManager.continueHandler.OnAskPromptEnd();
             WordClickManager.instance.currentWord = null;
+            WordCaseManager.instance.EndGreyOut();
             WordCaseManager.instance.ReloadContents();
             refM.askField.SetActive(false);
             refM.askICantSayButton.SetActive(false);

@@ -89,14 +89,18 @@ public class CommandManager : MonoBehaviour
     [YarnCommand("returnfromask")]
     public void ReturnFromAsk()
     {
+        StartCoroutine(RedoGreyOutAfterAsk());
+    }
+    IEnumerator RedoGreyOutAfterAsk()
+    {
+        yield return new WaitForEndOfFrame();
         if (PlayerInputManager.instance.CheckIfThereAreAnyPromptBubbles(out PromptBubble[] promptBubbles))
         {
-            Debug.Log("A");
             WordCaseManager.instance.StartGreyOut(promptBubbles[0].gameObject);
             WordCaseManager.instance.ReloadContents();
-            Debug.Log("B");
         }
     }
+
     [YarnCommand("activateaskbutton")]
     public void ActivateAskButton()
     {
