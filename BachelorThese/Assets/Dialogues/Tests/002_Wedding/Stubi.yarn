@@ -5,6 +5,8 @@ tags:
 <<set $gotPresentName to getinfo("gotPresentValue", 0)>>
 <<if not isvisited("Stubi","Start")>>
     [[Stubi.Introduction]]
+<<elseif $gotPresentName eq null>>
+    [[Stubi.RetryPresent]]
 <<elseif $gotPresentName eq "expensive">>
     [[Stubi.Idle]]
 <<else>>
@@ -82,14 +84,14 @@ This is for you.
 <i><color=grey>It's a lot of money.</i>
 <<showcharactername Managers Stubi>>
 I hope you had fun hunting treasure!
-<size=70%> Now I will go on my own little treaure hunt...
+<size=70%>Now I will go on my own little treasure hunt...
 ===
 
 title: Stubi.RetryPresent
 tags:
 ---
 It's you! Have you asked around?
-[[Stubi.WhatPresent]]
+[[Stubi.FoundPresent]]
 ===
 
 title: Stubi.WontTell
