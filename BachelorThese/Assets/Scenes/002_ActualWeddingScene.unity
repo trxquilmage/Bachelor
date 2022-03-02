@@ -44491,7 +44491,7 @@ MonoBehaviour:
   noGreyOut: 0
   duplicateWords: 0
   startWithStartWords: 0
-  startWithTutorial: 0
+  startWithTutorial: 1
   greyOutUnfittingWordsForPrompts: 1
   enableScreenshots: 0
   enableVFX: 0
